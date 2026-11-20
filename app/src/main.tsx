@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { Operator } from './Operator.tsx';
 import { Stage } from './Stage.tsx';
+import '@fontsource-variable/archivo/wdth.css';
 import './styles.css';
 
 // Two routes only, so no router: /stage is the projector, everything else is the operator panel.

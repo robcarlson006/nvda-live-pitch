@@ -31,7 +31,7 @@ export function Operator() {
           {demoSlides.map((s) => (
             <div key={s.id} className={`op-card ${state?.live?.id === s.id ? 'active' : ''}`}>
               <div className="op-card-meta">
-                {s.speaker} · {s.kicker}
+                {s.speaker}, {s.layout}
               </div>
               <div className="op-card-title">{s.title}</div>
               <div className="op-card-meta">{s.chart ? `Chart: ${s.chart.datasetKey}` : 'Text only'}</div>

@@ -20,6 +20,19 @@ cd app && npm install && npm run dev
   - The operator panel has connection status, a count of screens connected, push test slides, clear the stage, and a history of slides built this session.
   - `data/clean/` has two real datasets typed from the Bloomberg exports: quarterly revenue vs consensus, and annual revenue FY22–26. M2 will regenerate these with scripts.
 
+- **Stage redesign** (20 Nov): so it doesn't look like an AI template.
+  - **The screen is a GPU die.** A full-screen field of tiny cores (canvas) runs a left-to-right compute pass on every build. Headline figures and the standby "NVIDIA" are drawn *by the cores*, which light up in parallel.
+  - **Colour:** pure black, because a projector shows black as no light. Silicon-grey cores, with NVIDIA green only where cores are computing.
+  - **Type:** one family, Archivo (bundled locally, so it works offline), used across its width axis: expanded for claims, normal width for detail. No eyebrow labels, bullet dashes or cards.
+  - **Four slide layouts:**
+    - `statement`: one huge line, appearing word by word
+    - `number`: a figure looked up from data and rendered by the cores
+    - `chart`: the chart fills the slide
+    - `split`: text beside a chart
+
+    Bar charts are stacks of cores; line charts are labelled directly at the line ends instead of with a legend.
+  - Text reveals in steps, like a pass over the cores, rather than soft fades.
+
 ## Data received
 - NVDA FA, annual FY1998–FY2026 and quarterly FY24 Q3–FY27 Q3, both including ESG.
 - Peer FA: AMD, INTC, AVGO, TSMC (TSMC in both TWD and USD).

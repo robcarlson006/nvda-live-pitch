@@ -9,16 +9,34 @@ export const ChartSpec = z.object({
   highlight: z.string().optional(), // an x value to emphasise, e.g. "FY26"
 });
 
+// A single headline figure, looked up from a dataset (never typed by hand or by the model).
+export const StatSpec = z.object({
+  datasetKey: z.string().min(1),
+  series: z.string().min(1),
+  x: z.string().min(1),
+  label: z.string().max(120),
+});
+
+// statement: one big line · number: a figure rendered by the core array · chart: chart fills the slide · split: text + chart
 export const Slide = z.object({
   id: z.string().min(1),
+  layout: z.enum(['statement', 'number', 'chart', 'split']).default('split'),
   speaker: z.string().optional(),
-  kicker: z.string().max(60).optional(),
   title: z.string().min(1).max(90),
   bullets: z.array(z.string().max(140)).max(4).default([]),
   chart: ChartSpec.optional(),
+  stat: StatSpec.optional(),
   sources: z.array(z.string()).default([]),
 });
 export type Slide = z.infer<typeof Slide>;
+
+/** "USD bn" → "$115.8bn"; anything else keeps its unit. */
+export function formatValue(v: number, unit: string): string {
+  if (unit === 'USD bn') return `$${v.toFixed(1)}bn`;
+  if (unit === '%') return `${v.toFixed(1)}%`;
+  if (unit === 'x') return `${v.toFixed(1)}x`;
+  return `${v.toLocaleString('en-GB')} ${unit}`;
+}
 
 export const Dataset = z.object({
   key: z.string(),

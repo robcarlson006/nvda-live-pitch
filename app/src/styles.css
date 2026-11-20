@@ -1,71 +1,58 @@
+/*
+  Stage: the screen is a GPU die. Pure black (a projector shows true black as no light),
+  a field of silicon-grey cores, and NVIDIA green only where cores are computing.
+  One typeface, Archivo, used across its width axis: expanded for claims, normal for detail.
+*/
 :root {
+  --black: #000;
+  --core: #121511;
   --green: #76b900;
-  --bg: #050607;
-  --fg: #f2f4f7;
-  --muted: #8a8f98;
-  --line: #1c2026;
-  font-family: 'Inter', 'SF Pro Display', -apple-system, system-ui, sans-serif;
+  --white: #f4f6f1;
+  --detail: #b4b9ae;
+  --faint: #7a8174;
+  --margin: 6vw;
+  font-family: 'Archivo Variable', system-ui, sans-serif;
 }
 * { box-sizing: border-box; }
 html, body, #root { margin: 0; height: 100%; }
-body { background: var(--bg); color: var(--fg); }
+body { background: var(--black); color: var(--white); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
 /* ---------- Stage (projector) ---------- */
 body.is-stage { overflow: hidden; cursor: none; }
 .stage { position: relative; height: 100vh; overflow: hidden; }
-.stage-grid {
-  position: absolute; inset: 0; opacity: 0.35;
-  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse at 50% 40%, #000 30%, transparent 80%);
-}
-.stage-glow {
-  position: absolute; width: 70vw; height: 70vw; left: 45%; top: -30%; border-radius: 50%;
-  background: radial-gradient(circle, rgba(118, 185, 0, 0.18), transparent 60%);
-  filter: blur(40px); animation: drift 18s ease-in-out infinite alternate;
-}
-@keyframes drift { to { transform: translate(-25vw, 20vh); } }
-.stage-top {
-  position: absolute; top: 0; left: 0; right: 0; z-index: 2;
-  display: flex; justify-content: space-between; padding: 2.2vh 3vw;
-  font-size: 1.6vh; letter-spacing: 0.25em; color: var(--muted);
-}
-.brand b { color: var(--green); }
-.live { color: var(--green); animation: pulse 2s ease-in-out infinite; }
-.live.off { color: #e5484d; }
-@keyframes pulse { 50% { opacity: 0.45; } }
+.core-array { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-.idle { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-.idle-mark { font-size: 12vh; font-weight: 800; letter-spacing: 0.08em; color: var(--green); text-shadow: 0 0 60px rgba(118, 185, 0, 0.5); }
-.idle-sub { margin-top: 2vh; font-size: 2vh; letter-spacing: 0.5em; text-transform: uppercase; color: var(--muted); }
+.slide { position: absolute; inset: 0; padding: 11vh var(--margin) 9vh; }
+.slide h1 { margin: 0; font-stretch: 112%; font-weight: 720; font-size: 5.6vh; line-height: 1.06; letter-spacing: -0.012em; max-width: 22ch; text-wrap: balance; }
+.point { margin: 0 0 2.2vh; font-stretch: 100%; font-weight: 400; font-size: 2.6vh; line-height: 1.4; color: var(--detail); max-width: 36ch; }
+.points { margin-top: 4.5vh; }
 
-.slide { position: absolute; inset: 0; z-index: 1; display: grid; gap: 4vw; padding: 12vh 5vw 10vh; }
-.slide.with-chart { grid-template-columns: 38fr 62fr; align-items: center; }
-.slide.text-only { grid-template-columns: 1fr; align-content: center; max-width: 75vw; }
-.build-line {
-  position: absolute; top: 0; left: 0; right: 0; height: 3px; transform-origin: left;
-  background: linear-gradient(90deg, transparent, var(--green)); box-shadow: 0 0 16px var(--green);
-}
-.kicker { color: var(--green); font-size: 1.8vh; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 2vh; }
-.slide h1 { margin: 0 0 4vh; font-size: 6.2vh; line-height: 1.05; font-weight: 750; letter-spacing: -0.02em; }
-.text-only h1 { font-size: 8vh; }
-.slide ul { list-style: none; margin: 0; padding: 0; }
-.slide li { position: relative; padding-left: 2.2vw; margin-bottom: 2.4vh; font-size: 2.7vh; line-height: 1.35; color: #cfd3da; }
-.slide li::before { content: ''; position: absolute; left: 0; top: 1.2vh; width: 1vw; height: 3px; background: var(--green); }
-.slide-chart {
-  height: 62vh; display: flex; flex-direction: column; padding: 3vh 2vw;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01));
-  border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 16px; backdrop-filter: blur(6px);
-}
-.chart-title { font-size: 2vh; color: var(--muted); margin-bottom: 1vh; display: flex; gap: 1vw; align-items: center; }
+/* The reveal is chunky on purpose: it steps across like a pass over the cores, not a soft fade. */
+.reveal, .word { animation: wipe 0.6s steps(12, end) var(--at, 0s) both; }
+.word { display: inline-block; animation-duration: 0.18s; animation-timing-function: steps(3, end); }
+@keyframes wipe { from { clip-path: inset(-10% 100% -10% 0); } to { clip-path: inset(-10% -2% -10% 0); } }
+
+.layout-statement { display: flex; flex-direction: column; justify-content: center; }
+.statement { font-stretch: 125% !important; font-weight: 780 !important; font-size: 10vh !important; line-height: 1.02 !important; max-width: 17ch !important; }
+
+.layout-number .number-text { position: absolute; left: var(--margin); right: var(--margin); top: 66vh; }
+.layout-number h1 { font-size: 4.4vh; max-width: 30ch; }
+.layout-number .point { margin-top: 1.6vh; }
+
+.layout-split { display: grid; grid-template-columns: 5fr 7fr; gap: 5vw; align-items: center; }
+.layout-chart { display: grid; grid-template-rows: auto auto 1fr; }
+.layout-chart .points { margin-top: 1.5vh; }
+.layout-chart h1 { max-width: none; }
+
+.chart { margin: 0; height: 64vh; display: flex; flex-direction: column; }
+.layout-chart .chart { height: auto; min-height: 0; margin-top: 3vh; }
+.chart figcaption { font-size: 1.8vh; color: var(--faint); margin-bottom: 1.5vh; display: flex; gap: 1vw; align-items: center; }
 .chart-body { flex: 1; min-height: 0; }
-.chart-missing { margin: auto; color: var(--muted); font-size: 2.2vh; }
-.placeholder { color: #000; background: #ffb74d; font-size: 1.3vh; font-weight: 700; padding: 0.3vh 0.6vw; border-radius: 4px; letter-spacing: 0.1em; }
-.sources {
-  position: absolute; left: 5vw; right: 5vw; bottom: 3vh;
-  display: flex; justify-content: space-between; font-size: 1.4vh; color: #5d636c;
-}
-.speaker { color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; }
+.placeholder { color: var(--black); background: #e8b04a; padding: 0.2vh 0.6vw; border-radius: 2px; font-weight: 600; }
+.sources { position: absolute; left: var(--margin); right: var(--margin); bottom: 3.5vh; font-size: 1.6vh; color: var(--faint); }
+
+@media (prefers-reduced-motion: reduce) { .reveal, .word { animation: none; } }
 
 /* ---------- Operator ---------- */
 body.is-operator { font-size: 15px; }
@@ -77,15 +64,15 @@ body.is-operator { font-size: 15px; }
 .pill.bad { border-color: #e5484d; color: #e5484d; }
 .pill.link { text-decoration: none; }
 .op-error { padding: 10px 14px; border-radius: 8px; background: #3a1214; color: #ff8a8f; }
-.label { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.label { font-size: 12px; color: var(--detail); margin-bottom: 10px; }
 .op-live { padding: 16px; border-radius: 12px; border: 1px solid #262a30; background: #0c0e11; }
 .live-title { font-size: 22px; font-weight: 650; margin-bottom: 12px; }
 .op-slides { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
 .op-card { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 12px; background: #0c0e11; border: 1px solid #262a30; }
 .op-card.active { border-color: var(--green); box-shadow: 0 0 0 1px var(--green) inset; }
 .op-card-title { font-weight: 650; font-size: 16px; flex: 1; }
-.op-card-meta { font-size: 12px; color: var(--muted); }
-button { font: inherit; padding: 8px 14px; border-radius: 8px; border: 1px solid #333840; background: #181b20; color: var(--fg); cursor: pointer; }
+.op-card-meta { font-size: 12px; color: var(--detail); }
+button { font: inherit; padding: 8px 14px; border-radius: 8px; border: 1px solid #333840; background: #181b20; color: var(--white); cursor: pointer; }
 button:disabled { opacity: 0.4; cursor: default; }
 button.primary { background: var(--green); border-color: var(--green); color: #000; font-weight: 650; }
 button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }

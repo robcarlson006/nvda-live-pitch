@@ -41,7 +41,14 @@ export function apply(state: ShowState, raw: unknown, datasets: Map<string, Data
   const msg = parsed.data;
   if (msg.type === 'clear') return { ...state, live: null, liveSince: Date.now() };
 
-  const chart = msg.slide.chart;
+  const { chart, stat, layout } = msg.slide;
+  if ((layout === 'chart' || layout === 'split') && !chart) return `Layout "${layout}" needs a chart`;
+  if (layout === 'number' && !stat) return 'Layout "number" needs a stat';
+  if (stat) {
+    const ds = datasets.get(stat.datasetKey);
+    const i = ds?.x.indexOf(stat.x) ?? -1;
+    if (!ds || i < 0 || ds.series[stat.series]?.[i] == null) return `No value for ${stat.datasetKey} / ${stat.series} / ${stat.x}`;
+  }
   if (chart) {
     const ds = datasets.get(chart.datasetKey);
     if (!ds) return `Unknown dataset "${chart.datasetKey}"`;
