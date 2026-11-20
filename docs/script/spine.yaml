@@ -17,13 +17,6 @@
 #
 # DRAFT by Claude, 20 Nov 2026. Rob, Mi'kael and Panshul: rewrite `say` in your own words, then fix the cues to match.
 
-- id: hook
-  speaker: Rob
-  cues: [good afternoon, built live, we are pitching nvidia]
-  layout: statement
-  title: This presentation is being built live, as we speak.
-  say: Good afternoon. We're pitching NVIDIA. Before we start, watch the screen. Nothing on it existed a minute ago.
-
 - id: founding
   speaker: Rob
   cues: [nineteen ninety three, "1993", three engineers]
@@ -145,6 +138,13 @@
       cue: rising
   chart: { type: line, datasetKey: nvda_emissions, series: [Scope 3], highlight: FY26 }
   say: But the honest number is the supply chain, Scope 3. Most emissions come from manufacturing at partners like TSMC, and they rise as NVIDIA sells more.
+
+- id: built-live
+  speaker: Rob
+  cues: [built live, as we speak, one more thing]
+  layout: statement
+  title: This presentation is being built live, as we speak.
+  say: One more thing. This presentation is being built live, as we speak.
 
 - id: close
   speaker: Rob

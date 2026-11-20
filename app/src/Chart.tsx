@@ -14,18 +14,20 @@ export function Chart({ spec, dataset }: { spec: NonNullable<Slide['chart']>; da
 
   useEffect(() => {
     const chart = echarts.init(el.current!, undefined, { renderer: 'canvas' });
-    const vh = window.innerHeight / 100;
+    const vh = Math.min(window.innerHeight, window.innerWidth * 0.5625) / 100; // same unit as --u in styles.css
     const fmt = (v: number) => formatValue(v, dataset.unit);
     const isBar = spec.type !== 'line';
     const hiIdx = spec.highlight ? dataset.x.indexOf(spec.highlight) : isBar ? dataset.x.length - 1 : -1;
     const cell = Math.round(vh * 0.9);
+    const n = dataset.x.length;
+    const stagger = Math.min(160, 1000 / n); // the whole chart builds in about a second, however many bars
 
     const series = spec.series.map((name, i) => {
       const values = dataset.series[name];
       if (spec.type === 'stackedBar') {
         // ECharts can't stack pictorial bars, so stacked charts use plain bars in the same colours.
         const color = i === 0 ? GREEN : ['#4a5045', '#6b7166', '#8d9388', '#b4b9ae'][(i - 1) % 4];
-        return { name, type: 'bar', stack: 'total', data: values, barCategoryGap: '28%', itemStyle: { color }, animationDuration: 1600, animationDelay: (j: number) => j * 120 };
+        return { name, type: 'bar', stack: 'total', data: values, barCategoryGap: '28%', itemStyle: { color }, animationDuration: 1600, animationDelay: (j: number) => j * stagger };
       }
       if (isBar) {
         // Bars are stacks of cores, matching the stage background.
@@ -39,12 +41,12 @@ export function Chart({ spec, dataset }: { spec: NonNullable<Slide['chart']>; da
           symbolClip: true,
           barCategoryGap: '28%',
           animationDuration: 1600,
-          animationDelay: (j: number) => j * 160,
+          animationDelay: (j: number) => j * stagger,
           data: values.map((v, j) => ({
             value: v,
             itemStyle: { color: spec.series.length > 1 ? (i === 0 ? GREEN : OTHERS[i - 1]) : j === hiIdx ? GREEN : DIM_GREEN },
             label: {
-              show: spec.series.length === 1,
+              show: spec.series.length === 1 && (n <= 8 || j === hiIdx), // long series: label only the highlight
               position: 'top',
               distance: vh,
               formatter: () => (v == null ? '' : fmt(v)),
@@ -66,7 +68,7 @@ export function Chart({ spec, dataset }: { spec: NonNullable<Slide['chart']>; da
         animationDuration: 2400,
         animationEasing: 'linear',
         // Direct labels at the line ends instead of a legend.
-        endLabel: { show: true, formatter: '{a}', color, fontSize: vh * 1.9, fontFamily: FONT, fontWeight: i === 0 ? 650 : 450, distance: vh },
+        endLabel: { show: true, formatter: '{a}', color, fontSize: vh * 2.2, fontFamily: FONT, fontWeight: i === 0 ? 650 : 450, distance: vh },
         markPoint:
           i === 0 && hiIdx >= 0
             ? {
@@ -84,32 +86,35 @@ export function Chart({ spec, dataset }: { spec: NonNullable<Slide['chart']>; da
       backgroundColor: 'transparent',
       textStyle: { fontFamily: FONT },
       grid: { left: 0, right: isBar ? 0 : vh * 14, top: vh * 5, bottom: 0, containLabel: true },
-      legend: isBar && spec.series.length > 1 ? { top: 0, left: 0, textStyle: { color: '#b4b9ae', fontSize: vh * 1.8 }, icon: 'rect' } : undefined,
+      legend: isBar && spec.series.length > 1 ? { top: 0, left: 0, textStyle: { color: '#b4b9ae', fontSize: vh * 2 }, icon: 'rect' } : undefined,
       xAxis: {
         type: 'category',
         data: dataset.x,
         boundaryGap: isBar,
         axisLine: { show: !isBar, lineStyle: { color: '#262a23' } },
         axisTick: { show: false },
-        axisLabel: { color: FAINT, fontSize: vh * 1.6, margin: vh * 1.4, interval: isBar ? 0 : 'auto' },
+        axisLabel: { color: FAINT, fontSize: vh * 2, margin: vh * 1.4, interval: isBar && n <= 14 ? 0 : 'auto' },
       },
       yAxis: {
         type: 'value',
         show: !isBar,
         splitNumber: 3,
         splitLine: { lineStyle: { color: '#1b1f19' } },
-        axisLabel: { color: FAINT, fontSize: vh * 1.5 },
+        axisLabel: { color: FAINT, fontSize: vh * 1.9 },
       },
-      series,
+      // The highlight's label isn't animated by ECharts, so add the highlight once the line has drawn.
+      series: series.map((s) => ({ ...s, markPoint: undefined })),
     });
+    const highlight = setTimeout(() => chart.setOption({ series }), 2400);
 
     const onResize = () => chart.resize();
     window.addEventListener('resize', onResize);
     return () => {
+      clearTimeout(highlight);
       window.removeEventListener('resize', onResize);
       chart.dispose();
     };
-  }, [spec, dataset]);
+  }, [JSON.stringify(spec), dataset.key]); // every server broadcast sends a fresh (equal) spec object; only redraw when it really changes
 
   return <div ref={el} style={{ width: '100%', height: '100%' }} />;
 }

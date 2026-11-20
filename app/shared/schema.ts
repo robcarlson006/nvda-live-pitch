@@ -36,6 +36,8 @@ export function formatValue(v: number, unit: string): string {
   if (unit === '%') return `${v.toFixed(1)}%`;
   if (unit === 'USD') return `$${v.toFixed(2)}`;
   if (unit === 'x') return `${v.toFixed(1)}x`;
+  if (unit === "'000 t CO2e") return v >= 1000 ? `${(v / 1000).toFixed(1)}m t CO2e` : `${Math.round(v)}k t CO2e`;
+  if (unit === "'000 MWh") return `${Math.round(v).toLocaleString('en-GB')} GWh`;
   return `${v.toLocaleString('en-GB')} ${unit}`;
 }
 
