@@ -2,7 +2,7 @@
   "key": "model_valuation",
   "title": "What one NVIDIA share is worth",
   "unit": "USD",
-  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. WACC 12%, terminal growth 3%",
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. WACC 19.3%, terminal growth 3%",
   "asOf": "2026-11-20",
   "placeholder": false,
   "x": [
@@ -15,9 +15,9 @@
   "series": {
     "Value per share": [
       135.46,
-      54.52,
-      323.72,
-      359.22,
+      31.4,
+      167.5,
+      185.74,
       297.49
     ]
   }

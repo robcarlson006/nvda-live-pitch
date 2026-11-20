@@ -57,6 +57,21 @@ cd app && npm install && npm run dev
     The price implies 13.1% a year revenue growth FY28–FY32, vs 35.6% in the consensus-based base case. Even at Bloomberg's 19.3% WACC, the base case is $167.50.
   - Tests: 8, including spot checks against values read from the PDFs, a DCF closed-form check and a reverse-DCF round trip.
 
+- **Base WACC switched to Bloomberg's 19.3%** (20 Nov): sourced and conservative.
+  - Base case is now $167.50 (+24%), bull $185.74, bear $31.40. The sensitivity table still shows 10–16%.
+  - At 19.3% the reverse DCF gives 32.1% a year priced in, vs 35.6% from consensus, so "the market prices in far less growth" only works at lower discount rates.
+- **M5: scripted spine** (20 Nov)
+  - The whole pitch is in `docs/script/spine.yaml`: 14 draft slides, Rob → Mi'kael → Panshul.
+    - Each slide has cue phrases, a `say` script for the operator, and optional cues on individual bullets/charts so they land as they're spoken.
+    - The server validates it against the data and reloads it on save. A broken edit shows an error on the operator panel and keeps the last good version.
+  - **Cue matcher** (`server/cues.ts`):
+    - Fires when ~75%+ of a cue's meaningful words are heard, tolerating one-letter speech-to-text slips on longer words.
+    - Listens only for the next element and the next two slides.
+    - The buffer clears after each cue. An interim result can fire, and its final copy is then ignored.
+  - **Operator panel:** current slide, speaker script, what it's waiting for, Next/Back/Standby, a "Follow speech" toggle, and a box to type speech for testing cues before the mic exists. Click any script row to jump to it.
+  - Keys work on both screens: → / Space / PageDown next, ← / PageUp back. A USB clicker works without any setup.
+  - Tests: 11, covering element stepping, forward-only cues, typo tolerance and the interim/final de-duplication.
+
 ## Data received
 - NVDA FA, annual FY1998–FY2026 and quarterly FY24 Q3–FY27 Q3, both including ESG.
 - Peer FA: AMD, INTC, AVGO, TSMC (TSMC in both TWD and USD).
@@ -64,7 +79,8 @@ cd app && npm install && npm run dev
 - Still missing: HP (price history), ANR (analyst targets), SPLC (customers/suppliers), RV. Possibly next week via Excel.
 
 ## Next
-- M5 (script spine), then M4 (listening), M7 (fallback), M6 (Q&A), M8 (finale).
+- M4 (mic → Deepgram → transcript into the same `transcript` message), M7 (fallback), M6 (Q&A), M8 (finale).
+- Team: rewrite `say` and cues in docs/script/spine.yaml in your own words.
 - When the Excel exports arrive (HP, ANR, SPLC): add parsers to `build-data.ts`, then rerun `npm run data`.
 
 ## Risks / open

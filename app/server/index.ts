@@ -1,16 +1,37 @@
+import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { WebSocketServer, WebSocket } from 'ws';
-import type { ServerMsg } from '../shared/schema.ts';
-import { apply, loadDatasets, loadState, saveState } from './state.ts';
+import type { ServerMsg, SpineSlide } from '../shared/schema.ts';
+import { apply, loadDatasets, loadSpine, loadState, saveState, SPINE_FILE } from './state.ts';
 
 const PORT = Number(process.env.PORT ?? 5173);
 const prod = process.env.NODE_ENV === 'production';
 const root = path.resolve(import.meta.dirname, '..');
 
 const datasets = loadDatasets();
+let spine: SpineSlide[] = [];
+let spineError: string | null = null;
 let state = loadState();
 console.log(`[data] ${datasets.size} datasets loaded`);
+
+function reloadSpine() {
+  try {
+    spine = loadSpine(datasets);
+    spineError = null;
+    if (state.index >= spine.length) state = { ...state, index: spine.length - 1 };
+    console.log(`[spine] ${spine.length} slides`);
+  } catch (e) {
+    spineError = (e as Error).message; // keep the last good spine on screen
+    console.warn(`[spine] ${spineError}`);
+  }
+}
+reloadSpine();
+let reloadTimer: NodeJS.Timeout;
+fs.watch(path.dirname(SPINE_FILE), () => {
+  clearTimeout(reloadTimer);
+  reloadTimer = setTimeout(() => (reloadSpine(), broadcast()), 200);
+});
 
 let frontend: http.RequestListener;
 if (prod) {
@@ -23,8 +44,7 @@ if (prod) {
 }
 
 const server = http.createServer((req, res) => {
-  const url = req.url ?? '/';
-  if (url === '/api/datasets') {
+  if (req.url === '/api/datasets') {
     res.setHeader('content-type', 'application/json');
     return res.end(JSON.stringify(Object.fromEntries(datasets)));
   }
@@ -33,7 +53,9 @@ const server = http.createServer((req, res) => {
 
 const wss = new WebSocketServer({ server, path: '/ws' });
 const send = (ws: WebSocket, msg: ServerMsg) => ws.readyState === WebSocket.OPEN && ws.send(JSON.stringify(msg));
-const broadcast = () => wss.clients.forEach((ws) => send(ws, { type: 'state', state, clients: wss.clients.size }));
+function broadcast() {
+  wss.clients.forEach((ws) => send(ws, { type: 'state', state, spine, spineError, clients: wss.clients.size }));
+}
 
 wss.on('connection', (ws) => {
   broadcast(); // new client gets current state; others see the client count change
@@ -44,8 +66,9 @@ wss.on('connection', (ws) => {
     } catch {
       return send(ws, { type: 'error', message: 'Bad JSON' });
     }
-    const next = apply(state, raw, datasets);
+    const next = apply(state, raw, { datasets, spine });
     if (typeof next === 'string') return send(ws, { type: 'error', message: next });
+    if (next === state) return;
     state = next;
     saveState(state);
     broadcast();

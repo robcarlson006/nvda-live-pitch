@@ -51,18 +51,41 @@ export const Dataset = z.object({
 });
 export type Dataset = z.infer<typeof Dataset>;
 
+/** A slide in the scripted spine: a Slide plus the phrases that trigger it and its elements. */
+export const SpineSlide = Slide.extend({
+  cues: z.array(z.coerce.string().min(1)).min(1),
+  say: z.string().optional(),
+  // One per element after the title (bullets in order, then the chart). null = builds straight after the previous one.
+  elementCues: z.array(z.string().nullable()).default([]),
+});
+export type SpineSlide = z.infer<typeof SpineSlide>;
+
+/** Elements build in this order: title (with the figure, for number slides), each bullet, then the chart. */
+export const elementCount = (s: Slide) => 1 + s.bullets.length + (s.chart ? 1 : 0);
+
 export type ShowState = {
+  index: number; // position in the spine; -1 = standby or an ad-hoc slide
   live: Slide | null;
-  liveSince: number; // bumps on every push so the stage replays the build even for the same slide
+  reveal: number; // how many elements of the live slide are on screen
+  liveSince: number; // bumps whenever a new slide goes live, so the stage rebuilds from scratch
   history: Slide[];
+  autoCue: boolean;
+  heard: string; // speech since the last cue fired
+  skipNextFinal: boolean; // an interim result already fired a cue; ignore its final copy
+  lastCue: { phrase: string; target: string; at: number } | null;
 };
 
 export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('push'), slide: Slide }),
   z.object({ type: z.literal('clear') }),
+  z.object({ type: z.literal('next') }),
+  z.object({ type: z.literal('back') }),
+  z.object({ type: z.literal('goto'), index: z.number().int() }),
+  z.object({ type: z.literal('transcript'), text: z.string().max(2000), final: z.boolean() }),
+  z.object({ type: z.literal('autoCue'), on: z.boolean() }),
 ]);
 export type ClientMsg = z.infer<typeof ClientMsg>;
 
 export type ServerMsg =
-  | { type: 'state'; state: ShowState; clients: number }
+  | { type: 'state'; state: ShowState; spine: SpineSlide[]; spineError: string | null; clients: number }
   | { type: 'error'; message: string };

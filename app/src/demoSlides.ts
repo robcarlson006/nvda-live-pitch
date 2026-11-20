@@ -61,7 +61,7 @@ export const demoSlides: Slide[] = [
     speaker: "Mi'kael",
     title: 'Yearly growth the share price assumes, FY28 to FY32',
     bullets: [],
-    stat: { datasetKey: 'model_implied_growth', series: 'Growth per year', x: 'Priced in today', label: 'Our base case, built on analyst consensus: 35.6% a year.' },
+    stat: { datasetKey: 'model_implied_growth', series: 'Growth per year', x: 'Priced in today', label: 'Analyst consensus implies slightly faster growth than that.' },
     sources: [],
   },
   {

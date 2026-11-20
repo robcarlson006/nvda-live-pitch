@@ -1,0 +1,159 @@
+# The scripted spine: the slides in order, and the phrases that trigger them.
+#
+# How it works on the day
+#   - When the mic hears any phrase in `cues`, that slide starts building.
+#   - Bullets and charts build one after another. A bullet or chart with its own `cue` waits until
+#     that phrase is heard, so it lands exactly as you say it. Pressing Next does the same thing.
+#   - Only the next element and the next two slides are listened for, so a stray phrase can't jump the deck.
+#
+# Writing good cues
+#   - 2–5 distinctive words you will definitely say, e.g. "released cuda". Avoid common words alone.
+#   - Give 2–3 alternatives per slide in case you phrase it differently on the day.
+#   - Numbers: write them as words AND digits ("nineteen ninety three", "1993"); speech-to-text varies.
+#
+# Data rules
+#   - Charts and big numbers name a dataset in data/clean/. The numbers are always looked up, never typed.
+#   - `say` is your script for the operator screen. It is never shown to the board.
+#
+# DRAFT by Claude, 20 Nov 2026. Rob, Mi'kael and Panshul: rewrite `say` in your own words, then fix the cues to match.
+
+- id: hook
+  speaker: Rob
+  cues: [good afternoon, built live, we are pitching nvidia]
+  layout: statement
+  title: This presentation is being built live, as we speak.
+  say: Good afternoon. We're pitching NVIDIA. Before we start, watch the screen. Nothing on it existed a minute ago.
+
+- id: founding
+  speaker: Rob
+  cues: [nineteen ninety three, "1993", three engineers]
+  layout: statement
+  title: In 1993, three engineers bet that graphics would become computing.
+  say: In 1993 three engineers started a company in a Denny's in California, betting that graphics chips would one day do far more than games.
+  sources: [NVIDIA company history, nvidia.com]
+
+- id: cuda
+  speaker: Rob
+  cues: [released cuda, called cuda, "2006"]
+  layout: statement
+  title: "2006: CUDA lets anyone program a graphics chip."
+  bullets:
+    - text: Thousands of small cores working in parallel, not one fast core
+      cue: in parallel
+    - text: Scientists, then AI researchers, start building on it
+      cue: researchers
+  say: In 2006 they released CUDA. It let anyone program a graphics chip, thousands of small cores working in parallel. Scientists, and then AI researchers, started building on it.
+  sources: [NVIDIA CUDA documentation]
+
+- id: alexnet
+  speaker: Rob
+  cues: [alexnet, alex net, "2012", deep learning]
+  layout: statement
+  title: "2012: AlexNet is trained on two NVIDIA gaming cards. Modern AI begins."
+  say: In 2012 a neural network called AlexNet, trained on two NVIDIA gaming cards, won the ImageNet competition by a mile. That was the start of modern AI, and it ran on NVIDIA.
+  sources: [Krizhevsky, Sutskever & Hinton (2012), ImageNet Classification with Deep Convolutional Neural Networks]
+
+- id: revenue-long
+  speaker: Rob
+  cues: [look at the revenue, what that did to revenue, twenty seven years]
+  layout: chart
+  title: Twenty-seven years of revenue. Watch the last three.
+  chart: { type: bar, datasetKey: nvda_revenue_annual, series: [Revenue], highlight: FY26 }
+  say: Here is what that bet did to revenue. Twenty-seven years. Watch the last three. Mi'kael will tell you whether that is sustainable.
+
+- id: last-quarter
+  speaker: Mi'kael
+  cues: [last quarter, three months, single quarter]
+  layout: number
+  title: Revenue in a single quarter
+  stat: { datasetKey: nvda_revenue_quarterly, series: Revenue, x: FY27 Q3, label: Three months to 25 October 2026. Preliminary figure. }
+  say: In the three months to October, NVIDIA's revenue was this. In one quarter.
+
+- id: beats
+  speaker: Mi'kael
+  cues: [beaten, beat expectations, every quarter]
+  layout: split
+  title: Revenue has beaten consensus thirteen quarters running
+  bullets:
+    - text: The grey line is what analysts expected
+      cue: analysts expected
+    - text: The green line is what NVIDIA delivered
+      cue: delivered
+  chart: { type: line, datasetKey: nvda_revenue_quarterly, series: [Revenue, Consensus], highlight: FY27 Q3 }
+  say: And it isn't luck. Thirteen quarters in a row, revenue has beaten what analysts expected. Grey is what analysts expected. Green is what NVIDIA delivered.
+
+- id: segments
+  speaker: Mi'kael
+  cues: [data center, where the money comes from]
+  layout: chart
+  title: Data Center became almost the whole company
+  chart: { type: stackedBar, datasetKey: nvda_segments_annual, series: [Data Center, Gaming, Pro Visualization, Automotive, OEM & Other] }
+  say: Where does it come from? Data centres. The chips that train and run AI. Gaming, where NVIDIA started, is now the thin grey band.
+
+- id: peers
+  speaker: Mi'kael
+  cues: [expensive, compared to its peers, price to earnings]
+  layout: split
+  title: The cheapest of the five on this year's expected earnings
+  bullets:
+    - text: Forward P/E on the fiscal year ending around January 2027
+    - text: The share price has fallen since the CEO resigned; the earnings forecasts haven't
+      cue: forecasts
+  chart: { type: bar, datasetKey: peers_pe, series: [Forward P/E], highlight: NVIDIA }
+  say: You might think it's expensive. On this year's expected earnings it's the cheapest of the five big chip companies. The share price has fallen since the CEO resigned. The earnings forecasts haven't.
+
+- id: valuation
+  speaker: Mi'kael
+  cues: [what is it worth, our valuation, discounted cash flow]
+  layout: chart
+  title: Even on Bloomberg's own cautious discount rate, the shares are worth more
+  chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Base case }
+  say: We built a five-year cash-flow model, using Bloomberg's own discount rate, which is very cautious. Our base case uses analysts' forecasts. Even our bear case, where AI spending pauses, is on the chart.
+
+- id: governance
+  speaker: Panshul
+  cues: [governance, chief executive, the ceo]
+  layout: statement
+  title: The first ESG question is governance.
+  bullets:
+    - text: Jensen Huang resigned as CEO on 12 November 2026
+    - text: CFO Colette Kress is interim CEO; the board has appointed its first-ever chair
+      cue: interim
+    - text: SEC and California investigations have been reported
+      cue: investigation
+  say: Let's start with the hard one. Governance. The founder resigned last week. VERIFY these facts against a major news source on the morning of the pitch.
+  sources: [CNBC, 12 Nov 2026; NBC News, Nov 2026]
+
+- id: renewables
+  speaker: Panshul
+  cues: [renewable, own operations]
+  layout: split
+  title: NVIDIA's own operations now run on renewable energy
+  bullets:
+    - text: Up from about a third in FY18
+  chart: { type: line, datasetKey: nvda_renewable_share, series: [Renewable], highlight: FY26 }
+  say: Environment. NVIDIA's own operations now run on renewable energy, up from about a third in 2018.
+
+- id: scope3
+  speaker: Panshul
+  cues: [supply chain, scope three, scope 3]
+  layout: split
+  title: The harder number is the supply chain
+  bullets:
+    - text: Most emissions come from making the chips, at partners like TSMC
+    - text: They are rising as output rises
+      cue: rising
+  chart: { type: line, datasetKey: nvda_emissions, series: [Scope 3], highlight: FY26 }
+  say: But the honest number is the supply chain, Scope 3. Most emissions come from manufacturing at partners like TSMC, and they rise as NVIDIA sells more.
+
+- id: close
+  speaker: Rob
+  cues: [built and run by ai, everything you just watched]
+  layout: statement
+  title: Everything you just watched was built and run by AI.
+  bullets:
+    - text: That AI runs on infrastructure NVIDIA built.
+      cue: infrastructure
+    - text: If three students can do this for a stock pitch, imagine what the world's companies are doing.
+      cue: imagine
+  say: Everything you just watched was built and run by AI. That AI runs on infrastructure NVIDIA built. If three university students can do this for a stock pitch, imagine what the world's companies are doing.

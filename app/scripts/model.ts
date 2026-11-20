@@ -79,7 +79,7 @@ function main() {
 
   const years = ['FY28', 'FY29', 'FY30', 'FY31', 'FY32'];
   const t = years.map((y) => (Date.UTC(2000 + Number(y.slice(2)), 0, 31) - Date.parse(valuationDate)) / (365.25 * 864e5));
-  const wacc: number = A.wacc.value;
+  const wacc: number = A.wacc.value === 'bloomberg' ? bbgWacc : A.wacc.value;
   const g: number = A.terminalGrowth.value;
 
   const scenarioPath = (s: { fy28: string; growth?: number[] }) => {
@@ -142,7 +142,7 @@ function main() {
   L.push(['FY27 revenue consensus (USD bn)', rev27, 'Bloomberg FA consensus']);
   L.push(['FY28 revenue consensus (USD bn)', rev28, 'Bloomberg FA consensus']);
   L.push(['Base FCF margin (%)', r2(baseMargin * 100), `Average of ${marginYears.join(', ')} (Bloomberg FA)`]);
-  L.push(['WACC (%)', wacc, `Team assumption. Bloomberg WACC = ${bbgWacc}%`]);
+  L.push(['WACC (%)', wacc, A.wacc.value === 'bloomberg' ? 'Bloomberg WACC screen, 20 Nov 2026' : `Team assumption. Bloomberg WACC = ${bbgWacc}%`]);
   L.push(['Terminal growth (%)', g, 'Team assumption']);
   L.push(['FY27 EPS consensus (USD)', eps27, 'Bloomberg DES']);
   for (const [n, r] of Object.entries(results)) {

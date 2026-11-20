@@ -1,13 +1,12 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { formatValue, type Dataset, type Slide } from '../shared/schema.ts';
 import { Chart } from './Chart.tsx';
 import { CoreArray } from './CoreArray.tsx';
-import { useDatasets, useShow } from './useShow.ts';
+import { useDatasets, useNavKeys, useShow } from './useShow.ts';
 
-// Everything is revealed by the same left-to-right compute pass the core array runs.
+// Elements revealed together come in one after another, this far apart (seconds).
+const GAP = 0.7;
 const TITLE_AT = 0.25;
-const POINTS_AT = 1.2;
-const POINT_GAP = 0.7;
 
 function statValue(slide: Slide, datasets: Record<string, Dataset>): string | undefined {
   const s = slide.stat;
@@ -18,8 +17,9 @@ function statValue(slide: Slide, datasets: Record<string, Dataset>): string | un
 }
 
 export function Stage() {
-  const { state } = useShow();
+  const { state, send } = useShow();
   const datasets = useDatasets();
+  useNavKeys(send);
   const slide = state?.live ?? null;
   const glyph = slide ? (slide.layout === 'number' ? statValue(slide, datasets) : undefined) : 'NVIDIA';
 
@@ -34,42 +34,78 @@ export function Stage() {
   return (
     <div className="stage">
       <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} />
-      {slide && <SlideView key={state!.liveSince} slide={slide} datasets={datasets} figure={glyph} />}
+      {slide && <SlideView key={state!.liveSince} slide={slide} reveal={state!.reveal} datasets={datasets} figure={glyph} />}
     </div>
   );
 }
 
+/** Animates in once, when first mounted; the delay is fixed at mount so later re-renders never replay it. */
 function Reveal({ at, children, className, as: Tag = 'div' }: { at: number; children: ReactNode; className?: string; as?: 'div' | 'h1' | 'p' }) {
+  const [delay] = useState(at);
   return (
-    <Tag className={`reveal ${className ?? ''}`} style={{ '--at': `${at}s` } as CSSProperties}>
+    <Tag className={`reveal ${className ?? ''}`} style={{ '--at': `${delay}s` } as CSSProperties}>
       {children}
     </Tag>
   );
 }
 
-function SlideView({ slide, datasets, figure }: { slide: Slide; datasets: Record<string, Dataset>; figure?: string }) {
+function Delayed({ at, children }: { at: number; children: ReactNode }) {
+  const [ready, setReady] = useState(at <= 0);
+  useEffect(() => {
+    const t = setTimeout(() => setReady(true), at * 1000);
+    return () => clearTimeout(t);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  return ready ? <>{children}</> : null;
+}
+
+function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: number; datasets: Record<string, Dataset>; figure?: string }) {
+  // Elements: 0 = title, 1..n = bullets, n+1 = chart. Those revealed in the same step are staggered.
+  const prev = useRef(0);
+  const batchStart = prev.current;
+  useEffect(() => {
+    prev.current = reveal;
+  });
+  const at = (k: number) => (batchStart === 0 ? (k === 0 ? TITLE_AT : 0.5 + k * GAP) : 0.1 + (k - batchStart) * GAP);
+  const shown = (k: number) => k < reveal;
+
   const dataset = slide.chart ? datasets[slide.chart.datasetKey] : undefined;
   const statDs = slide.stat ? datasets[slide.stat.datasetKey] : undefined;
-  const chartAt = POINTS_AT + slide.bullets.length * POINT_GAP;
+  const chartIdx = 1 + slide.bullets.length;
   const sources = [...new Set([...slide.sources, ...[dataset, statDs].filter(Boolean).map((d) => `${d!.source}, as of ${d!.asOf}`)])];
-  const [chartReady, setChartReady] = useState(false);
 
-  useEffect(() => {
-    const t = setTimeout(() => setChartReady(true), chartAt * 1000);
-    return () => clearTimeout(t);
-  }, [chartAt]);
-
-  const points = slide.bullets.map((b, i) => (
-    <Reveal key={i} as="p" className="point" at={POINTS_AT + i * POINT_GAP}>
-      {b}
+  const title = slide.layout === 'statement' ? (
+    <h1 className="statement">
+      {slide.title.split(' ').map((w, i) => (
+        <span key={i}>
+          <span className="word" style={{ '--at': `${TITLE_AT + i * 0.09}s` } as CSSProperties}>
+            {w}
+          </span>{' '}
+        </span>
+      ))}
+    </h1>
+  ) : (
+    <Reveal as="h1" at={slide.layout === 'number' ? 1.3 : TITLE_AT}>
+      {slide.title}
     </Reveal>
-  ));
+  );
+
+  const points = (
+    <div className="points">
+      {slide.bullets.map((b, i) =>
+        shown(i + 1) ? (
+          <Reveal key={i} as="p" className="point" at={at(i + 1)}>
+            {b}
+          </Reveal>
+        ) : null,
+      )}
+    </div>
+  );
 
   const chart = slide.chart && (
     <figure className="chart">
-      {dataset ? (
-        chartReady && (
-          <>
+      {shown(chartIdx) &&
+        (dataset ? (
+          <Delayed at={at(chartIdx)}>
             <figcaption>
               {dataset.title}, {dataset.unit}
               {dataset.placeholder && <span className="placeholder">Placeholder data</span>}
@@ -77,11 +113,10 @@ function SlideView({ slide, datasets, figure }: { slide: Slide; datasets: Record
             <div className="chart-body">
               <Chart spec={slide.chart} dataset={dataset} />
             </div>
-          </>
-        )
-      ) : (
-        <figcaption>No data loaded for this chart yet</figcaption>
-      )}
+          </Delayed>
+        ) : (
+          <figcaption>No data loaded for this chart yet</figcaption>
+        ))}
     </figure>
   );
 
@@ -89,26 +124,15 @@ function SlideView({ slide, datasets, figure }: { slide: Slide; datasets: Record
     <main className={`slide layout-${slide.layout}`}>
       {slide.layout === 'statement' && (
         <>
-          <h1 className="statement">
-            {slide.title.split(' ').map((w, i) => (
-              <span key={i}>
-                <span className="word" style={{ '--at': `${TITLE_AT + i * 0.09}s` } as CSSProperties}>
-                  {w}
-                </span>{' '}
-              </span>
-            ))}
-          </h1>
-          <div className="points">{points}</div>
+          {title}
+          {points}
         </>
       )}
-
       {slide.layout === 'number' && (
         <>
           <span className="sr-only">{figure}</span>
           <div className="number-text">
-            <Reveal as="h1" at={1.3}>
-              {slide.title}
-            </Reveal>
+            {title}
             {slide.stat && (
               <Reveal as="p" className="point" at={1.7}>
                 {slide.stat.label}
@@ -117,31 +141,24 @@ function SlideView({ slide, datasets, figure }: { slide: Slide; datasets: Record
           </div>
         </>
       )}
-
       {slide.layout === 'split' && (
         <>
           <div className="text">
-            <Reveal as="h1" at={TITLE_AT}>
-              {slide.title}
-            </Reveal>
-            <div className="points">{points}</div>
+            {title}
+            {points}
           </div>
           {chart}
         </>
       )}
-
       {slide.layout === 'chart' && (
         <>
-          <Reveal as="h1" at={TITLE_AT}>
-            {slide.title}
-          </Reveal>
-          <div className="points">{points}</div>
+          {title}
+          {points}
           {chart}
         </>
       )}
-
       {sources.length > 0 && (
-        <Reveal className="sources" at={Math.max(chartAt, 1.8) + 0.6}>
+        <Reveal className="sources" at={2.2}>
           Source: {sources.join('; ')}
         </Reveal>
       )}
