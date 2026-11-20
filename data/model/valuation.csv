@@ -1,0 +1,65 @@
+NVIDIA valuation model,valuation date 2026-11-20
+
+INPUT,VALUE,SOURCE
+Share price (USD),135.46,Bloomberg DES 20 Nov 2026
+Shares outstanding (bn),24.1,Bloomberg DES
+Net cash (USD bn),59.6,Bloomberg DES: market cap minus enterprise value
+FY26 revenue (USD bn),215.938,Bloomberg FA
+FY27 revenue consensus (USD bn),422.222,Bloomberg FA consensus
+FY28 revenue consensus (USD bn),728.636,Bloomberg FA consensus
+Base FCF margin (%),45.25,"Average of FY24, FY25, FY26 (Bloomberg FA)"
+WACC (%),12,Team assumption. Bloomberg WACC = 19.3%
+Terminal growth (%),3,Team assumption
+FY27 EPS consensus (USD),9.64,Bloomberg DES
+
+"SCENARIO: Base: analysts are right, then growth slows"
+,FY28,FY29,FY30,FY31,FY32
+Revenue (USD bn),728.64,1130.69,1557.93,1875.64,1931.91
+Growth (%),72.57,55.18,37.79,20.39,3
+FCF margin (%),45.25,45.25,45.25,45.25,45.25
+Free cash flow (USD bn),329.72,511.66,704.99,848.76,874.22
+Years from valuation date,1.2,2.2,3.2,4.2,5.2
+Present value (USD bn),287.91,398.82,490.67,527.49,485.14
+Terminal value at FY32 (USD bn),10004.99
+PV of terminal value (USD bn),5552.11
+Enterprise value (USD bn),7742.14
++ Net cash = equity value (USD bn),7801.74
+Value per share (USD) [base],323.72
+
+"SCENARIO: Bull: consensus, with fatter margins"
+,FY28,FY29,FY30,FY31,FY32
+Revenue (USD bn),728.64,1130.69,1557.93,1875.64,1931.91
+Growth (%),72.57,55.18,37.79,20.39,3
+FCF margin (%),50.25,50.25,50.25,50.25,50.25
+Free cash flow (USD bn),366.15,568.19,782.89,942.54,970.82
+Years from valuation date,1.2,2.2,3.2,4.2,5.2
+Present value (USD bn),319.72,442.88,544.89,585.77,538.74
+Terminal value at FY32 (USD bn),11110.47
+PV of terminal value (USD bn),6165.58
+Enterprise value (USD bn),8597.59
++ Net cash = equity value (USD bn),8657.19
+Value per share (USD) [bull],359.22
+
+SCENARIO: Bear: AI spending pauses
+,FY28,FY29,FY30,FY31,FY32
+Revenue (USD bn),422.22,337.78,337.78,347.91,358.35
+Growth (%),0,-20,0,3,3
+FCF margin (%),35.25,35.25,35.25,35.25,35.25
+Free cash flow (USD bn),148.84,119.07,119.07,122.64,126.32
+Years from valuation date,1.2,2.2,3.2,4.2,5.2
+Present value (USD bn),129.97,92.81,82.87,76.22,70.1
+Terminal value at FY32 (USD bn),1445.71
+PV of terminal value (USD bn),802.27
+Enterprise value (USD bn),1254.25
++ Net cash = equity value (USD bn),1313.85
+Value per share (USD) [bear],54.52
+
+SENSITIVITY: base value per share,WACC 10%,WACC 12%,WACC 14%,WACC 16%,WACC 19.3%
+Terminal growth 2%,381.03,298.67,244.08,205.33,161.37
+Terminal growth 3%,424.45,323.72,259.94,216.02,167.5
+Terminal growth 4%,482.35,355.04,278.96,228.49,174.44
+
+REVERSE DCF,Growth per year FY28-FY32 priced in at today’s price (%),13.08
+,Base case growth per year FY28-FY32 (%),35.55
+
+PEER CHECK,Median peer forward P/E,30.86,x FY27 EPS,9.64,= USD,297.49

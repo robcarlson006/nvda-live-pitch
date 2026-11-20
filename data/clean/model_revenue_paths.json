@@ -1,0 +1,46 @@
+{
+  "key": "model_revenue_paths",
+  "title": "Revenue paths in the model",
+  "unit": "USD bn",
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. FY27 = consensus",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "FY26",
+    "FY27",
+    "FY28",
+    "FY29",
+    "FY30",
+    "FY31",
+    "FY32"
+  ],
+  "series": {
+    "Bear": [
+      215.94,
+      422.22,
+      422.22,
+      337.78,
+      337.78,
+      347.91,
+      358.35
+    ],
+    "Base": [
+      215.94,
+      422.22,
+      728.64,
+      1130.69,
+      1557.93,
+      1875.64,
+      1931.91
+    ],
+    "Bull": [
+      215.94,
+      422.22,
+      728.64,
+      1130.69,
+      1557.93,
+      1875.64,
+      1931.91
+    ]
+  }
+}

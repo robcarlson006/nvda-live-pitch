@@ -1,0 +1,44 @@
+{
+  "key": "nvda_datacenter_quarterly",
+  "title": "NVIDIA Data Center revenue by quarter",
+  "unit": "USD bn",
+  "source": "Bloomberg FA (PGEO By Segment), NVDA US, quarters",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "FY24 Q1",
+    "FY24 Q2",
+    "FY24 Q3",
+    "FY24 Q4",
+    "FY25 Q1",
+    "FY25 Q2",
+    "FY25 Q3",
+    "FY25 Q4",
+    "FY26 Q1",
+    "FY26 Q2",
+    "FY26 Q3",
+    "FY26 Q4",
+    "FY27 Q1",
+    "FY27 Q2",
+    "FY27 Q3"
+  ],
+  "series": {
+    "Data Center": [
+      4.284,
+      10.323,
+      14.514,
+      18.404,
+      22.563,
+      26.272,
+      30.771,
+      35.58,
+      39.112,
+      41.096,
+      51.215,
+      62.314,
+      75.246,
+      89.023,
+      107.61
+    ]
+  }
+}

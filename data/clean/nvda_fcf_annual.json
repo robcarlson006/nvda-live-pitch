@@ -1,0 +1,38 @@
+{
+  "key": "nvda_fcf_annual",
+  "title": "NVIDIA free cash flow",
+  "unit": "USD bn",
+  "source": "Bloomberg FA (Adj Highlights), NVDA US, annuals",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "FY15",
+    "FY16",
+    "FY17",
+    "FY18",
+    "FY19",
+    "FY20",
+    "FY21",
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": {
+    "Free cash flow": [
+      0.784,
+      1.089,
+      1.496,
+      2.909,
+      3.143,
+      4.272,
+      4.694,
+      8.132,
+      3.808,
+      27.021,
+      60.853,
+      96.676
+    ]
+  }
+}

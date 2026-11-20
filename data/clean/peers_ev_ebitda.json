@@ -1,0 +1,24 @@
+{
+  "key": "peers_ev_ebitda",
+  "title": "Enterprise value / EBITDA, forward",
+  "unit": "x",
+  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD)",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "NVIDIA",
+    "AMD",
+    "Intel",
+    "Broadcom",
+    "TSMC"
+  ],
+  "series": {
+    "EV/EBITDA": [
+      11.42,
+      44.89,
+      13.58,
+      20.77,
+      11.92
+    ]
+  }
+}

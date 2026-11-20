@@ -1,0 +1,24 @@
+{
+  "key": "peers_operating_margin",
+  "title": "Operating margin, this fiscal year (consensus)",
+  "unit": "%",
+  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD)",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "NVIDIA",
+    "AMD",
+    "Intel",
+    "Broadcom",
+    "TSMC"
+  ],
+  "series": {
+    "Operating margin": [
+      65.58,
+      29.05,
+      15.07,
+      66.94,
+      58.83
+    ]
+  }
+}

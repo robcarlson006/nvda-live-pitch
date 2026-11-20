@@ -22,12 +22,16 @@ export function Chart({ spec, dataset }: { spec: NonNullable<Slide['chart']>; da
 
     const series = spec.series.map((name, i) => {
       const values = dataset.series[name];
+      if (spec.type === 'stackedBar') {
+        // ECharts can't stack pictorial bars, so stacked charts use plain bars in the same colours.
+        const color = i === 0 ? GREEN : ['#4a5045', '#6b7166', '#8d9388', '#b4b9ae'][(i - 1) % 4];
+        return { name, type: 'bar', stack: 'total', data: values, barCategoryGap: '28%', itemStyle: { color }, animationDuration: 1600, animationDelay: (j: number) => j * 120 };
+      }
       if (isBar) {
         // Bars are stacks of cores, matching the stage background.
         return {
           name,
           type: 'pictorialBar',
-          stack: spec.type === 'stackedBar' ? 'total' : undefined,
           symbol: 'rect',
           symbolRepeat: true,
           symbolSize: ['100%', cell],

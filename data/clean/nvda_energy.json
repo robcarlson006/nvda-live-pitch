@@ -1,0 +1,55 @@
+{
+  "key": "nvda_energy",
+  "title": "NVIDIA energy use",
+  "unit": "'000 MWh",
+  "source": "Bloomberg FA (ESG Environmental), NVDA US, annuals",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "FY14",
+    "FY15",
+    "FY16",
+    "FY17",
+    "FY18",
+    "FY19",
+    "FY20",
+    "FY21",
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": {
+    "Total energy": [
+      128.97,
+      135.04,
+      131.32,
+      139.85,
+      154.09,
+      197.07,
+      245.09,
+      328.38,
+      425,
+      482.15,
+      593.95,
+      815.86,
+      1053.48
+    ],
+    "Renewable energy": [
+      34.79,
+      36.21,
+      32.84,
+      35.47,
+      52.03,
+      89.02,
+      79.18,
+      78.4,
+      153.4,
+      193.46,
+      451.4,
+      815.86,
+      1053.48
+    ]
+  }
+}

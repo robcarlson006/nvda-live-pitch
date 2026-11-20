@@ -33,6 +33,30 @@ cd app && npm install && npm run dev
     Bar charts are stacks of cores; line charts are labelled directly at the line ends instead of with a legend.
   - Text reveals in steps, like a pass over the cores, rather than soft fades.
 
+- **M2: data pipeline + valuation model** (20 Nov)
+  - `npm run data` turns every raw PDF into clean datasets, then runs the valuation model. The parser is `app/scripts/fa-parse.ts`; it uses `pdftotext` from poppler, which is installed via Homebrew.
+  - **23 datasets** in `data/clean/`, each with its source and Bloomberg export date:
+    - **Revenue:** 27-year revenue, consensus forecast to FY28, quarterly revenue/EPS vs consensus, Data Center by quarter, and revenue by market.
+    - **Profitability and valuation history:** margins, free cash flow, and P/E history.
+    - **ESG:** emissions (Scope 1/2/3), energy use and renewable share.
+    - **Peers (NVIDIA, AMD, Intel, Broadcom, TSMC):** P/E, EV/EBITDA, EPS growth, PEG, operating margin, and emissions intensity.
+  - **Model** (`app/scripts/model.ts`; choices in `data/model/assumptions.json`; full workings in `data/model/valuation.csv` for Excel):
+    - 5-year free-cash-flow DCF (FY28–FY32), base/bull/bear scenarios.
+    - Sensitivity table: discount rate 10–19.3% × terminal growth 2–4%.
+    - Reverse DCF.
+    - Peer forward-P/E cross-check.
+  - **Results at $135.46, WACC 12%, terminal growth 3%:**
+
+    | Case | Value per share |
+    |---|---|
+    | Base | $323.72 |
+    | Bull | $359.22 |
+    | Bear | $54.52 |
+    | Peer P/E check | $297.49 |
+
+    The price implies 13.1% a year revenue growth FY28–FY32, vs 35.6% in the consensus-based base case. Even at Bloomberg's 19.3% WACC, the base case is $167.50.
+  - Tests: 8, including spot checks against values read from the PDFs, a DCF closed-form check and a reverse-DCF round trip.
+
 ## Data received
 - NVDA FA, annual FY1998–FY2026 and quarterly FY24 Q3–FY27 Q3, both including ESG.
 - Peer FA: AMD, INTC, AVGO, TSMC (TSMC in both TWD and USD).
@@ -40,15 +64,14 @@ cd app && npm install && npm run dev
 - Still missing: HP (price history), ANR (analyst targets), SPLC (customers/suppliers), RV. Possibly next week via Excel.
 
 ## Next
-- **M2:** PDF → clean datasets script, plus the valuation model:
-  - peer multiples / PEG
-  - 5-year DCF
-  - bull / base / bear scenarios
-  - sensitivity table
-  - reverse DCF
-- Then M5 (script spine), M4 (listening), M7 (fallback), M6 (Q&A), M8 (finale).
+- M5 (script spine), then M4 (listening), M7 (fallback), M6 (Q&A), M8 (finale).
+- When the Excel exports arrive (HP, ANR, SPLC): add parsers to `build-data.ts`, then rerun `npm run data`.
 
 ## Risks / open
+- **The model's WACC (12%) and the scenario choices are team assumptions.** Mi'kael must own them and be able to defend them (see assumptions.json).
+- **Scope 3 (supply chain) emissions rose from 6.9 to 10.7 million t CO2e in FY26.** Own operations are on 100% renewable energy, but the ESG board will see Scope 3.
+- **Emissions per $ of revenue flatters NVIDIA vs TSMC/Intel,** because NVIDIA doesn't own factories: its manufacturing emissions are in TSMC's numbers and NVIDIA's own Scope 3. Say so if we show it.
+- **Bloomberg ESG score methodology changed in FY22,** so don't chart FY15–21 and FY22–24 scores as one line.
 - **Jensen Huang resigned (12 Nov 2026).** Colette Kress is interim CEO. The stock is at its 52-week low (~$135, P/E ~16). Governance is the obvious first ESG question, so it needs a Q&A-bank slide and possibly a line in the main pitch. Verify with a major outlet before quoting.
 - Bloomberg WACC = 19.3%, far above the typical 9–12%. Show the sensitivity range rather than silently picking one number.
 - The share price will move before Wednesday. The model takes the price as a dated input; update it on the morning of the pitch.

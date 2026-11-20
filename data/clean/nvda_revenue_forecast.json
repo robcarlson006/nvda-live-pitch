@@ -1,0 +1,43 @@
+{
+  "key": "nvda_revenue_forecast",
+  "title": "NVIDIA revenue: actual and analyst consensus",
+  "unit": "USD bn",
+  "source": "Bloomberg FA (Earnings), NVDA US, annuals. FY27–FY28 are consensus estimates",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "FY20",
+    "FY21",
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26",
+    "FY27",
+    "FY28"
+  ],
+  "series": {
+    "Actual": [
+      10.918,
+      16.675,
+      26.914,
+      26.974,
+      60.922,
+      130.497,
+      215.938,
+      null,
+      null
+    ],
+    "Consensus estimate": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      213.763,
+      422.222,
+      728.636
+    ]
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "key": "nvda_margins_annual",
+  "title": "NVIDIA margins",
+  "unit": "%",
+  "source": "Bloomberg FA (Profitability), NVDA US, annuals",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "FY15",
+    "FY16",
+    "FY17",
+    "FY18",
+    "FY19",
+    "FY20",
+    "FY21",
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": {
+    "Gross margin": [
+      55.51,
+      56.11,
+      58.8,
+      59.93,
+      61.21,
+      61.99,
+      62.34,
+      64.93,
+      56.93,
+      72.72,
+      74.99,
+      71.07
+    ],
+    "Operating margin": [
+      16.21,
+      14.91,
+      27.99,
+      33.05,
+      32.47,
+      26.07,
+      27.18,
+      37.31,
+      15.66,
+      54.12,
+      62.42,
+      60.38
+    ]
+  }
+}

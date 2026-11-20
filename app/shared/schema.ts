@@ -34,6 +34,7 @@ export type Slide = z.infer<typeof Slide>;
 export function formatValue(v: number, unit: string): string {
   if (unit === 'USD bn') return `$${v.toFixed(1)}bn`;
   if (unit === '%') return `${v.toFixed(1)}%`;
+  if (unit === 'USD') return `$${v.toFixed(2)}`;
   if (unit === 'x') return `${v.toFixed(1)}x`;
   return `${v.toLocaleString('en-GB')} ${unit}`;
 }

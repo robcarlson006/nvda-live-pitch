@@ -1,0 +1,38 @@
+{
+  "key": "nvda_pe_history",
+  "title": "NVIDIA price/earnings at each fiscal year end",
+  "unit": "x",
+  "source": "Bloomberg FA (Multiples), NVDA US, annuals",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "FY15",
+    "FY16",
+    "FY17",
+    "FY18",
+    "FY19",
+    "FY20",
+    "FY21",
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": {
+    "P/E": [
+      18.86,
+      21.56,
+      42.97,
+      52.74,
+      26.51,
+      54.62,
+      64.06,
+      57.38,
+      83.31,
+      50.73,
+      48.6,
+      43.03
+    ]
+  }
+}

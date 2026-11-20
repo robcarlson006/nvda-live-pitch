@@ -1,0 +1,43 @@
+{
+  "_readme": "Team-owned valuation assumptions. Edit a value, then run `npm run data` in app/. Every number here is a choice we must be able to defend; data-driven inputs (revenue, consensus, free cash flow, price, shares, net cash) come from Bloomberg and are NOT set here.",
+
+  "priceOverride": {
+    "value": null,
+    "why": "Leave null to use the Bloomberg DES price. On pitch morning, set today's price here, e.g. 141.20, and note the time."
+  },
+  "wacc": {
+    "value": 12,
+    "why": "Our discount rate (%). Bloomberg's WACC screen gives 19.3% (cost of equity 19.4%, a very high beta); typical analyst WACCs for NVIDIA are around 10-13%. We use 12% and show 10-19.3% in the sensitivity table."
+  },
+  "terminalGrowth": {
+    "value": 3,
+    "why": "Long-run growth after FY32 (%), roughly nominal world GDP growth."
+  },
+  "fcfMarginYears": {
+    "value": ["FY24", "FY25", "FY26"],
+    "why": "Base free-cash-flow margin = average of these actual years (Bloomberg)."
+  },
+  "scenarios": {
+    "base": {
+      "label": "Base: analysts are right, then growth slows",
+      "fy28": "consensus",
+      "fadeTo": "terminal",
+      "marginShift": 0,
+      "why": "FY28 revenue = Bloomberg consensus. Growth then fades in a straight line to terminal growth by FY32."
+    },
+    "bull": {
+      "label": "Bull: consensus, with fatter margins",
+      "fy28": "consensus",
+      "fadeTo": "terminal",
+      "marginShift": 5,
+      "why": "Same revenue path as base; free-cash-flow margin 5 points higher (software and networking mix)."
+    },
+    "bear": {
+      "label": "Bear: AI spending pauses",
+      "fy28": "flat",
+      "growth": [-20, 0, 3, 3],
+      "marginShift": -10,
+      "why": "The sceptic's case: FY28 revenue flat on FY27, then a 20% fall in FY29 as cloud companies cut spending, then slow growth. Margin 10 points lower from price competition."
+    }
+  }
+}

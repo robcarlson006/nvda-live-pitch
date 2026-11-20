@@ -1,0 +1,24 @@
+{
+  "key": "peers_emissions_intensity",
+  "title": "Own emissions per $1m of revenue (Scope 1 + 2, market-based)",
+  "unit": "t CO2e per $1m",
+  "source": "Bloomberg FA (ESG Environmental, Adj Highlights), latest fiscal year: NVIDIA FY26, others FY25",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "NVIDIA",
+    "AMD",
+    "Intel",
+    "Broadcom",
+    "TSMC"
+  ],
+  "series": {
+    "Emissions intensity": [
+      0.048,
+      1.241,
+      25.032,
+      2.82,
+      108.743
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "key": "nvda_renewable_share",
+  "title": "Share of NVIDIA energy from renewables",
+  "unit": "%",
+  "source": "Bloomberg FA (ESG Environmental), NVDA US, annuals. Share = renewable ÷ total energy",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "FY14",
+    "FY15",
+    "FY16",
+    "FY17",
+    "FY18",
+    "FY19",
+    "FY20",
+    "FY21",
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": {
+    "Renewable": [
+      26.975,
+      26.814,
+      25.008,
+      25.363,
+      33.766,
+      45.172,
+      32.306,
+      23.875,
+      36.094,
+      40.124,
+      76,
+      100,
+      100
+    ]
+  }
+}

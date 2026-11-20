@@ -1,0 +1,24 @@
+{
+  "key": "peers_growth",
+  "title": "Expected EPS growth next year (consensus)",
+  "unit": "%",
+  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD). Growth from this fiscal year to next",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "NVIDIA",
+    "AMD",
+    "Intel",
+    "Broadcom",
+    "TSMC"
+  ],
+  "series": {
+    "EPS growth": [
+      72.095,
+      119.704,
+      19.463,
+      65.21,
+      34.024
+    ]
+  }
+}
