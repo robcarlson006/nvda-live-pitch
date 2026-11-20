@@ -1,0 +1,13 @@
+{
+  "key": "nvda_revenue_quarterly",
+  "title": "NVIDIA quarterly revenue vs consensus",
+  "unit": "USD bn",
+  "source": "Bloomberg FA (Earnings template), NVDA US Equity, quarterly. FY27 Q3 is preliminary.",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": ["FY24 Q3","FY24 Q4","FY25 Q1","FY25 Q2","FY25 Q3","FY25 Q4","FY26 Q1","FY26 Q2","FY26 Q3","FY26 Q4","FY27 Q1","FY27 Q2","FY27 Q3"],
+  "series": {
+    "Revenue": [18.12, 22.103, 26.044, 30.04, 35.082, 39.331, 44.062, 46.743, 57.006, 68.127, 81.615, 96.221, 115.844],
+    "Consensus": [16.09, 20.40479, 24.69229, 28.81683, 33.26638, 38.24548, 43.28526, 46.23089, 55.18845, 65.91193, 79.16992, 92.36245, 109.33018]
+  }
+}

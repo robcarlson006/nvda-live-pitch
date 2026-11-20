@@ -1,0 +1,10 @@
+{
+  "key": "nvda_revenue_annual",
+  "title": "NVIDIA annual revenue",
+  "unit": "USD bn",
+  "source": "Bloomberg DES, NVDA US Equity (fiscal years ending late January)",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": ["FY22","FY23","FY24","FY25","FY26"],
+  "series": { "Revenue": [26.91, 26.97, 60.92, 130.5, 215.94] }
+}
