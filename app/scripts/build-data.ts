@@ -78,7 +78,9 @@ function add(d: Omit<Dataset, 'placeholder'>) {
   });
   // Bloomberg doesn't print the unit of its water lines, so only the trend is used: withdrawal indexed to FY20.
   const xw = range(20, 26);
-  const water = series(env('Water', 'Total Water Withdrawal'), xw);
+  const waterRow = r.rows.find((w) => w.label === 'Total Water Withdrawal' && w.values.FY20 != null && w.values.FY26 != null); // the export splits this line over two tables
+  if (!waterRow) throw new Error('Total Water Withdrawal FY20–FY26 not found');
+  const water = series(waterRow, xw);
   add({ key: 'nvda_water_index', title: 'NVIDIA water withdrawal, FY20 = 100', unit: '', source: src(r, 'ESG Environmental') + '. Indexed: the export does not print the unit', asOf: r.asOf, x: xw, series: { Withdrawal: water.map((v) => (v == null || !water[0] ? null : Math.round((v / water[0]) * 100))) } });
   const energy = series(env('Energy', 'Total Energy Consumption'), xe);
   const renew = series(env('Energy', 'Renewable Energy Use'), xe);

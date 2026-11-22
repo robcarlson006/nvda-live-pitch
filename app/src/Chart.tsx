@@ -83,7 +83,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
         animationDuration: 2400,
         animationEasing: 'linear',
         // Direct labels at the line ends instead of a legend.
-        endLabel: { show: true, formatter: '{a}', color, fontSize: vh * 2.2, fontFamily: FONT, fontWeight: i === 0 ? 650 : 450, distance: vh },
+        endLabel: { show: i === 0 || Math.abs((values.at(-1) ?? 0) - (dataset.series[spec.series[0]].at(-1) ?? 0)) > 0.04 * Math.max(...spec.series.flatMap((n) => dataset.series[n].map((v) => v ?? 0))), formatter: '{a}', color, fontSize: vh * 2.2, fontFamily: FONT, fontWeight: i === 0 ? 650 : 450, distance: vh },
         markPoint:
           i === 0 && hiIdx >= 0
             ? {

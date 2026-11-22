@@ -16,13 +16,13 @@
   ],
   "series": {
     "Withdrawal": [
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null
+      100,
+      114,
+      137,
+      119,
+      121,
+      130,
+      143
     ]
   }
 }

@@ -4,3 +4,6 @@ e-merge                    1/5 right · late p50 27 · false 2 · tangents 0/0 (
 f-swap                     4/6 right · late p50 22 · false 0 · tangents 0/0 (+0 false) · 26 calls
      missed: 1:software (was connections) | 5:renewables (was scope3)
 [follow] ENOENT: no such file or directory, rename '/Users/robmcarlson/Developer/nvidia-pitch-loop/loop/eval-spend.json.tmp' -> '/Users/robmcarlson/Developer/nvidia-pitc
+a-full                     25/27 right · late p50 20 · false 0 · tangents 2/2 (+1 false) · 198 calls · 2 errors
+     missed: 18:handoff (was superpowers) | 27:built-live (was scope3)
+{"set":"dev","scenarios":3,"accuracy":78.9,"beats":38,"falseJumps":2,"falseJumpsPerRun":0.67,"wordsLateP50":20,"wordsLateP90":31,"tangentHit":"2/2","tangentFalse":1,"latencyP50":961,"latencyP95":1679,"calls":249,"errors":2,"spent":0.1862,"totalSpent":2.417}

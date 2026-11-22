@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { findAnswer, loadBank } from './bank.ts';
-import { loadDatasets } from './state.ts';
+import { loadDatasets, loadSpine } from './state.ts';
 
 const bank = loadBank(loadDatasets());
 
@@ -33,4 +33,10 @@ test('paraphrased board questions find their prepared answer', () => {
 test('off-topic questions never match a prepared answer', () => {
   for (const q of ['what degree are you all doing', 'how long did this take you to build', 'can you go back two slides', 'which microphone are you using', 'what did you have for lunch', 'are you nervous', 'what is the dividend yield', 'who else is in your society', 'how many employees work there', 'what is the weather like in stirling', 'how do interest rates affect the pound', 'what would you buy instead', 'tell me about tesla', 'is the stock listed in london', 'have you met the company'])
     assert.equal(findAnswer(bank, q), null, q);
+});
+
+test('every chart in a prepared answer or script slide has data to draw', () => {
+  const data = loadDatasets();
+  for (const s of [...bank.map((b) => b.slide), ...loadSpine(data)])
+    if (s.chart) for (const n of s.chart.series) assert.ok(data.get(s.chart.datasetKey)!.series[n].some((v) => v != null), `${s.id}: ${n}`);
 });
