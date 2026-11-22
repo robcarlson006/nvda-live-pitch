@@ -1,0 +1,28 @@
+{
+  "key": "nvda_water_index",
+  "title": "NVIDIA water withdrawal, FY20 = 100",
+  "unit": "",
+  "source": "Bloomberg FA (ESG Environmental), NVDA US, annuals. Indexed: the export does not print the unit",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "FY20",
+    "FY21",
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": {
+    "Withdrawal": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  }
+}

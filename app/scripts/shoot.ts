@@ -95,7 +95,7 @@ async function main() {
         await sleep(700);
         await page.screenshot({ path: path.join(out, `${s.id}-b.png`) });
         while (steps() > 0) (srv.send({ type: 'next' }), await sleep(500));
-        await sleep(3400);
+        await sleep(4400);
         await page.screenshot({ path: path.join(out, `${s.id}-c.png`) });
       }
       if (!flag('no-perf')) {
@@ -115,7 +115,7 @@ async function main() {
     if (flag('bank'))
       for (const b of srv.box.bank.filter((b) => !want || want.includes(b.id))) {
         srv.send({ type: 'bank', id: b.id });
-        await sleep(4200);
+        await sleep(6500);
         await page.screenshot({ path: path.join(out, `qa-${b.id}.png`) });
       }
     if (!flag('no-perf')) fs.writeFileSync(path.join(out, 'perf.json'), JSON.stringify(perfOut, null, 1));

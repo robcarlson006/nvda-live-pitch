@@ -19,7 +19,7 @@
   ask: [energy does nvidia, electricity does nvidia, power does nvidia, nvidia energy use, nvidia energy consumption, nvidia power consumption, company energy use, energy does the company]
   slide:
     layout: split
-    title: NVIDIA's own energy use is rising, and now renewable
+    title: NVIDIA's own energy use is rising, matched with renewables
     bullets:
       - "{{nvda_energy | Total energy | FY24}} in FY24; {{nvda_energy | Total energy | FY26}} in FY26"
       - "Renewable share of that: {{nvda_renewable_share | Renewable | FY26}}"
@@ -34,20 +34,21 @@
     title: Scope 3 is the weak point, and it is growing
     bullets:
       - "{{nvda_emissions | Scope 3 | FY24}} in FY24; {{nvda_emissions | Scope 3 | FY26}} in FY26"
-      - Most of it comes from making the chips, at partners like TSMC
-      - "Own operations are far smaller: {{nvda_emissions | Scope 1 | FY26}} direct in FY26"
+      - Most of what is reported comes from making the chips, at partners like TSMC
+      - Electricity used by customers to run the chips is not in this figure
     chart: { type: line, datasetKey: nvda_emissions, series: [Scope 3], highlight: FY26 }
 
 - id: water
   question: How much water does NVIDIA use?
   ask: [water does nvidia, nvidia water use, nvidia water usage, nvidia water consumption, water does the company]
   slide:
-    layout: statement
-    title: We don't have a water figure we can stand behind.
+    layout: split
+    title: Its own water use is rising, and it isn't the whole story
     bullets:
-      - Water is not in the Bloomberg data we exported
-      - It falls mainly on chip factories and on customers' data centres
+      - Our data shows the trend; the export does not print the unit
+      - Chip factories and customers' data centres are not in this figure
       - It is a question we would put to the company before investing
+    chart: { type: bar, datasetKey: nvda_water_index, series: [Withdrawal], highlight: FY26 }
 
 - id: cleaner-than-peers
   question: How does NVIDIA compare with peers on emissions?
@@ -69,7 +70,7 @@
     bullets:
       - Jensen Huang resigned as CEO on 12 November 2026; Colette Kress is interim CEO
       - SEC and California investigations have been reported
-      - The bear case shows what we lose if this goes badly
+      - We have not priced a governance failure; judge it as a separate risk
     sources: ["CNBC, 12 Nov 2026; NBC News, Nov 2026"]
 
 - id: taiwan
@@ -103,7 +104,7 @@
     title: The answer depends heavily on the discount rate
     bullets:
       - "Bloomberg's rate, the one we use: {{model_sensitivity | Terminal growth 3% | 19.3%}} a share"
-      - "At the lowest rate shown: {{model_sensitivity | Terminal growth 3% | 10%}}"
+      - "Across the lower rates shown: from {{model_sensitivity | Terminal growth 3% | 16%}} up to {{model_sensitivity | Terminal growth 3% | 10%}}"
     chart: { type: bar, datasetKey: model_sensitivity, series: ["Terminal growth 3%"], highlight: "19.3%" }
 
 - id: concentration
@@ -116,3 +117,152 @@
       - "Data Center: {{nvda_segments_annual | Data Center | FY26}} of {{nvda_revenue_annual | Revenue | FY26}} in FY26"
       - Our data doesn't break revenue down by customer
     chart: { type: stackedBar, datasetKey: nvda_segments_annual, series: [Data Center, Gaming, Pro Visualization, Automotive], highlight: FY26 }
+
+- id: jevons
+  question: Doesn't efficiency just make demand grow (Jevons paradox)?
+  ask: [jevons, jevons paradox, efficiency makes demand grow, rebound effect, efficiency gains eaten]
+  slide:
+    layout: split
+    title: Yes. So far, demand is outrunning efficiency
+    bullets:
+      - Better chips per watt have not stopped total emissions rising
+      - "Supply chain: {{nvda_emissions | Scope 3 | FY24}} in FY24, {{nvda_emissions | Scope 3 | FY26}} in FY26"
+      - We do not have a forecast of when that turns
+    chart: { type: bar, datasetKey: nvda_emissions, series: [Scope 3], highlight: FY26 }
+
+- id: certificates
+  question: Is the renewable claim real, or just certificates?
+  ask: [renewable certificates, renewable energy certificates, just certificates, greenwashing, green washing, market based, location based]
+  slide:
+    layout: split
+    title: It is matched with certificates, not wired to a wind farm
+    bullets:
+      - "Renewable share of NVIDIA's own energy: {{nvda_renewable_share | Renewable | FY26}}"
+      - Counted on the local grid, its emissions are not zero and are rising
+      - It covers NVIDIA's own sites, not factories or customers
+    chart: { type: line, datasetKey: nvda_renewable_share, series: [Renewable], highlight: FY26 }
+    sources: ["Grid-based emissions: Bloomberg FA (ESG Environmental)"]
+
+- id: esg-mandate
+  question: Why should an ESG fund own this at all?
+  ask: [esg fund own, esg mandate, fit our esg, ethical fund, sustainable portfolio, responsible investors own]
+  slide:
+    layout: statement
+    icons: [scales]
+    title: Own it with conditions, or not at all.
+    bullets:
+      - "For: lowest own emissions per dollar of sales of the five, strong cash"
+      - "Against: rising supply chain emissions and an open governance question"
+      - "Our test: a Scope 3 target, water disclosure and a settled chair"
+    sources: ["Bloomberg FA (ESG Environmental); team judgement"]
+
+- id: engagement
+  question: What would you ask management to change?
+  ask: [engage with management, ask management, engagement plan, vote against, shareholder engagement]
+  slide:
+    layout: statement
+    icons: [chat]
+    title: Four things we would ask for.
+    bullets:
+      - A supply chain emissions target with TSMC, reported every year
+      - Water and grid-based emissions disclosed by site
+      - A permanent chief executive and an independent chair
+    sources: [Team judgement]
+
+- id: average
+  question: Isn't the average of your three cases below today's price?
+  ask: [average of your three, average of the three cases, equal weight your cases, average your scenarios, weight the bear]
+  slide:
+    layout: split
+    title: Yes. Weighted equally, our cases sit below the price
+    bullets:
+      - "Bear {{model_valuation | Value per share | Bear case}}, base {{model_valuation | Value per share | Base case}}, bull {{model_valuation | Value per share | Bull case}}"
+      - "Price: {{model_valuation | Value per share | Share price today}}"
+      - You have to believe base is clearly likelier than bear
+    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Base case }
+
+- id: pause
+  question: What if AI spending pauses?
+  ask: [capex pauses, capex pause, spending pauses, spending slows, hyperscalers cut spending, cut spending, spending stops]
+  slide:
+    layout: split
+    title: Then most of the value goes
+    bullets:
+      - "Our bear case: {{model_valuation | Value per share | Bear case}} a share, against {{model_valuation | Value per share | Share price today}} today"
+      - Sales fall, then barely grow, and margins shrink
+      - That is the risk you are paid to take here
+    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Bear case }
+
+- id: terminal
+  question: Why that terminal growth rate?
+  ask: [terminal growth, terminal value, long run growth, perpetual growth, grow forever]
+  slide:
+    layout: split
+    title: Long-run growth moves the answer less than the rate
+    bullets:
+      - "Lower: {{model_sensitivity | Terminal growth 2% | 19.3%}}. Ours: {{model_sensitivity | Terminal growth 3% | 19.3%}}. Higher: {{model_sensitivity | Terminal growth 4% | 19.3%}}"
+      - Over half of the value comes after our five forecast years
+    chart: { type: bar, datasetKey: model_sensitivity, series: ["Terminal growth 3%"], highlight: "19.3%" }
+
+- id: priced-in
+  question: How much growth is already in the price?
+  ask: [already priced in, growth is priced in, price imply, market pricing in, priced into the shares]
+  slide:
+    layout: split
+    title: The price already assumes strong growth
+    bullets:
+      - "Priced in: {{model_implied_growth | Growth per year | Priced in today}} a year. Our base: {{model_implied_growth | Growth per year | Base case (consensus, then slowing)}}"
+      - The gap is small at Bloomberg's discount rate, so misses hurt
+    chart: { type: bar, datasetKey: model_implied_growth, series: [Growth per year], highlight: Priced in today }
+
+- id: custom-chips
+  question: Won't Google and Amazon's own chips replace NVIDIA?
+  ask: [custom chips, own chips, google tpu, tpus, trainium, in house chips]
+  slide:
+    layout: statement
+    icons: [chip]
+    title: They are the most serious competition.
+    bullets:
+      - Google has built its own chips since 2015
+      - Amazon, Microsoft and Meta are trying too, and still buy NVIDIA
+      - The software is what they have to copy, not just the chip
+    sources: [Team script; company reports]
+
+- id: export
+  question: What about export controls and China?
+  ask: [export controls, export ban, export restrictions, chip ban, sales to china, china revenue]
+  slide:
+    layout: statement
+    icons: [globe]
+    title: China is a risk we have not separately priced.
+    bullets:
+      - The US restricts which AI chips can be sold to China
+      - Our data doesn't split out China sales
+      - Tighter rules would come straight off our forecast
+    sources: [US BIS export controls]
+
+- id: hallucinate
+  question: How do we know the AI didn't make these numbers up?
+  ask: [make these numbers up, made up numbers, hallucinate, hallucination, trust these numbers, trust the ai]
+  slide:
+    layout: statement
+    icons: [shield]
+    title: The AI cannot type a number here.
+    bullets:
+      - It picks a dataset; our code looks the figure up
+      - Any digit the AI writes itself is rejected before it reaches the screen
+      - A person approves each answer, and each has its source
+    sources: ["How this app works: figures come from Bloomberg exports"]
+
+- id: wrong
+  question: What would change your mind?
+  ask: [change your mind, when would you sell, make you sell, what would make you wrong, if you are wrong]
+  slide:
+    layout: statement
+    icons: [target]
+    title: Three things would make us sell.
+    bullets:
+      - Cloud companies cutting AI spending, not just slowing it
+      - Cash margins falling well below our forecast
+      - A governance finding, or no permanent chief executive
+    sources: [Team judgement]

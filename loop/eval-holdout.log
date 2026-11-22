@@ -1,0 +1,18 @@
+c-time-short               10/12 right · late p50 29 · false 3 · tangents 0/0 (+1 false) · 90 calls
+     missed: 7:handoff (was different) | 11:built-live (was valuation)
+     false:  2(cuda): → wall-street [live] | 4(alexnet): → wall-street [live] | 7(handoff): → different [live]
+d-going-back               13/14 right · late p50 16 · false 1 · tangents 0/0 (+0 false) · 100 calls
+     missed: 8:chips (was four-layers)
+     false:  12(supply): → software [live]
+b-no-optional              13/14 right · late p50 19 · false 4 · tangents 0/0 (+0 false) · 152 calls
+     missed: 13:handoff (was beats)
+     false:  5(chips): → four-layers [live] | 12(superpowers): → security [live] | 13(handoff): → last-quarter [live] | 13(handoff): → beats [live]
+e-merged-beats             12/14 right · late p50 37 · false 8 · tangents 0/0 (+1 false) · 124 calls
+     missed: 11:handoff (was beats) | 13:close (was beats)
+     false:  1(first-gpu): → near-bust [live] | 2(wall-street): → cuda [live] | 4(four-layers): → revenue-long [live] | 5(software): → chips [live] | 9(everyday): → already-doing [live] | 10(superpowers): → security [live] | 11(handoff): → last-quarter [live] | 12(beats): → segments [live]
+f-swapped-order            11/14 right · late p50 23 · false 4 · tangents 0/0 (+0 false) · 117 calls
+     missed: 3:four-layers (was chips) | 7:handoff (was last-quarter) | 13:renewables (was scope3)
+     false:  1(cuda): → near-bust [live] | 1(cuda): → first-gpu [live] | 4(software): → chips [live] | 12(scope3): → renewables [live]
+g-fast-with-pauses         10/11 right · late p50 21 · false 2 · tangents 0/0 (+0 false) · 96 calls
+     missed: 10:four-layers (was chips)
+     false:  10(four-layers): → chips [live] | 11(chips): → software [live]

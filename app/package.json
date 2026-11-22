@@ -13,6 +13,7 @@
     "follow-eval": "tsx scripts/follow-eval.ts",
     "xlsx": "tsx scripts/xlsx.ts",
     "xlsx-check": "tsx scripts/xlsx-check.ts",
+    "fallback": "tsx scripts/fallback.ts",
     "check": "bash ../loop/check.sh"
   },
   "dependencies": {

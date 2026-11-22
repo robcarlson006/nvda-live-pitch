@@ -2,7 +2,7 @@
   "key": "peers_pe",
   "title": "Price/earnings: today and on this year’s expected earnings",
   "unit": "x",
-  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD). Forward = fiscal year ending around Dec 2026/Jan 2027",
+  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD). Forward = fiscal year ending Oct 2026 to Jan 2027",
   "asOf": "2026-11-20",
   "placeholder": false,
   "x": [

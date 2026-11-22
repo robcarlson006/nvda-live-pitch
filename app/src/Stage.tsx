@@ -156,7 +156,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
         (dataset ? (
           <Delayed at={at(chartIdx)}>
             <figcaption>
-              {dataset.title}, {dataset.unit}
+              {dataset.title}{dataset.unit && `, ${dataset.unit}`}
               {dataset.placeholder && <span className="placeholder">Placeholder data</span>}
             </figcaption>
             <div className="chart-body">

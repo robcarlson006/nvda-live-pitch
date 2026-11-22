@@ -153,7 +153,7 @@ function main() {
     L.push(['Growth (%)', ...r.path.map((v, k) => r2((v / (k ? r.path[k - 1] : rev27) - 1) * 100))]);
     L.push(['FCF margin (%)', ...years.map(() => r2(r.margin * 100))]);
     L.push(['Free cash flow (USD bn)', ...r.fcf.map(r2)]);
-    L.push(['Years from valuation date', ...t.map(r2)]);
+    L.push(['Years from valuation date', ...t.map((v) => Math.round(v * 1e4) / 1e4)]);
     L.push(['Present value (USD bn)', ...r.pv.map(r2)]);
     L.push(['Terminal value at FY32 (USD bn)', r2(r.tv)]);
     L.push(['PV of terminal value (USD bn)', r2(r.pvTv)]);

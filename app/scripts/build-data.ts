@@ -76,6 +76,10 @@ function add(d: Omit<Dataset, 'placeholder'>) {
     key: 'nvda_emissions', title: 'NVIDIA greenhouse gas emissions', unit: "'000 t CO2e", source: src(r, 'ESG Environmental') + ". Scope 2 is market-based", asOf: r.asOf, x: xe,
     series: { 'Scope 1': series(env('Based', 'GHG Scope 1'), xe), 'Scope 2 (market-based)': series(env('Based', 'GHG Scope 2 Market-Based'), xe), 'Scope 3': series(env('Based', 'GHG Scope 3'), xe) },
   });
+  // Bloomberg doesn't print the unit of its water lines, so only the trend is used: withdrawal indexed to FY20.
+  const xw = range(20, 26);
+  const water = series(env('Water', 'Total Water Withdrawal'), xw);
+  add({ key: 'nvda_water_index', title: 'NVIDIA water withdrawal, FY20 = 100', unit: '', source: src(r, 'ESG Environmental') + '. Indexed: the export does not print the unit', asOf: r.asOf, x: xw, series: { Withdrawal: water.map((v) => (v == null || !water[0] ? null : Math.round((v / water[0]) * 100))) } });
   const energy = series(env('Energy', 'Total Energy Consumption'), xe);
   const renew = series(env('Energy', 'Renewable Energy Use'), xe);
   add({ key: 'nvda_energy', title: 'NVIDIA energy use', unit: "'000 MWh", source: src(r, 'ESG Environmental'), asOf: r.asOf, x: xe, series: { 'Total energy': energy, 'Renewable energy': renew } });
@@ -108,7 +112,7 @@ export const companies: [string, Loaded, string][] = [['NVIDIA', nvdaA, 'FY27'],
     return v == null ? null : round(v);
   });
   const peerSrc = 'Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD)';
-  add({ key: 'peers_pe', title: 'Price/earnings: today and on this year’s expected earnings', unit: 'x', source: peerSrc + '. Forward = fiscal year ending around Dec 2026/Jan 2027', asOf: nvdaA.asOf, x, series: { 'Current P/E': val('P/E', () => 'Current'), 'Forward P/E': val('P/E', (f) => f) } });
+  add({ key: 'peers_pe', title: 'Price/earnings: today and on this year’s expected earnings', unit: 'x', source: peerSrc + '. Forward = fiscal year ending Oct 2026 to Jan 2027', asOf: nvdaA.asOf, x, series: { 'Current P/E': val('P/E', () => 'Current'), 'Forward P/E': val('P/E', (f) => f) } });
   add({ key: 'peers_ev_ebitda', title: 'Enterprise value / EBITDA, forward', unit: 'x', source: peerSrc, asOf: nvdaA.asOf, x, series: { 'EV/EBITDA': val('EV/EBITDA', (f) => f) } });
 
   const rows = companies.map(([, r, fwd]) => {

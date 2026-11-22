@@ -25,14 +25,15 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
   useEffect(() => {
     const chart = echarts.init(el.current!, undefined, { renderer: 'canvas' });
     const vh = Math.min(window.innerHeight, window.innerWidth * 0.5625) / 100; // same unit as --u in styles.css
-    const fmt = (v: number) => formatValue(v, dataset.unit);
+    // A long unit is in the caption already: repeating it on every bar makes labels collide.
+    const fmt = (v: number) => (dataset.unit.length > 12 ? (Math.abs(v) >= 100 ? Math.round(v) : Math.round(v * 10) / 10 || Math.round(v * 100) / 100).toLocaleString('en-GB') : formatValue(v, dataset.unit));
     const isBar = spec.type !== 'line';
     const hiIdx = spec.highlight ? dataset.x.indexOf(spec.highlight) : isBar ? dataset.x.length - 1 : -1;
     const cell = Math.round(vh * 0.9);
     const n = dataset.x.length;
     const price = dataset.x.indexOf('Share price today'); // a valuation chart: everything is judged against the price
     const ref = price >= 0 ? (dataset.series[spec.series[0]]?.[price] ?? null) : null;
-    const barColor = (v: number | null, j: number) => (j === hiIdx ? GREEN : ref == null ? DIM_GREEN : j === price ? '#d9dccf' : v != null && v < ref ? '#c9821b' : DIM_GREEN);
+    const barColor = (v: number | null, j: number) => (ref != null && j === hiIdx && v != null && v < ref && j !== price ? '#f0a22e' : j === hiIdx ? GREEN : ref == null ? DIM_GREEN : j === price ? '#d9dccf' : v != null && v < ref ? '#c9821b' : DIM_GREEN);
     const stagger = Math.min(160, 1000 / n); // the whole chart builds in about a second, however many bars
 
     const series = spec.series.map((name, i) => {
@@ -107,7 +108,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
         boundaryGap: isBar,
         axisLine: { show: !isBar, lineStyle: { color: '#262a23' } },
         axisTick: { show: false },
-        axisLabel: { color: FAINT, fontSize: n <= 5 ? vh * 2.5 : vh * 2, margin: vh * 1.4, interval: isBar && n <= 14 ? 0 : 'auto' },
+        axisLabel: { color: FAINT, fontSize: n <= 5 && Math.max(...dataset.x.map((l) => l.length)) <= 10 ? vh * 2.5 : vh * 1.95, overflow: 'break', width: n <= 5 ? el.current!.clientWidth / n - vh : undefined, margin: vh * 1.4, interval: isBar && n <= 14 ? 0 : 'auto' },
       },
       yAxis: {
         type: 'value',
