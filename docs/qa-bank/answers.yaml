@@ -52,7 +52,7 @@
 
 - id: cleaner-than-peers
   question: How does NVIDIA compare with peers on emissions?
-  ask: [emissions peers, emissions compare, emissions competitors, cleaner than]
+  ask: [emissions peers, emissions competitors, emissions compare with rivals, emissions compare to peers, cleaner than]
   slide:
     layout: split
     title: Lowest of the five, with a catch
