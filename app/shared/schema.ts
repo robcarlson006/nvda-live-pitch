@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ICON_NAMES } from './icons.ts';
 
 // The one slide format used everywhere: script spine, Q&A bank and Claude output.
 // Charts carry only a dataset key + series names; the numbers are always looked up in code.
@@ -31,6 +32,7 @@ export const Slide = z.object({
   chart: ChartSpec.optional(),
   stat: StatSpec.optional(),
   effect: Effect.optional(),
+  icons: z.array(z.enum(ICON_NAMES)).max(3).optional(), // drawn by the cores on the right: one big, or 2–3 in a chain
   sources: z.array(z.string()).default([]),
 });
 export type Slide = z.infer<typeof Slide>;
@@ -122,7 +124,7 @@ export type SpineSlide = z.infer<typeof SpineSlide>;
 /** Elements build in this order: title (with the figure, for number slides), each bullet, then the chart. */
 export const elementCount = (s: Slide) => 1 + s.bullets.length + (s.chart ? 1 : 0);
 
-export type RunEntry = { id: string; index: number; at: number; via: 'cue' | 'next' | 'back' | 'goto'; cue?: string };
+export type RunEntry = { id: string; index: number; at: number; via: 'cue' | 'next' | 'back' | 'goto' | 'live'; cue?: string };
 export type Rehearsal = { startedAt: number; entries: RunEntry[] };
 
 /** A slide built live, waiting for the operator (or shown at once if auto-show is on). */
@@ -148,10 +150,13 @@ export type ShowState = {
   under: number; // how much of the script slide was built when a live-built slide covered it
   riff: boolean; // react when a presenter goes off script
   autoShow: boolean; // show live-built slides without waiting for approval
+  follow: 'script' | 'live'; // script: cue words move the deck. live: it follows the meaning, and tangents get a slide by themselves
+  seen: string[]; // ids of the script slides shown so far
+  approveTangents: boolean; // live mode: wait for a tap before a tangent slide goes up
 };
 
 /** What the operator panel shows about Claude. Not saved with the show. */
-export type AiInfo = { busy: 'answer' | 'riff' | 'research' | null; note: string | null; spent: number; cap: number; model: string; hasKey: boolean; bankError: string | null };
+export type AiInfo = { follow: { text: string; ms: number; error: string | null }; busy: 'answer' | 'riff' | 'research' | null; note: string | null; spent: number; cap: number; model: string; hasKey: boolean; bankError: string | null };
 
 export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('push'), slide: Slide }),
@@ -168,11 +173,20 @@ export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('draft'), action: z.enum(['show', 'reject']), id: z.string() }),
   z.object({ type: z.literal('bank'), id: z.string() }),
   z.object({ type: z.literal('resume') }),
-  z.object({ type: z.literal('setting'), key: z.enum(['riff', 'autoShow']), on: z.boolean() }),
+  z.object({ type: z.literal('setting'), key: z.enum(['riff', 'autoShow', 'approveTangents']), on: z.boolean() }),
+  z.object({ type: z.literal('follow'), mode: z.enum(['script', 'live']) }),
+  z.object({ type: z.literal('tangent'), action: z.enum(['show', 'block']) }),
+  z.object({ type: z.literal('micCmd'), action: z.enum(['start', 'stop']), engine: z.enum(['deepgram', 'chrome']).optional(), lang: z.enum(['en-GB', 'en-US']).optional() }),
+  z.object({ type: z.literal('micStatus'), on: z.boolean(), listening: z.boolean(), engine: z.enum(['deepgram', 'chrome']), lang: z.enum(['en-GB', 'en-US']), device: z.string().max(200), problem: z.string().max(300).nullable() }),
 ]);
 export type ClientMsg = z.input<typeof ClientMsg>;
 
+/** The microphone lives on the stage page (the laptop); operators control it from anywhere. */
+export type MicInfo = { stage: boolean; on: boolean; listening: boolean; engine: 'deepgram' | 'chrome'; lang: 'en-GB' | 'en-US'; device: string; problem: string | null };
+
 export type ServerMsg =
-  | { type: 'state'; state: ShowState; spine: SpineSlide[]; spineError: string | null; clients: number; ai: AiInfo; bank: { id: string; question: string }[] }
+  | { type: 'state'; state: ShowState; spine: SpineSlide[]; spineError: string | null; clients: number; ai: AiInfo; bank: { id: string; question: string }[]; mic: MicInfo; pending: Draft | null }
+  | { type: 'hearing'; text: string }
+  | { type: 'micCmd'; action: 'start' | 'stop'; engine?: 'deepgram' | 'chrome'; lang?: 'en-GB' | 'en-US' }
   | { type: 'error'; message: string }
   | { type: 'saved'; file: string };

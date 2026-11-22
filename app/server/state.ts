@@ -92,7 +92,7 @@ export function relocate(state: ShowState, spine: SpineSlide[]): Pick<ShowState,
 }
 
 export function emptyState(): ShowState {
-  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false };
+  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false, follow: 'script', seen: [], approveTangents: false };
 }
 
 export function loadState(): ShowState {
@@ -159,7 +159,24 @@ function revealFrom(slide: SpineSlide | Slide, from: number): number {
 
 function show(state: ShowState, slide: Slide, index: number): ShowState {
   // liveSince always moves on, even within the same millisecond, so the stage rebuilds and the log sees every change.
-  return { ...state, index, live: slide, reveal: revealFrom(slide, 0), liveSince: Math.max(Date.now(), state.liveSince + 1), history: [...state.history, slide].slice(-50), heard: '', stray: '' };
+  return { ...state, index, live: slide, reveal: revealFrom(slide, 0), liveSince: Math.max(Date.now(), state.liveSince + 1), history: [...state.history, slide].slice(-50), heard: '', stray: '', seen: /^(gen|qa)-/.test(slide.id) || state.seen.includes(slide.id) ? state.seen : [...state.seen, slide.id] };
+}
+
+/** Live mode: go to a script slide (or back to the one under a tangent) with that many of its points built. */
+export function liveGo(state: ShowState, spine: SpineSlide[], id: string, covered: number): ShowState {
+  const i = spine.findIndex((s) => s.id === id);
+  if (i < 0) return state;
+  if (i === state.index) return livePoints(isCovered(state) ? resume(state, spine) : state, spine, covered);
+  return livePoints(show(state, spine[i], i), spine, covered);
+}
+
+/** Live mode: build the slide on screen as far as the presenter has got. Never un-builds. */
+export function livePoints(state: ShowState, spine: SpineSlide[], covered: number): ShowState {
+  const s = spine[state.index];
+  if (!s || state.live?.id !== s.id || covered < 1) return state;
+  const want = Math.min(elementCount(s), covered + 1);
+  if (want <= state.reveal) return state;
+  return { ...state, reveal: revealFrom(s, want - 1), heard: '', stray: '' };
 }
 
 /** The next/previous slide the operator hasn't switched off. */
@@ -228,15 +245,20 @@ export function apply(state: ShowState, raw: unknown, ctx: Ctx): ShowState | str
   // Rehearsal log: one entry each time a script slide goes live, saying what moved it there.
   if (typeof out === 'string' || !out.rehearsal || out === state || out.liveSince === state.liveSince || out.index < 0) return out;
   const via = msg.type === 'transcript' ? 'cue' : msg.type === 'next' || msg.type === 'back' || msg.type === 'goto' ? msg.type : null;
-  if (!via) return out;
-  const entry: RunEntry = { id: ctx.spine[out.index].id, index: out.index, at: out.liveSince, via, ...(via === 'cue' && out.lastCue ? { cue: out.lastCue.phrase } : {}) };
+  return via ? logMove(state, out, via, ctx.spine) : out;
+}
+
+/** Adds a script slide going live to the rehearsal log. */
+export function logMove(state: ShowState, out: ShowState, via: RunEntry['via'], spine: SpineSlide[]): ShowState {
+  if (!out.rehearsal || out.liveSince === state.liveSince || out.index < 0 || isCovered(out)) return out;
+  const entry: RunEntry = { id: spine[out.index].id, index: out.index, at: out.liveSince, via, ...(via === 'cue' && out.lastCue ? { cue: out.lastCue.phrase } : {}) };
   return { ...out, rehearsal: { ...out.rehearsal, entries: [...out.rehearsal.entries, entry] } };
 }
 
 function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, spine }: Ctx): ShowState | string {
   switch (msg.type) {
     case 'clear':
-      return { ...state, index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
+      return { ...state, seen: [], index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
     case 'push': {
       const problem = checkSlide(msg.slide, datasets);
       if (problem) return problem;
@@ -265,7 +287,7 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
       if (msg.action === 'stop') return { ...state, rehearsal: null };
       const now = Date.now();
       const entries: RunEntry[] = state.index >= 0 ? [{ id: spine[state.index].id, index: state.index, at: now, via: 'goto' }] : [];
-      return { ...state, rehearsal: { startedAt: now, entries } };
+      return { ...state, seen: state.index >= 0 ? [spine[state.index].id] : [], rehearsal: { startedAt: now, entries } };
     }
     case 'question':
       if (msg.action === 'start') return { ...state, mode: 'question', question: '', questionTail: '', heard: '', consumed: 0, stray: '' };
@@ -281,6 +303,11 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
       return resume(state, spine);
     case 'setting':
       return { ...state, [msg.key]: msg.on };
+    case 'follow':
+      return { ...state, follow: msg.mode, heard: '', consumed: 0, stray: '' };
+    case 'tangent':
+    case 'micCmd':
+    case 'micStatus':
     case 'ask':
     case 'bank':
       return state; // handled by the server (needs Claude or the prepared answers)
@@ -309,7 +336,8 @@ export function runReport(run: Rehearsal, stoppedAt: number, spine: SpineSlide[]
     openingSectionSeconds: sum(slides.filter((s) => inSection(s.id))),
     openingSectionTargetSeconds: 240,
     cueFired: slides.filter((s) => s.via === 'cue').length,
-    manual: slides.filter((s) => s.via !== 'cue').length,
+    followed: slides.filter((s) => s.via === 'live').length,
+    manual: slides.filter((s) => s.via !== 'cue' && s.via !== 'live').length,
     slides,
   };
 }

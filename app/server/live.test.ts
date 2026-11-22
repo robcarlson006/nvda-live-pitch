@@ -22,7 +22,7 @@ const run = (s: ShowState, ...msgs: unknown[]) =>
     return r;
   }, s);
 const say = (text: string, final = true) => ({ type: 'transcript', text, final });
-const reply = (o: Partial<Reply> = {}): Reply => ({ show: true, answered: true, layout: 'split', title: 'Scope 3 is rising', bullets: ['{{nvda_emissions | Scope 3 | FY26}} in FY26'], chart: { type: 'line', datasetKey: 'nvda_emissions', series: ['Scope 3'], highlight: 'FY26', from: null, to: null }, stat: null, ...o });
+const reply = (o: Partial<Reply> = {}): Reply => ({ show: true, answered: true, layout: 'split', title: 'Scope 3 is rising', bullets: ['{{nvda_emissions | Scope 3 | FY26}} in FY26'], chart: { type: 'line', datasetKey: 'nvda_emissions', series: ['Scope 3'], highlight: 'FY26', from: null, to: null }, stat: null, icons: [], ...o });
 const tmp = () => path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'budget-')), 'spend.json');
 const message = (r: unknown) => ({ stop_reason: 'end_turn', content: [{ type: 'text', text: JSON.stringify(r) }], usage: { input_tokens: 1000, output_tokens: 300 } }) as unknown as Anthropic.Message;
 const job = { kind: 'answer', heard: 'what about emissions', onScreen: 'nothing' } as const;
@@ -51,9 +51,13 @@ test('a line chart drops series too small to see', () => {
   assert.deepEqual(s.chart!.series, ['Scope 3']);
 });
 
-test('a slide with no data says so', () => {
-  const s = toSlide(reply({ layout: 'statement', bullets: ['We do not have that figure'], chart: null }), datasets, 'gen-1') as Slide;
-  assert.deepEqual(s.sources, ['Team commentary; no dataset used']);
+test('an answer with no data says so; a presenter aside just gets its graphic', async () => {
+  const r = reply({ layout: 'statement', bullets: ['We do not have that figure'], chart: null, icons: ['robot', 'hospital'] });
+  const a = await go(new Ai(new Budget(tmp(), 4), async () => message(r), () => true));
+  assert.deepEqual('slide' in a && a.slide.sources, ['Team commentary; no dataset used']);
+  const t = await go(new Ai(new Budget(tmp(), 4), async () => message(r), () => true), { ...job, kind: 'riff' });
+  assert.ok('slide' in t);
+  assert.deepEqual([t.slide.sources, t.slide.icons], [[], ['robot', 'hospital']]);
 });
 
 test('spending: capped before the call, kept across restarts, uncertain means spent', async () => {
