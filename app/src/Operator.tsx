@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { elementCount, isUnverified, resolveText, type ShowState, type SpineSlide } from '../shared/schema.ts';
+import { LivePanel } from './LivePanel.tsx';
 import { demoSlides } from './demoSlides.ts';
 import { useSpeech, type Engine } from './useSpeech.ts';
 import { useDatasets, useNavKeys, useShow } from './useShow.ts';
@@ -69,11 +70,11 @@ function MicMeter({ level }: { level: () => number }) {
 }
 
 export function Operator() {
-  const { state, spine, spineError, connected, clients, error, notice, send } = useShow();
+  const { state, spine, spineError, connected, clients, error, notice, send, ai, bank } = useShow();
   const datasets = useDatasets();
   const [said, setSaid] = useState('');
   const mic = useSpeech((text, final) => send({ type: 'transcript', text, final }));
-  useNavKeys(send);
+  useNavKeys(send, state);
 
   const cur = state && state.index >= 0 ? spine[state.index] : undefined;
   const total = state?.live ? elementCount(state.live) : 0;
@@ -129,6 +130,8 @@ export function Operator() {
           <div className="op-meta">Keys: → or Space next, ← back</div>
         </div>
       </section>
+
+      <LivePanel state={state} ai={ai} bank={bank} datasets={datasets} send={send} />
 
       <Timer state={state} spine={spine} send={send} />
 

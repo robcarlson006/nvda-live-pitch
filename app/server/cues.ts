@@ -56,9 +56,9 @@ function needed(cue: string): string[] {
   return key.length ? key : all;
 }
 
-/** Index in `heard` of the first word matching cue word `t` (allowing a one-letter slip on longer words), or -1. */
+/** Index in `heard` of the first word matching cue word `t` (allowing a plural, or a one-letter slip on longer words), or -1. */
 function find(t: string, heard: string[]): number {
-  return heard.findIndex((w) => w === t || (t.length >= 5 && Math.abs(w.length - t.length) <= 1 && lev(w, t) <= 1));
+  return heard.findIndex((w) => w === t || (t.length >= 4 && (w === t + 's' || w + 's' === t)) || (t.length >= 5 && Math.abs(w.length - t.length) <= 1 && lev(w, t) <= 1));
 }
 
 export type Candidate<T> = { cue: string; target: T };

@@ -4,3 +4,4 @@ app/.env
 .DS_Store
 dist/
 app/state.json
+app/ai-spend.json*

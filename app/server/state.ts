@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parse as parseYaml } from 'yaml';
-import { ClientMsg, Dataset, elementCount, lookup, resolveText, SpineSlide, tokenRefs, type Rehearsal, type RunEntry, type ShowState, type Slide } from '../shared/schema.ts';
+import { z } from 'zod';
+import { ClientMsg, Dataset, elementCount, lookup, resolveText, SpineSlide, tokenRefs, type Draft, type Rehearsal, type RunEntry, type ShowState, type Slide } from '../shared/schema.ts';
 import { findCue, words, type Candidate } from './cues.ts';
 
 export const DATA_DIR = path.resolve(import.meta.dirname, '../../data/clean');
@@ -26,8 +27,9 @@ const stripAllowed = (t: string) =>
   t
     .replace(new RegExp(`\\b\\d{1,2} ${MONTH}\\b`, 'g'), '')
     .replace(/\b(19|20)\d\d\b/g, '')
-    .replace(/\bFY\d\d\b|\bQ[1-4]\b|\bScope [123]\b/g, '')
-    .replace(/\b(NV1|RIVA 128|GeForce 256|DGX-1|NVL72|3D)\b/g, ''); // product names
+    .replace(/\bper \$1m\b/g, '') // the emissions-intensity unit
+    .replace(/\bFY\d\d\b|\bQ[1-4]\b|\bScopes? [123](?:(?:, | ?(?:\+|\/|&|and|or|to) ?(?:Scope )?)[123])*\b/g, '')
+    .replace(/\b(NV1|RIVA 128|GeForce 256|DGX-1|NVL72|3D|A100|H100|H200|H20|B200|MI355X)\b/g, ''); // product names
 
 /** null if the slide can be shown; otherwise what is wrong with it. */
 export function checkSlide(slide: Slide, datasets: Map<string, Dataset>): string | null {
@@ -83,19 +85,19 @@ export function loadSpine(datasets: Map<string, Dataset>, file = SPINE_FILE): Sp
 
 /** After the script changes, find the live slide again by id (slides may have moved), and pick up its edits. */
 export function relocate(state: ShowState, spine: SpineSlide[]): Pick<ShowState, 'index' | 'live' | 'reveal'> {
-  if (state.index < 0) return { index: state.index, live: state.live, reveal: state.reveal };
+  if (state.index < 0 || isCovered(state)) return { index: Math.min(state.index, spine.length - 1), live: state.live, reveal: state.reveal };
   const i = spine.findIndex((s) => s.id === state.live?.id);
   if (i < 0) return { index: -1, live: null, reveal: 0 }; // slide removed: standby
   return { index: i, live: spine[i], reveal: Math.min(state.reveal, elementCount(spine[i])) };
 }
 
 export function emptyState(): ShowState {
-  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null };
+  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false };
 }
 
 export function loadState(): ShowState {
   try {
-    return { ...emptyState(), ...JSON.parse(fs.readFileSync(STATE_FILE, 'utf8')) };
+    return { ...emptyState(), ...JSON.parse(fs.readFileSync(STATE_FILE, 'utf8')), mode: 'script', question: '', questionTail: '', stray: '', drafts: [] };
   } catch {
     return emptyState();
   }
@@ -105,6 +107,44 @@ export function saveState(s: ShowState) {
   // write-then-rename so a crash mid-write never leaves a corrupt state file
   fs.writeFileSync(STATE_FILE + '.tmp', JSON.stringify(s));
   fs.renameSync(STATE_FILE + '.tmp', STATE_FILE);
+}
+
+/** A live-built (or prepared answer) slide is covering the script. */
+export const isCovered = (s: ShowState) => !!s.live && /^(gen|qa)-/.test(s.live.id);
+
+/** Put a live-built slide on stage without losing the place in the script. */
+export function cover(state: ShowState, slide: Slide): ShowState {
+  const under = isCovered(state) ? state.under : state.reveal;
+  return { ...show(state, slide, state.index), reveal: elementCount(slide), under };
+}
+
+/** Back to the script slide underneath, as it was. */
+function resume(state: ShowState, spine: SpineSlide[]): ShowState {
+  if (!isCovered(state)) return state;
+  const s = spine[state.index];
+  if (!s) return { ...state, index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '', stray: '' };
+  return { ...show(state, s, state.index), reveal: Math.max(1, Math.min(state.under, elementCount(s))) };
+}
+
+/** A finished live-built slide arrives: on stage at once if auto-show is on, otherwise into the queue. */
+export function addDraft(state: ShowState, d: Draft): ShowState {
+  if (state.autoShow && state.mode === 'script') return cover(state, d.slide);
+  return { ...state, drafts: [...state.drafts, d].slice(-5) };
+}
+
+const COMMON = new Set('that this with from have they them then than there their what when which would could should about because just like really very also been were will your some more into over know think going thing things here well actually right okay yeah people want make made much many only even every where nvidia company'.split(' '));
+const contentWords = (t: string) => words(t).filter((w) => w.length >= 4 && !COMMON.has(w));
+
+/**
+ * Is the presenter off script? True when enough has been said since the last cue, and most of its
+ * content words appear nowhere in the script around the current slide. Free: no AI involved.
+ */
+export function offScript(state: ShowState, spine: SpineSlide[]): boolean {
+  const said = contentWords(state.stray).slice(-30);
+  if (said.length < 12) return false;
+  const near = spine.slice(Math.max(0, state.index - 1), state.index + 5);
+  const vocab = new Set(near.flatMap((s) => contentWords([s.say ?? '', s.title, ...s.bullets, ...s.cues].join(' '))));
+  return said.filter((w) => vocab.has(w)).length / said.length < 0.45;
 }
 
 /** Reveal up to (not including) the next element that waits for its own cue. */
@@ -118,7 +158,7 @@ function revealFrom(slide: SpineSlide | Slide, from: number): number {
 
 function show(state: ShowState, slide: Slide, index: number): ShowState {
   // liveSince always moves on, even within the same millisecond, so the stage rebuilds and the log sees every change.
-  return { ...state, index, live: slide, reveal: revealFrom(slide, 0), liveSince: Math.max(Date.now(), state.liveSince + 1), history: [...state.history, slide].slice(-50), heard: '' };
+  return { ...state, index, live: slide, reveal: revealFrom(slide, 0), liveSince: Math.max(Date.now(), state.liveSince + 1), history: [...state.history, slide].slice(-50), heard: '', stray: '' };
 }
 
 /** The next/previous slide the operator hasn't switched off. */
@@ -129,7 +169,7 @@ function step(spine: SpineSlide[], skipped: string[], from: number, dir: 1 | -1)
 }
 
 function next(state: ShowState, spine: SpineSlide[]): ShowState {
-  if (state.live && state.reveal < elementCount(state.live)) return { ...state, reveal: revealFrom(state.live, state.reveal), heard: '' };
+  if (state.live && state.reveal < elementCount(state.live)) return { ...state, reveal: revealFrom(state.live, state.reveal), heard: '', stray: '' };
   const i = step(spine, state.skipped, state.index, 1);
   return i >= 0 ? show(state, spine[i], i) : state;
 }
@@ -159,7 +199,7 @@ function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[
   const prior = state.heard ? state.heard.split(' ') : [];
   const fresh = words(text).slice(state.consumed);
   const buf = [...prior, ...fresh];
-  let s = state;
+  let s = final ? { ...state, stray: `${state.stray} ${text}`.trim().slice(-1200) } : state;
   let used = 0;
   if (state.autoCue) {
     for (let k = 0; k < 4; k++) {
@@ -192,7 +232,7 @@ export function apply(state: ShowState, raw: unknown, ctx: Ctx): ShowState | str
   return { ...out, rehearsal: { ...out.rehearsal, entries: [...out.rehearsal.entries, entry] } };
 }
 
-function reduce(state: ShowState, msg: ClientMsg, { datasets, spine }: Ctx): ShowState | string {
+function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, spine }: Ctx): ShowState | string {
   switch (msg.type) {
     case 'clear':
       return { ...state, index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
@@ -204,6 +244,7 @@ function reduce(state: ShowState, msg: ClientMsg, { datasets, spine }: Ctx): Sho
     case 'next':
       return next(state, spine);
     case 'back': {
+      if (isCovered(state)) return resume(state, spine);
       const i = step(spine, state.skipped, state.index, -1);
       if (i < 0) return { ...state, index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
       return { ...show(state, spine[i], i), reveal: elementCount(spine[i]) };
@@ -225,7 +266,26 @@ function reduce(state: ShowState, msg: ClientMsg, { datasets, spine }: Ctx): Sho
       const entries: RunEntry[] = state.index >= 0 ? [{ id: spine[state.index].id, index: state.index, at: now, via: 'goto' }] : [];
       return { ...state, rehearsal: { startedAt: now, entries } };
     }
+    case 'question':
+      if (msg.action === 'start') return { ...state, mode: 'question', question: '', questionTail: '', heard: '', consumed: 0, stray: '' };
+      // The rest of an utterance still in progress belongs to the question: ignore it until its final result.
+      return { ...state, mode: 'script', question: '', questionTail: '', consumed: state.questionTail ? 9999 : 0 };
+    case 'draft': {
+      const d = state.drafts.find((x) => x.id === msg.id);
+      if (!d) return 'That slide is no longer in the queue';
+      const rest = { ...state, drafts: state.drafts.filter((x) => x !== d) };
+      return msg.action === 'show' ? cover(rest, d.slide) : rest;
+    }
+    case 'resume':
+      return resume(state, spine);
+    case 'setting':
+      return { ...state, [msg.key]: msg.on };
+    case 'ask':
+    case 'bank':
+      return state; // handled by the server (needs Claude or the prepared answers)
     case 'transcript':
+      if (state.mode === 'question')
+        return msg.final ? { ...state, question: `${state.question} ${msg.text}`.trim().slice(-1500), questionTail: '' } : { ...state, questionTail: msg.text };
       return hear(state, msg.text, msg.final, spine);
   }
 }

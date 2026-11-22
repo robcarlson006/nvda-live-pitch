@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { ClientMsg, Dataset, ServerMsg, ShowState, SpineSlide } from '../shared/schema.ts';
+import type { AiInfo, ClientMsg, Dataset, ServerMsg, ShowState, SpineSlide } from '../shared/schema.ts';
 
 /** Live connection to the backend. Reconnects forever with backoff, so a server restart or Wi-Fi blip heals itself. */
 export function useShow() {
@@ -7,6 +7,8 @@ export function useShow() {
   const [spine, setSpine] = useState<SpineSlide[]>([]);
   const [spineError, setSpineError] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
+  const [ai, setAi] = useState<AiInfo | null>(null);
+  const [bank, setBank] = useState<{ id: string; question: string }[]>([]);
   const [clients, setClients] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -30,6 +32,8 @@ export function useShow() {
           setSpine(msg.spine);
           setSpineError(msg.spineError);
           setClients(msg.clients);
+          setAi(msg.ai);
+          setBank(msg.bank);
         } else if (msg.type === 'saved') setNotice(`Rehearsal saved to ${msg.file}`);
         else setError(msg.message);
       };
@@ -52,17 +56,22 @@ export function useShow() {
     else setError('Not connected to the server');
   };
 
-  return { state, spine, spineError, connected, clients, error, notice, send };
+  return { state, spine, spineError, connected, clients, error, notice, send, ai, bank };
 }
 
 /** Clicker and keyboard control. Presentation clickers send PageDown/PageUp (or arrows). */
-export function useNavKeys(send: (m: ClientMsg) => void) {
+export function useNavKeys(send: (m: ClientMsg) => void, state: ShowState | null) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
-      if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || e.metaKey || e.ctrlKey) return;
+      if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || e.metaKey || e.ctrlKey) return;
       if (['ArrowRight', 'PageDown', ' '].includes(e.key)) send({ type: 'next' });
       else if (['ArrowLeft', 'PageUp'].includes(e.key)) send({ type: 'back' });
+      else if (e.repeat) return;
+      else if (e.key === 'q') send({ type: 'question', action: state?.mode === 'question' ? 'answer' : 'start' });
+      else if (e.key === 'a' && state?.drafts[0]) send({ type: 'draft', action: 'show', id: state.drafts[0].id });
+      else if (e.key === 'x' && state?.drafts[0]) send({ type: 'draft', action: 'reject', id: state.drafts[0].id });
+      else if (e.key === 'r') send({ type: 'resume' });
       else return;
       e.preventDefault();
     };

@@ -111,6 +111,14 @@ cd app && npm install && npm run dev
   - **Cue matcher fix:** a cue's words must now be heard close together. Deepgram writes numbers as words, and "two thousand … six" scattered through beat 2 was firing beat 4.
   - 37 tests: the relay against a fake Deepgram, and the whole script read with numbers as words.
 
+- **M6: live Q&A and off-script slides** (22 Nov)
+  - **Board question (Q):** speech is collected as the question and fires no cues. Q again builds the answer. A prepared answer (`docs/qa-bank/answers.yaml`, 10, mostly ESG) is used if it matches; otherwise Claude Sonnet 5.5 (`ANTHROPIC_MODEL` to change).
+  - **Off script:** noticed locally and free (`offScript` in `state.ts`), then Claude decides whether a slide helps. At most one every 25 s.
+  - **Approval:** slides queue for A (show) / X (reject), unless "Show without approval" is ticked. R returns to the script at the same place.
+  - **No invented numbers:** Claude names data; the app looks it up. Digits or number words in its text are rejected, retried once, then that bullet is dropped. Unverified datasets are not offered. It can still phrase a claim badly: the operator reads before showing.
+  - **Spending:** `app/ai-spend.json` keeps a running total across restarts; calls stop at $4 (`AI_SPEND_CAP`). It counts only this app's calls.
+  - Both sockets accept only this laptop and our own page, so there is no second-device operator for now.
+
 ## Data received
 - NVDA FA, annual FY1998–FY2026 and quarterly FY24 Q3–FY27 Q3, both including ESG.
 - Peer FA: AMD, INTC, AVGO, TSMC (TSMC in both TWD and USD).
@@ -119,7 +127,7 @@ cd app && npm install && npm run dev
 
 ## Next
 - Rob: rehearse with the mic, then cut to 3–4 minutes (untick ✂ beats first). Fix cues that misfire from the rehearsal logs.
-- M7 (fallback), M6 (Q&A), M8 (finale).
+- M7 (fallback deck), M8 (finale).
 - Team: rewrite `say` and cues in docs/script/spine.yaml in your own words.
 - When the Excel exports arrive (HP, ANR, SPLC): add parsers to `build-data.ts`, then rerun `npm run data`.
 

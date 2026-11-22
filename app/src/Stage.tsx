@@ -16,7 +16,7 @@ function statValue(slide: Slide, datasets: Record<string, Dataset>): string | un
 export function Stage() {
   const { state, send } = useShow();
   const datasets = useDatasets();
-  useNavKeys(send);
+  useNavKeys(send, state);
   const slide = state?.live ?? null;
   const glyph = slide ? (slide.layout === 'number' ? statValue(slide, datasets) : undefined) : 'NVIDIA';
 

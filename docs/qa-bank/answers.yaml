@@ -1,0 +1,118 @@
+# Prepared answers. Used instantly, free, when a question contains one of the `ask` phrases
+# (all the words, close together). Otherwise the question goes to Claude.
+# Figures follow the same rule as the script: {{dataset | series | x}}, never typed.
+
+- id: wasteful
+  question: You used AI for a slideshow. Isn't that wasteful?
+  ask: [ai for a slideshow, ai slideshow, wasteful, waste of energy, used ai slides, environmental disaster]
+  slide:
+    layout: split
+    title: "Fair challenge: AI's footprint is real, and rising"
+    bullets:
+      - "NVIDIA's supply chain emissions: {{nvda_emissions | Scope 3 | FY25}} in FY25, {{nvda_emissions | Scope 3 | FY26}} in FY26"
+      - We don't have a measured energy figure for this presentation
+      - The test is whether the work AI does is worth the energy it uses
+    chart: { type: line, datasetKey: nvda_emissions, series: [Scope 3], highlight: FY26 }
+
+- id: energy
+  question: How much energy does NVIDIA use?
+  ask: [energy use, energy consumption, how much energy, how much electricity, power consumption]
+  slide:
+    layout: split
+    title: NVIDIA's own energy use is rising, and now renewable
+    bullets:
+      - "{{nvda_energy | Total energy | FY24}} in FY24; {{nvda_energy | Total energy | FY26}} in FY26"
+      - "Renewable share of that: {{nvda_renewable_share | Renewable | FY26}}"
+      - This is NVIDIA's own use. Customers' data centres are not in it.
+    chart: { type: line, datasetKey: nvda_energy, series: [Total energy, Renewable energy], highlight: FY26 }
+
+- id: scope3
+  question: What about Scope 3 and supply chain emissions?
+  ask: [scope three, scope 3, supply chain emissions, carbon footprint, greenhouse gas, carbon emissions]
+  slide:
+    layout: split
+    title: Scope 3 is the weak point, and it is growing
+    bullets:
+      - "{{nvda_emissions | Scope 3 | FY24}} in FY24; {{nvda_emissions | Scope 3 | FY26}} in FY26"
+      - Most of it comes from making the chips, at partners like TSMC
+      - "Own operations are far smaller: {{nvda_emissions | Scope 1 | FY26}} direct in FY26"
+    chart: { type: line, datasetKey: nvda_emissions, series: [Scope 3], highlight: FY26 }
+
+- id: water
+  question: How much water does it use?
+  ask: [water use, water usage, how much water, water consumption, data center water]
+  slide:
+    layout: statement
+    title: We don't have a water figure we can stand behind.
+    bullets:
+      - Water is not in the Bloomberg data we exported
+      - It falls mainly on chip factories and on customers' data centres
+      - It is a question we would put to the company before investing
+
+- id: cleaner-than-peers
+  question: How does NVIDIA compare with peers on emissions?
+  ask: [emissions peers, emissions compare, emissions competitors, cleaner than]
+  slide:
+    layout: split
+    title: Lowest of the five, with a catch
+    bullets:
+      - NVIDIA owns no chip factories; TSMC and Intel do
+      - NVIDIA's manufacturing emissions sit in Scope 3, not in this chart
+    chart: { type: bar, datasetKey: peers_emissions_intensity, series: [Emissions intensity], highlight: NVIDIA }
+
+- id: governance
+  question: What about governance, now the CEO has resigned?
+  ask: [ceo resigned, jensen resigned, new ceo, interim ceo, governance, who runs nvidia, without jensen, jensen huang leaving]
+  slide:
+    layout: statement
+    title: Governance is the biggest open risk.
+    bullets:
+      - Jensen Huang resigned as CEO on 12 November 2026; Colette Kress is interim CEO
+      - SEC and California investigations have been reported
+      - The bear case shows what we lose if this goes badly
+    sources: ["CNBC, 12 Nov 2026; NBC News, Nov 2026"]
+
+- id: taiwan
+  question: What if something happens to Taiwan or TSMC?
+  ask: [taiwan, depend on tsmc, reliance on tsmc, tsmc risk]
+  slide:
+    layout: split
+    title: Taiwan is a real concentration risk
+    bullets:
+      - "TSMC makes about {{research_facts | TSMC share of leading-edge chips | value}} of the most advanced chips"
+      - The same risk hits AMD, Broadcom and most rivals
+      - We have not priced a Taiwan conflict into the model
+    chart: { type: bar, datasetKey: research_cowos_share, series: [Share of CoWoS], highlight: NVIDIA }
+
+- id: bubble
+  question: Isn't this an AI bubble?
+  ask: [ai bubble, a bubble, dot com, overvalued, too expensive, bubble burst]
+  slide:
+    layout: split
+    title: If spending stops, the bear case is severe
+    bullets:
+      - "Bear case: {{model_valuation | Value per share | Bear case}}. Price today: {{model_valuation | Value per share | Share price today}}"
+      - "Forward P/E is {{peers_pe | Forward P/E | NVIDIA}}; Cisco in 2000 was {{research_facts | Cisco forward P/E, March 2000 | value}}"
+    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Bear case }
+
+- id: discount-rate
+  question: Why that discount rate?
+  ask: [discount rate, your wacc, cost of capital]
+  slide:
+    layout: split
+    title: The answer depends heavily on the discount rate
+    bullets:
+      - "Bloomberg's rate, the one we use: {{model_sensitivity | Terminal growth 3% | 19.3%}} a share"
+      - "At the lowest rate shown: {{model_sensitivity | Terminal growth 3% | 10%}}"
+    chart: { type: bar, datasetKey: model_sensitivity, series: ["Terminal growth 3%"], highlight: "19.3%" }
+
+- id: concentration
+  question: Isn't it too dependent on data centres?
+  ask: [customer concentration, few customers, dependent on data centers, reliant on data centers, one product, diversified]
+  slide:
+    layout: split
+    title: Yes. Data Center is almost the whole company
+    bullets:
+      - "Data Center: {{nvda_segments_annual | Data Center | FY26}} of {{nvda_revenue_annual | Revenue | FY26}} in FY26"
+      - Our data doesn't break revenue down by customer
+    chart: { type: stackedBar, datasetKey: nvda_segments_annual, series: [Data Center, Gaming, Pro Visualization, Automotive], highlight: FY26 }

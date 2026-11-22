@@ -125,6 +125,9 @@ export const elementCount = (s: Slide) => 1 + s.bullets.length + (s.chart ? 1 : 
 export type RunEntry = { id: string; index: number; at: number; via: 'cue' | 'next' | 'back' | 'goto'; cue?: string };
 export type Rehearsal = { startedAt: number; entries: RunEntry[] };
 
+/** A slide built live, waiting for the operator (or shown at once if auto-show is on). */
+export type Draft = { id: string; kind: 'answer' | 'riff'; heard: string; slide: Slide; from: 'prepared' | 'claude'; at: number };
+
 export type ShowState = {
   index: number; // position in the spine; -1 = standby or an ad-hoc slide
   live: Slide | null;
@@ -137,7 +140,18 @@ export type ShowState = {
   lastCue: { phrase: string; target: string; at: number } | null;
   skipped: string[]; // ids of optional slides the operator has switched off
   rehearsal: Rehearsal | null;
+  mode: 'script' | 'question'; // question: speech is collected as a board member's question, and fires no cues
+  question: string; // finished speech of the question so far
+  questionTail: string; // its in-progress (interim) words
+  stray: string; // finished speech since the last cue, as heard: used to notice going off script
+  drafts: Draft[];
+  under: number; // how much of the script slide was built when a live-built slide covered it
+  riff: boolean; // react when a presenter goes off script
+  autoShow: boolean; // show live-built slides without waiting for approval
 };
+
+/** What the operator panel shows about Claude. Not saved with the show. */
+export type AiInfo = { busy: 'answer' | 'riff' | null; note: string | null; spent: number; cap: number; model: string; hasKey: boolean; bankError: string | null };
 
 export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('push'), slide: Slide }),
@@ -149,10 +163,16 @@ export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('autoCue'), on: z.boolean() }),
   z.object({ type: z.literal('skip'), id: z.string(), on: z.boolean() }),
   z.object({ type: z.literal('rehearsal'), action: z.enum(['start', 'stop']) }),
+  z.object({ type: z.literal('question'), action: z.enum(['start', 'answer', 'cancel']) }),
+  z.object({ type: z.literal('ask'), text: z.string().min(1).max(1500), kind: z.enum(['answer', 'riff']).default('answer'), fresh: z.boolean().default(false) }),
+  z.object({ type: z.literal('draft'), action: z.enum(['show', 'reject']), id: z.string() }),
+  z.object({ type: z.literal('bank'), id: z.string() }),
+  z.object({ type: z.literal('resume') }),
+  z.object({ type: z.literal('setting'), key: z.enum(['riff', 'autoShow']), on: z.boolean() }),
 ]);
-export type ClientMsg = z.infer<typeof ClientMsg>;
+export type ClientMsg = z.input<typeof ClientMsg>;
 
 export type ServerMsg =
-  | { type: 'state'; state: ShowState; spine: SpineSlide[]; spineError: string | null; clients: number }
+  | { type: 'state'; state: ShowState; spine: SpineSlide[]; spineError: string | null; clients: number; ai: AiInfo; bank: { id: string; question: string }[] }
   | { type: 'error'; message: string }
   | { type: 'saved'; file: string };
