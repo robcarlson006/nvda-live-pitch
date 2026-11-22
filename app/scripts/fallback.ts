@@ -18,7 +18,7 @@ const { browser, page } = await startBrowser();
 const pages: { file: string; title: string; kind: 'slide' | 'answer' }[] = [];
 const shot = async (name: string, title: string, kind: 'slide' | 'answer') => {
   const file = `${String(pages.length).padStart(2, '0')}-${name}.jpg`;
-  await page.screenshot({ path: path.join(IMG, file), type: 'jpeg', quality: 84 });
+  await page.screenshot({ path: path.join(IMG, file), type: 'jpeg', quality: 62 });
   pages.push({ file, title, kind });
 };
 try {

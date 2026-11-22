@@ -1,0 +1,6 @@
+e-merge                    1/5 right · late p50 27 · false 2 · tangents 0/0 (+0 false) · 25 calls
+     missed: 0:four-layers (was standby) | 1:software (was chips) | 2:supply (was connections) | 3:catch-up (was supply)
+     false:  1(software): → chips [live] | 2(supply): → connections [live]
+f-swap                     4/6 right · late p50 22 · false 0 · tangents 0/0 (+0 false) · 26 calls
+     missed: 1:software (was connections) | 5:renewables (was scope3)
+[follow] ENOENT: no such file or directory, rename '/Users/robmcarlson/Developer/nvidia-pitch-loop/loop/eval-spend.json.tmp' -> '/Users/robmcarlson/Developer/nvidia-pitc

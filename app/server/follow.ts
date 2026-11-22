@@ -67,7 +67,7 @@ export class Follow {
     this.d.log?.(`${v.action}${v.slide ? ` ${v.slide}` : ''} +${v.covered} (${votes}) ${this.director.ms} ms`);
     const backed = v.action === 'slide' && evidence(this.director.recent(22), spine)?.id === v.slide;
     // Two moves in quick succession need more than one opinion: one sentence must never run the deck forward.
-    if (v.action === 'slide' && this.director.sinceMove < 14 && !backed && votes < 2) return;
+    if (v.action === 'slide' && this.director.sinceMove < 9 && !backed && votes < 2) return;
     if (!accept(v, s, spine, votes, backed)) return;
     if (v.action === 'tangent') return this.d.tangent(this.director.recent());
     if (v.action === 'slide' && this.clock() < this.held) return;
