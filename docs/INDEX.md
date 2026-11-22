@@ -1,0 +1,11 @@
+# Map of the repo
+- `start.sh` run the show · `docs/RUNBOOK.md` pitch day · `docs/PROGRESS.md` status and risks
+- `docs/script/spine.yaml` the slides and the script (`say`) · `docs/qa-bank/answers.yaml` prepared answers
+- `docs/financials/` **DEFEND.md** (learn this), AUDIT.md (what was checked), MODEL.md (the spreadsheet)
+- `data/model/NVDA_DCF.xlsx` the model · `data/model/assumptions.json` the team's choices
+- `data/bloomberg-raw/` never edit · `data/clean/` what slides read (made by `npm run data`)
+- `fallback/` static deck + PDF · `rehearsal/` run logs, and `evals/` transcripts for measuring the follower
+- `app/server/` index (wiring), state (show), director + follow + evidence (following speech), ai + research + bank (answers), deepgram
+- `app/src/` Stage, Operator, `cores/` (engine = GPU particles, scenes = what they draw, Field = joins them), Chart, CoreArray (backup visuals)
+- In `app/`: `npm run dev | build | start | test | typecheck | check` (full gate) · `data` · `xlsx` · `xlsx-check` · `shoot` (screenshots + frame times) · `follow-eval -- dev|holdout` · `fallback`
+- `loop/` the overnight loop: MORNING.md (read first), STATE.md (log), BOARD.md (tickets), NEEDS_ROB.md (your decisions)

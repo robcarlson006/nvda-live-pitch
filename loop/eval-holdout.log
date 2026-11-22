@@ -16,3 +16,13 @@ f-swapped-order            11/14 right · late p50 23 · false 4 · tangents 0/0
 g-fast-with-pauses         10/11 right · late p50 21 · false 2 · tangents 0/0 (+0 false) · 96 calls
      missed: 10:four-layers (was chips)
      false:  10(four-layers): → chips [live] | 11(chips): → software [live]
+a-full-paraphrase          28/31 right · late p50 23 · false 7 · tangents 0/0 (+0 false) · 304 calls
+     missed: 7:four-layers (was chips) | 14:bubble (was different) | 20:handoff (was beats)
+     false:  7(four-layers): → chips [live] | 14(bubble): → different [live] | 20(handoff): → last-quarter [live] | 21(last-quarter): → beats [live] | 21(last-quarter): → segments [live] | 21(last-quarter): → peers [live] | 21(last-quarter): → valuation [live]
+h-fillers-banter           7/7 right · late p50 31 · false 1 · tangents 0/0 (+0 false) · 91 calls
+     false:  10(already-doing): → revenue-long [live]
+i-asr-garble               14/14 right · late p50 19 · false 1 · tangents 0/0 (+0 false) · 110 calls
+     false:  13(close): → built-live [live]
+j-tangents                 8/10 right · late p50 24 · false 1 · tangents 2/2 (+1 false) · 101 calls
+     missed: 0:four-layers (was standby) | 11:handoff (was last-quarter)
+     false:  11(handoff): → last-quarter [live]

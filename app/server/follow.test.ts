@@ -165,3 +165,15 @@ test('accept: the next slide at once, further or backwards twice, switched-off s
   assert.equal(accept(verdict('slide', 'near-bust'), { ...s, skipped: ['near-bust'] }, spine, 5), false);
   assert.equal(accept(verdict('stay'), s, spine, 9), false);
 });
+
+test('follow: one sentence never runs the deck forward several slides', async () => {
+  let n = 0;
+  const order = ['beats', 'segments', 'peers', 'valuation'];
+  const r = rig(async () => reply(verdict('slide', order[Math.min(n++, 3)], 0)));
+  r.go({ type: 'goto', index: idx('last-quarter') });
+  r.tick(10_000);
+  await r.say('and here is the thing about it now', 700);
+  await r.say('you can see where it is going', 700);
+  await r.say('and that is how it goes', 700);
+  assert.ok(['beats', 'last-quarter'].includes(r.at()), r.at());
+});
