@@ -220,7 +220,7 @@
     - text: Amazon, Microsoft and Meta are trying too, and still buy NVIDIA
       cue: still buy
     - text: "NVIDIA takes about {{research_facts_unverified | Share of AI chip spending | value}} of all AI chip spending"
-      cue: chip spending
+      cue: takes about
   say: "Has anyone caught up? Google has come closest, with its own chips, software and networking. That's eleven years and tens of billions of dollars. Amazon, Microsoft and Meta are trying too, and they all still buy NVIDIA. Microsoft is its biggest customer. NVIDIA still trains over 90 percent of AI models and takes about 80 percent of all AI chip spending. To compete with NVIDIA, you have to be one of the richest companies on earth, with a decade to spare."
 
 # Beat 14. Not one person ✂ (check with Panshul so it isn't duplicated)
@@ -321,7 +321,7 @@
   title: Neither superpower is going to stop.
   bullets:
     - text: "China's official plan: lead the world in AI by 2030"
-      cue: lead the world
+      cue: official plan
     - text: The US restricts which AI chips can be sold to China
       cue: restricts
   say: "And the world's two superpowers know it. China's official plan is to lead the world in AI by 2030. The US treats AI chips as so strategic that it restricts which ones can be sold to China. Neither side is going to stop."
@@ -385,7 +385,7 @@
 
 - id: valuation
   speaker: Panshul
-  cues: [what is it worth, our valuation, discounted cash flow]
+  cues: [what is it worth, our valuation, discounted cash flow, cash flow model, built a five year]
   layout: chart
   title: Even on Bloomberg's own cautious discount rate, the shares are worth more
   chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Base case }
@@ -399,9 +399,8 @@
   bullets:
     - text: Jensen Huang resigned as CEO on 12 November 2026
     - text: CFO Colette Kress is interim CEO; the board has appointed its first-ever chair
-      cue: interim
+      cue: founder resigned
     - text: SEC and California investigations have been reported
-      cue: investigation
   say: Let's start with the hard one. Governance. The founder resigned last week. VERIFY these facts against a major news source on the morning of the pitch.
   sources: [CNBC, 12 Nov 2026; NBC News, Nov 2026]
 
@@ -423,7 +422,7 @@
   bullets:
     - text: Most emissions come from making the chips, at partners like TSMC
     - text: They are rising as output rises
-      cue: rising
+      cue: they rise
   chart: { type: line, datasetKey: nvda_emissions, series: [Scope 3], highlight: FY26 }
   say: But the honest number is the supply chain, Scope 3. Most emissions come from manufacturing at partners like TSMC, and they rise as NVIDIA sells more.
 
