@@ -121,6 +121,12 @@ test('a rehearsal run logs each slide, how it got there, and time spent', () => 
   assert.equal(s.rehearsal, null);
 });
 
+test('numbers in passing do not add up to a cue', () => {
+  assert.equal(spellOut('In 2006, 249,000 of 1.4, 1993'), 'In two thousand and six, two hundred and forty nine thousand of one point four, nineteen ninety three');
+  const s = run(emptyState(), { type: 'goto', index: idx('near-bust') }, say('of two hundred and fifty thousand made about two hundred and forty nine thousand came back nvidia had less than six months of cash'));
+  assert.equal(spine[s.index].id, 'near-bust');
+});
+
 test('cue scoring', () => {
   assert.deepEqual(words('Data Centre, 2006!'), ['data', 'center', '2006']);
   assert.equal(cueScore('the CEO', words('so the ceo resigned')), 1);
@@ -157,18 +163,35 @@ test("reading a slide's script never triggers the next two slides", () => {
   for (const [name, order] of orders)
     order.forEach((a, i) => {
       for (const b of order.slice(i + 1, i + 3))
-        for (const win of windows(a.say ?? ''))
+        for (const win of [...windows(a.say ?? ''), ...windows(spellOut(a.say ?? ''))])
           for (const cue of b.cues) assert.ok(cueScore(cue, win) < 0.75, `${name}: reading "${a.id}" fires "${b.id}" via "${cue}"`);
     });
 });
 
+const ONES = 'zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen'.split(' ');
+const TENS = '- - twenty thirty forty fifty sixty seventy eighty ninety'.split(' ');
+function spoken(n: number): string {
+  if (n < 20) return ONES[n];
+  if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? ` ${ONES[n % 10]}` : '');
+  if (n < 1000) return `${ONES[Math.floor(n / 100)]} hundred${n % 100 ? ` and ${spoken(n % 100)}` : ''}`;
+  return `${spoken(Math.floor(n / 1000))} thousand${n % 1000 ? `${n % 1000 < 100 ? ' and' : ''} ${spoken(n % 1000)}` : ''}`;
+}
+/** Deepgram writes numbers as words: "1993" → "nineteen ninety three", "249,000" → "two hundred and forty nine thousand". */
+const spellOut = (text: string) =>
+  text.replace(/\d[\d,]*(\.\d+)?/g, (m) => {
+    const [whole, dec] = m.replace(/,/g, '').split('.');
+    const tail = m.endsWith(',') ? ',' : '';
+    if (/^19\d\d$/.test(whole)) return `nineteen ${spoken(Number(whole.slice(2)))}${tail}`;
+    return spoken(Number(whole)) + (dec ? ` point ${[...dec].map((d) => ONES[Number(d)]).join(' ')}` : '') + tail;
+  });
+
 const sentences = (text: string) => text.match(/[^.?!]+[.?!]*/g)!.map((t) => t.trim()).filter(Boolean);
 
 /** Read Rob's script out loud, one sentence per speech-to-text result, and check every slide builds in order. */
-function readAloud(order: SpineSlide[], from: number, to: number, mode: 'final' | 'interim', start: ShowState) {
+function readAloud(order: SpineSlide[], from: number, to: number, mode: 'final' | 'interim', start: ShowState, read = (t: string) => t) {
   let s = start;
   for (const slide of order.slice(from, to + 1)) {
-    for (const sentence of sentences(slide.say!)) {
+    for (const sentence of sentences(slide.say!).map(read)) {
       if (mode === 'interim') {
         const w = sentence.split(' ');
         for (let n = 1; n <= w.length; n++) s = run(s, interim(w.slice(0, n).join(' ')));
@@ -182,13 +205,14 @@ function readAloud(order: SpineSlide[], from: number, to: number, mode: 'final' 
 
 for (const [name, order] of orders)
   for (const mode of ['final', 'interim'] as const)
-    test(`reading Rob's script aloud builds every slide in order (${name}, ${mode} results)`, () => {
+    for (const [how, read] of [['as digits', (t: string) => t], ['as words', spellOut]] as const)
+    test(`reading Rob's script aloud builds every slide in order (${name}, ${mode} results, numbers ${how})`, () => {
       const skipped = name === 'full script' ? [] : optional;
       const base = { ...emptyState(), skipped };
-      readAloud(order, 0, order.findIndex((s) => s.id === 'handoff'), mode, base);
+      readAloud(order, 0, order.findIndex((s) => s.id === 'handoff'), mode, base, read);
       // The close, picking up after Mi'kael's last slide.
       const before = order.findIndex((s) => s.id === 'built-live') - 1;
-      readAloud(order, before + 1, order.length - 1, mode, run(base, { type: 'goto', index: idx(order[before].id) }));
+      readAloud(order, before + 1, order.length - 1, mode, run(base, { type: 'goto', index: idx(order[before].id) }), read);
     });
 
 test('after a script edit the live slide is found again by id', () => {

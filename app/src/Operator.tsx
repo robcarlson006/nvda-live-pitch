@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { elementCount, isUnverified, resolveText, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { demoSlides } from './demoSlides.ts';
-import { useSpeech } from './useSpeech.ts';
+import { useSpeech, type Engine } from './useSpeech.ts';
 import { useDatasets, useNavKeys, useShow } from './useShow.ts';
 
 const TARGET_S = 240; // soft target for Rob's opening (beats 1–21)
@@ -63,6 +63,11 @@ function Timer({ state, spine, send }: { state: ShowState | null; spine: SpineSl
   );
 }
 
+function MicMeter({ level }: { level: () => number }) {
+  useNow(100); // re-render ten times a second
+  return <meter className="op-meter" min={0} max={0.25} value={level()} title="Microphone level" />;
+}
+
 export function Operator() {
   const { state, spine, spineError, connected, clients, error, notice, send } = useShow();
   const datasets = useDatasets();
@@ -84,7 +89,9 @@ export function Operator() {
         <h2>Operator</h2>
         <span className={`pill ${connected ? 'ok' : 'bad'}`}>Server {connected ? 'connected' : 'offline'}</span>
         <span className="pill">{clients} screens</span>
-        <span className={`pill ${mic.listening ? 'ok' : mic.problem ? 'bad' : ''}`}>Mic {mic.listening ? `on (${mic.lang})` : 'off'}</span>
+        <span className={`pill ${mic.listening ? 'ok' : mic.problem || mic.on ? 'bad' : ''}`}>
+          Mic {mic.listening ? `on: ${mic.engine === 'deepgram' ? 'Deepgram' : 'Chrome'} (${mic.lang})` : mic.on ? 'connecting…' : 'off'}
+        </span>
         <label className="pill toggle">
           <input type="checkbox" checked={state?.autoCue ?? false} onChange={(e) => send({ type: 'autoCue', on: e.target.checked })} /> Follow speech
         </label>
@@ -127,12 +134,12 @@ export function Operator() {
 
       <section className="op-speech">
         <div className="op-mic">
-          {mic.listening ? (
+          {mic.on ? (
             <button className="danger" onClick={mic.stop}>
               Stop mic
             </button>
           ) : (
-            <button className="primary" onClick={mic.start} disabled={!mic.supported}>
+            <button className="primary" onClick={mic.start}>
               Start mic
             </button>
           )}
@@ -143,7 +150,17 @@ export function Operator() {
               <option value="en-US">English (US)</option>
             </select>
           </label>
-          <span className="op-meta">Chrome speech-to-text: free, needs internet. Speak, and the deck follows.</span>
+          <label className="op-meta">
+            Engine{' '}
+            <select value={mic.engine} onChange={(e) => mic.changeEngine(e.target.value as Engine)}>
+              <option value="deepgram">Deepgram</option>
+              <option value="chrome" disabled={!mic.supported}>
+                Chrome (backup)
+              </option>
+            </select>
+          </label>
+          {mic.on && mic.engine === 'deepgram' && <MicMeter level={mic.level} />}
+          <span className="op-meta">{mic.device || 'Both engines need internet. Speak, and the deck follows.'}</span>
         </div>
         {mic.problem && <div className="op-error">{mic.problem}</div>}
         <div className="label">Heard since last cue</div>

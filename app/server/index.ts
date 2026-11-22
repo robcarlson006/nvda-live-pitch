@@ -3,6 +3,7 @@ import http from 'node:http';
 import path from 'node:path';
 import { WebSocketServer, WebSocket } from 'ws';
 import type { ServerMsg, SpineSlide } from '../shared/schema.ts';
+import { deepgramKey, deepgramUrl, relay } from './deepgram.ts';
 import { apply, loadDatasets, loadSpine, loadState, relocate, runReport, saveState, SPINE_FILE } from './state.ts';
 
 const PORT = Number(process.env.PORT ?? 5173);
@@ -52,7 +53,24 @@ const server = http.createServer((req, res) => {
   frontend(req, res);
 });
 
-const wss = new WebSocketServer({ server, path: '/ws' });
+const wss = new WebSocketServer({ noServer: true });
+const audio = new WebSocketServer({ noServer: true, maxPayload: 64 * 1024 });
+const LOOPBACK = new Set(['127.0.0.1', '::1', '::ffff:127.0.0.1']);
+
+server.on('upgrade', (req, socket, head) => {
+  const url = new URL(req.url ?? '/', 'http://localhost');
+  if (url.pathname === '/ws') return wss.handleUpgrade(req, socket, head, (ws) => wss.emit('connection', ws, req));
+  if (url.pathname !== '/audio') return socket.destroy();
+  // /audio spends Deepgram credit: only this laptop, and only our own page (not some other site open in the browser).
+  const ours = req.headers.origin === `http://${req.headers.host}`;
+  if (!ours || !LOOPBACK.has(req.socket.remoteAddress ?? '')) return socket.destroy();
+  audio.handleUpgrade(req, socket, head, (ws) => {
+    const lang = url.searchParams.get('lang') ?? 'en-GB';
+    console.log(`[mic] on (${lang})`);
+    relay(ws, { key: deepgramKey(), url: deepgramUrl(lang) });
+  });
+});
+
 const send = (ws: WebSocket, msg: ServerMsg) => ws.readyState === WebSocket.OPEN && ws.send(JSON.stringify(msg));
 function broadcast() {
   wss.clients.forEach((ws) => send(ws, { type: 'state', state, spine, spineError, clients: wss.clients.size }));

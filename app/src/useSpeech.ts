@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
+import { startDeepgram } from './deepgramMic.ts';
 
 /**
- * Chrome's built-in speech-to-text (Web Speech API). Free and needs no key, but Chrome sends the audio
- * to Google to transcribe, so it needs internet. A stand-in until M4 (a proper streaming service).
+ * The operator's microphone. Two engines, same output:
+ * - Deepgram, through our server (needs a key in app/.env).
+ * - Chrome's built-in speech-to-text: the backup. Free, no key, but Chrome sends the audio to Google.
+ * If Deepgram can't be used, the mic switches to Chrome by itself and says so.
  * Chrome ends a session after a pause or about a minute, so while the mic is on it restarts by itself.
  */
 type Rec = {
@@ -21,42 +24,112 @@ type RecCtor = new () => Rec;
 
 const Ctor = (): RecCtor | undefined => (window as any).SpeechRecognition ?? (window as any).webkitSpeechRecognition;
 export type Lang = 'en-GB' | 'en-US';
+export type Engine = 'deepgram' | 'chrome';
+
+const remember = (k: string, v: string) => {
+  try {
+    localStorage.setItem(k, v);
+  } catch {
+    /* private window */
+  }
+};
 
 export function useSpeech(onText: (text: string, final: boolean) => void) {
-  const [listening, setListening] = useState(false);
+  const [on, setOn] = useState(false); // the operator wants the mic on
+  const [listening, setListening] = useState(false); // it is actually hearing
+  const [engine, setEngine] = useState<Engine>('deepgram');
   const [lang, setLang] = useState<Lang>(() => (localStorage.getItem('micLang') as Lang) || 'en-GB');
   const [interim, setInterim] = useState('');
   const [problem, setProblem] = useState<string | null>(null);
+  const [device, setDevice] = useState('');
   const want = useRef(false);
   const rec = useRef<Rec | null>(null);
+  const dg = useRef<ReturnType<typeof startDeepgram> | null>(null);
+  const pending = useRef(''); // the interim text not yet confirmed by a final result
   const cb = useRef(onText);
   cb.current = onText;
   const supported = !!Ctor();
 
-  const open = (language: Lang) => {
+  const emit = (text: string, final: boolean) => {
+    pending.current = final ? '' : text;
+    setInterim(pending.current);
+    cb.current(text, final);
+  };
+  /** The stream broke mid-utterance: its final result will never come, so close it with what we have. */
+  const flush = () => {
+    if (pending.current) emit(pending.current, true);
+  };
+
+  const closeAll = () => {
+    flush();
+    dg.current?.stop();
+    dg.current = null;
+    const r = rec.current;
+    rec.current = null;
+    r?.abort();
+    setListening(false);
+    setDevice('');
+  };
+  const off = () => {
+    want.current = false;
+    setOn(false);
+    closeAll();
+  };
+
+  const openDeepgram = (language: Lang) => {
+    const session: ReturnType<typeof startDeepgram> = startDeepgram(language, {
+      onText: (text, final) => dg.current === session && emit(text, final),
+      onStatus: (s) => {
+        if (dg.current !== session) return;
+        setListening(s.state === 'listening');
+        setDevice(s.device ? `Mic: ${s.device}` : '');
+        if (s.state === 'listening') return setProblem(null);
+        flush();
+        if (s.state === 'reconnecting') return setProblem('Deepgram connection lost. Reconnecting… Use Next / the clicker meanwhile.');
+        if (s.state === 'nomic') {
+          off();
+          return setProblem(s.message ?? 'Microphone problem');
+        }
+        // Deepgram can't be used: carry on with Chrome.
+        closeAll();
+        if (!supported) {
+          off();
+          return setProblem(`${s.message}. No backup in this browser: use Chrome, or Next / the clicker.`);
+        }
+        setEngine('chrome');
+        openChrome(language, `${s.message}. Switched to Chrome speech-to-text.`);
+      },
+    });
+    dg.current = session;
+  };
+
+  const openChrome = (language: Lang, note: string | null = null) => {
     const C = Ctor();
-    if (!C) return setProblem('This browser has no speech recognition. Use Chrome.');
-    rec.current?.abort();
+    if (!C) {
+      off();
+      return setProblem('This browser has no speech recognition. Use Chrome.');
+    }
+    setProblem(note);
     const r = new C();
     r.lang = language;
     r.continuous = true;
     r.interimResults = true;
     r.onstart = () => {
+      if (rec.current !== r) return;
       setListening(true);
-      setProblem(null);
+      setProblem(note);
     };
     r.onresult = (e) => {
+      if (rec.current !== r) return;
       for (let i = e.resultIndex; i < e.results.length; i++) {
         const res = e.results[i];
         const text = res[0].transcript.trim();
-        if (!text) continue;
-        cb.current(text, res.isFinal);
-        setInterim(res.isFinal ? '' : text);
+        if (text) emit(text, res.isFinal);
       }
     };
     r.onerror = (e) => {
-      if (e.error === 'no-speech' || e.error === 'aborted') return; // normal; onend restarts
-      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') want.current = false;
+      if (rec.current !== r || e.error === 'no-speech' || e.error === 'aborted') return; // normal; onend restarts
+      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') off();
       setProblem(
         e.error === 'not-allowed' ? 'Microphone blocked. Allow it in the address bar, then press Start mic.'
         : e.error === 'network' ? 'Speech service unreachable (Chrome needs internet for this). Use Next / the clicker.'
@@ -65,8 +138,9 @@ export function useSpeech(onText: (text: string, final: boolean) => void) {
       );
     };
     r.onend = () => {
-      setInterim('');
-      if (want.current && rec.current === r) setTimeout(() => want.current && rec.current === r && safeStart(r), 250);
+      if (rec.current !== r) return;
+      flush();
+      if (want.current) setTimeout(() => want.current && rec.current === r && safeStart(r), 250);
       else setListening(false);
     };
     rec.current = r;
@@ -81,30 +155,33 @@ export function useSpeech(onText: (text: string, final: boolean) => void) {
     }
   };
 
+  const open = (e: Engine, l: Lang) => {
+    closeAll();
+    setProblem(null);
+    if (e === 'deepgram') openDeepgram(l);
+    else openChrome(l);
+  };
   const start = () => {
     want.current = true;
-    open(lang);
-  };
-  const stop = () => {
-    want.current = false;
-    rec.current?.stop();
-    setListening(false);
-    setInterim('');
+    setOn(true);
+    open(engine, lang);
   };
   const changeLang = (l: Lang) => {
     setLang(l);
-    try {
-      localStorage.setItem('micLang', l);
-    } catch {
-      /* private window */
-    }
-    if (want.current) open(l);
+    remember('micLang', l);
+    if (want.current) open(engine, l);
+  };
+  const changeEngine = (e: Engine) => {
+    setEngine(e);
+    if (want.current) open(e, lang);
   };
 
   useEffect(() => () => {
     want.current = false;
+    dg.current?.stop();
     rec.current?.abort();
   }, []);
 
-  return { supported, listening, lang, changeLang, interim, problem, start, stop };
+  const level = () => dg.current?.level() ?? 0;
+  return { supported, on, listening, engine, changeEngine, lang, changeLang, interim, problem, device, level, start, stop: off };
 }

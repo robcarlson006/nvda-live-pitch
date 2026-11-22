@@ -1,5 +1,5 @@
 /**
- * Fuzzy cue matching. A cue fires when (nearly) all of its meaningful words appear in what was just said.
+ * Fuzzy cue matching. A cue fires when (nearly) all of its meaningful words appear close together in what was just said.
  * Speech-to-text slips by a letter are tolerated on longer words ("Blackwel" still matches "Blackwell").
  */
 const STOP = new Set('a an the and of to is it in that this we our you on for at as so be are was its i us with by from'.split(' '));
@@ -28,12 +28,27 @@ function lev(a: string, b: string): number {
   return d[b.length];
 }
 
-/** Share of the cue's meaningful words found in the heard words (0..1). */
-export function cueScore(cue: string, heard: string[]): number {
+const SLACK = 3; // extra words (ums, fillers) allowed in among a cue's words
+
+/**
+ * Best match of the cue in the heard words: the share of its meaningful words found close together, and where that match ends.
+ * Close together matters: spoken numbers are full of common words, so "two … thousand … six" scattered over a paragraph isn't a cue.
+ */
+function match(cue: string, heard: string[]): { score: number; end: number } {
   const need = needed(cue);
-  if (!need.length) return 0;
-  return need.filter((t) => find(t, heard) >= 0).length / need.length;
+  const span = words(cue).length + SLACK;
+  let best = { score: 0, end: -1 };
+  if (!need.length) return best;
+  for (let i = 0; i < Math.max(1, heard.length - span + 1); i++) {
+    const win = heard.slice(i, i + span);
+    const at = need.map((t) => find(t, win)).filter((k) => k >= 0);
+    if (at.length / need.length > best.score) best = { score: at.length / need.length, end: i + Math.max(...at) };
+  }
+  return best;
 }
+
+/** Share of the cue's meaningful words found close together in the heard words (0..1). */
+export const cueScore = (cue: string, heard: string[]): number => match(cue, heard).score;
 
 function needed(cue: string): string[] {
   const all = words(cue);
@@ -60,8 +75,8 @@ export function findCue<T>(heard: string | string[], candidates: Candidate<T>[],
   const offset = Math.max(0, all.length - WINDOW);
   const recent = all.slice(offset);
   for (const c of candidates) {
-    if (cueScore(c.cue, recent) < threshold) continue;
-    return { ...c, end: offset + Math.max(...needed(c.cue).map((t) => find(t, recent))) };
+    const m = match(c.cue, recent);
+    if (m.score >= threshold) return { ...c, end: offset + m.end };
   }
   return null;
 }

@@ -8,7 +8,7 @@ cd app && npm install && npm run dev
 ```
 - Stage (projector): http://localhost:5173/stage. Press `f` for fullscreen.
 - Operator (laptop screen): http://localhost:5173/operator
-- Rehearse by speaking: open the operator page in **Chrome**, press **Start mic**, allow the microphone, then **Start rehearsal run**. Chrome's speech-to-text is free but needs internet.
+- Rehearse by speaking: open the operator page in **Chrome**, press **Start mic**, allow the microphone, then **Start rehearsal run**. Uses Deepgram (key in `app/.env`), with Chrome's speech-to-text as the backup. Both need internet.
 - Checks: `npm test` and `npm run typecheck`
 - For the pitch itself: `npm run build && npm start` (no dev tooling running).
 
@@ -102,6 +102,15 @@ cd app && npm install && npm run dev
     - Reading Rob's whole script aloud, sentence by sentence and word by word, builds every slide and bullet in order, with and without the ✂ beats.
   - Changed a team slide: `governance` no longer has the cue "the ceo". Panshul's `peers` script says "the CEO resigned", which would have jumped straight to the ESG section.
 
+- **M4: Deepgram microphone** (22 Nov)
+  - Operator browser captures 16 kHz audio (`src/deepgramMic.ts`, `public/pcm-worklet.js`) → our server's `/audio` socket → Deepgram nova-3 (`server/deepgram.ts`) → the same `transcript` message as before. The key stays on the server and is read at each mic start.
+  - Key terms (CUDA, ROCm, Mellanox, names, finance and ESG words) are sent to Deepgram. Number formatting is off on purpose: it rewrites words between interim and final text.
+  - **If it breaks:** audio is held for up to 5 s and the connection retried, including a connection that dies silently. After about 6 s, or at once on a bad key / no credit / no key, the mic switches itself to Chrome and says so. It does not switch back by itself: pick Deepgram in the Engine list.
+  - A half-heard sentence is kept when the stream breaks (it could previously block later cues).
+  - `/audio` only accepts this laptop and our own page. Operator panel: engine choice, level meter, name of the microphone in use.
+  - **Cue matcher fix:** a cue's words must now be heard close together. Deepgram writes numbers as words, and "two thousand … six" scattered through beat 2 was firing beat 4.
+  - 37 tests: the relay against a fake Deepgram, and the whole script read with numbers as words.
+
 ## Data received
 - NVDA FA, annual FY1998–FY2026 and quarterly FY24 Q3–FY27 Q3, both including ESG.
 - Peer FA: AMD, INTC, AVGO, TSMC (TSMC in both TWD and USD).
@@ -110,7 +119,7 @@ cd app && npm install && npm run dev
 
 ## Next
 - Rob: rehearse with the mic, then cut to 3–4 minutes (untick ✂ beats first). Fix cues that misfire from the rehearsal logs.
-- M4 (mic → Deepgram → transcript into the same `transcript` message), M7 (fallback), M6 (Q&A), M8 (finale).
+- M7 (fallback), M6 (Q&A), M8 (finale).
 - Team: rewrite `say` and cues in docs/script/spine.yaml in your own words.
 - When the Excel exports arrive (HP, ANR, SPLC): add parsers to `build-data.ts`, then rerun `npm run data`.
 
@@ -118,7 +127,7 @@ cd app && npm install && npm run dev
 - **Unverified figures on Rob's slides** (amber on the operator panel): CUDA spend ~$0.5bn/yr (beat 5), networking revenue $31bn (beat 11), supply commitments $279bn (beat 12), ~90% of AI training and ~80% of AI chip spend (beat 13), and "zero humans" (beat 19). Find primary sources or cut them before Wednesday.
 - **Beat 15 says "fibre boom at its peak: 1.4 percent",** but the chart shows each build-out's *average* (fibre 1.1%), so it is like-for-like with the AI 3.6% average. Say "1.1 percent a year on average", or the board hears one number and sees another.
 - **Beat 16:** the research quotes NVIDIA at ~22.7x forward earnings; Bloomberg (on the slide) says 14.1x. Both are "a fraction of 140x", but Panshul's numbers must match.
-- **Chrome speech-to-text sends audio to Google and needs internet.** On the day it is a rehearsal tool until M4; the clicker/Next is the fallback.
+- **Both speech engines need internet** (audio goes to Deepgram, or to Google if on the Chrome backup). If the venue Wi-Fi fails, use the clicker/Next.
 - **The model's WACC (12%) and the scenario choices are team assumptions.** Mi'kael must own them and be able to defend them (see assumptions.json).
 - **Scope 3 (supply chain) emissions rose from 6.9 to 10.7 million t CO2e in FY26.** Own operations are on 100% renewable energy, but the ESG board will see Scope 3.
 - **Emissions per $ of revenue flatters NVIDIA vs TSMC/Intel,** because NVIDIA doesn't own factories: its manufacturing emissions are in TSMC's numbers and NVIDIA's own Scope 3. Say so if we show it.
