@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { lookup, resolveText, slideSources, type Dataset, type Slide } from '../shared/schema.ts';
+import { elementCount, lookup, resolveText, slideSources, type Dataset, type Slide, type SpineSlide } from '../shared/schema.ts';
 import { Chart } from './Chart.tsx';
-import { CoreArray } from './CoreArray.tsx';
+import { Field } from './cores/Field.tsx';
 import { useDatasets, useNavKeys, useShow } from './useShow.ts';
 
 // Elements revealed together come in one after another, this far apart (seconds).
@@ -14,14 +14,25 @@ function statValue(slide: Slide, datasets: Record<string, Dataset>): string | un
 }
 
 export function Stage() {
-  const { state, send } = useShow();
+  const { state, send, spine, ai, pending, live } = useShow();
+  const [calm, setCalm] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   const datasets = useDatasets();
-  useNavKeys(send, state);
+  useNavKeys(send, state, pending);
   const slide = state?.live ?? null;
+  // A board question: the stage listens, then says honestly where it is looking, so the wait is part of the show.
+  const waiting = state?.drafts.some((d) => d.kind === 'answer');
+  const asking =
+    state?.mode === 'question' ? 'Listening to your question.'
+    : ai?.busy === 'research' ? 'Not in our data. Searching the web.'
+    : ai?.busy === 'answer' ? 'Looking it up in our data.'
+    : waiting && !/^(gen|qa)-/.test(slide?.id ?? '') ? 'Checking the answer.'
+    : '';
+  const seen = (state?.seen ?? []).map((id) => spine.find((s) => s.id === id)).filter((s) => !!s);
   const glyph = slide ? (slide.layout === 'number' ? statValue(slide, datasets) : undefined) : 'NVIDIA';
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'm') setCalm((c) => !c);
       if (e.key === 'f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
     };
     window.addEventListener('keydown', onKey);
@@ -29,9 +40,39 @@ export function Stage() {
   }, []);
 
   return (
-    <div className="stage">
-      <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length} effect={slide?.effect} reveal={state?.reveal ?? 0} />
-      {slide && <SlideView key={state!.liveSince} slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} />}
+    <div className={`stage${calm ? ' calm' : ''}`}>
+      <Field buildKey={state?.liveSince ?? 0} slide={slide} reveal={state?.reveal ?? 0} datasets={datasets} asking={!!asking} seen={seen} calm={calm} live={live} glyph={glyph} />
+      {asking ? (
+        <main className="slide layout-statement has-effect" key={asking}>
+          <h1 className="statement"><span className="word" style={{ '--at': '0.1s' } as CSSProperties}>{asking}</span></h1>
+        </main>
+      ) : (
+        slide && <SlideView key={state!.liveSince} slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} />
+      )}
+      {slide?.id === 'built-live' && !asking && state && (
+        <div className="session">
+          <span><b>{state.seen.length}</b> slides built</span>
+          {state.words > 0 && <span><b>{state.words.toLocaleString('en-GB')}</b> words heard</span>}
+          {state.startedAt > 0 && state.liveSince - state.startedAt > 60_000 && <span><b>{Math.round((state.liveSince - state.startedAt) / 60_000)}</b> {Math.round((state.liveSince - state.startedAt) / 60_000) === 1 ? 'minute' : 'minutes'}</span>}
+        </div>
+      )}
+      {slide && <LoopStrip spine={spine} seen={state!.seen} current={slide.id} />}
+    </div>
+  );
+}
+
+/** The loop pedal: every slide shown so far leaves a layer here, as tall as the number of things built on it. */
+function LoopStrip({ spine, seen, current }: { spine: SpineSlide[]; seen: string[]; current: string }) {
+  return (
+    <div className="loop" aria-hidden>
+      {spine.map((s, i) => {
+        const on = seen.includes(s.id);
+        return (
+          <span key={s.id} className={`${on ? 'on' : ''}${s.id === current ? ' now' : ''}${i && spine[i - 1].speaker !== s.speaker ? ' gap' : ''}`}>
+            {on && Array.from({ length: Math.min(5, elementCount(s)) }, (_, k) => <i key={k} />)}
+          </span>
+        );
+      })}
     </div>
   );
 }
@@ -123,7 +164,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   );
 
   return (
-    <main className={`slide layout-${slide.layout}${slide.bullets.length ? ' has-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}`}>
+    <main className={`slide layout-${slide.layout} id-${slide.id}${slide.bullets.length ? ' has-points' : ''}${slide.effect || slide.icons?.length ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}`}>
       {slide.layout === 'statement' && (
         <>
           {title}

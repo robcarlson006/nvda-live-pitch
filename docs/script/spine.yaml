@@ -27,6 +27,8 @@
 # Beat 1. Cold open
 - id: founding
   speaker: Rob
+  effect: morph
+  icons: [coffee, laptop, game]
   cues: ["1993", nineteen ninety three, three engineers, booth at a denny's, booth at a dennys]
   layout: statement
   title: "1993. A booth at Denny's."
@@ -41,6 +43,7 @@
 # Beat 2. Nearly going bust ✂
 - id: near-bust
   speaker: Rob
+  effect: tiles
   optional: true
   cues: [first chip the nv1, nv1, nv one, n v one, wrong technology]
   layout: number
@@ -56,6 +59,8 @@
 # Beat 3. The first GPU
 - id: first-gpu
   speaker: Rob
+  effect: morph
+  icons: [chip, game, trophy, star]
   cues: ["1999", nineteen ninety nine, geforce 256, geforce, g force]
   layout: statement
   title: "1999: the world's first GPU."
@@ -134,6 +139,7 @@
 # Beat 8. Four layers
 - id: four-layers
   speaker: Rob
+  effect: layers
   cues: [gold standard, why is nvidia the gold, the gold standard]
   layout: statement
   title: Why NVIDIA is the gold standard.
@@ -162,6 +168,7 @@
 # Beat 10. Software
 - id: software
   speaker: Rob
+  icons: [code]
   cues: [two software, 2 software, iphone versus android, iphone vs android]
   layout: number
   title: "Two: software. It just works."
@@ -210,6 +217,7 @@
 # Beat 13. Can anyone catch up?
 - id: catch-up
   speaker: Rob
+  effect: waffle
   cues: [has anyone caught up, anyone caught up, caught up]
   layout: number
   title: Has anyone caught up?
@@ -226,6 +234,8 @@
 # Beat 14. Not one person ✂ (check with Panshul so it isn't duplicated)
 - id: not-one-person
   speaker: Rob
+  effect: morph
+  icons: [people, person, chip, code, people]
   optional: true
   cues: [isn't one person, isnt one person, not one person]
   layout: statement
@@ -255,6 +265,7 @@
 # Beat 16. Why it's different ✂
 - id: different
   speaker: Rob
+  effect: compare
   optional: true
   cues: [different in two ways, different in 2 ways, this is different]
   layout: number
@@ -270,6 +281,8 @@
 # Beat 17. What AI is already doing
 - id: already-doing
   speaker: Rob
+  effect: morph
+  icons: [brain, dna, pill, hospital]
   cues: [isn't a fad, isnt a fad, not a fad, already doing]
   layout: statement
   title: AI isn't a fad.
@@ -286,6 +299,8 @@
 # Beat 18. The everyday person ✂
 - id: everyday
   speaker: Rob
+  effect: morph
+  icons: [people, briefcase, chat, bank]
   optional: true
   cues: [everyday people, for everyday people, every day people]
   layout: statement
@@ -302,6 +317,8 @@
 # Beat 19. National security
 - id: security
   speaker: Rob
+  effect: morph
+  icons: [warning, eye, shield]
   cues: [national security, matter of national security, a matter of national]
   layout: number
   title: Found the flaw. Wrote the attack. Launched it.
@@ -316,6 +333,8 @@
 # Beat 20. Two superpowers
 - id: superpowers
   speaker: Rob
+  effect: morph
+  icons: [globe, flag, lock]
   cues: [two superpowers, 2 superpowers, superpowers know it]
   layout: statement
   title: Neither superpower is going to stop.
@@ -330,6 +349,7 @@
 # Beat 21. Handoff
 - id: handoff
   speaker: Rob
+  effect: layers
   cues: [the best chips, has the best chips, best chips the best software]
   layout: statement
   title: The best chips, software, connections and supply.
@@ -393,6 +413,8 @@
 
 - id: governance
   speaker: Mi'kael
+  effect: morph
+  icons: [scales, person, people, search]
   cues: [governance, chief executive, start with the hard one] # "the ceo" removed 21 Nov: Panshul's "peers" script says "the CEO resigned" and jumped here
   layout: statement
   title: The first ESG question is governance.

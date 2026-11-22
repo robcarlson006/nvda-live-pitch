@@ -93,7 +93,7 @@ export function relocate(state: ShowState, spine: SpineSlide[]): Pick<ShowState,
 }
 
 export function emptyState(): ShowState {
-  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false, follow: 'script', seen: [], approveTangents: false };
+  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false, follow: 'script', seen: [], words: 0, startedAt: 0, approveTangents: false };
 }
 
 export function loadState(): ShowState {
@@ -160,7 +160,7 @@ function revealFrom(slide: SpineSlide | Slide, from: number): number {
 
 function show(state: ShowState, slide: Slide, index: number): ShowState {
   // liveSince always moves on, even within the same millisecond, so the stage rebuilds and the log sees every change.
-  return { ...state, index, live: slide, reveal: revealFrom(slide, 0), liveSince: Math.max(Date.now(), state.liveSince + 1), history: [...state.history, slide].slice(-50), heard: '', stray: '', seen: /^(gen|qa)-/.test(slide.id) || state.seen.includes(slide.id) ? state.seen : [...state.seen, slide.id] };
+  return { ...state, startedAt: state.startedAt || Date.now(), index, live: slide, reveal: revealFrom(slide, 0), liveSince: Math.max(Date.now(), state.liveSince + 1), history: [...state.history, slide].slice(-50), heard: '', stray: '', seen: /^(gen|qa)-/.test(slide.id) || state.seen.includes(slide.id) ? state.seen : [...state.seen, slide.id] };
 }
 
 /** Live mode: go to a script slide (or back to the one under a tangent) with that many of its points built. */
@@ -219,7 +219,7 @@ function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[
   const prior = state.heard ? state.heard.split(' ') : [];
   const fresh = words(text).slice(state.consumed);
   const buf = [...prior, ...fresh];
-  let s = final ? { ...state, stray: `${state.stray} ${text}`.trim().slice(-1200) } : state;
+  let s = final ? { ...state, words: state.words + words(text).length, stray: `${state.stray} ${text}`.trim().slice(-1200) } : state;
   let used = 0;
   if (state.autoCue) {
     for (let k = 0; k < 4; k++) {
@@ -260,7 +260,7 @@ export function logMove(state: ShowState, out: ShowState, via: RunEntry['via'], 
 function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, spine, cueSlides = true }: Ctx): ShowState | string {
   switch (msg.type) {
     case 'clear':
-      return { ...state, seen: [], index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
+      return { ...state, seen: [], words: 0, startedAt: 0, index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
     case 'push': {
       const problem = checkSlide(msg.slide, datasets);
       if (problem) return problem;

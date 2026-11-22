@@ -20,7 +20,7 @@ export const StatSpec = z.object({
 });
 
 // Background effects drawn by the core array. Purely visual: if one fails, the slide still shows.
-export const Effect = z.enum(['cpu-gpu', 'merge72']);
+export const Effect = z.enum(['cpu-gpu', 'merge72', 'waffle', 'tiles', 'compare', 'layers', 'morph']);
 
 // statement: one big line · number: a figure rendered by the core array · chart: chart fills the slide · split: text + chart
 export const Slide = z.object({
@@ -32,7 +32,7 @@ export const Slide = z.object({
   chart: ChartSpec.optional(),
   stat: StatSpec.optional(),
   effect: Effect.optional(),
-  icons: z.array(z.enum(ICON_NAMES)).max(3).optional(), // drawn by the cores on the right: one big, or 2–3 in a chain
+  icons: z.array(z.enum(ICON_NAMES)).max(5).optional(), // drawn by the cores on the right: one big, or 2–3 in a chain
   sources: z.array(z.string()).default([]),
 });
 export type Slide = z.infer<typeof Slide>;
@@ -152,6 +152,8 @@ export type ShowState = {
   autoShow: boolean; // show live-built slides without waiting for approval
   follow: 'script' | 'live'; // script: cue words move the deck. live: it follows the meaning, and tangents get a slide by themselves
   seen: string[]; // ids of the script slides shown so far
+  words: number; // words heard since the pitch began, for the finale
+  startedAt: number; // when the first slide went up, or 0
   approveTangents: boolean; // live mode: wait for a tap before a tangent slide goes up
 };
 

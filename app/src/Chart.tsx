@@ -5,7 +5,7 @@ import { formatValue, type Dataset, type Slide } from '../shared/schema.ts';
 const GREEN = '#76b900';
 const DIM_GREEN = '#2f4a05';
 const OTHERS = ['#8d9388', '#d9dccf', '#5d6358'];
-const FAINT = '#7a8174';
+const FAINT = '#9aa193';
 const FONT = "'Archivo Variable', system-ui, sans-serif";
 
 /** Only the x values from range[0] to range[1], e.g. FY05–FY13. */
@@ -61,7 +61,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
               distance: vh,
               formatter: () => (v == null ? '' : fmt(v)),
               color: j === hiIdx ? '#f4f6f1' : FAINT,
-              fontSize: j === hiIdx ? vh * 3 : vh * 1.9,
+              fontSize: j === hiIdx ? vh * 4 : vh * 2.6,
               fontWeight: j === hiIdx ? 700 : 500,
               fontFamily: FONT,
             },
@@ -95,7 +95,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
     chart.setOption({
       backgroundColor: 'transparent',
       textStyle: { fontFamily: FONT },
-      grid: { left: 0, right: isBar ? 0 : vh * 14, top: vh * 5, bottom: 0, containLabel: true },
+      grid: { left: 0, right: isBar ? (n > 10 ? vh * 7 : 0) : vh * 14, top: vh * 6, bottom: 0, containLabel: true },
       legend: isBar && spec.series.length > 1 ? { top: 0, left: 0, textStyle: { color: '#b4b9ae', fontSize: vh * 2 }, icon: 'rect' } : undefined,
       xAxis: {
         type: 'category',
@@ -103,7 +103,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
         boundaryGap: isBar,
         axisLine: { show: !isBar, lineStyle: { color: '#262a23' } },
         axisTick: { show: false },
-        axisLabel: { color: FAINT, fontSize: vh * 2, margin: vh * 1.4, interval: isBar && n <= 14 ? 0 : 'auto' },
+        axisLabel: { color: FAINT, fontSize: n <= 5 ? vh * 2.5 : vh * 2, margin: vh * 1.4, interval: isBar && n <= 14 ? 0 : 'auto' },
       },
       yAxis: {
         type: 'value',

@@ -1,0 +1,15 @@
+e-merge                    5/5 right · late p50 20 · false 3 · tangents 0/0 (+0 false) · 40 calls
+     false:  1(software): → chips [live] | 2(supply): → connections [live] | 4(already-doing): → bubble [live]
+d-out-of-order             4/5 right · late p50 15 · false 1 · tangents 0/0 (+0 false) · 45 calls
+     missed: 0:founding (was near-bust)
+     false:  1(cuda): → near-bust [live]
+f-swap                     3/6 right · late p50 19 · false 1 · tangents 0/0 (+0 false) · 43 calls
+     missed: 1:software (was connections) | 2:superpowers (was catch-up) | 5:renewables (was scope3)
+     false:  2(superpowers): → catch-up [live]
+i-garble                   4/8 right · late p50 7 · false 0 · tangents 0/0 (+0 false) · 47 calls
+     missed: 0:cuda (was wall-street) | 3:software (was connections) | 4:connections (was supply) | 7:governance (was bubble)
+h-fillers                  5/5 right · late p50 11 · false 1 · tangents 0/0 (+0 false) · 57 calls
+     false:  5(stay): → wall-street [live]
+j-tangent                  2/4 right · late p50 25 · false 1 · tangents 2/2 (+0 false) · 70 calls
+     missed: 0:chips (was software) | 3:catch-up (was software)
+     false:  0(chips): → software [live]

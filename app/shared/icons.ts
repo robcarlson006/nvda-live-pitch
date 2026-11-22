@@ -7,6 +7,7 @@ const r = (x: number, y: number, w: number, h: number) => `M${x} ${y}h${w}v${h}h
 type Shape = { s?: string; f?: string };
 
 export const ICONS = {
+  coffee: { s: 'M4 9h13v7a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5zM17 11h2.5a2.500 2.500 0 0 1 0 6H17M7.500 2v3M11 2v3M14.500 2v3' },
   chip: { s: r(6, 6, 12, 12) + 'M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4', f: r(9.5, 9.5, 5, 5) },
   server: { s: r(3, 3, 18, 7) + r(3, 14, 18, 7), f: c(7, 6.5, 1.3) + c(7, 17.5, 1.3) + r(11, 5.7, 7, 1.6) + r(11, 16.7, 7, 1.6) },
   robot: { s: r(4, 8, 16, 12) + 'M12 8V3M2 13v3M22 13v3M9 16.5h6', f: c(8.7, 12.5, 1.5) + c(15.3, 12.5, 1.5) + c(12, 3, 1.5) },
