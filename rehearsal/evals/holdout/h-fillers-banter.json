@@ -1,0 +1,22 @@
+{
+  "id": "h-fillers-banter",
+  "kind": "h",
+  "note": "Nervous, chatty delivery: greetings, mic checks, jokes, false starts and thank-yous between (and inside) real beats",
+  "wpm": 145,
+  "segments": [
+    { "on": "stay", "speaker": "Rob", "say": "hi everyone, um, good afternoon. is this, is this on. can you hear me okay at the back, yeah, thumbs up, lovely." },
+    { "on": "stay", "speaker": "Rob", "say": "so i'm rob, that's panshul, and mi'kael's the tall one hiding by the radiator. thanks so much for having us, we know it's a wednesday and you've probably sat through a lot of these. we're going to talk to you about nvidia." },
+    { "on": "founding", "speaker": "Rob", "say": "okay. um. so. it all starts, and i love this, it starts in a, sorry, in a denny's. in san jose. um, three of them, jensen and, er, chris, and curtis, right, and they've got this mad idea that, you know, the fancy three d stuff should be on a normal computer, like yours or mine, and that gaming would, um, would pay for it." },
+    { "on": "stay", "speaker": "Rob", "say": "i don't know if anybody here's been to a denny's. i have. i wouldn't start a company there, i'll be honest, i could barely start a sandwich. anyway. moving on." },
+    { "on": "first-gpu", "speaker": "Rob", "say": "so, so then they, in, what was it, ninety, ninety nine, yeah. they make the, um, the graphics processing unit. first one. they named it and everything. and then, er, the xbox, the original one, big black box, you might have had one, that had nvidia in it. two hundred million, up front, from microsoft." },
+    { "on": "stay", "speaker": "Rob", "say": "sorry, i've just, i've completely lost my, hang on. it's gone. it's nerves, bear with me. have a sip of water. right. okay. i'm back, i'm with you." },
+    { "on": "cuda", "speaker": "Rob", "say": "yes. cuda. so it's a, i'll do it with people. imagine, um, this room's five of you and you're all geniuses, but you can only, like, do one sum each. versus a football ground full of kids with calculators, and they all press equals together. that's a gpu. and cuda's the, the megaphone. and they, they let anybody have the megaphone, for nothing." },
+    { "on": "stay", "speaker": "Rob", "say": "does that make sense. i see one nod. i'll take one nod. my mum didn't get it either so you're in good company." },
+    { "on": "alexnet", "speaker": "Rob", "say": "so nobody, well, the city didn't like it, er, whatever, but then, twenty twelve, there's a, um, a competition, it's like pub quiz for computers but with photos. and this student, in, in toronto, he, he trains one of these neural network things on two, just two, gaming cards. and he, he smashes it. errors go from like twenty six percent to fifteen." },
+    { "on": "stay", "speaker": "Mi'kael", "say": "you're doing great mate. keep going." },
+    { "on": "already-doing", "speaker": "Rob", "say": "ha, cheers. um, okay so, i'll, i'm going to jump to, like, so what, what does it do for us. well, nobel prize, chemistry, for, er, proteins, for guessing what they, how they fold. there's a, a drug for your lungs that got made in, in under thirty months, which is, that's nothing. and, um, the breast screening thing in sweden, a fifth more found. so that's not a gimmick, is it." },
+    { "on": "handoff", "speaker": "Rob", "say": "so, yeah. that's, that's me nearly done. um, best hardware, best software, best, er, networking, best supply, and all the giants, and the, the governments, they're all in. so to stop it you'd, you'd have to stop people having ideas. and panshul's going to, he'll check my working." },
+    { "on": "stay", "speaker": "Panshul", "say": "thank you so much rob, well done. thank you all for listening so patiently. one second, i will just swap the microphone. testing, testing. okay, you can hear me, good." },
+    { "on": "last-quarter", "speaker": "Panshul", "say": "so, hello. um. i only want to show one number to begin with. it's, this is the revenue, yes, the revenue, for one, just the one quarter, it ended in october, late october. take it in. actually i also had to read it twice when i saw it first." }
+  ]
+}

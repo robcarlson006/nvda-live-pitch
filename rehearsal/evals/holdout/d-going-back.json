@@ -1,0 +1,22 @@
+{
+  "id": "d-going-back",
+  "kind": "d",
+  "note": "Goes back to an earlier slide twice (wall-street to founding; connections to chips) and returns forward each time",
+  "wpm": 150,
+  "segments": [
+    { "on": "founding", "speaker": "Rob", "say": "nvidia was born over pancakes, more or less. jensen huang and two friends met in a denny's and decided that serious graphics hardware, the kind you'd only find on an engineer's workstation, ought to be affordable enough for your home machine." },
+    { "on": "first-gpu", "speaker": "Rob", "say": "fast forward to the launch of the first gpu. they literally made up the category. the xbox people came on board, with a massive cheque up front, and within a few years the business press is crowning them best in show." },
+    { "on": "cuda", "speaker": "Rob", "say": "now, cuda. if you remember nothing else from my bit remember this one. loads and loads of little workers inside a graphics chip, all doing their bit simultaneously, and for the first time somebody gave ordinary programmers the steering wheel. free of charge." },
+    { "on": "wall-street", "speaker": "Rob", "say": "the market couldn't stand it. half a billion every year going out the door on something customers hadn't requested, shares more than halving when the crash came, and you can see sales going absolutely nowhere on the graph." },
+    { "on": "founding", "speaker": "Rob", "say": "actually hang on, can we go back to the diner for a second, right to the beginning, because i missed the most important part. the reason they were in that booth at all is they thought video games would fund the whole thing. and everybody told them, nobody sets up a company to play games. that's the attitude they started with, the three of them, and i want you to hold on to it." },
+    { "on": "wall-street", "speaker": "Rob", "say": "right, so back to the angry shareholders. it's the same attitude, isn't it. there's an activist in twenty thirteen saying cut the spending, give us our dividends, and management just sits there and says no. flat sales, unhappy owners, and they carried on." },
+    { "on": "alexnet", "speaker": "Rob", "say": "and what they got for being stubborn was alex krizhevsky. canadian university, two gaming cards, one neural network. he halves, well, nearly halves the mistake rate in the picture labelling contest. from that point if you wanted to do machine learning you did it their way." },
+    { "on": "four-layers", "speaker": "Rob", "say": "so let me explain the moat. it has four storeys, hardware, software, networking and manufacturing capacity, and the point is that a challenger doesn't get to choose one. they need to take the entire building." },
+    { "on": "chips", "speaker": "Rob", "say": "ground floor, the hardware. amd has a better one, if you're going by memory and price. i'm happy to admit it. it doesn't matter, the sales aren't close." },
+    { "on": "software", "speaker": "Rob", "say": "because next floor up is the ecosystem. six million developers, over a thousand libraries, two decades of ironing out the bugs. amd's rocm started in twenty sixteen and has been chasing ever since. it's why people say nvidia just works." },
+    { "on": "connections", "speaker": "Rob", "say": "above that there's the networking. seventy two of these things in one rack, glued so tightly that they look like a single giant processor, and the mellanox deal so that racks can talk to other racks." },
+    { "on": "chips", "speaker": "Rob", "say": "oh, do you know what, i should go back to the hardware floor, because i gave you the claim and not the figures. the amd part carries two hundred and eighty eight gigs, the nvidia one carries a hundred and ninety two. so on the box amd wins. and last year in the data centre it was seventeen billion for them and a hundred and ninety four for nvidia. twelve to one. that's the comparison i meant to show you." },
+    { "on": "supply", "speaker": "Rob", "say": "ok so that's hardware, software and wiring done, and now we're at the top floor, which is getting it made. tsmc does about ninety percent of leading edge manufacturing, the packaging line is the pinch point, and sixty percent of that line is reserved. you can't just ring up and ask for space." },
+    { "on": "catch-up", "speaker": "Rob", "say": "put all that together and you see why the challengers haven't managed it. google's been at it for eleven years and is the nearest. the others are building their own and buying nvidia's at the same time. you'd need silly money and a spare decade." }
+  ]
+}

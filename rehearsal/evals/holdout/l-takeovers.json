@@ -1,0 +1,22 @@
+{
+  "id": "l-takeovers",
+  "kind": "l",
+  "note": "Presenters interrupt, correct and take over from each other mid-slide; the deck follows the topic, not the voice",
+  "wpm": 155,
+  "segments": [
+    { "on": "bubble", "speaker": "Rob", "say": "let's deal with the scary one. everyone over forty in this room remembers the year two thousand, and it's the first thing you'd ask, so is it just that again. this is every great american construction boom, sized against the economy. highways at one point one, the internet cables at one point four." },
+    { "on": "bubble", "speaker": "Panshul", "say": "sorry rob, let me jump in there, because you should say the railways one also. that was two point two, in the eighteen hundreds, and it was the record until now. the ai spend is forecast above three point six percent, each year, up to twenty thirty two. so it's fair that people are nervous." },
+    { "on": "different", "speaker": "Rob", "say": "no that's, yeah, thank you. but here's why i sleep at night. two things aren't the same this time. the poster child back then, cisco, people were paying a hundred and forty years of profit for it, roughly. and they'd buried all this cable that nobody was using." },
+    { "on": "different", "speaker": "Mi'kael", "say": "can i add something to that, i actually worked in one of these places last summer. the data halls are full. there's a waiting list. so it's not like the dark fibre, it's the reverse, and the ones renting them are, what, the most profitable firms ever. they're not start ups with a sock puppet." },
+    { "on": "stay", "speaker": "Rob", "say": "thank you mi'kael, you can have my job. where was i." },
+    { "on": "security", "speaker": "Rob", "say": "yes. the hacking. so google's threat people this month came across a piece of malware that did the lot by itself, found the hole, built the weapon, pulled the trigger. nobody in the loop. and there was the espionage campaign anthropic uncovered, where a model was doing about eighty, ninety percent of the legwork." },
+    { "on": "superpowers", "speaker": "Panshul", "say": "and if i may, this is exactly why governments can't step back. beijing's own published strategy says they'll be ahead of everyone by twenty thirty. and the united states is controlling which processors can be exported to them. it is a race, and there is no referee to stop it." },
+    { "on": "handoff", "speaker": "Rob", "say": "well you've stolen my line so i'll just finish. the processors, the code, the network, the production capacity, they're top in all four. biggest firms, biggest states, all building. you would need to ban new ideas to beat them. and since he's clearly keen, panshul, go on, show us if the accounts say the same." },
+    { "on": "last-quarter", "speaker": "Panshul", "say": "i was born ready. so the number on the screen is the top line for a single quarter, ending in late october. mi'kael asked me yesterday whether this was the full year. it isn't. it's a quarter." },
+    { "on": "last-quarter", "speaker": "Mi'kael", "say": "in my defence it is ridiculous, a quarter of a year, that is. sorry, i'll let you get on, i just wanted it on record that i wasn't being daft." },
+    { "on": "beats", "speaker": "Panshul", "say": "he's forgiven. but you might well say it was luck, so here's a graph. grey is what the analysts were guessing, green is the reported sales. thirteen in a row it came out on top. so no, nobody saw it coming, and they've not seen it coming for more than three years." },
+    { "on": "governance", "speaker": "Mi'kael", "say": "okay my turn, i'm taking the clicker, not that there is one. i'll cover the bit we'd all sooner skip, which is the leadership. jensen's out, he went on the twelfth. colette kress has moved over from finance to steady things for now." },
+    { "on": "governance", "speaker": "Panshul", "say": "just to add, because it came up in the valuation work also, there's now a separate person in the chair of the board, and that's a first for them. and the regulators, so the sec and california, they're reported to be asking questions. so it's a risk and we are not brushing it under the carpet." },
+    { "on": "scope3", "speaker": "Mi'kael", "say": "cheers. and as i've got the floor, i'll go to the carbon, and the part that worries me most. it isn't nvidia's own buildings. it's the factories that they buy from, tsmc and so on. that is where the emissions sit, and they go up as more chips get made. rob, don't interrupt, i know you want to, i'm nearly done." }
+  ]
+}

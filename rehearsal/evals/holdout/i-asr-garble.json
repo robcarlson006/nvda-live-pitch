@@ -1,0 +1,22 @@
+{
+  "id": "i-asr-garble",
+  "kind": "i",
+  "note": "Heavy speech-to-text damage: misheard names and terms, dropped words, numbers as words, odd sentence breaks",
+  "wpm": 150,
+  "segments": [
+    { "on": "founding", "speaker": "Rob", "say": "in nineteen nighty three jensen wong chris mallow sky and curtis pre em were sat in a dennis in sand hose a drinking coffee. the thought was three dee graphic should be on every p see and that the way to pay for it. was video game" },
+    { "on": "near-bust", "speaker": "Rob", "say": "the first chip the envy one was the wrong. two hundred and fifty thousand made and two hundred forty nine thousand came back. sega see oh they told him the truth and say gah put in five million any way. then the reaver one twenty eight with a month of pay roll left a million sold" },
+    { "on": "first-gpu", "speaker": "Rob", "say": "then they lunch the gee fours two fifty six and they call it a g p use. the first. my crow soft wanted it for the ex box and paid two hundred million up front. for bess named in video company of the year in two thousand seven" },
+    { "on": "cuda", "speaker": "Rob", "say": "then came cooda. or barracuda with out the barra. a see p you has a hand full of fast workers. the graphics chip has thousands of small ones work king in paralell. and cooter let any one use them not just graphics programmer. in buck from stand ford made it and they gave it a way" },
+    { "on": "alexnet", "speaker": "Rob", "say": "and drew ing at stand ford found it was seventy times fast er. then alex chris ev ski. university of toronto. entered image net with a new roll network trained on two in video gaming cards. error was fifteen percent against twenty six. he one by a mile. modern a eye was built on that" },
+    { "on": "chips", "speaker": "Rob", "say": "on paper a and d has the better ship. the em eye three fifty five has two hundred eighty eight gigs of memory the in video one has a hundred ninety two. its cheaper to. but in day to centers one ninety four billion versus seventeen. twelve times as much" },
+    { "on": "software", "speaker": "Rob", "say": "and that is soft wear. its i phone verses an droid. six million develop herz on could a. a thousand library's and its free. a m dees one is called rock em it came in twenty sixteen nine years late. new stuff is written four cooda on the day it comes out" },
+    { "on": "connections", "speaker": "Rob", "say": "next is how they are connected. envy link. seventy to g p use in one wrack and the soft wear thinks it is one big one. then they bought melanox. mela knocks. the is rally networking company for seven billion. last year that bit made thirty one billion" },
+    { "on": "supply", "speaker": "Rob", "say": "then who makes them. tea s m c in tie one. nine in ten of the most advance. the choke point is packing the co was step. in video has about sixty percent of that booked. two hundred seventy nine billion in commit mints. so a better design does not help you" },
+    { "on": "security", "speaker": "Rob", "say": "now nation all security. goggles threat team reported mal wear that found the floor in the code wrote the attack and launched with zero human. last year and throw pick caught a state group where the a eye did eighty to nine tea percent of the spy in. you defend a gents it with a eye" },
+    { "on": "peers", "speaker": "Panshul", "say": "people say it is too pricey. but on the forward pee ee for this year. against a m d in tell broad com and tea s m c. in video is the cheapest one. the share price went down when jensen wong left. the earnings for cast did not go down" },
+    { "on": "governance", "speaker": "Mi'kael", "say": "gov an ants first. jen sun who hang stepped down as c e oh on the twelfth of november. collect cress the see eff oh is inter him. the board has it's first chair. there are reports of the s e see and california in vest a gating" },
+    { "on": "scope3", "speaker": "Mi'kael", "say": "the honest one is scope free. most of the a mission are not in videos own. its at part nurse like tea s m see that make the chip. and as they sell more the scope free goes up. that is the line here" },
+    { "on": "close", "speaker": "Rob", "say": "so what you watched was made by a eye and run by a eye. and the a eye in dust tree runs on what in video built. we are free students from sterling. if we can do it for a stock imagine the worlds company's" }
+  ]
+}

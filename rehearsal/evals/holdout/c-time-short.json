@@ -1,0 +1,21 @@
+{
+  "id": "c-time-short",
+  "kind": "c",
+  "note": "Running out of time: jumps alexnet to catch-up to bubble to handoff, Panshul skips segments and peers, ESG is dropped, straight to the close",
+  "wpm": 165,
+  "segments": [
+    { "on": "founding", "speaker": "Rob", "say": "ok we've got less time than we planned so i'm gonna move. nvidia starts with three mates in a denny's who reckon fancy graphics should be in every home computer, and that games will pay for it. nobody believed them." },
+    { "on": "first-gpu", "speaker": "Rob", "say": "end of the nineties, they ship the first thing anyone ever called a g p u. xbox picks it. awards, money, all of that. a very nice games company." },
+    { "on": "cuda", "speaker": "Rob", "say": "then the strange decision. two thousand six they release cuda, which means any scientist can use the thousands of tiny cores in there for whatever they like, not just for drawing explosions. they don't charge for it and they stick it in every card that goes out of the door." },
+    { "on": "stay", "speaker": "Rob", "say": "sorry, how long have i got. four minutes. okay. okay, fine." },
+    { "on": "alexnet", "speaker": "Rob", "say": "investors moaned about it for years, i'll spare you that, because in twenty twelve a lad in toronto wins the world's big image recognition competition using two of those gaming cards, and he doesn't win by a bit, he wipes the floor with them. and that's the moment ai moves onto nvidia and never leaves." },
+    { "on": "catch-up", "speaker": "Rob", "say": "i had a whole bit on how the moat works, i'm going to skip it and just give you the result. google has been trying for eleven years. amazon, meta, microsoft, all spending billions on their own. and all of them are still in the queue to buy from nvidia. more than nine in ten models are trained there." },
+    { "on": "bubble", "speaker": "Rob", "say": "now what you're all itching to ask, is it nineteen ninety nine all over again. well if you stack it against highways, railways, the fibre they laid for the web, as a share of what america earns in a year, this one's the biggest of the lot. three point six percent, every year, into the next decade." },
+    { "on": "handoff", "speaker": "Rob", "say": "i'm going to leave out the medical stuff and the china stuff and jump to where i end up. they lead on hardware, on software, on networking, on getting things made. you'd have to switch off progress to switch them off. panshul, do the sums stack up." },
+    { "on": "last-quarter", "speaker": "Panshul", "say": "i will be quick also. see this figure, that is the sales for august, september and october put together. three months only. not six, not twelve, so please let that sink in while i go to the next point." },
+    { "on": "beats", "speaker": "Panshul", "say": "and it is consistent. the professionals make a prediction, that is the grey, and the company comes in over the top, that is the green, and it has happened thirteen times in a row now." },
+    { "on": "valuation", "speaker": "Panshul", "say": "in the interest of time i will leave the breakdown by division and the comparison with the other chip stocks for your questions. let me go to our model. five years of cash, discounted at a strict rate that we took from bloomberg and did not choose ourselves. the base scenario comes out above where it is trading, and the bear scenario is there also so that you can judge." },
+    { "on": "built-live", "speaker": "Rob", "say": "and we've got thirty seconds so here's the thing i really wanted to get to. what's been appearing on this screen wasn't a finished deck. the graphs, the words, the animations, it has all been getting assembled while we were speaking." },
+    { "on": "close", "speaker": "Rob", "say": "ai made that and ai drove it. the whole ai world is standing on what nvidia put in place. three students did this. now imagine a company with a budget. thank you." }
+  ]
+}

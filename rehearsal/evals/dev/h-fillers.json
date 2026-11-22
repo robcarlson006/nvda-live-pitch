@@ -1,0 +1,40 @@
+{
+ "id": "h-fillers",
+ "kind": "h",
+ "note": "greetings, jokes, stumbles",
+ "wpm": 150,
+ "segments": [
+  {
+   "on": "stay",
+   "say": "Hi everyone, um, good afternoon, thanks for having us, can you hear me okay at the back? Great. I'm Rob, this is Panshul and Mi'kael, and we're a bit nervous so be nice."
+  },
+  {
+   "on": "founding",
+   "say": "Right. So. Um. Picture a diner in San Jose, early nineties, three engineers, way too much coffee, and they've got this mad idea about putting proper graphics in every home computer."
+  },
+  {
+   "on": "stay",
+   "say": "Sorry, let me just, is that, yep, okay it's working, lovely. Don't worry we practised this bit."
+  },
+  {
+   "on": "first-gpu",
+   "say": "Anyway, skip forward to the end of the nineties and they, uh, they launch this graphics card and they, what's the word, they coin a new name for it, GPU, and then Microsoft wants them for the Xbox."
+  },
+  {
+   "on": "cuda",
+   "say": "And then comes the, the weird decision. In two thousand and six they basically hand out free software so anybody, scientists, whoever, can run their own programs on a gaming card."
+  },
+  {
+   "on": "stay",
+   "say": "I should say my mum still thinks I play games for a living. Sorry. Anyway."
+  },
+  {
+   "on": "wall-street",
+   "say": "And shareholders went mad about it. Hundreds of millions every year going into a thing gamers never asked for, and the sales line just flat for years and years."
+  },
+  {
+   "on": "alexnet",
+   "say": "Until, um, until the AI researchers turned up. Stanford first, then that kid in Toronto who wins the picture recognition contest with two gaming cards."
+  }
+ ]
+}

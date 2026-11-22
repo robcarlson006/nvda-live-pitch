@@ -1,0 +1,124 @@
+{
+ "id": "a-full",
+ "kind": "a",
+ "note": "whole pitch paraphrased (scripts/from-memory.ts)",
+ "wpm": 150,
+ "segments": [
+  {
+   "on": "founding",
+   "say": "So let me take you back to the early nineties. Three guys are sitting in a diner in California drinking way too much coffee. One of them is Jensen Huang. And their thinking was, the fancy graphics you get on those massive expensive machines, why can't everybody have that at home? And the thing that would fund it was gaming."
+  },
+  {
+   "on": "near-bust",
+   "say": "And it nearly all went wrong straight away. The very first product they built was a complete flop, basically all of them got sent back by customers. They were months from running out of cash. Sega bailed them out with five million even though they'd been told it wouldn't work, and then the next card they put everything on sold a million in a few months."
+  },
+  {
+   "on": "first-gpu",
+   "say": "Then at the end of the nineties they come out with this card and they invent a new name for it, the graphics processing unit. Microsoft puts them inside the original Xbox console and gives them hundreds of millions in advance. Forbes is naming them the best company in the country. Honestly they could have just been happy with that."
+  },
+  {
+   "on": "cuda",
+   "say": "But they did something strange instead. They built this software platform. The way I think about it is, your normal computer chip is like a few really clever people working through a list one by one. A graphics chip is like a stadium full of people all doing one small thing simultaneously. And this software opened that up to any programmer, and they didn't charge a penny for it, it came with every card."
+  },
+  {
+   "on": "wall-street",
+   "say": "Investors absolutely despised it. It made the chips cost more and gamers couldn't see the point. They were burning hundreds of millions a year. The share price crashed in the financial crisis, and some hedge fund turned up telling them to stop. For years sales went nowhere. But they kept going."
+  },
+  {
+   "on": "tangent",
+   "say": "Actually you know what, this reminds me of my granddad. He worked in the shipyards in Glasgow his whole life, and he always said the yards that died were the ones that stopped training apprentices when money got tight. The ones that kept training people through the bad years were the only ones left standing when the orders came back."
+  },
+  {
+   "on": "alexnet",
+   "say": "Anyway, what happened next is that researchers discovered it. Some people at Stanford worked out you could train neural nets way quicker on these cards. And then a PhD student in Canada enters this competition where computers have to recognise pictures, using a couple of gaming cards from his bedroom, and he destroys everyone. From then on all of artificial intelligence was being done on this stuff. OpenAI, ChatGPT, all of it."
+  },
+  {
+   "on": "four-layers",
+   "say": "So the question is why are they so far ahead of everybody. And there's basically four different pieces to it, and if you want to beat them you need to win on every single one."
+  },
+  {
+   "on": "chips",
+   "say": "Start with the hardware itself. If you look at the spec sheet, AMD's one actually has more memory and costs less money. And yet in the data centre market NVIDIA is outselling them something like twelve to one."
+  },
+  {
+   "on": "software",
+   "say": "Which brings me onto the programming side. It's a bit like Apple, they make the device and the operating system so everything works nicely together. There's millions of developers who know it, loads of ready made toolkits, nearly two decades of work. AMD only started their version years afterwards."
+  },
+  {
+   "on": "connections",
+   "say": "Then there's how all of it gets wired up. They can link dozens of these things in one cabinet so the computer thinks it's just one enormous processor. And they bought this Israeli networking company for seven billion, and now that part of the business brings in several times that every year."
+  },
+  {
+   "on": "supply",
+   "say": "And lastly, actually getting the things manufactured. Nearly all of the top end ones come out of one firm in Taiwan. And there's a particular assembly step that everybody is queuing for, and NVIDIA has already reserved the majority of it. So even a better design doesn't help you."
+  },
+  {
+   "on": "catch-up",
+   "say": "Can somebody close the gap? Google's the nearest, they've been designing their own for over a decade. Amazon and Meta and Microsoft are all having a go, but they're still some of the biggest customers. Nearly all the models out there get trained on this hardware."
+  },
+  {
+   "on": "tangent",
+   "say": "Funny story, my flatmate tried to build his own gaming computer last summer and he fried the motherboard because he forgot to earth himself. He spent about four weeks trying to fix it with a hairdryer. It does show you that putting hardware together yourself is a lot harder than people imagine."
+  },
+  {
+   "on": "bubble",
+   "say": "Now I know what you're all thinking, isn't this just like the year two thousand all over again. Well compare it with the big building programmes in American history, motorways, the railways, laying all that internet cable. As a slice of the economy this one is larger than any of them."
+  },
+  {
+   "on": "already-doing",
+   "say": "And this technology is genuinely useful right now. The scientists behind protein folding won the Nobel. There's a treatment for lungs that got to patients in trials in a fraction of the usual time. Swedish doctors are catching more tumours in mammograms and spending less time reading scans."
+  },
+  {
+   "on": "security",
+   "say": "It's also become a defence issue. Google's people have just found malicious software that discovers weaknesses and breaks in all by itself with no person involved. And Anthropic caught a government linked group using these models to do nearly all of an espionage operation. So the only protection against it is more of it."
+  },
+  {
+   "on": "superpowers",
+   "say": "Beijing has said publicly that it intends to be number one at this by the end of the decade. Washington is blocking exports of the best processors. Neither of them is going to back down."
+  },
+  {
+   "on": "handoff",
+   "say": "So to sum up my bit, they win on hardware, on code, on networking, on manufacturing. Every large firm and government is investing. You'd have to halt progress itself to stop this company. Over to Panshul for the figures."
+  },
+  {
+   "on": "last-quarter",
+   "say": "Thanks Rob. So in just the latest three month period, up to the end of October, this is how much they brought in."
+  },
+  {
+   "on": "beats",
+   "say": "And it's consistent. If you compare against the forecasts from the analysts, shown in grey, the actual result in green has come out on top thirteen times in a row."
+  },
+  {
+   "on": "segments",
+   "say": "If we break that down by division, it's practically all servers for AI now. The gaming business they began with is that little thin strip."
+  },
+  {
+   "on": "peers",
+   "say": "You'd assume it's pricey, but when you look at it against this year's profits, it's actually the lowest multiple out of the five large semiconductor firms. The stock dropped when Jensen left but nobody has cut their profit estimates."
+  },
+  {
+   "on": "valuation",
+   "say": "We did our own modelling, projecting five years of cash and bringing it back to today with Bloomberg's rate, which is really conservative. There's a base scenario, an optimistic one, and a pessimistic one where AI spending dries up."
+  },
+  {
+   "on": "governance",
+   "say": "I'm going to begin with the elephant in the room, which is leadership. The founder has stepped down. The finance chief is running things for now and the board has put in a chair for the first time. There are regulators looking into it."
+  },
+  {
+   "on": "renewables",
+   "say": "On the environmental side, the power for their own offices and data centres comes entirely from green sources now, and it used to be only about a third."
+  },
+  {
+   "on": "scope3",
+   "say": "But where the real footprint sits is with suppliers. Most of the carbon comes from fabricating the chips over at TSMC, and it keeps climbing as they ship more."
+  },
+  {
+   "on": "built-live",
+   "say": "There's a final point before we finish. All of the graphics and charts you have seen today appeared as we were talking."
+  },
+  {
+   "on": "close",
+   "say": "So the whole show was put together by artificial intelligence. That industry sits on what NVIDIA has made. And if three students from Stirling are able to pull this off, think what major corporations can do."
+  }
+ ]
+}

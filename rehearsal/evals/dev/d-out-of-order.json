@@ -1,0 +1,28 @@
+{
+ "id": "d-out-of-order",
+ "kind": "d",
+ "note": "skips and goes back",
+ "wpm": 150,
+ "segments": [
+  {
+   "on": "founding",
+   "say": "Right, so early nineties, three engineers in a diner having coffee, and they want to put proper graphics in every home computer and have video games pay for it."
+  },
+  {
+   "on": "cuda",
+   "say": "Fast forward and they build this free software platform that lets anybody use a graphics chip for ordinary computing, thousands of little workers all going at the same time rather than a few going one by one."
+  },
+  {
+   "on": "supply",
+   "say": "Now the thing nobody can copy is the manufacturing. One company in Taiwan makes nearly all of the advanced ones, and NVIDIA has booked up most of the packaging capacity there. They have huge commitments with suppliers already signed."
+  },
+  {
+   "on": "software",
+   "say": "Oh and I should go back, I missed the software. It's like an iPhone, hardware and software made together, with millions of developers and over a thousand libraries. AMD's equivalent came years later."
+  },
+  {
+   "on": "bubble",
+   "say": "Okay so people ask whether it's a bubble like the dot com crash. If you compare to the railways and the highways and the fibre build out as a share of the American economy, this is bigger."
+  }
+ ]
+}

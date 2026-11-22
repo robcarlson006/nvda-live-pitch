@@ -1,0 +1,40 @@
+{
+ "id": "i-garble",
+ "kind": "i",
+ "note": "heavy speech-to-text errors",
+ "wpm": 150,
+ "segments": [
+  {
+   "on": "cuda",
+   "say": "in two thousand six they launched cooter which let any coder use the g p use thousands of work as for anything and it was three for everyone"
+  },
+  {
+   "on": "wall-street",
+   "say": "the straight hated it share price harved in oh eight and an activist hedge fun turned up revenue flat for yours"
+  },
+  {
+   "on": "alexnet",
+   "say": "then andrew inns team at stand furred found newer all networks trained way faster and alex crew chef ski won the image net contest by a mile"
+  },
+  {
+   "on": "software",
+   "say": "soft wear is the second mote six million developers right in cuda and am d s rock m came nine years late"
+  },
+  {
+   "on": "connections",
+   "say": "envy link joins seventy too chips in a wreck and they bought mela nox for seven billion"
+  },
+  {
+   "on": "supply",
+   "say": "tea s m c in tie one makes the vast majority of advanced chips and the packing is booked up by in video"
+  },
+  {
+   "on": "bubble",
+   "say": "so is it dot calm all over again compare it to rail roads and inter states as a share of g d p"
+  },
+  {
+   "on": "governance",
+   "say": "the fan dor has resigned and the see f o colette chris is running it in the mean time"
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "id": "f-swap",
+ "kind": "f",
+ "note": "pairs of beats in the other order",
+ "wpm": 150,
+ "segments": [
+  {
+   "on": "connections",
+   "say": "I'll start with how it's all wired together. Seventy two of these chips get joined so tightly that the program thinks it's a single giant one. And Mellanox, the networking company they bought, pays for itself several times over every year."
+  },
+  {
+   "on": "software",
+   "say": "Then the code side of things. Two decades of libraries, all free, and millions of people trained on it."
+  },
+  {
+   "on": "superpowers",
+   "say": "China has said in writing that it wants to lead the world by 2030, and Washington is controlling which chips can go there. Nobody is stopping."
+  },
+  {
+   "on": "security",
+   "say": "And that is because it has become a security question. Hackers have malware now that finds its own holes and attacks by itself. The only defence is better AI."
+  },
+  {
+   "on": "scope3",
+   "say": "Let me do the uncomfortable environmental one first, the suppliers. Fabricating the chips at TSMC is where nearly all of the carbon is and it is going up."
+  },
+  {
+   "on": "renewables",
+   "say": "In their own buildings on the other hand the electricity is all green, it was about a third back in 2018."
+  }
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "id": "e-merge",
+ "kind": "e",
+ "note": "two beats in one sentence",
+ "wpm": 150,
+ "segments": [
+  {
+   "on": "four-layers",
+   "say": "Okay so what actually keeps them on top? There are four separate moats and a rival needs to cross every one."
+  },
+  {
+   "on": "software",
+   "say": "Their silicon looks worse than AMD's on the spec sheet and it still outsells it massively, and the reason is the software around it, six million programmers already know it and everything just runs."
+  },
+  {
+   "on": "supply",
+   "say": "And they've stitched dozens of those processors together into one rack and bought the networking firm to join the racks up, but even if you copied that, you could not get it manufactured, because one Taiwanese company makes them all and NVIDIA has reserved most of the packaging."
+  },
+  {
+   "on": "catch-up",
+   "say": "So is anybody gaining on them? Google probably has the best shot, the others are still buying from NVIDIA."
+  },
+  {
+   "on": "already-doing",
+   "say": "And people say it's hype, but it won a Nobel for proteins, it's finding tumours in Swedish hospitals, it got a lung drug to trials in record time."
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "id": "j-tangent",
+ "kind": "j",
+ "note": "tangents and passing mentions",
+ "wpm": 150,
+ "segments": [
+  {
+   "on": "chips",
+   "say": "Let's talk raw hardware. AMD's newest part has more memory and it's cheaper, and NVIDIA still sells around twelve times as much into data centres. And that's partly the software, which I'll come to in a second, but stay with the hardware for now because it matters."
+  },
+  {
+   "on": "tangent",
+   "say": "I did work experience at a garden centre when I was sixteen and the owner told me that people will always pay more for the plant that comes with instructions. He had two ferns, identical, one with a little card explaining when to water it, and the one with the card sold for double and sold out every weekend."
+  },
+  {
+   "on": "software",
+   "say": "Same thing here with the programming tools. Libraries, documentation, two decades of it, everything you need comes in the box and millions of developers already know how to use it."
+  },
+  {
+   "on": "catch-up",
+   "say": "So can anybody close that gap? Google's been at it for more than a decade, Amazon and Microsoft and Meta have a go as well, and they still all buy from NVIDIA."
+  },
+  {
+   "on": "tangent",
+   "say": "Last weekend I was at Murrayfield watching the rugby with my dad and the fella behind us spent the entire second half explaining cryptocurrency to his wife, who was clearly trying to watch the match. And at the end she turned round and said so it's a spreadsheet then, and honestly nobody in our row could argue with her."
+  },
+  {
+   "on": "bubble",
+   "say": "But the obvious worry is whether we are in a dot com style mania. So set it against the highways and the railroads as a portion of the economy."
+  }
+ ]
+}
