@@ -1,0 +1,11 @@
+e-merge                    5/5 right · late p50 21 · false 2 · tangents 0/0 (+0 false) · 23 calls
+     false:  1(software): → chips [live] | 2(supply): → connections [live]
+d-out-of-order             5/5 right · late p50 20 · false 0 · tangents 0/0 (+0 false) · 28 calls
+f-swap                     4/6 right · late p50 25 · false 0 · tangents 0/0 (+0 false) · 26 calls
+     missed: 1:software (was connections) | 5:renewables (was scope3)
+h-fillers                  5/5 right · late p50 21 · false 1 · tangents 0/0 (+0 false) · 31 calls
+     false:  5(stay): → first-gpu [live]
+i-garble                   5/8 right · late p50 7 · false 0 · tangents 0/0 (+0 false) · 29 calls
+     missed: 3:software (was alexnet) | 4:connections (was supply) | 7:governance (was bubble)
+j-tangent                  4/4 right · late p50 28 · false 0 · tangents 2/2 (+0 false) · 39 calls
+{"set":"dev","scenarios":6,"accuracy":84.8,"beats":33,"falseJumps":3,"falseJumpsPerRun":0.5,"wordsLateP50":20,"wordsLateP90":30,"tangentHit":"2/2","tangentFalse":0,"latencyP50":1030,"latencyP95":2170,"calls":176,"errors":0,"spent":0.1293,"totalSpent":0.969}

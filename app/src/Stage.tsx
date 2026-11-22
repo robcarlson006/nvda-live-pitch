@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { elementCount, lookup, resolveText, slideSources, type Dataset, type Slide, type SpineSlide } from '../shared/schema.ts';
+import { elementCount, lookup, resolveText, slideSources, tokenRefs, type Dataset, type Slide, type SpineSlide } from '../shared/schema.ts';
 import { Chart } from './Chart.tsx';
 import { Field } from './cores/Field.tsx';
 import { useDatasets, useNavKeys, useShow } from './useShow.ts';
@@ -48,6 +48,12 @@ export function Stage() {
         </main>
       ) : (
         slide && <SlideView key={state!.liveSince} slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} />
+      )}
+      {slide?.effect === 'compare' && slide.stat && !asking && (
+        <>
+          <span className="bar-name" style={{ left: '60vw' }}>{tokenRefs(slide.title)[0]?.series.split(' ')[0]}</span>
+          <span className="bar-name" style={{ left: '78.75vw' }}>{slide.stat.x}</span>
+        </>
       )}
       {slide?.id === 'built-live' && !asking && state && (
         <div className="session">

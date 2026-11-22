@@ -102,15 +102,14 @@ function compare(slide: Slide, data: Sets, cols: number): Scene {
   const ref = tokenRefs(slide.title)[0], st = slide.stat;
   const a = ref && num(ref.key, ref.series, ref.x), b = st && num(st.datasetKey, st.series, st.x);
   if (!a || !b) return { frames: [[]] };
-  const H = 66, top = Math.max(a, b), h = (v: number) => Math.max(1, Math.round((v / top) * H));
-  const bar = (x: number, v: number, more: Partial<Cell>) => block(x, 92 - h(v), 22, h(v), more);
-  const xa = cols * 0.63, xb = xa + 34;
-  const say = (t: string | undefined, x: number, base: number, size: number, more: Partial<Cell>) => (t ? textCells(t, cols, { left: x, baseline: base, size, maxW: 34, more }) : []);
+  const H = 62, top = Math.max(a, b), h = (v: number) => Math.max(1, Math.round((v / top) * H));
+  const bar = (x: number, v: number, more: Partial<Cell>) => block(x, 90 - h(v), 22, h(v), more);
+  const xa = cols * 0.6, xb = xa + 36;
+  const say = (t: string | undefined, x: number, base: number, size: number, more: Partial<Cell>) => (t ? textCells(t, cols, { left: x, baseline: base, size, maxW: 40, more }) : []);
   return {
     frames: [[
       ...bar(xa, a, { b: 0.75, tone: 2 }), ...bar(xb, b, { b: 1 }),
-      ...say(lookup(data, ref!.key, ref!.series, ref!.x), xa, 90 - h(a), 11, { tone: 1 }), ...say(lookup(data, st!.datasetKey, st!.series, st!.x), xb, 90 - h(b), 11, { tone: 1 }),
-      ...say(ref!.series.split(' ')[0], xa, 101, 8, { tone: 1, b: 0.8 }), ...say(st!.x, xb, 101, 8, { tone: 0 }),
+      ...say(lookup(data, ref!.key, ref!.series, ref!.x), xa, 89 - h(a), 15, { tone: 1 }), ...say(lookup(data, st!.datasetKey, st!.series, st!.x), xb, 89 - h(b), 13, { tone: 1 }),
     ]],
   };
 }

@@ -1,5 +1,6 @@
 import { type Dataset, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { accept, type Director, type Verdict } from './director.ts';
+import { evidence } from './evidence.ts';
 import { liveGo, livePoints } from './state.ts';
 
 /**
@@ -64,7 +65,9 @@ export class Follow {
     const spine = this.d.spine();
     const votes = this.director.vote(v.action === 'slide' ? `slide:${v.slide}` : v.action);
     this.d.log?.(`${v.action}${v.slide ? ` ${v.slide}` : ''} +${v.covered} (${votes}) ${this.director.ms} ms`);
-    if (!accept(v, s, spine, votes)) return;
+    const backed = v.action === 'slide' && evidence(this.director.recent(22), spine)?.id === v.slide;
+    if (!accept(v, s, spine, votes, backed)) return;
+    if (v.action === 'slide') this.director.clearVotes();
     if (v.action === 'tangent') return this.d.tangent(this.director.recent());
     if (v.action === 'slide' && this.clock() < this.held) return;
     const out = v.action === 'slide' ? liveGo(s, spine, v.slide!, v.covered) : livePoints(s, spine, v.covered);

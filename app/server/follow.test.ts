@@ -156,7 +156,7 @@ test('follow: tangents need two verdicts; question mode and follow-off are deaf'
   await q.say('what about the energy use of all of this');
 });
 
-test('accept: next two at once, further or backwards twice, switched-off slides never', () => {
+test('accept: the next slide at once, further or backwards twice, switched-off slides never', () => {
   const s = { ...emptyState(), index: idx('cuda'), live: spine[idx('cuda')], reveal: 1 };
   assert.equal(accept(verdict('slide', 'wall-street'), s, spine, 1), true);
   assert.equal(accept(verdict('slide', 'first-gpu'), s, spine, 1), false);

@@ -30,6 +30,9 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
     const hiIdx = spec.highlight ? dataset.x.indexOf(spec.highlight) : isBar ? dataset.x.length - 1 : -1;
     const cell = Math.round(vh * 0.9);
     const n = dataset.x.length;
+    const price = dataset.x.indexOf('Share price today'); // a valuation chart: everything is judged against the price
+    const ref = price >= 0 ? (dataset.series[spec.series[0]]?.[price] ?? null) : null;
+    const barColor = (v: number | null, j: number) => (j === hiIdx ? GREEN : ref == null ? DIM_GREEN : j === price ? '#d9dccf' : v != null && v < ref ? '#c9821b' : DIM_GREEN);
     const stagger = Math.min(160, 1000 / n); // the whole chart builds in about a second, however many bars
 
     const series = spec.series.map((name, i) => {
@@ -52,9 +55,10 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
           barCategoryGap: '28%',
           animationDuration: 1600,
           animationDelay: (j: number) => j * stagger,
+          markLine: ref == null ? undefined : { silent: true, symbol: 'none', animationDelay: 1500, lineStyle: { color: '#f4f6f1', width: vh * 0.3, type: [vh * 0.9, vh * 0.6] }, label: { show: false }, data: [{ yAxis: ref }] },
           data: values.map((v, j) => ({
             value: v,
-            itemStyle: { color: spec.series.length > 1 ? (i === 0 ? GREEN : OTHERS[i - 1]) : j === hiIdx ? GREEN : DIM_GREEN },
+            itemStyle: { color: spec.series.length > 1 ? (i === 0 ? GREEN : OTHERS[i - 1]) : barColor(v, j) },
             label: {
               show: spec.series.length === 1 && (n <= 8 || j === hiIdx), // long series: label only the highlight
               position: 'top',
@@ -74,7 +78,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
         type: 'line',
         data: values,
         symbol: 'none',
-        lineStyle: { width: i === 0 ? vh * 0.45 : vh * 0.2, color, type: i === 0 ? 'solid' : [vh * 0.8, vh * 0.6] },
+        lineStyle: { width: i === 0 ? vh * 0.75 : vh * 0.2, color, type: i === 0 ? 'solid' : [vh * 0.8, vh * 0.6] },
         animationDuration: 2400,
         animationEasing: 'linear',
         // Direct labels at the line ends instead of a legend.
@@ -85,7 +89,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
                 symbol: 'rect',
                 symbolSize: vh * 1.6,
                 itemStyle: { color: GREEN },
-                label: { position: 'left', distance: vh * 1.2, color: '#f4f6f1', fontSize: vh * 3.2, fontWeight: 700, fontFamily: FONT, formatter: () => fmt(values[hiIdx] ?? 0) },
+                label: { position: dataset.unit === '%' ? 'bottom' : 'left', distance: vh * 1.2, color: '#f4f6f1', fontSize: vh * 3.2, fontWeight: 700, fontFamily: FONT, formatter: () => fmt(values[hiIdx] ?? 0) },
                 data: [{ coord: [hiIdx, values[hiIdx]] }],
               }
             : undefined,
@@ -108,6 +112,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
       yAxis: {
         type: 'value',
         show: !isBar,
+        max: dataset.unit === '%' && !isBar ? 100 : undefined, interval: dataset.unit === '%' && !isBar ? 25 : undefined,
         splitNumber: 3,
         splitLine: { lineStyle: { color: '#1b1f19' } },
         axisLabel: { color: FAINT, fontSize: vh * 1.9 },
