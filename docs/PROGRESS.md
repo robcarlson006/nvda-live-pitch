@@ -14,6 +14,13 @@ cd app && npm install && npm run dev
 - Checks: `npm test` and `npm run typecheck`
 - For the pitch itself: `npm run build && npm start` (no dev tooling running).
 
+## Latest: overnight loop, 22 Nov (branch loop/2026-11-22)
+- **Follows meaning, not trigger words.** `director.ts` (Claude Haiku) is now wired in through `server/follow.ts`, backed by a no-AI word check (`evidence.ts`), and on by default. If Claude is unreachable, cue words take over and the operator panel says so. Measured: `npm run follow-eval -- dev|holdout`. Blind holdout 89.6% of 164 beats, about 21 words (8 s) late. **Use the clicker when a moment matters.**
+- **New stage engine** (`app/src/cores/`): WebGL, about 1080p of pixels on any screen. The cores fly from one slide's picture to the next. If it fails, the old canvas takes over. Loop strip along the bottom, question mode, finale with measured figures, `m` = calm.
+- **Spreadsheet** `data/model/NVDA_DCF.xlsx` (`npm run xlsx`), checked against the app on every gate run. AUDIT.md, DEFEND.md, MODEL.md in `docs/financials/`.
+- **Q&A:** 22 prepared answers. **Fallback:** `fallback/index.html` and PDF (`npm run fallback`). **Runbook:** `docs/RUNBOOK.md`. **Map:** `docs/INDEX.md`.
+- **Not done:** live hostile-question drills, sourcing the [VERIFY] figures, time-pressure assist, ticker, a test with a real microphone and real voices.
+
 ## Done
 - **M1: stage + operator skeleton** (20 Nov)
   - Single Node process: Vite in dev, static files in prod, WebSocket at `/ws`.
@@ -136,7 +143,6 @@ cd app && npm install && npm run dev
 
 ## Next
 - Rob: rehearse with the mic, then cut to 3–4 minutes (untick ✂ beats first). Fix cues that misfire from the rehearsal logs.
-- M7 (fallback deck), M8 (finale).
 - Team: rewrite `say` and cues in docs/script/spine.yaml in your own words.
 - When the Excel exports arrive (HP, ANR, SPLC): add parsers to `build-data.ts`, then rerun `npm run data`.
 
@@ -145,7 +151,7 @@ cd app && npm install && npm run dev
 - **Beat 15 says "fibre boom at its peak: 1.4 percent",** but the chart shows each build-out's *average* (fibre 1.1%), so it is like-for-like with the AI 3.6% average. Say "1.1 percent a year on average", or the board hears one number and sees another.
 - **Beat 16:** the research quotes NVIDIA at ~22.7x forward earnings; Bloomberg (on the slide) says 14.1x. Both are "a fraction of 140x", but Panshul's numbers must match.
 - **Both speech engines need internet** (audio goes to Deepgram, or to Google if on the Chrome backup). If the venue Wi-Fi fails, use the clicker/Next.
-- **The model's WACC (12%) and the scenario choices are team assumptions.** Mi'kael must own them and be able to defend them (see assumptions.json).
+- **The headline WACC is Bloomberg's 19.3%; terminal growth, the FY29–32 fade, margins and scenarios are team assumptions.** Panshul must own them (DEFEND.md).
 - **Scope 3 (supply chain) emissions rose from 6.9 to 10.7 million t CO2e in FY26.** Own operations are on 100% renewable energy, but the ESG board will see Scope 3.
 - **Emissions per $ of revenue flatters NVIDIA vs TSMC/Intel,** because NVIDIA doesn't own factories: its manufacturing emissions are in TSMC's numbers and NVIDIA's own Scope 3. Say so if we show it.
 - **Bloomberg ESG score methodology changed in FY22,** so don't chart FY15–21 and FY22–24 scores as one line.

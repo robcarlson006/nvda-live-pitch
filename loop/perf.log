@@ -1,0 +1,5 @@
+page: Failed to load resource: the server responded with a status of 404 (Not Found)
+founding         {"p50":16.7,"p95":16.7,"max":16.8,"frames":241} 4x {"p50":16.7,"p95":16.8,"max":16.8,"frames":241}
+near-bust        {"p50":16.7,"p95":16.7,"max":16.8,"frames":241} 4x {"p50":16.7,"p95":16.7,"max":16.8,"frames":241}
+first-gpu        {"p50":16.7,"p95":16.7,"max":16.8,"frames":271} 4x {"p50":16.7,"p95":16.8,"max":16.8,"frames":271}
+cuda             {"p50":16.7,"p95":16.7,"max":16.8,"frames":301} 4x {"p50":16.7,"p95":16.7,"max":16.8,"frames":301}
