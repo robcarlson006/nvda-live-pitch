@@ -7,9 +7,10 @@ import { findCue, words, type Candidate } from './cues.ts';
 
 export const DATA_DIR = path.resolve(import.meta.dirname, '../../data/clean');
 export const SPINE_FILE = path.resolve(import.meta.dirname, '../../docs/script/spine.yaml');
-const STATE_FILE = path.resolve(import.meta.dirname, '../state.json');
+const STATE_FILE = process.env.STATE_FILE || path.resolve(import.meta.dirname, '../state.json'); // the shoot harness uses its own
 
-export type Ctx = { datasets: Map<string, Dataset>; spine: SpineSlide[] };
+/** `cueSlides: false` (live mode, Claude reachable): cue words build the slide on screen but never change slide. */
+export type Ctx = { datasets: Map<string, Dataset>; spine: SpineSlide[]; cueSlides?: boolean };
 
 export function loadDatasets(dir = DATA_DIR): Map<string, Dataset> {
   const out = new Map<string, Dataset>();
@@ -195,13 +196,14 @@ function next(state: ShowState, spine: SpineSlide[]): ShowState {
 type Target = { kind: 'element' } | { kind: 'slide'; index: number };
 
 /** Listen only for what can come next: this slide's next element, then the next two slides that are switched on. */
-function candidates(state: ShowState, spine: SpineSlide[]): Candidate<Target>[] {
+function candidates(state: ShowState, spine: SpineSlide[], cueSlides: boolean): Candidate<Target>[] {
   const out: Candidate<Target>[] = [];
   const live = state.index >= 0 ? spine[state.index] : undefined;
   if (live && state.live?.id === live.id && state.reveal < elementCount(live)) {
     const c = live.elementCues[state.reveal - 1];
     if (c) out.push({ cue: c, target: { kind: 'element' } });
   }
+  if (!cueSlides) return out;
   const a = step(spine, state.skipped, state.index, 1);
   const b = a >= 0 ? step(spine, state.skipped, a, 1) : -1;
   for (const i of [a, b]) if (i >= 0) for (const cue of spine[i].cues) out.push({ cue, target: { kind: 'slide', index: i } });
@@ -213,7 +215,7 @@ function candidates(state: ShowState, spine: SpineSlide[]): Candidate<Target>[] 
  * remembers how much of the current utterance a cue has already used, so its final copy can't fire twice.
  * After a cue fires, the words after it carry on, so a bullet said in the same breath as its slide still lands.
  */
-function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[]): ShowState {
+function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[], cueSlides: boolean): ShowState {
   const prior = state.heard ? state.heard.split(' ') : [];
   const fresh = words(text).slice(state.consumed);
   const buf = [...prior, ...fresh];
@@ -221,7 +223,7 @@ function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[
   let used = 0;
   if (state.autoCue) {
     for (let k = 0; k < 4; k++) {
-      const hit = findCue(buf.slice(used), candidates(s, spine));
+      const hit = findCue(buf.slice(used), candidates(s, spine, cueSlides));
       if (!hit) break;
       const live = s.index >= 0 ? spine[s.index] : undefined;
       s = hit.target.kind === 'element' ? next(s, spine) : show(s, spine[hit.target.index], hit.target.index);
@@ -255,7 +257,7 @@ export function logMove(state: ShowState, out: ShowState, via: RunEntry['via'], 
   return { ...out, rehearsal: { ...out.rehearsal, entries: [...out.rehearsal.entries, entry] } };
 }
 
-function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, spine }: Ctx): ShowState | string {
+function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, spine, cueSlides = true }: Ctx): ShowState | string {
   switch (msg.type) {
     case 'clear':
       return { ...state, seen: [], index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
@@ -308,13 +310,14 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
     case 'tangent':
     case 'micCmd':
     case 'micStatus':
+    case 'level':
     case 'ask':
     case 'bank':
       return state; // handled by the server (needs Claude or the prepared answers)
     case 'transcript':
       if (state.mode === 'question')
         return msg.final ? { ...state, question: `${state.question} ${msg.text}`.trim().slice(-1500), questionTail: '' } : { ...state, questionTail: msg.text };
-      return hear(state, msg.text, msg.final, spine);
+      return hear(state, msg.text, msg.final, spine, cueSlides);
   }
 }
 

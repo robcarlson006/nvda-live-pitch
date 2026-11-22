@@ -8,7 +8,12 @@
     "start": "NODE_ENV=production tsx server/index.ts",
     "test": "node --import tsx --test server/*.test.ts scripts/*.test.ts",
     "typecheck": "tsc --noEmit",
-    "data": "tsx scripts/build-data.ts && tsx scripts/research-data.ts && tsx scripts/model.ts"
+    "data": "tsx scripts/build-data.ts && tsx scripts/research-data.ts && tsx scripts/model.ts",
+    "shoot": "tsx scripts/shoot.ts",
+    "follow-eval": "tsx scripts/follow-eval.ts",
+    "xlsx": "tsx scripts/xlsx.ts",
+    "xlsx-check": "tsx scripts/xlsx-check.ts",
+    "check": "bash ../loop/check.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.12.0",
@@ -28,6 +33,8 @@
     "@types/react-dom": "^19.3.0",
     "@types/ws": "^8.18.2",
     "@vitejs/plugin-react": "^6.3.0",
+    "exceljs": "^4.4.0",
+    "playwright-core": "^1.65.1",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.8"

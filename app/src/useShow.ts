@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { AiInfo, ClientMsg, Dataset, ServerMsg, ShowState, SpineSlide } from '../shared/schema.ts';
+import type { AiInfo, ClientMsg, Dataset, Draft, MicInfo, ServerMsg, ShowState, SpineSlide } from '../shared/schema.ts';
 
 /** Live connection to the backend. Reconnects forever with backoff, so a server restart or Wi-Fi blip heals itself. */
 export function useShow() {
@@ -12,7 +12,11 @@ export function useShow() {
   const [clients, setClients] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [pending, setPending] = useState<Draft | null>(null);
+  const [mic, setMic] = useState<MicInfo | null>(null);
   const ws = useRef<WebSocket | null>(null);
+  // Fast-changing: read by the canvas, so it never causes a re-render.
+  const live = useRef<{ level: number; hearing: string; micCmd: ((m: Extract<ServerMsg, { type: 'micCmd' }>) => void) | null }>({ level: 0, hearing: '', micCmd: null });
 
   useEffect(() => {
     let retry = 0;
@@ -34,7 +38,12 @@ export function useShow() {
           setClients(msg.clients);
           setAi(msg.ai);
           setBank(msg.bank);
-        } else if (msg.type === 'saved') setNotice(`Rehearsal saved to ${msg.file}`);
+          setMic(msg.mic);
+          setPending(msg.pending);
+        } else if (msg.type === 'level') live.current.level = msg.v;
+        else if (msg.type === 'hearing') live.current.hearing = msg.text;
+        else if (msg.type === 'micCmd') live.current.micCmd?.(msg);
+        else if (msg.type === 'saved') setNotice(`Rehearsal saved to ${msg.file}`);
         else setError(msg.message);
       };
       sock.onclose = () => {
@@ -56,11 +65,11 @@ export function useShow() {
     else setError('Not connected to the server');
   };
 
-  return { state, spine, spineError, connected, clients, error, notice, send, ai, bank };
+  return { state, spine, spineError, connected, clients, error, notice, send, ai, bank, mic, pending, live };
 }
 
 /** Clicker and keyboard control. Presentation clickers send PageDown/PageUp (or arrows). */
-export function useNavKeys(send: (m: ClientMsg) => void, state: ShowState | null) {
+export function useNavKeys(send: (m: ClientMsg) => void, state: ShowState | null, pending: Draft | null = null) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
@@ -69,6 +78,7 @@ export function useNavKeys(send: (m: ClientMsg) => void, state: ShowState | null
       else if (['ArrowLeft', 'PageUp'].includes(e.key)) send({ type: 'back' });
       else if (e.repeat) return;
       else if (e.key === 'q') send({ type: 'question', action: state?.mode === 'question' ? 'answer' : 'start' });
+      else if (pending && (e.key === 'a' || e.key === 'x')) send({ type: 'tangent', action: e.key === 'a' ? 'show' : 'block' });
       else if (e.key === 'a' && state?.drafts[0]) send({ type: 'draft', action: 'show', id: state.drafts[0].id });
       else if (e.key === 'x' && state?.drafts[0]) send({ type: 'draft', action: 'reject', id: state.drafts[0].id });
       else if (e.key === 'r') send({ type: 'resume' });

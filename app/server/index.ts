@@ -5,9 +5,11 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { Ai, env, MODEL } from './ai.ts';
 import { findAnswer, loadBank, type BankEntry } from './bank.ts';
 import { Budget } from './budget.ts';
-import type { AiInfo, ClientMsg, Draft, ServerMsg, SpineSlide } from '../shared/schema.ts';
+import type { AiInfo, ClientMsg, Draft, MicInfo, ServerMsg, SpineSlide } from '../shared/schema.ts';
+import { Director } from './director.ts';
+import { cueSlides, Follow } from './follow.ts';
 import { deepgramKey, deepgramUrl, relay } from './deepgram.ts';
-import { addDraft, apply, cover, isCovered, offScript, loadDatasets, loadSpine, loadState, relocate, runReport, saveState, SPINE_FILE } from './state.ts';
+import { addDraft, apply, cover, isCovered, offScript, loadDatasets, loadSpine, loadState, logMove, relocate, runReport, saveState, SPINE_FILE } from './state.ts';
 
 const PORT = Number(process.env.PORT ?? 5173);
 const prod = process.env.NODE_ENV === 'production';
@@ -34,7 +36,9 @@ function reloadSpine() {
 reloadSpine();
 
 // ---------- Live-built slides ----------
-const ai = new Ai(new Budget(path.join(root, 'ai-spend.json'), Number(env('AI_SPEND_CAP')) || 4));
+const SPEND_FILE = process.env.SPEND_FILE || path.join(root, 'ai-spend.json'); // the shoot harness and evals use their own
+const ai = new Ai(new Budget(SPEND_FILE, Number(env('AI_SPEND_CAP')) || 4));
+const director = new Director(ai.budget);
 let bank: BankEntry[] = [];
 let bankError: string | null = null;
 try {
@@ -48,7 +52,13 @@ let job: { kind: 'answer' | 'riff' | 'research'; abort: AbortController } | null
 let note: string | null = null;
 let lastRiff = 0;
 const RIFF_GAP = 25_000; // at most one reaction per 25 s: keeps the stage calm and the bill small
-const aiInfo = (): AiInfo => ({ busy: job?.kind ?? null, note, spent: ai.budget.spent, cap: ai.budget.cap, model: MODEL, hasKey: ai.hasKey(), bankError });
+const aiInfo = (): AiInfo => ({ follow: { text: director.recent(40), ms: director.ms, error: followError() }, busy: job?.kind ?? null, note, spent: ai.budget.spent, cap: ai.budget.cap, model: MODEL, hasKey: ai.hasKey(), bankError });
+
+const followError = () => director.error ?? (state.follow === 'live' && !ai.hasKey() ? 'No Anthropic key: cue words and Next only' : null);
+let mic: MicInfo = { stage: false, on: false, listening: false, engine: 'deepgram', lang: 'en-GB', device: '', problem: null };
+let pending: Draft | null = null; // a tangent slide about to go up, unless the operator blocks it
+let pendingTimer: NodeJS.Timeout | undefined;
+const VETO_MS = 1_500;
 
 const draft = (kind: Draft['kind'], heard: string, slide: Draft['slide'], from: Draft['from'], links?: Draft['links']): Draft => ({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, kind, heard, slide, from, at: Date.now(), ...(links ? { links } : {}) });
 const stopJob = () => {
@@ -85,7 +95,8 @@ async function build(kind: 'answer' | 'riff', heard: string, fresh = false) {
   // A reaction is only worth showing if the presenter hasn't already moved on.
   else if ('slide' in r && (kind === 'answer' || (state.index === place && state.mode === 'script'))) {
     const d = draft(kind, heard, r.slide, 'claude');
-    state = addDraft(state, d);
+    if (kind === 'riff' && state.follow === 'live') offer(d);
+    else state = addDraft(state, d);
     if (kind === 'answer' && !r.answered) gap = d;
   }
   console.log(`[ai] ${kind} ${'slide' in r ? 'slide' : 'error' in r ? r.error : 'nothing to show'} in ${Date.now() - started} ms, $${ai.budget.spent.toFixed(3)} spent`);
@@ -120,8 +131,52 @@ async function research(heard: string, replaces?: string) {
   broadcast();
 }
 
+// ---------- Live mode: following the meaning ----------
+const follow = new Follow(director, {
+  get: () => state,
+  set: (next) => {
+    const before = state;
+    dropPending();
+    state = logMove(before, next, 'live', spine);
+    if (next.liveSince !== before.liveSince && job?.kind === 'riff') stopJob(); // the talk has moved on
+    saveState(state);
+    broadcast();
+  },
+  spine: () => spine,
+  datasets,
+  tangent: (heard) => {
+    if (!state.riff || job || pending || state.drafts.length || Date.now() - lastRiff < RIFF_GAP) return;
+    lastRiff = Date.now();
+    void build('riff', heard);
+  },
+  log: (l) => process.env.FOLLOW_LOG && console.log(`[follow] ${l}`),
+});
+setInterval(() => void follow.tick(), 250);
+
+function dropPending() {
+  clearTimeout(pendingTimer);
+  pending = null;
+}
+/** Live mode: the tangent slide goes up by itself after a moment in which the operator can block it. */
+function offer(d: Draft) {
+  dropPending();
+  pending = d;
+  if (state.approveTangents) return;
+  pendingTimer = setTimeout(showPending, VETO_MS);
+}
+function showPending() {
+  const d = pending;
+  dropPending();
+  if (d && state.mode === 'script') {
+    state = cover(state, d.slide);
+    saveState(state);
+  }
+  broadcast();
+}
+
 /** After each finished sentence: if a presenter has wandered off script, build something for it. */
 function maybeRiff() {
+  if (state.follow === 'live' && !followError()) return; // the director notices tangents itself
   if (!state.riff || !state.autoCue || state.mode !== 'script' || job || state.drafts.length || state.index < 0) return;
   if (isCovered(state) && Date.now() - state.liveSince < RIFF_GAP) return; // give a new slide time to be read
   if (Date.now() - lastRiff < RIFF_GAP || !offScript(state, spine)) return;
@@ -132,6 +187,10 @@ function maybeRiff() {
 }
 
 function handleAi(msg: ClientMsg, before: typeof state): void {
+  if (['next', 'back', 'goto', 'resume', 'clear', 'push', 'bank', 'draft', 'question', 'follow'].includes(msg.type)) {
+    follow.manual();
+    dropPending();
+  }
   if (msg.type === 'question') {
     if (msg.action === 'answer') {
       const q = `${before.question} ${before.questionTail}`.trim();
@@ -145,6 +204,9 @@ function handleAi(msg: ClientMsg, before: typeof state): void {
   else if (msg.type === 'bank') {
     const e = bank.find((b) => b.id === msg.id);
     if (e) state = cover(state, e.slide);
+  } else if (msg.type === 'tangent') {
+    if (msg.action === 'show') return showPending();
+    dropPending();
   } else if (msg.type === 'transcript' && msg.final) maybeRiff();
 }
 
@@ -192,8 +254,11 @@ server.on('upgrade', (req, socket, head) => {
 
 const send = (ws: WebSocket, msg: ServerMsg) => ws.readyState === WebSocket.OPEN && ws.send(JSON.stringify(msg));
 function broadcast() {
-  wss.clients.forEach((ws) => send(ws, { type: 'state', state, spine, spineError, clients: wss.clients.size, ai: aiInfo(), bank: bank.map(({ id, question }) => ({ id, question })) }));
+  wss.clients.forEach((ws) => send(ws, { type: 'state', state, spine, spineError, clients: wss.clients.size, ai: aiInfo(), bank: bank.map(({ id, question }) => ({ id, question })), mic, pending }));
 }
+
+let micOwner: WebSocket | null = null;
+const others = (from: WebSocket, msg: ServerMsg) => wss.clients.forEach((ws) => ws !== from && send(ws, msg));
 
 wss.on('connection', (ws) => {
   broadcast(); // new client gets current state; others see the client count change
@@ -204,10 +269,26 @@ wss.on('connection', (ws) => {
     } catch {
       return send(ws, { type: 'error', message: 'Bad JSON' });
     }
-    const next = apply(state, raw, { datasets, spine });
+    const next = apply(state, raw, { datasets, spine, cueSlides: cueSlides(state, director.error, ai.hasKey()) });
     if (typeof next === 'string') return send(ws, { type: 'error', message: next });
     const msg = raw as ClientMsg; // apply() has validated it
-    if (next === state && !['ask', 'bank', 'clear'].includes(msg.type)) return;
+    if (msg.type === 'level') return others(ws, { type: 'level', v: msg.v });
+    if (msg.type === 'micCmd') return others(ws, { type: 'micCmd', action: msg.action, engine: msg.engine, lang: msg.lang });
+    if (msg.type === 'micStatus') {
+      const { type: _, ...info } = msg;
+      mic = { stage: false, ...info };
+      micOwner = ws;
+      return broadcast();
+    }
+    if (msg.type === 'transcript') {
+      others(ws, { type: 'hearing', text: msg.text });
+      const cued = next.liveSince !== state.liveSince; // a cue word has already moved the deck
+      queueMicrotask(() => {
+        follow.hear(msg.text, msg.final);
+        if (cued) director.mark();
+      });
+    }
+    if (next === state && !['ask', 'bank', 'clear', 'tangent', 'question', 'draft', 'resume'].includes(msg.type)) return;
     if (state.rehearsal && !next.rehearsal) {
       // A rehearsal run just stopped: log it. A failed write must never take the show down.
       try {
@@ -227,7 +308,13 @@ wss.on('connection', (ws) => {
     saveState(state);
     broadcast();
   });
-  ws.on('close', broadcast);
+  ws.on('close', () => {
+    if (micOwner === ws) {
+      micOwner = null;
+      mic = { ...mic, on: false, listening: false, problem: 'The page with the microphone was closed' };
+    }
+    broadcast();
+  });
 });
 
 server.listen(PORT, () => {

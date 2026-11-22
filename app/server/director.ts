@@ -76,12 +76,23 @@ export class Director {
   constructor(
     private budget: Budget,
     private call: DirectorCaller = (body, signal) => new Anthropic({ apiKey: env('ANTHROPIC_API_KEY'), baseURL: 'https://api.anthropic.com', maxRetries: 0, timeout: 5_000 }).messages.create(body, { signal }),
+    private clock: () => number = Date.now,
   ) {}
 
   reset() {
     this.finals = this.tail = '';
     this.judged = 0;
+    this.clearVotes();
+  }
+
+  clearVotes() {
     this.votes = { key: '', n: 0 };
+  }
+
+  /** Everything heard so far is dealt with; judge only what comes next. */
+  mark() {
+    this.judged = this.words().length;
+    this.clearVotes();
   }
 
   hear(text: string, final: boolean) {
@@ -100,7 +111,7 @@ export class Director {
   recent = (n = 70) => this.words().slice(-n).join(' ');
 
   /** Enough new speech for another look? */
-  ready(now = Date.now()): boolean {
+  ready(now = this.clock()): boolean {
     const fresh = this.words().length - this.judged;
     return !this.busy && now - this.last >= 600 && (fresh >= 6 || (fresh >= 3 && !this.tail));
   }
@@ -115,7 +126,7 @@ export class Director {
     const user = situation(state, spine, datasets, before.join(' '), fresh.join(' '));
     const p = PRICES[DIRECTOR_MODEL];
     const worst = (((system.length + user.length) / 2) * p.in * 1.25 + MAX_TOKENS * p.out) / 1e6;
-    const started = Date.now();
+    const started = this.clock();
     if (!this.budget.reserve(worst)) {
       this.busy = false;
       this.error = 'AI spending cap reached: cue words and Next only';
@@ -144,7 +155,7 @@ export class Director {
       return null;
     } finally {
       this.busy = false;
-      this.last = Date.now();
+      this.last = this.clock();
       this.ms = this.last - started;
     }
   }

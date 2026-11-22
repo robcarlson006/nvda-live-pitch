@@ -177,16 +177,18 @@ export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('follow'), mode: z.enum(['script', 'live']) }),
   z.object({ type: z.literal('tangent'), action: z.enum(['show', 'block']) }),
   z.object({ type: z.literal('micCmd'), action: z.enum(['start', 'stop']), engine: z.enum(['deepgram', 'chrome']).optional(), lang: z.enum(['en-GB', 'en-US']).optional() }),
+  z.object({ type: z.literal('level'), v: z.number().min(0).max(1) }), // how loud the room is, for the stage to breathe with
   z.object({ type: z.literal('micStatus'), on: z.boolean(), listening: z.boolean(), engine: z.enum(['deepgram', 'chrome']), lang: z.enum(['en-GB', 'en-US']), device: z.string().max(200), problem: z.string().max(300).nullable() }),
 ]);
 export type ClientMsg = z.input<typeof ClientMsg>;
 
-/** The microphone lives on the stage page (the laptop); operators control it from anywhere. */
+/** The microphone, as reported by the page that holds it (the operator panel). */
 export type MicInfo = { stage: boolean; on: boolean; listening: boolean; engine: 'deepgram' | 'chrome'; lang: 'en-GB' | 'en-US'; device: string; problem: string | null };
 
 export type ServerMsg =
   | { type: 'state'; state: ShowState; spine: SpineSlide[]; spineError: string | null; clients: number; ai: AiInfo; bank: { id: string; question: string }[]; mic: MicInfo; pending: Draft | null }
   | { type: 'hearing'; text: string }
+  | { type: 'level'; v: number }
   | { type: 'micCmd'; action: 'start' | 'stop'; engine?: 'deepgram' | 'chrome'; lang?: 'en-GB' | 'en-US' }
   | { type: 'error'; message: string }
   | { type: 'saved'; file: string };

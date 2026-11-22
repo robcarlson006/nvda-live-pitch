@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { elementCount, isUnverified, resolveText, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { LivePanel } from './LivePanel.tsx';
 import { demoSlides } from './demoSlides.ts';
@@ -70,11 +70,24 @@ function MicMeter({ level }: { level: () => number }) {
 }
 
 export function Operator() {
-  const { state, spine, spineError, connected, clients, error, notice, send, ai, bank } = useShow();
+  const { state, spine, spineError, connected, clients, error, notice, send, ai, bank, pending, live } = useShow();
   const datasets = useDatasets();
   const [said, setSaid] = useState('');
   const mic = useSpeech((text, final) => send({ type: 'transcript', text, final }));
-  useNavKeys(send, state);
+  useNavKeys(send, state, pending);
+
+  // Tell the server (and so the stage) what the microphone is doing, and how loud the room is.
+  const sendRef = useRef(send);
+  sendRef.current = send;
+  useEffect(() => {
+    if (connected) sendRef.current({ type: 'micStatus', on: mic.on, listening: mic.listening, engine: mic.engine, lang: mic.lang, device: mic.device.slice(0, 200), problem: mic.problem?.slice(0, 300) ?? null });
+  }, [connected, mic.on, mic.listening, mic.engine, mic.lang, mic.device, mic.problem]);
+  useEffect(() => {
+    if (!mic.listening) return;
+    const t = setInterval(() => sendRef.current({ type: 'level', v: Math.min(1, mic.level() * 4) }), 120);
+    return () => (clearInterval(t), sendRef.current({ type: 'level', v: 0 }));
+  }, [mic.listening]); // eslint-disable-line react-hooks/exhaustive-deps
+  live.current.micCmd = (m) => (m.action === 'start' ? mic.start() : mic.stop());
 
   const cur = state && state.index >= 0 ? spine[state.index] : undefined;
   const total = state?.live ? elementCount(state.live) : 0;
@@ -96,6 +109,7 @@ export function Operator() {
         <label className="pill toggle">
           <input type="checkbox" checked={state?.autoCue ?? false} onChange={(e) => send({ type: 'autoCue', on: e.target.checked })} /> Follow speech
         </label>
+        {ai && state?.follow === 'live' && <span className={`pill ${ai.follow.error ? 'bad' : 'ok'}`}>{ai.follow.error ?? `Following meaning${ai.follow.ms ? ` (${(ai.follow.ms / 1000).toFixed(1)} s)` : ''}`}</span>}
         <a className="pill link" href="/stage" target="_blank">
           Open stage
         </a>
@@ -131,7 +145,7 @@ export function Operator() {
         </div>
       </section>
 
-      <LivePanel state={state} ai={ai} bank={bank} datasets={datasets} send={send} />
+      <LivePanel state={state} ai={ai} bank={bank} pending={pending} datasets={datasets} send={send} />
 
       <Timer state={state} spine={spine} send={send} />
 
