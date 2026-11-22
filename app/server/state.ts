@@ -23,7 +23,7 @@ export function loadDatasets(dir = DATA_DIR): Map<string, Dataset> {
 }
 
 const MONTH = '(January|February|March|April|May|June|July|August|September|October|November|December)';
-const stripAllowed = (t: string) =>
+export const stripAllowed = (t: string) =>
   t
     .replace(new RegExp(`\\b\\d{1,2} ${MONTH}\\b`, 'g'), '')
     .replace(/\b(19|20)\d\d\b/g, '')
@@ -128,7 +128,8 @@ function resume(state: ShowState, spine: SpineSlide[]): ShowState {
 
 /** A finished live-built slide arrives: on stage at once if auto-show is on, otherwise into the queue. */
 export function addDraft(state: ShowState, d: Draft): ShowState {
-  if (state.autoShow && state.mode === 'script') return cover(state, d.slide);
+  // A web answer always waits for a person, even with auto-show on: it is not from our own data.
+  if (state.autoShow && state.mode === 'script' && d.from !== 'web') return cover(state, d.slide);
   return { ...state, drafts: [...state.drafts, d].slice(-5) };
 }
 

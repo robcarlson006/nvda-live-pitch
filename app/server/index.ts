@@ -44,13 +44,13 @@ try {
   bankError = (e as Error).message;
   console.warn(`[q&a] ${bankError}`);
 }
-let job: { kind: 'answer' | 'riff'; abort: AbortController } | null = null;
+let job: { kind: 'answer' | 'riff' | 'research'; abort: AbortController } | null = null;
 let note: string | null = null;
 let lastRiff = 0;
 const RIFF_GAP = 25_000; // at most one reaction per 25 s: keeps the stage calm and the bill small
 const aiInfo = (): AiInfo => ({ busy: job?.kind ?? null, note, spent: ai.budget.spent, cap: ai.budget.cap, model: MODEL, hasKey: ai.hasKey(), bankError });
 
-const draft = (kind: Draft['kind'], heard: string, slide: Draft['slide'], from: Draft['from']): Draft => ({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, kind, heard, slide, from, at: Date.now() });
+const draft = (kind: Draft['kind'], heard: string, slide: Draft['slide'], from: Draft['from'], links?: Draft['links']): Draft => ({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, kind, heard, slide, from, at: Date.now(), ...(links ? { links } : {}) });
 const stopJob = () => {
   job?.abort.abort();
   job = null;
@@ -80,10 +80,42 @@ async function build(kind: 'answer' | 'riff', heard: string, fresh = false) {
   }
   if (job !== mine) return; // cancelled or overtaken
   job = null;
+  let gap: Draft | null = null; // an honest "not in our data" slide: research it
   if ('error' in r) note = r.error;
   // A reaction is only worth showing if the presenter hasn't already moved on.
-  else if ('slide' in r && (kind === 'answer' || (state.index === place && state.mode === 'script'))) state = addDraft(state, draft(kind, heard, r.slide, 'claude'));
+  else if ('slide' in r && (kind === 'answer' || (state.index === place && state.mode === 'script'))) {
+    const d = draft(kind, heard, r.slide, 'claude');
+    state = addDraft(state, d);
+    if (kind === 'answer' && !r.answered) gap = d;
+  }
   console.log(`[ai] ${kind} ${'slide' in r ? 'slide' : 'error' in r ? r.error : 'nothing to show'} in ${Date.now() - started} ms, $${ai.budget.spent.toFixed(3)} spent`);
+  saveState(state);
+  broadcast();
+  if (gap) void research(heard, gap.id);
+}
+
+/** Our data doesn't answer it: search the web. The "not in our data" slide stays in the queue until this succeeds. */
+async function research(heard: string, replaces?: string) {
+  stopJob();
+  note = null;
+  const mine = { kind: 'research' as const, abort: new AbortController() };
+  job = mine;
+  broadcast();
+  const started = Date.now();
+  let r: Awaited<ReturnType<Ai['research']>>;
+  try {
+    r = await ai.research(heard, mine.abort.signal);
+  } catch (e) {
+    r = { error: (e as Error).message };
+  }
+  if (job !== mine) return;
+  job = null;
+  if ('error' in r) note = `Web research: ${r.error}`;
+  else if ('slide' in r) {
+    state = { ...state, drafts: state.drafts.filter((d) => d.id !== replaces) };
+    state = addDraft(state, draft('answer', heard, r.slide, 'web', r.links));
+  }
+  console.log(`[ai] research ${'slide' in r ? 'slide' : 'error' in r ? r.error : 'stopped'} in ${Date.now() - started} ms, $${ai.budget.spent.toFixed(3)} spent`);
   saveState(state);
   broadcast();
 }
@@ -107,7 +139,8 @@ function handleAi(msg: ClientMsg, before: typeof state): void {
       if (q) void build('answer', q);
       else note = 'No question was heard. Type it instead, or try again.';
     } else stopJob();
-  } else if (msg.type === 'ask') void build(msg.kind ?? 'answer', msg.text, msg.fresh);
+  } else if (msg.type === 'ask' && msg.web) void research(msg.text);
+  else if (msg.type === 'ask') void build(msg.kind ?? 'answer', msg.text, msg.fresh);
   else if (msg.type === 'clear') stopJob();
   else if (msg.type === 'bank') {
     const e = bank.find((b) => b.id === msg.id);

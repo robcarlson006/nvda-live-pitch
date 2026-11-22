@@ -126,3 +126,7 @@ button.danger { background: #3a1214; border-color: #e5484d; color: #ff8a8f; font
 .op-live.asking { outline: 2px solid #76b900; }
 .op-live .op-mic { flex-wrap: wrap; }
 .op-draft { border: 1px solid #76b900; border-radius: 8px; padding: 12px; margin: 10px 0; }
+.op-live a { color: #76b900; }
+/* Researched answers carry longer, sourced sentences */
+.is-web .statement { font-size: calc(6 * var(--u)) !important; max-width: 26ch !important; }
+.is-web .point { font-size: calc(2.7 * var(--u)) !important; max-width: 58ch !important; }

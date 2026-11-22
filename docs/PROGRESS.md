@@ -3,6 +3,8 @@
 Pitch: **Wednesday 25 Nov 2026**, 8–9 min. Rob (why) → Panshul (financials) → Mi'kael (ESG) → Rob (close).
 
 ## How to run
+**On the day:** `./start.sh` in the repo folder (checks keys, builds, opens both screens in Chrome). Works without npm or git access once installed.
+
 ```bash
 cd app && npm install && npm run dev
 ```
@@ -118,6 +120,13 @@ cd app && npm install && npm run dev
   - **No invented numbers:** Claude names data; the app looks it up. Digits or number words in its text are rejected, retried once, then that bullet is dropped. Unverified datasets are not offered. It can still phrase a claim badly: the operator reads before showing.
   - **Spending:** `app/ai-spend.json` keeps a running total across restarts; calls stop at $4 (`AI_SPEND_CAP`). It counts only this app's calls.
   - Both sockets accept only this laptop and our own page, so there is no second-device operator for now.
+
+- **Web research when our data has no answer** (22 Nov, at Rob's request; `server/research.ts`)
+  - Claude says whether the slide answers the question. If not, the honest "not in our data" slide is queued straight away and the web is searched; the researched slide replaces it (about 8–10 s in all, about 5 cents). **Search the web** on any answer does it by hand.
+  - **This is the one exception to "every figure comes from data/clean/".** In its place: each fact must cite a source, and every figure with its unit must appear in the cited excerpt, or close together on the cited page, or the fact is dropped. The title may only name the subject. Private lives and unproven allegations about people are blocked in code.
+  - The stage says "Live web research, <date>, not our own data" and names the sites. The operator sees the links.
+  - It **always** waits for approval, even with "Show without approval" on.
+  - The check proves a figure is in the source, not that the source is right or that the sentence is fair: read it before pressing A.
 
 ## Data received
 - NVDA FA, annual FY1998–FY2026 and quarterly FY24 Q3–FY27 Q3, both including ESG.

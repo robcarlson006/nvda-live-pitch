@@ -7,11 +7,12 @@ export const PRICES: Record<string, { in: number; out: number; cacheRead: number
   'claude-haiku-5-5': { in: 0.1, out: 0.5, cacheRead: 0.1 },
 };
 
-export type Usage = { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number | null; cache_read_input_tokens?: number | null };
+export type Usage = { input_tokens: number; output_tokens: number; cache_creation_input_tokens?: number | null; cache_read_input_tokens?: number | null; server_tool_use?: { web_search_requests?: number } | null };
+export const SEARCH_PRICE = 0.01; // USD per web search
 
 export function costOf(model: string, u: Usage): number {
   const p = PRICES[model];
-  return (u.input_tokens * p.in + (u.cache_creation_input_tokens ?? 0) * p.in * 1.25 + (u.cache_read_input_tokens ?? 0) * p.cacheRead + u.output_tokens * p.out) / 1e6;
+  return (u.input_tokens * p.in + (u.cache_creation_input_tokens ?? 0) * p.in * 1.25 + (u.cache_read_input_tokens ?? 0) * p.cacheRead + u.output_tokens * p.out) / 1e6 + (u.server_tool_use?.web_search_requests ?? 0) * SEARCH_PRICE;
 }
 
 /**

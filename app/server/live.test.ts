@@ -7,6 +7,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import type { ShowState, Slide } from '../shared/schema.ts';
 import { Ai, toSlide, usable, type Reply } from './ai.ts';
 import { findAnswer, loadBank } from './bank.ts';
+import { checkLine, figures, onPage, shorten, toWebSlide } from './research.ts';
 import { Budget } from './budget.ts';
 import { addDraft, apply, emptyState, isCovered, loadDatasets, loadSpine, offScript, relocate } from './state.ts';
 
@@ -21,7 +22,7 @@ const run = (s: ShowState, ...msgs: unknown[]) =>
     return r;
   }, s);
 const say = (text: string, final = true) => ({ type: 'transcript', text, final });
-const reply = (o: Partial<Reply> = {}): Reply => ({ show: true, layout: 'split', title: 'Scope 3 is rising', bullets: ['{{nvda_emissions | Scope 3 | FY26}} in FY26'], chart: { type: 'line', datasetKey: 'nvda_emissions', series: ['Scope 3'], highlight: 'FY26', from: null, to: null }, stat: null, ...o });
+const reply = (o: Partial<Reply> = {}): Reply => ({ show: true, answered: true, layout: 'split', title: 'Scope 3 is rising', bullets: ['{{nvda_emissions | Scope 3 | FY26}} in FY26'], chart: { type: 'line', datasetKey: 'nvda_emissions', series: ['Scope 3'], highlight: 'FY26', from: null, to: null }, stat: null, ...o });
 const tmp = () => path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'budget-')), 'spend.json');
 const message = (r: unknown) => ({ stop_reason: 'end_turn', content: [{ type: 'text', text: JSON.stringify(r) }], usage: { input_tokens: 1000, output_tokens: 300 } }) as unknown as Anthropic.Message;
 const job = { kind: 'answer', heard: 'what about emissions', onScreen: 'nothing' } as const;
@@ -123,5 +124,71 @@ test('prepared answers are valid and matched by their question, and never by unr
   const bank = loadBank(datasets);
   assert.ok(bank.length >= 10);
   for (const e of bank) assert.equal(findAnswer(bank, e.question)?.id, e.id, e.question);
-  for (const q of ['what is your favourite product', 'how fast is revenue growing', 'why is amd cheaper']) assert.equal(findAnswer(bank, q), null, q);
+  for (const q of ['what is your favourite product', 'how fast is revenue growing', 'why is amd cheaper', 'what has the eu said about the energy use of data centers', 'how much water do data centers use globally', 'what is the carbon footprint of training chatgpt']) assert.equal(findAnswer(bank, q), null, q);
+});
+
+// ---------- Web research ----------
+
+const cite = (cited_text: string, url = 'https://www.iea.org/x') => ({ type: 'web_search_result_location', cited_text, url, title: 'IEA', encrypted_index: '' }) as any;
+const found = { type: 'web_search_tool_result', tool_use_id: 't', content: [{ type: 'web_search_result', url: 'https://www.iea.org/x', title: 'IEA' }] };
+const cited = (text: string, ...cites: any[]) => ({ type: 'text', text, citations: cites });
+const plain = (text: string) => ({ type: 'text', text, citations: null });
+const web = (blocks: unknown[], read = async () => '') => toWebSlide(blocks as any, '22 November 2026', read);
+
+test('a researched figure must match its source, including its unit', () => {
+  assert.deepEqual(figures('$1,200 million, 20 per cent, 3% and 1.5bn; CO2 and 415 TWh'), ['1200m', '20%', '3%', '1.5b', '415']);
+  const ok = (text: string, src: string) => checkLine({ text, cites: [cite(src)] });
+  assert.equal(ok('Used 415 TWh in 2024', 'Data centres used about 415 TWh'), null);
+  assert.equal(ok('Costs 5 billion', 'It cost $5bn'), null);
+  assert.match(ok('Costs 5 billion', 'It cost $5 million')!, /5b/);
+  assert.match(ok('Used 450 TWh', 'used 415 TWh')!, /450/);
+  assert.match(ok('Use has doubled', 'Use has risen')!, /doubled/);
+  assert.match(checkLine({ text: 'No figures, no source', cites: [] })!, /no source/);
+});
+
+test('if the excerpt is too short, the page itself is checked, close together', () => {
+  const page = 'Electricity demand. Data centres accounted for around 1.5% of the world’s electricity consumption in 2024, or 415 terawatt-hours. ' + 'filler '.repeat(400) + ' 9% of something else';
+  assert.ok(onPage('Data centres took 1.5% of electricity consumption, 415 terawatt-hours, in 2024', page));
+  assert.ok(!onPage('Data centres took 9% of electricity consumption, 415 terawatt-hours', page), 'figures from different passages');
+  assert.ok(!onPage('Cement plants emitted 415 somethings worldwide yesterday', page), 'same figure, different subject');
+});
+
+test('a web slide keeps checked facts, drops the rest, and says where they came from', async () => {
+  const r = await web([plain('I will search.'), found, plain('TITLE: Data centre electricity\n-\n'), cited('Data centres used 415 TWh in 2024', cite('used 415 TWh')), plain('. That is a lot.\n-\n'), cited('It will reach 999 TWh', cite('will grow', 'https://b.com/y')), plain('\n- Made up and uncited 7%')]);
+  assert.ok(typeof r !== 'string');
+  assert.deepEqual(r.slide.bullets, ['Data centres used 415 TWh in 2024.']);
+  assert.equal(r.slide.title, 'Data centre electricity');
+  assert.deepEqual(r.slide.sources, ['Live web research, 22 November 2026, not our own data: iea.org']);
+  assert.equal(r.dropped.length, 1);
+  assert.match((await web([found, plain('NOT FOUND')])) as string, /No reliable/);
+  assert.match((await web([found, plain('TITLE: x\n- nothing cited 5%')])) as string, /no fact/);
+  const t = await web([found, plain('TITLE: Use doubled to 9%\n'), cited('It grew', cite('It grew'))]);
+  assert.equal(typeof t !== 'string' && t.slide.title, 'What published sources say');
+});
+
+test('a question our data cannot answer is flagged for research; a web slide always waits for approval', async () => {
+  const r = await go(new Ai(new Budget(tmp(), 4), async () => message(reply({ answered: false, chart: null, layout: 'statement', bullets: ['We do not have that'] })), () => true));
+  assert.equal('slide' in r && r.answered, false);
+  const slide = toSlide(reply(), datasets, 'gen-web-1') as Slide;
+  const s = addDraft({ ...emptyState(), autoShow: true }, { id: 'w', kind: 'answer', heard: 'q', slide, from: 'web', at: 0 });
+  assert.ok(!isCovered(s) && s.drafts.length === 1);
+});
+
+test('research spends within the cap and counts searches', async () => {
+  const file = tmp();
+  const ai = new Ai(new Budget(file, 4), async () => ({ stop_reason: 'end_turn', content: [found, cited('Data centres used 415 TWh', cite('used 415 TWh'))], usage: { input_tokens: 10_000, output_tokens: 100, server_tool_use: { web_search_requests: 2 } } }) as any, () => true);
+  const r = await ai.research('how much power', new AbortController().signal);
+  assert.ok('slide' in r && r.links?.length === 1);
+  assert.ok(Math.abs(ai.budget.spent - 0.041) < 1e-9);
+  const broke = new Ai(new Budget(tmp(), 0.1), async () => assert.fail('should not call'), () => true);
+  assert.match(((await broke.research('q', new AbortController().signal)) as any).error, /cap reached/);
+});
+
+test('private lives and gossip are never shown; long facts keep their first sentence', async () => {
+  const line = (s: string) => cited(s, cite(s));
+  for (const s of ['He admitted being unfaithful', 'Reports of relationships with two women', 'She is allegedly a spy', 'Scrutiny over his personal relationships'])
+    assert.equal(typeof (await web([found, plain('TITLE: x\n'), line(s)])), 'string', s);
+  assert.notEqual(typeof (await web([found, plain('TITLE: x\n'), line("NVIDIA's relationship with TSMC is long-standing")])), 'string');
+  const long = 'The board announced that the chief executive resigned, effective immediately. ' + 'And then it carried on at great length about the process. '.repeat(4);
+  assert.equal(shorten(long), 'The board announced that the chief executive resigned, effective immediately.');
 });

@@ -126,7 +126,7 @@ export type RunEntry = { id: string; index: number; at: number; via: 'cue' | 'ne
 export type Rehearsal = { startedAt: number; entries: RunEntry[] };
 
 /** A slide built live, waiting for the operator (or shown at once if auto-show is on). */
-export type Draft = { id: string; kind: 'answer' | 'riff'; heard: string; slide: Slide; from: 'prepared' | 'claude'; at: number };
+export type Draft = { id: string; kind: 'answer' | 'riff'; heard: string; slide: Slide; from: 'prepared' | 'claude' | 'web'; at: number; links?: { title: string; url: string }[] };
 
 export type ShowState = {
   index: number; // position in the spine; -1 = standby or an ad-hoc slide
@@ -151,7 +151,7 @@ export type ShowState = {
 };
 
 /** What the operator panel shows about Claude. Not saved with the show. */
-export type AiInfo = { busy: 'answer' | 'riff' | null; note: string | null; spent: number; cap: number; model: string; hasKey: boolean; bankError: string | null };
+export type AiInfo = { busy: 'answer' | 'riff' | 'research' | null; note: string | null; spent: number; cap: number; model: string; hasKey: boolean; bankError: string | null };
 
 export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('push'), slide: Slide }),
@@ -164,7 +164,7 @@ export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('skip'), id: z.string(), on: z.boolean() }),
   z.object({ type: z.literal('rehearsal'), action: z.enum(['start', 'stop']) }),
   z.object({ type: z.literal('question'), action: z.enum(['start', 'answer', 'cancel']) }),
-  z.object({ type: z.literal('ask'), text: z.string().min(1).max(1500), kind: z.enum(['answer', 'riff']).default('answer'), fresh: z.boolean().default(false) }),
+  z.object({ type: z.literal('ask'), text: z.string().min(1).max(1500), kind: z.enum(['answer', 'riff']).default('answer'), fresh: z.boolean().default(false), web: z.boolean().default(false) }),
   z.object({ type: z.literal('draft'), action: z.enum(['show', 'reject']), id: z.string() }),
   z.object({ type: z.literal('bank'), id: z.string() }),
   z.object({ type: z.literal('resume') }),

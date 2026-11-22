@@ -16,7 +16,7 @@
 
 - id: energy
   question: How much energy does NVIDIA use?
-  ask: [energy use, energy consumption, how much energy, how much electricity, power consumption]
+  ask: [energy does nvidia, electricity does nvidia, power does nvidia, nvidia energy use, nvidia energy consumption, nvidia power consumption, company energy use, energy does the company]
   slide:
     layout: split
     title: NVIDIA's own energy use is rising, and now renewable
@@ -28,7 +28,7 @@
 
 - id: scope3
   question: What about Scope 3 and supply chain emissions?
-  ask: [scope three, scope 3, supply chain emissions, carbon footprint, greenhouse gas, carbon emissions]
+  ask: [scope three, scope 3, supply chain emissions, nvidia carbon footprint, nvidia carbon emissions, nvidia greenhouse gas, company carbon footprint, their carbon footprint]
   slide:
     layout: split
     title: Scope 3 is the weak point, and it is growing
@@ -39,8 +39,8 @@
     chart: { type: line, datasetKey: nvda_emissions, series: [Scope 3], highlight: FY26 }
 
 - id: water
-  question: How much water does it use?
-  ask: [water use, water usage, how much water, water consumption, data center water]
+  question: How much water does NVIDIA use?
+  ask: [water does nvidia, nvidia water use, nvidia water usage, nvidia water consumption, water does the company]
   slide:
     layout: statement
     title: We don't have a water figure we can stand behind.

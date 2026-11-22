@@ -5,7 +5,8 @@ import path from 'node:path';
 import { parseEnv } from 'node:util';
 import { z } from 'zod';
 import { slideDatasetKeys, tokenRefs, type Dataset, type Slide, type SpineSlide } from '../shared/schema.ts';
-import { Budget, costOf, PRICES } from './budget.ts';
+import { Budget, costOf, PRICES, SEARCH_PRICE } from './budget.ts';
+import { RESEARCH_INPUT, RESEARCH_TOKENS, researchPrompt, SEARCHES, toWebSlide, type Link } from './research.ts';
 import { checkSlide } from './state.ts';
 
 const ENV_FILE = path.resolve(import.meta.dirname, '../.env');
@@ -25,6 +26,7 @@ const MAX_TOKENS = 1200;
 /** What Claude returns. It picks data by name; it never supplies a number. */
 const Reply = z.object({
   show: z.boolean(),
+  answered: z.boolean(),
   layout: z.enum(['statement', 'number', 'chart', 'split']),
   title: z.string(),
   bullets: z.array(z.string()),
@@ -38,12 +40,12 @@ export const usable = (datasets: Map<string, Dataset>) => [...datasets.values()]
 
 export function systemPrompt(datasets: Map<string, Dataset>, spine: SpineSlide[]): string {
   const data = usable(datasets).map((d) => JSON.stringify({ key: d.key, title: d.title, unit: d.units ?? d.unit, asOf: d.asOf, x: d.x, series: d.series })).join('\n');
-  const script = spine.map((s) => `[${s.speaker}] ${s.say ?? s.title}`).join('\n');
+  const script = spine.map((s) => `[${s.speaker}] ${(s.say ?? s.title).replace(/\bVERIFY\b[^.]*\./g, "").trim()}`).join('\n');
   return `You build one slide at a time, live, for three University of Stirling students pitching NVIDIA shares to an investment board that is sceptical of NVIDIA and focused on ESG. The slide appears while they speak, so it must be readable in seconds.
 
 Figures: every number on the slide is looked up by the app from DATA. Write a figure in a title, bullet or stat label only as {{datasetKey | series | x}}, copying names exactly; the app inserts the value with its unit. Writing a number yourself, in digits or in words (including "half", "doubled", "a billion", "ninety percent"), makes the app reject the slide. Years, dates and labels such as FY26 or Scope 3 are fine. If a comparison needs arithmetic, show both figures instead.
 
-Facts: use only DATA and the SCRIPT. If they do not hold the answer, say so plainly on the slide ("We don't have that figure in our data") and show the nearest relevant data. Give bad news straight: a sceptical board trusts a candid answer, so be plain about Scope 3 emissions, governance and the bear case, without commenting on your own candour. Do not state as fact anything about live events that SCRIPT does not say. NVIDIA manufactures through TSMC, so its own emissions exclude chip making. Never claim the AI used here runs only on NVIDIA chips.
+Facts: use only DATA and the SCRIPT. If they do not hold the answer, say so plainly on the slide ("We don't have that figure in our data") and show the nearest relevant data, and set answered to false so the app can research it. Set answered to true only if the slide itself answers what was asked. Give bad news straight: a sceptical board trusts a candid answer, so be plain about Scope 3 emissions, governance and the bear case, without commenting on your own candour. Do not state as fact anything about live events that SCRIPT does not say. NVIDIA manufactures through TSMC, so its own emissions exclude chip making. Never claim the AI used here runs only on NVIDIA chips.
 
 Layouts: "split" = title, up to three short bullets and a chart (best for most answers). "chart" = title and one chart. "number" = one headline figure in stat, plus up to two bullets. "statement" = title and up to three bullets, for when no data fits. split and chart need chart; number needs stat; otherwise set them to null. Use line for a series over time, bar for comparing companies or a few values, stackedBar for parts of a whole. Put the series that answers the question first: it is the one highlighted. highlight, from and to must be x values in that dataset, or null. Title under 70 characters and answering the question; bullets under 90 characters each.
 
@@ -100,6 +102,9 @@ export function toSlide(r: Reply, datasets: Map<string, Dataset>, id: string): S
   return slide;
 }
 
+const thinking = MODEL === 'claude-sonnet-5-5' ? { thinking: { type: 'between_tools' } as Anthropic.ThinkingConfigParam } : {};
+export const ukDate = (d = new Date()) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/London' });
+
 /** Last resort: drop the bullets that break the rules and keep the rest, if what is left still says something. */
 export function salvage(r: Reply, datasets: Map<string, Dataset>): Slide | null {
   const id = `gen-${Date.now()}`;
@@ -109,15 +114,70 @@ export function salvage(r: Reply, datasets: Map<string, Dataset>): Slide | null 
 }
 
 export type Job = { kind: 'answer' | 'riff'; heard: string; onScreen: string };
-export type Result = { slide: Slide } | { skip: true } | { error: string };
+export type Result = { slide: Slide; answered: boolean; links?: Link[] } | { skip: true } | { error: string };
 export type Caller = (body: Anthropic.MessageCreateParamsNonStreaming, signal: AbortSignal) => Promise<Anthropic.Message>;
 
 export class Ai {
   constructor(
     readonly budget: Budget,
-    private call: Caller = (body, signal) => new Anthropic({ apiKey: env('ANTHROPIC_API_KEY'), baseURL: 'https://api.anthropic.com', maxRetries: 0, timeout: 20_000 }).messages.create(body, { signal }),
+    private call: Caller = (body, signal) => new Anthropic({ apiKey: env('ANTHROPIC_API_KEY'), baseURL: 'https://api.anthropic.com', maxRetries: 0, timeout: body.tools ? 45_000 : 20_000 }).messages.create(body, { signal }),
     readonly hasKey = () => !!env('ANTHROPIC_API_KEY'),
   ) {}
+
+  /** One call, within the budget. Anything uncertain counts as spent. */
+  private async spend(body: Anthropic.MessageCreateParamsNonStreaming, worst: number, signal: AbortSignal): Promise<Anthropic.Message | { error: string } | { skip: true }> {
+    if (!this.budget.reserve(worst)) return { error: `AI spending cap reached ($${this.budget.spent.toFixed(2)} of $${this.budget.cap.toFixed(2)})` };
+    try {
+      const msg = await this.call(body, signal);
+      this.budget.settle(worst, costOf(MODEL, msg.usage));
+      return signal.aborted ? { skip: true } : msg;
+    } catch (e) {
+      // A refused request costs nothing. A timeout or dropped line may have been billed, so count it in full.
+      this.budget.settle(worst, e instanceof Anthropic.APIError && e.status ? 0 : worst);
+      if (signal.aborted) return { skip: true };
+      console.warn(`[ai] ${(e as Error).message}`);
+      if (e instanceof Anthropic.AuthenticationError) return { error: 'Anthropic rejected the API key' };
+      if (e instanceof Anthropic.RateLimitError) return { error: 'Anthropic is rate limiting us. Try again in a moment' };
+      if (e instanceof Anthropic.APIConnectionError) return { error: 'Could not reach Claude' };
+      return { error: `Claude call failed: ${(e as Error).message.slice(0, 160)}` };
+    }
+  }
+
+  /** Search the web for something our data doesn't hold. */
+  async research(heard: string, signal: AbortSignal): Promise<Result> {
+    if (!this.hasKey()) return { error: 'No Anthropic key in app/.env' };
+    const today = ukDate();
+    const messages: Anthropic.MessageParam[] = [{ role: 'user', content: `<heard>${heard.slice(-1500).replace(/[<>]/g, '')}</heard>` }];
+    const worst = (RESEARCH_INPUT * PRICES[MODEL].in + RESEARCH_TOKENS * PRICES[MODEL].out) / 1e6 + SEARCHES * SEARCH_PRICE;
+    let content: Anthropic.ContentBlock[] = [];
+    for (let turn = 0; turn < 2; turn++) {
+      const msg = await this.spend(
+        {
+          model: MODEL,
+          max_tokens: RESEARCH_TOKENS,
+          ...thinking,
+          output_config: { effort: 'low' },
+          system: researchPrompt(today),
+          // Called directly: results reach Claude as they are, so each line can cite the exact source text.
+          tools: [{ type: 'web_search_20260209', name: 'web_search', max_uses: SEARCHES, allowed_callers: ['direct'], user_location: { type: 'approximate', country: 'GB', timezone: 'Europe/London' } }],
+          messages,
+        },
+        worst,
+        signal,
+      );
+      if (!('content' in msg)) return msg;
+      if (msg.stop_reason === 'refusal') return { error: 'Claude declined to research this one' };
+      content = [...content, ...msg.content];
+      if (msg.stop_reason !== 'pause_turn') break;
+      messages.push({ role: 'assistant', content: msg.content }); // resumes by itself
+    }
+    if (!content.some((b) => b.type === 'web_search_tool_result' && Array.isArray(b.content) && b.content.length)) return { error: 'The web search returned nothing' };
+    const r = await toWebSlide(content, today);
+    if (signal.aborted) return { skip: true };
+    if (typeof r === 'string') return { error: r };
+    for (const d of r.dropped) console.warn(`[web] dropped: ${d}`);
+    return { slide: r.slide, links: r.links, answered: true };
+  }
 
   /** One slide. At most two calls: a rejected slide gets one chance to be corrected. */
   async build(job: Job, datasets: Map<string, Dataset>, spine: SpineSlide[], signal: AbortSignal): Promise<Result> {
@@ -133,32 +193,19 @@ export class Ai {
       const text = system + JSON.stringify(messages);
       // Worst case: every two characters a token (numbers are dense), all written to cache, and the full output.
       const worst = ((text.length / 2) * PRICES[MODEL].in * 1.25 + MAX_TOKENS * PRICES[MODEL].out) / 1e6;
-      if (!this.budget.reserve(worst)) return { error: `AI spending cap reached ($${this.budget.spent.toFixed(2)} of $${this.budget.cap.toFixed(2)})` };
-      let msg: Anthropic.Message;
-      try {
-        msg = await this.call(
-          {
-            model: MODEL,
-            max_tokens: MAX_TOKENS,
-            ...(MODEL === 'claude-sonnet-5-5' ? { thinking: { type: 'between_tools' } as Anthropic.ThinkingConfigParam } : {}),
-            output_config: { effort: 'low', format: zodOutputFormat(Reply) },
-            system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
-            messages,
-          },
-          signal,
-        );
-        this.budget.settle(worst, costOf(MODEL, msg.usage));
-      } catch (e) {
-        // A refused request costs nothing. A timeout or dropped line may have been billed, so count it in full.
-        this.budget.settle(worst, e instanceof Anthropic.APIError && e.status ? 0 : worst);
-        if (signal.aborted) return { skip: true };
-        console.warn(`[ai] ${(e as Error).message}`);
-        if (e instanceof Anthropic.AuthenticationError) return { error: 'Anthropic rejected the API key' };
-        if (e instanceof Anthropic.RateLimitError) return { error: 'Anthropic is rate limiting us. Try again in a moment' };
-        if (e instanceof Anthropic.APIConnectionError) return { error: 'Could not reach Claude' };
-        return { error: `Claude call failed: ${(e as Error).message.slice(0, 160)}` };
-      }
-      if (signal.aborted) return { skip: true };
+      const msg = await this.spend(
+        {
+          model: MODEL,
+          max_tokens: MAX_TOKENS,
+          ...thinking,
+          output_config: { effort: 'low', format: zodOutputFormat(Reply) },
+          system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
+          messages,
+        },
+        worst,
+        signal,
+      );
+      if (!('content' in msg)) return msg;
       if (msg.stop_reason === 'refusal') return { error: 'Claude declined to answer this one' };
       const out = msg.content.flatMap((b) => (b.type === 'text' ? [b.text] : [])).join('');
       let json: unknown;
@@ -170,11 +217,11 @@ export class Ai {
       const reply = Reply.safeParse(json);
       if (reply.success && !reply.data.show && job.kind === 'riff') return { skip: true };
       const slide = reply.success ? toSlide(reply.data, datasets, `gen-${Date.now()}`) : 'The reply was not complete JSON';
-      if (typeof slide !== 'string') return { slide };
+      if (typeof slide !== 'string') return { slide, answered: reply.data!.answered };
       problem = slide;
       if (attempt === 1 && reply.success) {
         const saved = salvage(reply.data, datasets);
-        if (saved) return { slide: saved };
+        if (saved) return { slide: saved, answered: reply.data.answered };
       }
       console.warn(`[ai] rejected: ${problem}`);
       messages.push({ role: 'assistant', content: out || '(empty)' }, { role: 'user', content: `The app rejected that slide: ${problem}. Send a corrected one.` });

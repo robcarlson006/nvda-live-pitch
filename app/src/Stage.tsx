@@ -123,7 +123,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   );
 
   return (
-    <main className={`slide layout-${slide.layout}${slide.bullets.length ? ' has-points' : ''}${slide.effect ? ' has-effect' : ''}`}>
+    <main className={`slide layout-${slide.layout}${slide.bullets.length ? ' has-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}`}>
       {slide.layout === 'statement' && (
         <>
           {title}
