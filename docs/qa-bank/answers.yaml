@@ -247,11 +247,11 @@
   slide:
     layout: statement
     icons: [shield]
-    title: The AI cannot type a number here.
+    title: Our figures are looked up, not typed by AI.
     bullets:
-      - It picks a dataset; our code looks the figure up
-      - Any digit the AI writes itself is rejected before it reaches the screen
-      - A person approves each answer, and each has its source
+      - The AI picks a dataset; our code looks the figure up
+      - Web research is labelled, and each figure must appear in its source
+      - It can still phrase things badly, so a person reads answers first
     sources: ["How this app works: figures come from Bloomberg exports"]
 
 - id: wrong

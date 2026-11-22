@@ -14,3 +14,20 @@ supply           {"p50":16.7,"p95":16.7,"max":16.8,"frames":271} 4x {"p50":16.7,
 catch-up         {"p50":16.7,"p95":16.7,"max":16.8,"frames":270} 4x {"p50":16.7,"p95":16.7,"max":16.8,"frames":270}
 not-one-person   {"p50":16.7,"p95":16.7,"max":16.8,"frames":300} 4x {"p50":16.7,"p95":16.8,"max":16.8,"frames":301}
 bubble           {"p50":16.7,"p95":16.7,"max":16.8,"frames":210} 4x {"p50":16.7,"p95":16.7,"max":16.8,"frames":211}
+different        {"p50":16.7,"p95":16.7,"max":16.8,"frames":241} 4x {"p50":16.7,"p95":16.7,"max":16.8,"frames":241}
+already-doing    {"p50":16.7,"p95":16.7,"max":16.8,"frames":271} 4x {"p50":16.7,"p95":16.8,"max":16.8,"frames":271}
+everyday         {"p50":16.7,"p95":16.8,"max":16.8,"frames":271} 4x {"p50":16.7,"p95":16.8,"max":16.8,"frames":271}
+security         {"p50":16.7,"p95":16.7,"max":16.8,"frames":240} 4x {"p50":16.7,"p95":16.7,"max":16.8,"frames":240}
+superpowers      {"p50":16.7,"p95":16.7,"max":16.8,"frames":241} 4x {"p50":16.7,"p95":16.8,"max":16.8,"frames":241}
+handoff          {"p50":16.7,"p95":16.7,"max":16.8,"frames":241} 4x {"p50":16.7,"p95":16.7,"max":16.8,"frames":241}
+last-quarter     {"p50":16.7,"p95":16.8,"max":16.8,"frames":180} 4x {"p50":16.7,"p95":16.8,"max":16.8,"frames":180}
+beats            {"p50":16.7,"p95":16.7,"max":16.8,"frames":240} 4x {"p50":16.7,"p95":16.7,"max":16.8,"frames":240}
+segments         {"p50":16.7,"p95":16.7,"max":16.8,"frames":180} 4x {"p50":16.7,"p95":16.8,"max":16.8,"frames":180}
+peers            {"p50":16.7,"p95":16.8,"max":16.8,"frames":210} 4x {"p50":16.7,"p95":16.8,"max":16.8,"frames":211}
+valuation        {"p50":16.7,"p95":16.8,"max":16.8,"frames":181} 4x {"p50":16.7,"p95":16.8,"max":16.8,"frames":180}
+governance       {"p50":16.7,"p95":16.8,"max":16.8,"frames":211} 4x {"p50":16.7,"p95":16.8,"max":16.8,"frames":211}
+renewables       {"p50":16.7,"p95":16.8,"max":16.8,"frames":180} 4x {"p50":16.7,"p95":16.7,"max":16.8,"frames":180}
+scope3           {"p50":16.7,"p95":16.8,"max":16.8,"frames":211} 4x {"p50":16.7,"p95":16.7,"max":16.8,"frames":211}
+built-live       {"p50":16.7,"p95":16.8,"max":16.8,"frames":180} 4x {"p50":16.7,"p95":16.7,"max":66.7,"frames":177}
+close            {"p50":16.7,"p95":16.8,"max":16.8,"frames":241} 4x {"p50":16.7,"p95":16.7,"max":16.8,"frames":240}
+saved to /Users/robmcarlson/Developer/nvidia-pitch-loop/loop/shots/final-perf

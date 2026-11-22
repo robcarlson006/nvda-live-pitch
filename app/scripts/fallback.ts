@@ -23,6 +23,7 @@ const shot = async (name: string, title: string, kind: 'slide' | 'answer') => {
 };
 try {
   await page.goto(`${srv.url}/stage`);
+  await page.addStyleTag({ content: '.session{display:none}' }); // these would be this script's session, not the pitch's
   await sleep(2500);
   await shot('standby', 'NVIDIA', 'slide');
   for (const [i, s] of srv.box.spine.entries()) {
