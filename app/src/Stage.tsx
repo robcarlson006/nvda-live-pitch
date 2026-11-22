@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { Component, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { elementCount, lookup, resolveText, slideSources, tokenRefs, type Dataset, type Slide, type SpineSlide } from '../shared/schema.ts';
 import { Chart } from './Chart.tsx';
 import { Field } from './cores/Field.tsx';
@@ -11,6 +11,22 @@ const TITLE_AT = 0.25;
 function statValue(slide: Slide, datasets: Record<string, Dataset>): string | undefined {
   const s = slide.stat;
   return s ? lookup(datasets, s.datasetKey, s.series, s.x) : undefined;
+}
+
+/** If one part of the stage throws, only that part goes missing, and it is tried again on the next slide. */
+class Safe extends Component<{ children: ReactNode; at: number }, { bad: number | null }> {
+  state = { bad: null as number | null };
+  static getDerivedStateFromError = () => ({ bad: -1 });
+  componentDidCatch(e: Error) {
+    console.warn(`stage: ${e.message}`);
+    this.setState({ bad: this.props.at });
+  }
+  componentDidUpdate() {
+    if (this.state.bad !== null && this.state.bad !== -1 && this.state.bad !== this.props.at) this.setState({ bad: null });
+  }
+  render() {
+    return this.state.bad === null ? this.props.children : null;
+  }
 }
 
 export function Stage() {
@@ -41,13 +57,13 @@ export function Stage() {
 
   return (
     <div className={`stage${calm ? ' calm' : ''}`}>
-      <Field buildKey={state?.liveSince ?? 0} slide={slide} reveal={state?.reveal ?? 0} datasets={datasets} asking={!!asking} seen={seen} calm={calm} live={live} glyph={glyph} />
+      <Safe at={state?.liveSince ?? 0}><Field buildKey={state?.liveSince ?? 0} slide={slide} reveal={state?.reveal ?? 0} datasets={datasets} asking={!!asking} seen={seen} calm={calm} live={live} glyph={glyph} /></Safe>
       {asking ? (
         <main className="slide layout-statement has-effect" key={asking}>
           <h1 className="statement"><span className="word" style={{ '--at': '0.1s' } as CSSProperties}>{asking}</span></h1>
         </main>
       ) : (
-        slide && <SlideView key={state!.liveSince} slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} />
+        slide && <Safe at={state!.liveSince}><SlideView key={state!.liveSince} slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} /></Safe>
       )}
       {slide?.effect === 'compare' && slide.stat && !asking && (
         <>

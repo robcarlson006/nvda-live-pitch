@@ -17,7 +17,11 @@ export function Field(p: Props) {
 
   useEffect(() => {
     if (broken) return;
-    eng.current = createEngine(cv.current!, () => setBroken(true));
+    try {
+      eng.current = createEngine(cv.current!, () => setBroken(true));
+    } catch {
+      eng.current = null;
+    }
     if (!eng.current) return setBroken(true);
     last.current = 0;
     const t = setInterval(() => eng.current?.level(p.live.current?.level ?? 0), 60);
@@ -33,7 +37,7 @@ export function Field(p: Props) {
     if (!e || broken) return;
     e.calm(p.calm);
     let gone = false;
-    void document.fonts.load("800 100px 'Archivo Variable'").catch(() => {}).then(() => {
+    void Promise.race([document.fonts.load("800 100px 'Archivo Variable'").catch(() => {}), new Promise((r) => setTimeout(r, 800))]).then(() => {
       if (gone) return;
       const fresh = last.current !== p.buildKey;
       last.current = p.buildKey;
@@ -44,7 +48,7 @@ export function Field(p: Props) {
         else if (p.slide?.id === 'close') sc = closing(p.reveal, e.cols);
         else sc = sceneFor(p.slide, p.reveal, p.datasets, e.cols);
         let n = 0;
-        e.set(sc.frames[0], { wave: fresh });
+        e.set(sc.frames[0], { wave: fresh && p.slide?.speaker !== "Mi'kael" }); // no flourish on the ESG slides
         if (sc.frames.length > 1 && !(p.calm && sc.loop))
           timer.current = setInterval(() => {
             n++;

@@ -107,7 +107,7 @@ export function createEngine(cv: HTMLCanvasElement, onLost: () => void): Engine 
   }
   const u = (p: WebGLProgram, n: string) => gl.getUniformLocation(p, n);
 
-  const W = innerWidth, H = innerHeight, dpr = Math.min(2, window.devicePixelRatio || 1);
+  const W = innerWidth, H = innerHeight, dpr = Math.min(window.devicePixelRatio || 1, Math.max(0.75, Math.sqrt(2_300_000 / (W * H)))); // about 1080p of pixels whatever the screen: an 8 GB M2 must never struggle
   cv.width = Math.round(W * dpr);
   cv.height = Math.round(H * dpr);
   const pitch = cv.height / ROWS;
@@ -277,7 +277,7 @@ export function createEngine(cv: HTMLCanvasElement, onLost: () => void): Engine 
   return {
     cols,
     set,
-    level: (v) => (levelTo = v),
+    level: (v) => (levelTo = Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0),
     calm: (on) => (quiet = on),
     dispose: () => {
       dead = true;

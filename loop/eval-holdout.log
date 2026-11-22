@@ -26,3 +26,10 @@ i-asr-garble               14/14 right · late p50 19 · false 1 · tangents 0/0
 j-tangents                 8/10 right · late p50 24 · false 1 · tangents 2/2 (+1 false) · 101 calls
      missed: 0:four-layers (was standby) | 11:handoff (was last-quarter)
      false:  11(handoff): → last-quarter [live]
+l-takeovers                8/9 right · late p50 21 · false 4 · tangents 0/0 (+1 false) · 100 calls
+     missed: 7:handoff (was beats)
+     false:  7(handoff): → last-quarter [live] | 7(handoff): → beats [live] | 8(last-quarter): → segments [live] | 13(scope3): → renewables [live]
+k-accents-idioms           13/14 right · late p50 21 · false 2 · tangents 0/0 (+1 false) · 124 calls
+     missed: 13:built-live (was renewables)
+     false:  6(software): → revenue-long [live] | 9(everyday): → already-doing [live]
+{"set":"holdout","scenarios":12,"accuracy":89.6,"beats":164,"falseJumps":38,"falseJumpsPerRun":3.17,"wordsLateP50":21,"wordsLateP90":39,"tangentHit":"2/2","tangentFalse":5,"latencyP50":1014,"latencyP95":2025,"calls":1509,"errors":0,"spent":1.1131,"totalSpent":2.082}
