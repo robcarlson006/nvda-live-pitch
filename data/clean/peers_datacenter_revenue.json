@@ -1,0 +1,25 @@
+{
+  "key": "peers_datacenter_revenue",
+  "title": "Data centre revenue, latest full year",
+  "unit": "USD bn",
+  "units": {
+    "Multiple of AMD": "x"
+  },
+  "source": "Bloomberg FA (PGEO By Segment) for NVDA US (FY26, to Jan 2026) and AMD US (FY25, to Dec 2025)",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "NVIDIA",
+    "AMD"
+  ],
+  "series": {
+    "Data centre revenue": [
+      193.737,
+      16.635
+    ],
+    "Multiple of AMD": [
+      11.646,
+      1
+    ]
+  }
+}

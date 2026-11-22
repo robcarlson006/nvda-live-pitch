@@ -3,11 +3,12 @@ import http from 'node:http';
 import path from 'node:path';
 import { WebSocketServer, WebSocket } from 'ws';
 import type { ServerMsg, SpineSlide } from '../shared/schema.ts';
-import { apply, loadDatasets, loadSpine, loadState, saveState, SPINE_FILE } from './state.ts';
+import { apply, loadDatasets, loadSpine, loadState, relocate, runReport, saveState, SPINE_FILE } from './state.ts';
 
 const PORT = Number(process.env.PORT ?? 5173);
 const prod = process.env.NODE_ENV === 'production';
 const root = path.resolve(import.meta.dirname, '..');
+const REHEARSAL_DIR = path.resolve(root, '../rehearsal');
 
 const datasets = loadDatasets();
 let spine: SpineSlide[] = [];
@@ -19,7 +20,7 @@ function reloadSpine() {
   try {
     spine = loadSpine(datasets);
     spineError = null;
-    if (state.index >= spine.length) state = { ...state, index: spine.length - 1 };
+    state = { ...state, ...relocate(state, spine), skipped: (state.skipped ?? []).filter((id) => spine.some((s) => s.id === id && s.optional)) };
     console.log(`[spine] ${spine.length} slides`);
   } catch (e) {
     spineError = (e as Error).message; // keep the last good spine on screen
@@ -69,6 +70,19 @@ wss.on('connection', (ws) => {
     const next = apply(state, raw, { datasets, spine });
     if (typeof next === 'string') return send(ws, { type: 'error', message: next });
     if (next === state) return;
+    if (state.rehearsal && !next.rehearsal) {
+      // A rehearsal run just stopped: log it. A failed write must never take the show down.
+      try {
+        const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const file = path.join(REHEARSAL_DIR, `${stamp}.json`);
+        fs.mkdirSync(REHEARSAL_DIR, { recursive: true });
+        fs.writeFileSync(file, JSON.stringify(runReport(state.rehearsal, Date.now(), spine), null, 2) + '\n');
+        send(ws, { type: 'saved', file: path.relative(path.resolve(root, '..'), file) });
+        console.log(`[rehearsal] saved ${file}`);
+      } catch (e) {
+        send(ws, { type: 'error', message: `Could not save the rehearsal log: ${(e as Error).message}` });
+      }
+    }
     state = next;
     saveState(state);
     broadcast();

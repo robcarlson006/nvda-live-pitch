@@ -133,9 +133,24 @@ export const companies: [string, Loaded, string][] = [['NVIDIA', nvdaA, 'FY27'],
   add({ key: 'peers_emissions_intensity', title: 'Own emissions per $1m of revenue (Scope 1 + 2, market-based)', unit: 't CO2e per $1m', source: 'Bloomberg FA (ESG Environmental, Adj Highlights), latest fiscal year: NVIDIA FY26, others FY25', asOf: nvdaA.asOf, x, series: { 'Emissions intensity': ghg.map((v) => (v == null ? null : round(v / 1000))) } });
 }
 
+// ---------- Data centre: NVIDIA vs AMD (beat 9) ----------
+// Latest full year for each: NVIDIA FY26 (to Jan 2026) and AMD FY25 (to Dec 2025), so they cover almost the same twelve months.
+{
+  const nv = pick(nvdaA, { template: 'By Segment', section: 'Data Center', label: 'Revenue by End User' }).values.FY26;
+  const amd = pick(peers.AMD, { template: 'By Segment', section: 'Data Center', label: 'Revenue' }).values.FY25;
+  add({
+    key: 'peers_datacenter_revenue', title: 'Data centre revenue, latest full year', unit: 'USD bn',
+    units: { 'Multiple of AMD': 'x' },
+    source: 'Bloomberg FA (PGEO By Segment) for NVDA US (FY26, to Jan 2026) and AMD US (FY25, to Dec 2025)', asOf: nvdaA.asOf,
+    x: ['NVIDIA', 'AMD'],
+    series: { 'Data centre revenue': [round(nv * bn), round(amd * bn)], 'Multiple of AMD': [round(nv / amd), 1] },
+  });
+}
+
 // ---------- write ----------
 fs.mkdirSync(CLEAN, { recursive: true });
-for (const f of fs.readdirSync(CLEAN)) if (f.endsWith('.json') && !f.startsWith('model_')) fs.rmSync(path.join(CLEAN, f));
+// model_* come from model.ts and research_* are curated by hand from docs/research: keep both.
+for (const f of fs.readdirSync(CLEAN)) if (f.endsWith('.json') && !f.startsWith('model_') && !f.startsWith('research_')) fs.rmSync(path.join(CLEAN, f));
 for (const d of out) fs.writeFileSync(path.join(CLEAN, `${d.key}.json`), JSON.stringify(d, null, 2) + '\n');
 console.log(`Wrote ${out.length} datasets to data/clean/`);
 for (const d of out) console.log(`  ${d.key.padEnd(28)} ${d.x[0]}…${d.x.at(-1)}  ${Object.keys(d.series).join(', ')}`);

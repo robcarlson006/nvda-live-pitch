@@ -1,6 +1,6 @@
 # Progress log
 
-Pitch: **Wednesday 25 Nov 2026**, 8–9 min. Rob (why) → Mi'kael (financials) → Panshul (ESG).
+Pitch: **Wednesday 25 Nov 2026**, 8–9 min. Rob (why) → Panshul (financials) → Mi'kael (ESG) → Rob (close).
 
 ## How to run
 ```bash
@@ -8,6 +8,7 @@ cd app && npm install && npm run dev
 ```
 - Stage (projector): http://localhost:5173/stage. Press `f` for fullscreen.
 - Operator (laptop screen): http://localhost:5173/operator
+- Rehearse by speaking: open the operator page in **Chrome**, press **Start mic**, allow the microphone, then **Start rehearsal run**. Chrome's speech-to-text is free but needs internet.
 - Checks: `npm test` and `npm run typecheck`
 - For the pitch itself: `npm run build && npm start` (no dev tooling running).
 
@@ -72,6 +73,35 @@ cd app && npm install && npm run dev
   - Keys work on both screens: → / Space / PageDown next, ← / PageUp back. A USB clicker works without any setup.
   - Tests: 11, covering element stepping, forward-only cues, typo tolerance and the interim/final de-duplication.
 
+- **Rob's script in the live deck, for rehearsal** (21 Nov)
+  - Running order is now Rob → Panshul (financials) → Mi'kael (ESG) → Rob (close). Only the speaker names on the financial and ESG slides changed.
+  - Rob's old slides are replaced by one slide per beat of `docs/script/rob-why-script.md` (beats 1–21, then 22–23 as the close). `say` is the script verbatim.
+    - Cues come from each beat's first sentence, plus speech-to-text variants.
+    - Bullets have their own cues so they land as they are said.
+  - **✂ beats** (2, 7, 14, 16, 18) are `optional: true`. Untick them on the operator panel and Next, Back and the mic all skip them.
+  - **Numbers:**
+    - Figures in slide text are written `{{dataset | series | x}}` and looked up. The server refuses any other digits, apart from years, dates, FY/Q labels, Scope 1/2/3 and product names.
+    - New Bloomberg dataset `peers_datacenter_revenue`: AMD's Data Center segment, parsed from the AMD FA export (FY25 $16.6bn vs NVIDIA FY26 $193.7bn).
+    - Research figures are in `data/clean/research_*.json` (`curated: true`, each with its publisher), made by `app/scripts/research-data.ts`.
+    - The [VERIFY] figures are in `research_facts_unverified` (`verified: false`). The operator panel tags those slides with an amber "unverified" tag; the stage never shows it.
+  - **Stage effects:**
+    - `cpu-gpu` (beat 4): four big cores light one after another, then a block of thousands at once.
+    - `merge72` (beat 11): 72 clusters merge into one block.
+    - Both are drawn by the core array and timed to bullet cues. If an effect throws, it switches itself off.
+  - **Mic:** Chrome Web Speech API on the operator panel. Start/stop button, UK/US accent switch, live transcript (grey = still being recognised). It sends over the existing `transcript` message; no new paid service.
+  - **Cue matcher:**
+    - Words after a cue now carry on, so a bullet said in the same breath as its slide still lands.
+    - Interim results no longer cost a disk write each.
+    - If `spine.yaml` changes mid-show, the live slide is found again by id.
+  - **Rehearsal timer and log:**
+    - The operator panel shows time on this slide, Rob's opening against a 4:00 target, and the whole run.
+    - **Stop & save run** writes `rehearsal/<timestamp>.json`: time per slide, plus which cue moved it or whether it was Next/Back/a click.
+  - **Tests (25 in all):**
+    - No cue overlaps a cue of the next two slides.
+    - Reading any slide's script never fires the next two slides.
+    - Reading Rob's whole script aloud, sentence by sentence and word by word, builds every slide and bullet in order, with and without the ✂ beats.
+  - Changed a team slide: `governance` no longer has the cue "the ceo". Panshul's `peers` script says "the CEO resigned", which would have jumped straight to the ESG section.
+
 ## Data received
 - NVDA FA, annual FY1998–FY2026 and quarterly FY24 Q3–FY27 Q3, both including ESG.
 - Peer FA: AMD, INTC, AVGO, TSMC (TSMC in both TWD and USD).
@@ -79,11 +109,16 @@ cd app && npm install && npm run dev
 - Still missing: HP (price history), ANR (analyst targets), SPLC (customers/suppliers), RV. Possibly next week via Excel.
 
 ## Next
+- Rob: rehearse with the mic, then cut to 3–4 minutes (untick ✂ beats first). Fix cues that misfire from the rehearsal logs.
 - M4 (mic → Deepgram → transcript into the same `transcript` message), M7 (fallback), M6 (Q&A), M8 (finale).
 - Team: rewrite `say` and cues in docs/script/spine.yaml in your own words.
 - When the Excel exports arrive (HP, ANR, SPLC): add parsers to `build-data.ts`, then rerun `npm run data`.
 
 ## Risks / open
+- **Unverified figures on Rob's slides** (amber on the operator panel): CUDA spend ~$0.5bn/yr (beat 5), networking revenue $31bn (beat 11), supply commitments $279bn (beat 12), ~90% of AI training and ~80% of AI chip spend (beat 13), and "zero humans" (beat 19). Find primary sources or cut them before Wednesday.
+- **Beat 15 says "fibre boom at its peak: 1.4 percent",** but the chart shows each build-out's *average* (fibre 1.1%), so it is like-for-like with the AI 3.6% average. Say "1.1 percent a year on average", or the board hears one number and sees another.
+- **Beat 16:** the research quotes NVIDIA at ~22.7x forward earnings; Bloomberg (on the slide) says 14.1x. Both are "a fraction of 140x", but Panshul's numbers must match.
+- **Chrome speech-to-text sends audio to Google and needs internet.** On the day it is a rehearsal tool until M4; the clicker/Next is the fallback.
 - **The model's WACC (12%) and the scenario choices are team assumptions.** Mi'kael must own them and be able to defend them (see assumptions.json).
 - **Scope 3 (supply chain) emissions rose from 6.9 to 10.7 million t CO2e in FY26.** Own operations are on 100% renewable energy, but the ESG board will see Scope 3.
 - **Emissions per $ of revenue flatters NVIDIA vs TSMC/Intel,** because NVIDIA doesn't own factories: its manufacturing emissions are in TSMC's numbers and NVIDIA's own Scope 3. Say so if we show it.

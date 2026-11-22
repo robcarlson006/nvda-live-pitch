@@ -1,17 +1,82 @@
-import { useState } from 'react';
-import { elementCount } from '../shared/schema.ts';
+import { useEffect, useState } from 'react';
+import { elementCount, isUnverified, resolveText, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { demoSlides } from './demoSlides.ts';
-import { useNavKeys, useShow } from './useShow.ts';
+import { useSpeech } from './useSpeech.ts';
+import { useDatasets, useNavKeys, useShow } from './useShow.ts';
+
+const TARGET_S = 240; // soft target for Rob's opening (beats 1–21)
+const clock = (ms: number) => {
+  const s = Math.max(0, Math.round(ms / 1000));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+};
+
+/** Last slide of the opening section: the run of slides by the first speaker. Same rule as the server's log. */
+const sectionEnd = (spine: SpineSlide[]) => {
+  const i = spine.findIndex((s) => s.speaker !== spine[0]?.speaker);
+  return i < 0 ? spine.length - 1 : i - 1;
+};
+
+function useNow(ms = 500) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), ms);
+    return () => clearInterval(t);
+  }, [ms]);
+  return now;
+}
+
+function Timer({ state, spine, send }: { state: ShowState | null; spine: SpineSlide[]; send: ReturnType<typeof useShow>['send'] }) {
+  const now = useNow();
+  const run = state?.rehearsal ?? null;
+  const end = sectionEnd(spine);
+  const onSlide = state?.live ? now - state.liveSince : 0;
+  const section = run
+    ? run.entries.reduce((t, e, i) => (e.index <= end ? t + ((run.entries[i + 1]?.at ?? now) - e.at) : t), 0)
+    : 0;
+  const over = section > TARGET_S * 1000;
+
+  return (
+    <section className="op-timer">
+      <div>
+        <div className="label">This slide</div>
+        <div className="op-clock">{state?.live ? clock(onSlide) : '–'}</div>
+      </div>
+      <div>
+        <div className="label">Rob's opening (target {clock(TARGET_S * 1000)})</div>
+        <div className={`op-clock ${over ? 'over' : ''}`}>{run ? clock(section) : '–'}</div>
+      </div>
+      <div>
+        <div className="label">Whole run</div>
+        <div className="op-clock">{run ? clock(now - run.startedAt) : '–'}</div>
+      </div>
+      <div className="op-timer-actions">
+        {run ? (
+          <button className="primary" onClick={() => send({ type: 'rehearsal', action: 'stop' })}>
+            Stop &amp; save run
+          </button>
+        ) : (
+          <button onClick={() => send({ type: 'rehearsal', action: 'start' })}>Start rehearsal run</button>
+        )}
+        <div className="op-meta">{run ? `${run.entries.length} slides logged` : 'Logs each slide to rehearsal/'}</div>
+      </div>
+    </section>
+  );
+}
 
 export function Operator() {
-  const { state, spine, spineError, connected, clients, error, send } = useShow();
+  const { state, spine, spineError, connected, clients, error, notice, send } = useShow();
+  const datasets = useDatasets();
   const [said, setSaid] = useState('');
+  const mic = useSpeech((text, final) => send({ type: 'transcript', text, final }));
   useNavKeys(send);
 
   const cur = state && state.index >= 0 ? spine[state.index] : undefined;
   const total = state?.live ? elementCount(state.live) : 0;
   const waitingFor = cur && state && state.reveal < total ? cur.elementCues[state.reveal - 1] : null;
-  const upNext = state ? spine[state.index + 1] : undefined;
+  const skipped = state?.skipped ?? [];
+  const upNext = state ? spine.slice(state.index + 1).find((s) => !skipped.includes(s.id)) : undefined;
+  const text = (t: string) => resolveText(t, datasets);
+  const unverified = (s: SpineSlide) => isUnverified(s, datasets);
 
   return (
     <div className="operator">
@@ -19,6 +84,7 @@ export function Operator() {
         <h2>Operator</h2>
         <span className={`pill ${connected ? 'ok' : 'bad'}`}>Server {connected ? 'connected' : 'offline'}</span>
         <span className="pill">{clients} screens</span>
+        <span className={`pill ${mic.listening ? 'ok' : mic.problem ? 'bad' : ''}`}>Mic {mic.listening ? `on (${mic.lang})` : 'off'}</span>
         <label className="pill toggle">
           <input type="checkbox" checked={state?.autoCue ?? false} onChange={(e) => send({ type: 'autoCue', on: e.target.checked })} /> Follow speech
         </label>
@@ -29,11 +95,16 @@ export function Operator() {
 
       {error && <div className="op-error">{error}</div>}
       {spineError && <div className="op-error">Script not reloaded: {spineError}</div>}
+      {notice && <div className="op-notice">{notice}</div>}
 
       <section className="op-now">
         <div className="op-now-main">
-          <div className="label">{cur ? `Slide ${state!.index + 1} of ${spine.length}, ${cur.speaker}` : state?.live ? 'Extra slide' : 'Standby'}</div>
-          <div className="live-title">{state?.live?.title ?? 'Stage shows the NVIDIA standby screen'}</div>
+          <div className="label">
+            {cur ? `Slide ${state!.index + 1} of ${spine.length}, ${cur.speaker}` : state?.live ? 'Extra slide' : 'Standby'}
+            {cur && unverified(cur) && <span className="tag-unverified">unverified</span>}
+            {cur?.optional && <span className="tag-optional">✂ optional</span>}
+          </div>
+          <div className="live-title">{state?.live ? text(state.live.title) : 'Stage shows the NVIDIA standby screen'}</div>
           {state?.live && (
             <div className="op-meta">
               Built {state.reveal} of {total} elements
@@ -52,9 +123,33 @@ export function Operator() {
         </div>
       </section>
 
+      <Timer state={state} spine={spine} send={send} />
+
       <section className="op-speech">
+        <div className="op-mic">
+          {mic.listening ? (
+            <button className="danger" onClick={mic.stop}>
+              Stop mic
+            </button>
+          ) : (
+            <button className="primary" onClick={mic.start} disabled={!mic.supported}>
+              Start mic
+            </button>
+          )}
+          <label className="op-meta">
+            Accent{' '}
+            <select value={mic.lang} onChange={(e) => mic.changeLang(e.target.value as 'en-GB' | 'en-US')}>
+              <option value="en-GB">English (UK)</option>
+              <option value="en-US">English (US)</option>
+            </select>
+          </label>
+          <span className="op-meta">Chrome speech-to-text: free, needs internet. Speak, and the deck follows.</span>
+        </div>
+        {mic.problem && <div className="op-error">{mic.problem}</div>}
         <div className="label">Heard since last cue</div>
-        <div className="op-heard">{state?.heard || '…'}</div>
+        <div className="op-heard">
+          {state?.heard || (mic.interim ? '' : '…')} {mic.interim && <span className="op-interim">{mic.interim}</span>}
+        </div>
         {state?.lastCue && (
           <div className="op-meta">
             Last cue: “{state.lastCue.phrase}” → {state.lastCue.target}
@@ -69,20 +164,37 @@ export function Operator() {
             setSaid('');
           }}
         >
-          <input value={said} onChange={(e) => setSaid(e.target.value)} placeholder="Type what a presenter says to test the cues, then Enter" />
+          <input value={said} onChange={(e) => setSaid(e.target.value)} placeholder="Or type what a presenter says to test the cues, then Enter" />
         </form>
       </section>
 
       <section>
-        <div className="label">Script ({spine.length} slides)</div>
+        <div className="label">
+          Script ({spine.length} slides). Untick ✂ slides to skip them.
+        </div>
         <ol className="op-spine">
-          {spine.map((s, i) => (
-            <li key={s.id} className={i === state?.index ? 'active' : ''} onClick={() => send({ type: 'goto', index: i })}>
-              <span className="op-spine-speaker">{s.speaker}</span>
-              <span className="op-spine-title">{s.title}</span>
-              <span className="op-meta">{s.cues.join(' / ')}</span>
-            </li>
-          ))}
+          {spine.map((s, i) => {
+            const off = skipped.includes(s.id);
+            return (
+              <li key={s.id} className={`${i === state?.index ? 'active' : ''} ${off ? 'skipped' : ''}`} onClick={() => send({ type: 'goto', index: i })}>
+                <span className="op-spine-speaker">
+                  {i + 1}. {s.speaker}
+                </span>
+                <span className="op-spine-title">
+                  {text(s.title)}
+                  {unverified(s) && <span className="tag-unverified">unverified</span>}
+                  {s.optional && (
+                    <label className="tag-optional" onClick={(e) => e.stopPropagation()}>
+                      <input type="checkbox" checked={!off} onChange={(e) => send({ type: 'skip', id: s.id, on: !e.target.checked })} /> ✂ {off ? 'skipped' : 'in'}
+                    </label>
+                  )}
+                </span>
+                <span className="op-meta">
+                  {s.layout} · {s.cues.join(' / ')}
+                </span>
+              </li>
+            );
+          })}
         </ol>
       </section>
 

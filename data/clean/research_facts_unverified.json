@@ -1,0 +1,49 @@
+{
+  "key": "research_facts_unverified",
+  "title": "Figures marked [VERIFY] in the script",
+  "unit": "",
+  "units": {
+    "CUDA spend per year": "USD bn",
+    "Networking revenue FY26": "USD bn",
+    "Supply commitments": "USD bn",
+    "Share of AI training": "%",
+    "Share of AI chip spending": "%",
+    "Humans in the loop": ""
+  },
+  "source": "Research notes (via NotebookLM research, 21 Nov 2026)",
+  "seriesSources": {
+    "CUDA spend per year": "Rob May, \"The CUDA Backstory\"; secondary estimates",
+    "Networking revenue FY26": "NVIDIA FY26 results, as reported in research notes",
+    "Supply commitments": "NVIDIA Form 10-Q, quarter to 26 July 2026, as reported in research notes",
+    "Share of AI training": "Industry estimates, 2026",
+    "Share of AI chip spending": "IDC (81%), Mercury/SemiAnalysis (~75%), 2026",
+    "Humans in the loop": "Google Threat Intelligence Group, 16–17 November 2026"
+  },
+  "asOf": "2026-11-21",
+  "placeholder": false,
+  "curated": true,
+  "verified": false,
+  "x": [
+    "value"
+  ],
+  "series": {
+    "CUDA spend per year": [
+      0.5
+    ],
+    "Networking revenue FY26": [
+      31
+    ],
+    "Supply commitments": [
+      279
+    ],
+    "Share of AI training": [
+      90
+    ],
+    "Share of AI chip spending": [
+      80
+    ],
+    "Humans in the loop": [
+      0
+    ]
+  }
+}

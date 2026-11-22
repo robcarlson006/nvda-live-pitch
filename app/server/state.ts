@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parse as parseYaml } from 'yaml';
-import { ClientMsg, Dataset, elementCount, SpineSlide, type ShowState, type Slide } from '../shared/schema.ts';
-import { findCue, type Candidate } from './cues.ts';
+import { ClientMsg, Dataset, elementCount, lookup, resolveText, SpineSlide, tokenRefs, type Rehearsal, type RunEntry, type ShowState, type Slide } from '../shared/schema.ts';
+import { findCue, words, type Candidate } from './cues.ts';
 
 export const DATA_DIR = path.resolve(import.meta.dirname, '../../data/clean');
 export const SPINE_FILE = path.resolve(import.meta.dirname, '../../docs/script/spine.yaml');
@@ -21,6 +21,14 @@ export function loadDatasets(dir = DATA_DIR): Map<string, Dataset> {
   return out;
 }
 
+const MONTH = '(January|February|March|April|May|June|July|August|September|October|November|December)';
+const stripAllowed = (t: string) =>
+  t
+    .replace(new RegExp(`\\b\\d{1,2} ${MONTH}\\b`, 'g'), '')
+    .replace(/\b(19|20)\d\d\b/g, '')
+    .replace(/\bFY\d\d\b|\bQ[1-4]\b|\bScope [123]\b/g, '')
+    .replace(/\b(NV1|RIVA 128|GeForce 256|DGX-1|NVL72|3D)\b/g, ''); // product names
+
 /** null if the slide can be shown; otherwise what is wrong with it. */
 export function checkSlide(slide: Slide, datasets: Map<string, Dataset>): string | null {
   const { chart, stat, layout } = slide;
@@ -36,7 +44,18 @@ export function checkSlide(slide: Slide, datasets: Map<string, Dataset>): string
     if (!ds) return `Unknown dataset "${chart.datasetKey}"`;
     const missing = chart.series.filter((s) => !(s in ds.series));
     if (missing.length) return `Dataset "${ds.key}" has no series: ${missing.join(', ')}`;
+    for (const x of [...(chart.range ?? []), ...(chart.highlight ? [chart.highlight] : [])])
+      if (!ds.x.includes(x)) return `Dataset "${ds.key}" has no x value "${x}"`;
   }
+  // Figures in the text ({{key | series | x}}) must exist, and digits outside them are refused:
+  // every quantity on screen comes from data/. Dates and names are allowed: 1993, 12 November, FY18, Q3, Scope 3.
+  for (const text of [slide.title, ...slide.bullets, stat?.label ?? '']) {
+    for (const r of tokenRefs(text)) if (lookup(datasets, r.key, r.series, r.x) === undefined) return `No value for {{${r.key} | ${r.series} | ${r.x}}}`;
+    if (/\d/.test(stripAllowed(resolveText(text, new Map())))) return `Hand-typed number in "${text}". Put it in data/clean and write it as {{dataset | series | x}}`;
+  }
+  const shown = (t: string) => resolveText(t, datasets).length;
+  if (shown(slide.title) > 120) return 'Title is too long for the screen (120 characters max)';
+  if (slide.bullets.some((b) => shown(b) > 160)) return 'A bullet is too long for the screen (160 characters max)';
   return null;
 }
 
@@ -62,8 +81,16 @@ export function loadSpine(datasets: Map<string, Dataset>, file = SPINE_FILE): Sp
   });
 }
 
+/** After the script changes, find the live slide again by id (slides may have moved), and pick up its edits. */
+export function relocate(state: ShowState, spine: SpineSlide[]): Pick<ShowState, 'index' | 'live' | 'reveal'> {
+  if (state.index < 0) return { index: state.index, live: state.live, reveal: state.reveal };
+  const i = spine.findIndex((s) => s.id === state.live?.id);
+  if (i < 0) return { index: -1, live: null, reveal: 0 }; // slide removed: standby
+  return { index: i, live: spine[i], reveal: Math.min(state.reveal, elementCount(spine[i])) };
+}
+
 export function emptyState(): ShowState {
-  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', skipNextFinal: false, lastCue: null };
+  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null };
 }
 
 export function loadState(): ShowState {
@@ -90,21 +117,82 @@ function revealFrom(slide: SpineSlide | Slide, from: number): number {
 }
 
 function show(state: ShowState, slide: Slide, index: number): ShowState {
-  return { ...state, index, live: slide, reveal: revealFrom(slide, 0), liveSince: Date.now(), history: [...state.history, slide], heard: '' };
+  // liveSince always moves on, even within the same millisecond, so the stage rebuilds and the log sees every change.
+  return { ...state, index, live: slide, reveal: revealFrom(slide, 0), liveSince: Math.max(Date.now(), state.liveSince + 1), history: [...state.history, slide].slice(-50), heard: '' };
+}
+
+/** The next/previous slide the operator hasn't switched off. */
+const isOn = (spine: SpineSlide[], skipped: string[], i: number) => !!spine[i] && !skipped.includes(spine[i].id);
+function step(spine: SpineSlide[], skipped: string[], from: number, dir: 1 | -1): number {
+  for (let i = from + dir; i >= 0 && i < spine.length; i += dir) if (isOn(spine, skipped, i)) return i;
+  return -1;
 }
 
 function next(state: ShowState, spine: SpineSlide[]): ShowState {
   if (state.live && state.reveal < elementCount(state.live)) return { ...state, reveal: revealFrom(state.live, state.reveal), heard: '' };
-  if (state.index + 1 < spine.length) return show(state, spine[state.index + 1], state.index + 1);
-  return state;
+  const i = step(spine, state.skipped, state.index, 1);
+  return i >= 0 ? show(state, spine[i], i) : state;
+}
+
+type Target = { kind: 'element' } | { kind: 'slide'; index: number };
+
+/** Listen only for what can come next: this slide's next element, then the next two slides that are switched on. */
+function candidates(state: ShowState, spine: SpineSlide[]): Candidate<Target>[] {
+  const out: Candidate<Target>[] = [];
+  const live = state.index >= 0 ? spine[state.index] : undefined;
+  if (live && state.live?.id === live.id && state.reveal < elementCount(live)) {
+    const c = live.elementCues[state.reveal - 1];
+    if (c) out.push({ cue: c, target: { kind: 'element' } });
+  }
+  const a = step(spine, state.skipped, state.index, 1);
+  const b = a >= 0 ? step(spine, state.skipped, a, 1) : -1;
+  for (const i of [a, b]) if (i >= 0) for (const cue of spine[i].cues) out.push({ cue, target: { kind: 'slide', index: i } });
+  return out;
+}
+
+/**
+ * Speech in. Final results are appended to `heard`; interim results are matched but not stored, and `consumed`
+ * remembers how much of the current utterance a cue has already used, so its final copy can't fire twice.
+ * After a cue fires, the words after it carry on, so a bullet said in the same breath as its slide still lands.
+ */
+function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[]): ShowState {
+  const prior = state.heard ? state.heard.split(' ') : [];
+  const fresh = words(text).slice(state.consumed);
+  const buf = [...prior, ...fresh];
+  let s = state;
+  let used = 0;
+  if (state.autoCue) {
+    for (let k = 0; k < 4; k++) {
+      const hit = findCue(buf.slice(used), candidates(s, spine));
+      if (!hit) break;
+      const live = s.index >= 0 ? spine[s.index] : undefined;
+      s = hit.target.kind === 'element' ? next(s, spine) : show(s, spine[hit.target.index], hit.target.index);
+      s = { ...s, lastCue: { phrase: hit.cue, target: hit.target.kind === 'element' ? `${live?.id}: next element` : spine[hit.target.index].id, at: Date.now() } };
+      used += hit.end + 1;
+    }
+  }
+  if (final) return { ...s, heard: buf.slice(used).slice(-40).join(' '), consumed: 0 };
+  // Interim: its words arrive again in the final result, so only record what was used.
+  if (used === 0) return state; // nothing fired: no change, so no broadcast or disk write for every partial result
+  if (used <= prior.length) return { ...s, heard: prior.slice(used).join(' '), consumed: state.consumed };
+  return { ...s, heard: '', consumed: state.consumed + used - prior.length };
 }
 
 /** Pure reducer: returns the new state, or an error string. Raw input is validated here (trust boundary). */
-export function apply(state: ShowState, raw: unknown, { datasets, spine }: Ctx): ShowState | string {
+export function apply(state: ShowState, raw: unknown, ctx: Ctx): ShowState | string {
   const parsed = ClientMsg.safeParse(raw);
   if (!parsed.success) return `Invalid message: ${parsed.error.issues[0]?.message}`;
   const msg = parsed.data;
+  const out = reduce(state, msg, ctx);
+  // Rehearsal log: one entry each time a script slide goes live, saying what moved it there.
+  if (typeof out === 'string' || !out.rehearsal || out === state || out.liveSince === state.liveSince || out.index < 0) return out;
+  const via = msg.type === 'transcript' ? 'cue' : msg.type === 'next' || msg.type === 'back' || msg.type === 'goto' ? msg.type : null;
+  if (!via) return out;
+  const entry: RunEntry = { id: ctx.spine[out.index].id, index: out.index, at: out.liveSince, via, ...(via === 'cue' && out.lastCue ? { cue: out.lastCue.phrase } : {}) };
+  return { ...out, rehearsal: { ...out.rehearsal, entries: [...out.rehearsal.entries, entry] } };
+}
 
+function reduce(state: ShowState, msg: ClientMsg, { datasets, spine }: Ctx): ShowState | string {
   switch (msg.type) {
     case 'clear':
       return { ...state, index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
@@ -115,35 +203,58 @@ export function apply(state: ShowState, raw: unknown, { datasets, spine }: Ctx):
     }
     case 'next':
       return next(state, spine);
-    case 'back':
-      if (state.index <= 0) return { ...state, index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
-      return { ...show(state, spine[state.index - 1], state.index - 1), reveal: elementCount(spine[state.index - 1]) };
+    case 'back': {
+      const i = step(spine, state.skipped, state.index, -1);
+      if (i < 0) return { ...state, index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
+      return { ...show(state, spine[i], i), reveal: elementCount(spine[i]) };
+    }
     case 'goto':
       if (msg.index < 0 || msg.index >= spine.length) return `No slide ${msg.index + 1}`;
-      return show(state, spine[msg.index], msg.index);
+      return show(state, spine[msg.index], msg.index); // explicit jumps may land on a skipped slide
     case 'autoCue':
-      return { ...state, autoCue: msg.on, heard: '' };
-    case 'transcript': {
-      if (msg.final && state.skipNextFinal) return { ...state, skipNextFinal: false };
-      const heard = msg.final ? `${state.heard} ${msg.text}`.split(/\s+/).slice(-40).join(' ').trim() : state.heard;
-      const base = { ...state, heard };
-      if (!state.autoCue) return base;
-
-      // Listen only for what can come next: this slide's next element, then the next two slides.
-      type T = { kind: 'element' } | { kind: 'slide'; index: number };
-      const cands: Candidate<T>[] = [];
-      const live = state.index >= 0 ? spine[state.index] : undefined;
-      if (live && state.reveal < elementCount(live)) {
-        const c = live.elementCues[state.reveal - 1];
-        if (c) cands.push({ cue: c, target: { kind: 'element' } });
-      }
-      for (const i of [state.index + 1, state.index + 2]) if (spine[i]) for (const cue of spine[i].cues) cands.push({ cue, target: { kind: 'slide', index: i } });
-
-      const hit = findCue(msg.final ? heard : `${heard} ${msg.text}`, cands);
-      if (!hit) return base;
-      const lastCue = { phrase: hit.cue, target: hit.target.kind === 'element' ? `${live!.id}: next element` : spine[hit.target.index].id, at: Date.now() };
-      const fired = hit.target.kind === 'element' ? next(base, spine) : show(base, spine[hit.target.index], hit.target.index);
-      return { ...fired, heard: '', lastCue, skipNextFinal: !msg.final };
+      return { ...state, autoCue: msg.on, heard: '', consumed: 0 };
+    case 'skip': {
+      const slide = spine.find((s) => s.id === msg.id);
+      if (!slide?.optional) return `"${msg.id}" is not an optional slide`;
+      const rest = state.skipped.filter((id) => id !== msg.id);
+      return { ...state, skipped: msg.on ? [...rest, msg.id] : rest };
     }
+    case 'rehearsal': {
+      if (msg.action === 'stop') return { ...state, rehearsal: null };
+      const now = Date.now();
+      const entries: RunEntry[] = state.index >= 0 ? [{ id: spine[state.index].id, index: state.index, at: now, via: 'goto' }] : [];
+      return { ...state, rehearsal: { startedAt: now, entries } };
+    }
+    case 'transcript':
+      return hear(state, msg.text, msg.final, spine);
   }
+}
+
+/** A finished run, as written to rehearsal/<timestamp>.json: time on each slide and how it got there. */
+export function runReport(run: Rehearsal, stoppedAt: number, spine: SpineSlide[], sectionEnd = sectionLastIndex(spine)) {
+  const slides = run.entries.map((e, i) => ({
+    id: e.id,
+    speaker: spine[e.index]?.speaker,
+    seconds: Math.round(((run.entries[i + 1]?.at ?? stoppedAt) - e.at) / 100) / 10,
+    via: e.via,
+    ...(e.cue ? { cue: e.cue } : {}),
+  }));
+  const inSection = (id: string) => spine.findIndex((s) => s.id === id) <= sectionEnd;
+  const sum = (xs: typeof slides) => Math.round(xs.reduce((t, s) => t + s.seconds, 0) * 10) / 10;
+  return {
+    startedAt: new Date(run.startedAt).toISOString(),
+    stoppedAt: new Date(stoppedAt).toISOString(),
+    totalSeconds: Math.round((stoppedAt - run.startedAt) / 100) / 10,
+    openingSectionSeconds: sum(slides.filter((s) => inSection(s.id))),
+    openingSectionTargetSeconds: 240,
+    cueFired: slides.filter((s) => s.via === 'cue').length,
+    manual: slides.filter((s) => s.via !== 'cue').length,
+    slides,
+  };
+}
+
+/** Last slide of the opening section: the run of slides by the first speaker (Rob's "why", beats 1–21). */
+export function sectionLastIndex(spine: SpineSlide[]): number {
+  const i = spine.findIndex((s) => s.speaker !== spine[0]?.speaker);
+  return i < 0 ? spine.length - 1 : i - 1;
 }

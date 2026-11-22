@@ -1,0 +1,20 @@
+{
+  "key": "research_alexnet",
+  "title": "ImageNet 2012: top-5 error rate (lower is better)",
+  "unit": "%",
+  "source": "ILSVRC 2012 results; Krizhevsky, Sutskever & Hinton (2012) (via NotebookLM research, 21 Nov 2026)",
+  "asOf": "2026-11-21",
+  "placeholder": false,
+  "curated": true,
+  "verified": true,
+  "x": [
+    "AlexNet, on NVIDIA GPUs",
+    "Runner-up"
+  ],
+  "series": {
+    "Top-5 error": [
+      15.3,
+      26.2
+    ]
+  }
+}

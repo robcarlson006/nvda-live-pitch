@@ -30,18 +30,38 @@ function lev(a: string, b: string): number {
 
 /** Share of the cue's meaningful words found in the heard words (0..1). */
 export function cueScore(cue: string, heard: string[]): number {
+  const need = needed(cue);
+  if (!need.length) return 0;
+  return need.filter((t) => find(t, heard) >= 0).length / need.length;
+}
+
+function needed(cue: string): string[] {
   const all = words(cue);
   const key = all.filter((w) => !STOP.has(w));
-  const need = key.length ? key : all;
-  if (!need.length) return 0;
-  const hit = need.filter((t) => heard.some((w) => w === t || (t.length >= 5 && Math.abs(w.length - t.length) <= 1 && lev(w, t) <= 1)));
-  return hit.length / need.length;
+  return key.length ? key : all;
+}
+
+/** Index in `heard` of the first word matching cue word `t` (allowing a one-letter slip on longer words), or -1. */
+function find(t: string, heard: string[]): number {
+  return heard.findIndex((w) => w === t || (t.length >= 5 && Math.abs(w.length - t.length) <= 1 && lev(w, t) <= 1));
 }
 
 export type Candidate<T> = { cue: string; target: T };
+export type Hit<T> = Candidate<T> & { end: number }; // index in the heard words of the last word the match used
 
-/** First candidate (in priority order) whose cue is matched. Order matters: it stops a later slide winning over the next one. */
-export function findCue<T>(heardText: string, candidates: Candidate<T>[], threshold = 0.75): Candidate<T> | null {
-  const heard = words(heardText).slice(-30); // only recent speech counts
-  return candidates.find((c) => cueScore(c.cue, heard) >= threshold) ?? null;
+const WINDOW = 30; // only recent speech counts
+
+/**
+ * First candidate (in priority order) whose cue is matched. Order matters: it stops a later slide winning over the next one.
+ * `end` says where the match finished, so the words after it can carry on towards the next cue.
+ */
+export function findCue<T>(heard: string | string[], candidates: Candidate<T>[], threshold = 0.75): Hit<T> | null {
+  const all = typeof heard === 'string' ? words(heard) : heard;
+  const offset = Math.max(0, all.length - WINDOW);
+  const recent = all.slice(offset);
+  for (const c of candidates) {
+    if (cueScore(c.cue, recent) < threshold) continue;
+    return { ...c, end: offset + Math.max(...needed(c.cue).map((t) => find(t, recent))) };
+  }
+  return null;
 }

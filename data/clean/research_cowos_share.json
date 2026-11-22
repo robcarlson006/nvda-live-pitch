@@ -1,0 +1,22 @@
+{
+  "key": "research_cowos_share",
+  "title": "Share of TSMC CoWoS packaging capacity booked for 2026",
+  "unit": "%",
+  "source": "Morgan Stanley, TrendForce and Silicon Analysts estimates, 2026 (via NotebookLM research, 21 Nov 2026)",
+  "asOf": "2026-11-21",
+  "placeholder": false,
+  "curated": true,
+  "verified": true,
+  "x": [
+    "NVIDIA",
+    "Broadcom",
+    "AMD"
+  ],
+  "series": {
+    "Share of CoWoS": [
+      60,
+      15,
+      11
+    ]
+  }
+}

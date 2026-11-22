@@ -1,0 +1,129 @@
+{
+  "key": "research_facts",
+  "title": "Figures from the research notes",
+  "unit": "",
+  "units": {
+    "NV1 chips made": "",
+    "NV1 chips returned": "",
+    "Sega investment": "USD m",
+    "RIVA 128 sold in four months": "m",
+    "Xbox advance": "USD m",
+    "Stanford speed-up": "x",
+    "AMD MI355X memory": "GB",
+    "NVIDIA B200 memory": "GB",
+    "CUDA developers": "m",
+    "CUDA-X libraries": "",
+    "GPUs per NVL72 rack": "",
+    "Mellanox price": "USD bn",
+    "TSMC share of leading-edge chips": "%",
+    "Cisco forward P/E, March 2000": "x",
+    "Drug: idea to trials, months": "",
+    "Sweden: more cancers found": "%",
+    "Sweden: less reading work": "%",
+    "Writers: faster": "%",
+    "Support: more solved": "%",
+    "Support: more solved, new staff": "%",
+    "Spying campaign run by AI, low": "%",
+    "Spying campaign run by AI, high": "%"
+  },
+  "source": "Research notes (via NotebookLM research, 21 Nov 2026)",
+  "seriesSources": {
+    "NV1 chips made": "NVIDIA history (Wikipedia; Sequoia/TwinMind)",
+    "NV1 chips returned": "NVIDIA history (Wikipedia; Sequoia/TwinMind)",
+    "Sega investment": "NVIDIA history (Wikipedia; TwinMind)",
+    "RIVA 128 sold in four months": "GameSpot, April 2000; NVIDIA history",
+    "Xbox advance": "EE Times, 19 April 2000",
+    "Stanford speed-up": "Raina, Madhavan & Ng, ICML 2009",
+    "AMD MI355X memory": "AMD Instinct MI355X specifications",
+    "NVIDIA B200 memory": "NVIDIA B200 specifications",
+    "CUDA developers": "NVIDIA, GTC March 2026",
+    "CUDA-X libraries": "NVIDIA CUDA-X",
+    "GPUs per NVL72 rack": "NVIDIA GB200 NVL72 specifications",
+    "Mellanox price": "NVIDIA, 11 March 2019 (enterprise value)",
+    "TSMC share of leading-edge chips": "Industry estimates (Mordor Intelligence; Bloomberg Intelligence), 2026",
+    "Cisco forward P/E, March 2000": "Market data, March 2000",
+    "Drug: idea to trials, months": "Insilico Medicine, ISM001-055",
+    "Sweden: more cancers found": "Swedish mammography screening trial (MASAI), 2023",
+    "Sweden: less reading work": "Swedish mammography screening trial (MASAI), 2023",
+    "Writers: faster": "Noy & Zhang, Science, 2023",
+    "Support: more solved": "Brynjolfsson, Li & Raymond, 2023",
+    "Support: more solved, new staff": "Brynjolfsson, Li & Raymond, 2023",
+    "Spying campaign run by AI, low": "Anthropic, November 2025 (GTG-1002)",
+    "Spying campaign run by AI, high": "Anthropic, November 2025 (GTG-1002)"
+  },
+  "asOf": "2026-11-21",
+  "placeholder": false,
+  "curated": true,
+  "verified": true,
+  "x": [
+    "value"
+  ],
+  "series": {
+    "NV1 chips made": [
+      250000
+    ],
+    "NV1 chips returned": [
+      249000
+    ],
+    "Sega investment": [
+      5
+    ],
+    "RIVA 128 sold in four months": [
+      1
+    ],
+    "Xbox advance": [
+      200
+    ],
+    "Stanford speed-up": [
+      70
+    ],
+    "AMD MI355X memory": [
+      288
+    ],
+    "NVIDIA B200 memory": [
+      192
+    ],
+    "CUDA developers": [
+      6
+    ],
+    "CUDA-X libraries": [
+      1000
+    ],
+    "GPUs per NVL72 rack": [
+      72
+    ],
+    "Mellanox price": [
+      6.9
+    ],
+    "TSMC share of leading-edge chips": [
+      90
+    ],
+    "Cisco forward P/E, March 2000": [
+      140
+    ],
+    "Drug: idea to trials, months": [
+      30
+    ],
+    "Sweden: more cancers found": [
+      20
+    ],
+    "Sweden: less reading work": [
+      44
+    ],
+    "Writers: faster": [
+      40
+    ],
+    "Support: more solved": [
+      14
+    ],
+    "Support: more solved, new staff": [
+      34
+    ],
+    "Spying campaign run by AI, low": [
+      80
+    ],
+    "Spying campaign run by AI, high": [
+      90
+    ]
+  }
+}

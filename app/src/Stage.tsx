@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { formatValue, type Dataset, type Slide } from '../shared/schema.ts';
+import { lookup, resolveText, slideSources, type Dataset, type Slide } from '../shared/schema.ts';
 import { Chart } from './Chart.tsx';
 import { CoreArray } from './CoreArray.tsx';
 import { useDatasets, useNavKeys, useShow } from './useShow.ts';
@@ -10,10 +10,7 @@ const TITLE_AT = 0.25;
 
 function statValue(slide: Slide, datasets: Record<string, Dataset>): string | undefined {
   const s = slide.stat;
-  const ds = s && datasets[s.datasetKey];
-  if (!s || !ds) return undefined;
-  const v = ds.series[s.series]?.[ds.x.indexOf(s.x)];
-  return v == null ? undefined : formatValue(v, ds.unit);
+  return s ? lookup(datasets, s.datasetKey, s.series, s.x) : undefined;
 }
 
 export function Stage() {
@@ -33,10 +30,16 @@ export function Stage() {
 
   return (
     <div className="stage">
-      <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} />
-      {slide && <SlideView key={state!.liveSince} slide={slide} reveal={state!.reveal} datasets={datasets} figure={glyph} />}
+      <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length} effect={slide?.effect} reveal={state?.reveal ?? 0} />
+      {slide && <SlideView key={state!.liveSince} slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} />}
     </div>
   );
+}
+
+/** Figures written {{dataset | series | x}} in the text are looked up here, so the stage never shows a typed number. */
+function withFigures(s: Slide, datasets: Record<string, Dataset>): Slide {
+  const r = (t: string) => resolveText(t, datasets);
+  return { ...s, title: r(s.title), bullets: s.bullets.map(r), stat: s.stat && { ...s.stat, label: r(s.stat.label) }, sources: slideSources(s, datasets) };
 }
 
 /** Animates in once, when first mounted; the delay is fixed at mount so later re-renders never replay it. */
@@ -69,9 +72,8 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   const shown = (k: number) => k < reveal;
 
   const dataset = slide.chart ? datasets[slide.chart.datasetKey] : undefined;
-  const statDs = slide.stat ? datasets[slide.stat.datasetKey] : undefined;
   const chartIdx = 1 + slide.bullets.length;
-  const sources = [...new Set([...slide.sources, ...[dataset, statDs].filter(Boolean).map((d) => `${d!.source}, as of ${d!.asOf}`)])];
+  const sources = slide.sources; // already includes every dataset the slide uses (withFigures)
 
   const title = slide.layout === 'statement' ? (
     <h1 className="statement">
@@ -121,7 +123,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   );
 
   return (
-    <main className={`slide layout-${slide.layout}`}>
+    <main className={`slide layout-${slide.layout}${slide.bullets.length ? ' has-points' : ''}${slide.effect ? ' has-effect' : ''}`}>
       {slide.layout === 'statement' && (
         <>
           {title}
@@ -138,6 +140,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
                 {slide.stat.label}
               </Reveal>
             )}
+            {points}
           </div>
         </>
       )}

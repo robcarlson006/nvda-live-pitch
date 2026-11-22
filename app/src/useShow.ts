@@ -9,6 +9,7 @@ export function useShow() {
   const [connected, setConnected] = useState(false);
   const [clients, setClients] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const ws = useRef<WebSocket | null>(null);
 
   useEffect(() => {
@@ -29,7 +30,8 @@ export function useShow() {
           setSpine(msg.spine);
           setSpineError(msg.spineError);
           setClients(msg.clients);
-        } else setError(msg.message);
+        } else if (msg.type === 'saved') setNotice(`Rehearsal saved to ${msg.file}`);
+        else setError(msg.message);
       };
       sock.onclose = () => {
         setConnected(false);
@@ -50,7 +52,7 @@ export function useShow() {
     else setError('Not connected to the server');
   };
 
-  return { state, spine, spineError, connected, clients, error, send };
+  return { state, spine, spineError, connected, clients, error, notice, send };
 }
 
 /** Clicker and keyboard control. Presentation clickers send PageDown/PageUp (or arrows). */

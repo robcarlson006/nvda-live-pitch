@@ -99,3 +99,26 @@ button.big { padding: 18px 24px; font-size: 20px; }
 .op-spine .op-meta { grid-column: 2; margin: 0; }
 details summary { cursor: pointer; }
 @media (max-width: 640px) { .op-now { grid-template-columns: 1fr; } }
+
+/* Number slides with bullets: the figure sits higher and smaller (CoreArray compact) so the text fits under it. */
+.layout-number.has-points .number-text { top: 53vh; }
+.layout-number.has-points .points { margin-top: calc(2.4 * var(--u)); }
+.layout-number.has-points .points .point { font-size: calc(2.3 * var(--u)); margin-bottom: calc(1.2 * var(--u)); max-width: 60ch; }
+/* Slides with a core effect: keep the text on the left, clear of the effect's block of cores. */
+.has-effect .statement { max-width: 11ch !important; }
+.has-effect .points, .has-effect h1 { max-width: 52vw; }
+
+/* Operator: rehearsal timer, mic, tags (never shown on the stage) */
+.op-timer { display: grid; grid-template-columns: repeat(3, auto) 1fr; gap: 28px; align-items: end; padding: 16px; border-radius: 12px; border: 1px solid #262a30; }
+.op-clock { font-size: 30px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.op-clock.over { color: #e8b04a; }
+.op-timer-actions { justify-self: end; text-align: right; }
+.op-mic { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 14px; }
+.op-mic select { font: inherit; background: #0c0e11; color: var(--white); border: 1px solid #333840; border-radius: 6px; padding: 4px 6px; }
+button.danger { background: #3a1214; border-color: #e5484d; color: #ff8a8f; font-weight: 650; }
+.op-interim { color: var(--faint); }
+.op-notice { padding: 10px 14px; border-radius: 8px; background: #10140b; color: var(--green); border: 1px solid #2f4a05; }
+.tag-unverified { margin-left: 8px; padding: 1px 7px; border-radius: 4px; background: #e8b04a; color: #000; font-size: 11px; font-weight: 700; vertical-align: middle; }
+.tag-optional { margin-left: 8px; font-size: 12px; color: var(--detail); font-weight: 400; cursor: pointer; white-space: nowrap; }
+.op-spine li.skipped { opacity: 0.4; }
+@media (max-width: 640px) { .op-timer { grid-template-columns: 1fr 1fr; } .op-timer-actions { justify-self: start; text-align: left; } }

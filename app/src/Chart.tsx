@@ -8,9 +8,19 @@ const OTHERS = ['#8d9388', '#d9dccf', '#5d6358'];
 const FAINT = '#7a8174';
 const FONT = "'Archivo Variable', system-ui, sans-serif";
 
+/** Only the x values from range[0] to range[1], e.g. FY05–FY13. */
+function inRange(ds: Dataset, range?: [string, string]): Dataset {
+  if (!range) return ds;
+  const a = ds.x.indexOf(range[0]);
+  const b = ds.x.indexOf(range[1]);
+  if (a < 0 || b < a) return ds;
+  return { ...ds, x: ds.x.slice(a, b + 1), series: Object.fromEntries(Object.entries(ds.series).map(([k, v]) => [k, v.slice(a, b + 1)])) };
+}
+
 /** Renders any dataset by key. Numbers come only from the dataset; the slide just names series. */
-export function Chart({ spec, dataset }: { spec: NonNullable<Slide['chart']>; dataset: Dataset }) {
+export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart']>; dataset: Dataset }) {
   const el = useRef<HTMLDivElement>(null);
+  const dataset = inRange(full, spec.range);
 
   useEffect(() => {
     const chart = echarts.init(el.current!, undefined, { renderer: 'canvas' });
@@ -114,7 +124,7 @@ export function Chart({ spec, dataset }: { spec: NonNullable<Slide['chart']>; da
       window.removeEventListener('resize', onResize);
       chart.dispose();
     };
-  }, [JSON.stringify(spec), dataset.key]); // every server broadcast sends a fresh (equal) spec object; only redraw when it really changes
+  }, [JSON.stringify(spec), full.key]); // every server broadcast sends a fresh (equal) spec object; only redraw when it really changes
 
   return <div ref={el} style={{ width: '100%', height: '100%' }} />;
 }

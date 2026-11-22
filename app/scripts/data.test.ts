@@ -44,3 +44,18 @@ test('reverse DCF growth reproduces the price', () => {
   const v = dcf({ ...base, path: grow(base.rev27, Array(5).fill(gImp)) }).perShare;
   assert.ok(Math.abs(v - 135) < 0.01, `got ${v}`);
 });
+
+test('AMD data centre revenue comes from the Bloomberg export', () => {
+  assert.equal(val('peers_datacenter_revenue', 'Data centre revenue', 'AMD'), 16.635); // AMD FA By Segment, FY25: 16,635
+  assert.equal(val('peers_datacenter_revenue', 'Data centre revenue', 'NVIDIA'), 193.737);
+});
+
+test('curated research datasets are marked, and [VERIFY] figures are flagged unverified', () => {
+  for (const f of fs.readdirSync(CLEAN).filter((f) => f.startsWith('research_'))) {
+    const d = ds(f.replace('.json', ''));
+    assert.equal(d.curated, true, `${d.key} curated`);
+    assert.equal(typeof d.verified, 'boolean', `${d.key} verified flag`);
+  }
+  assert.equal(ds('research_facts_unverified').verified, false);
+  assert.equal(val('research_facts_unverified', 'Supply commitments', 'value'), 279);
+});
