@@ -102,7 +102,7 @@ export function Race({ slide, beat, datasets }: SceneProps) {
             <motion.div style={{ height: 2, background: closing ? color.green : color.faint, originX: 0, marginBottom: 26 }} initial={{ scaleX: 0 }} animate={{ scaleX: on ? 1 : 0 }} transition={{ duration: 1, ease: ease.out }} />
             <Appear show={on} delay={0.2} y={22}>
               {closing ? (
-                <div className="sx-h1" style={{ fontSize: 88 }}>
+                <div className="sx-h1" style={{ fontSize: 66, whiteSpace: "nowrap" }}>
                   <span style={{ color: color.ink }}>{r.head}</span> <span style={{ color: color.green }}>{r.body}</span>
                 </div>
               ) : (

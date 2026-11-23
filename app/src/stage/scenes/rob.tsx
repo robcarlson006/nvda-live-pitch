@@ -67,7 +67,7 @@ export function FirstChip({ slide, beat, datasets }: SceneProps) {
         </div>
         <div className="sx-label" style={{ marginTop: 14 }}>{slide.title}</div>
       </Appear>
-      <div className="sx-pos" style={{ left: 120, top: 700, width: 1680, opacity: gpu ? 0.1 : 1, transition: 'opacity .8s' }}>
+      <div className="sx-pos" style={{ left: 120, top: 700, width: 1680, opacity: gpu ? 0 : 1, transition: 'opacity .8s' }}>
         {Array.from({ length: cells }, (_, i) => (
           <motion.span
             key={i}
@@ -78,7 +78,7 @@ export function FirstChip({ slide, beat, datasets }: SceneProps) {
           />
         ))}
       </div>
-      <Appear show={beat >= 1 && !gpu} delay={2.6} style={{ position: 'absolute', left: 120, top: 790 }} y={8}>
+      <Appear show={beat >= 1 && !gpu} delay={2.6} style={{ position: 'absolute', left: 120, top: 892 }} y={8}>
         <span className="sx-label"><span className="sx-amber">■</span> came back &nbsp; <span className="sx-green">■</span> worked &nbsp; each square is 1,000 chips</span>
       </Appear>
       <div className="sx-center" style={{ pointerEvents: 'none' }}>
