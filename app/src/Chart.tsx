@@ -3,7 +3,7 @@ import * as echarts from 'echarts';
 import { formatValue, type Dataset, type Slide } from '../shared/schema.ts';
 
 const GREEN = '#76b900';
-const DIM_GREEN = '#2f4a05';
+const DIM_GREEN = '#436b0d';
 const OTHERS = ['#8d9388', '#d9dccf', '#5d6358'];
 const FAINT = '#b4b9ae';
 const FONT = "'Archivo Variable', system-ui, sans-serif";
@@ -96,7 +96,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
                 symbol: 'rect',
                 symbolSize: vh * 1.6,
                 itemStyle: { color: GREEN },
-                label: { position: dataset.unit === '%' ? 'bottom' : 'left', distance: vh * 1.2, color: '#f4f6f1', fontSize: vh * 3.2, fontWeight: 700, fontFamily: FONT, formatter: () => fmt(values[hiIdx] ?? 0) },
+                label: { position: dataset.unit === '%' ? 'bottom' : 'top', distance: vh * 1.6, color: '#f4f6f1', fontSize: vh * 3.2, fontWeight: 700, fontFamily: FONT, formatter: () => fmt(values[hiIdx] ?? 0) },
                 data: [{ coord: [hiIdx, values[hiIdx]] }],
               }
             : undefined,
