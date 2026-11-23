@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Appear, CountUp, Missing, Source, Words, get, type SceneProps } from '../primitives.tsx';
-import { color, ease } from '../tokens.ts';
+import { cells, color, ease } from '../tokens.ts';
 import { Title } from './rob.tsx';
 
 // ---------- 18. Reason one: it is discovering things ----------
@@ -79,7 +79,7 @@ export function Discovering({ slide, beat, datasets }: SceneProps) {
           </motion.div>
         );
       })}
-      <Source keys={['research_discoveries', 'research_facts']} datasets={datasets} show={beat >= 2} />
+      <Source keys={['research_discoveries']} refs={[['research_facts', 'Sweden: more cancers found']]} datasets={datasets} show={beat >= 2} />
     </>
   );
 }
@@ -156,7 +156,7 @@ export function Emissions({ slide, beat, datasets }: SceneProps) {
             <Appear show={on} delay={0} y={0} style={{ position: 'absolute', left: 120, top: TOP + k * PITCH + 10, width: 330, textAlign: 'right' }}>
               <span className="sx-h2" style={{ fontSize: 50, color: nv ? color.green : color.ink }}>{r.n}</span>
             </Appear>
-            <motion.div style={{ position: 'absolute', left: X0, top: TOP + k * PITCH + 8, height: 68, background: nv ? color.green : color.core, borderRadius: '0 5px 5px 0', boxShadow: nv ? '0 0 50px rgba(118,185,0,.55)' : undefined }} initial={{ width: 0 }} animate={{ width: on ? w : 0 }} transition={{ duration: on ? 1.3 : 0.2, ease: ease.out }} />
+            <motion.div style={{ position: 'absolute', left: X0, top: TOP + k * PITCH + 8, height: 68, background: nv ? color.green : color.core, backgroundImage: cells, borderRadius: '0 5px 5px 0', boxShadow: nv ? '0 0 50px rgba(118,185,0,.55)' : undefined }} initial={{ width: 0 }} animate={{ width: on ? w : 0 }} transition={{ duration: on ? 1.3 : 0.2, ease: ease.out }} />
             <Appear show={on} delay={0.9} y={0} style={{ position: 'absolute', left: X0 + w + 22, top: TOP + k * PITCH + 4, whiteSpace: 'nowrap' }}>
               <span className="sx-h2" style={{ fontSize: nv ? 76 : 56, color: nv ? color.green : color.ink }}>
                 <CountUp to={r.v} active={on} delay={0.3} seconds={1.1} format={sig} />

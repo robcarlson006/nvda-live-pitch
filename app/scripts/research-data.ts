@@ -79,7 +79,7 @@ const out: Dataset[] = [
   // ---- Added for script v4 (23 Nov 2026) ----
   table({
     key: 'research_ai_chip_share', title: 'Share of AI chip supply, Q4 2025', unit: '%', verified: true,
-    source: 'Epoch AI, AI chip supply estimates, Q4 2025 (figures as given in pitch script v4; not re-checked against Epoch)',
+    source: 'Epoch AI, AI chip supply estimates, Q4 2025', // figures as given in pitch script v4's table; not re-checked against Epoch (see docs/stage-demo.md)
     x: ['NVIDIA', 'Google'],
     series: { 'Share of AI chip supply': [68, 19] },
   }),

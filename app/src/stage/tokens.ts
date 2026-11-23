@@ -33,3 +33,6 @@ export const fn = {
 
 export const type = { display: 190, h1: 116, h2: 76, body: 46, label: 32, foot: 24 }; // px at 1920 wide
 export const MARGIN = 120;
+
+/** Square-cell texture laid over solid bars: every bar is made of cores, like the die behind it. */
+export const cells = "repeating-linear-gradient(0deg, rgba(5,7,5,.55) 0 3px, transparent 3px 16px), repeating-linear-gradient(90deg, rgba(5,7,5,.55) 0 3px, transparent 3px 16px)";

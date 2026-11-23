@@ -11,7 +11,8 @@ import { cueSlides, Follow } from './follow.ts';
 import { apply, emptyState, loadDatasets, loadSpine } from './state.ts';
 
 const datasets = loadDatasets();
-const spine = loadSpine(datasets);
+const FIXTURE = new URL('./fixtures/spine-v3.yaml', import.meta.url).pathname; // engine tests run on the frozen v3 script; the live v4 spine is checked in spine-v4.test.ts
+const spine = loadSpine(datasets, FIXTURE);
 const idx = (id: string) => spine.findIndex((s) => s.id === id);
 const tmp = () => path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'follow-')), 'spend.json');
 const reply = (v: unknown) => ({ stop_reason: 'end_turn', content: [{ type: 'text', text: typeof v === 'string' ? v : JSON.stringify(v) }], usage: { input_tokens: 10, output_tokens: 10 } }) as unknown as Anthropic.Message;

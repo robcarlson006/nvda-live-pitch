@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import { LineChart, type Pt } from '../LineChart.tsx';
 import { Appear, CountUp, Missing, Source, Words, fmt, get, num, useTween, usd1, type SceneProps } from '../primitives.tsx';
-import { color, dur, ease, fn } from '../tokens.ts';
+import { cells, color, dur, ease, fn } from '../tokens.ts';
 
 /** Title at the top left of a scene. beat >= 1 always, so it builds as soon as the slide is live. */
 export function Title({ text, show = true, size = 'sx-h2', delay = 0.2, style }: { text: string; show?: boolean; size?: string; delay?: number; style?: React.CSSProperties }) {
@@ -18,7 +18,7 @@ export function Hook({ slide, beat }: SceneProps) {
   const [lead, rest] = slide.title.split(/:\s*(.*)/s);
   return (
     <div className="sx-center" style={{ padding: '0 160px' }}>
-      <h1 className="sx-display" style={{ fontSize: 138, lineHeight: 1.08, maxWidth: 1600 }}>
+      <h1 className="sx-display" style={{ fontSize: 132, lineHeight: 1.08, maxWidth: 1640, textWrap: 'balance' }}>
         <Words text={`${lead}:`} show={beat >= 1} delay={0.3} step={0.1} className="sx-green" />
         <br />
         <Words text={rest || ''} show={beat >= 1} delay={0.9} step={0.11} />
@@ -84,12 +84,12 @@ export function FirstChip({ slide, beat, datasets }: SceneProps) {
       <div className="sx-center" style={{ pointerEvents: 'none' }}>
         <Appear show={gpu} y={36}>
           <div className="sx-label" style={{ fontSize: 40 }}>Six years later</div>
-          <div className="sx-display" style={{ fontSize: 330, color: color.green }}>{slide.bullets[0]?.split(' ')[0]}</div>
+          <div className="sx-display" style={{ fontSize: 330, color: color.green }}>{slide.bullets[0]?.split('|')[0]}</div>
           <div className="sx-h1" style={{ fontSize: 96 }}>GeForce 256</div>
-          <div className="sx-body" style={{ marginTop: 22, color: color.dim, maxWidth: 1300 }}>{slide.bullets[0]?.replace(/^\S+\s*/, '')}</div>
+          <div className="sx-body" style={{ marginTop: 22, color: color.dim, maxWidth: 1300 }}>{slide.bullets[0]?.split('|')[1]}</div>
         </Appear>
       </div>
-      <Source keys={['research_facts']} datasets={datasets} show={beat >= 1} />
+      <Source keys={[]} refs={[['research_facts', 'NV1 chips returned']]} datasets={datasets} show={beat >= 1} extra={gpu ? slide.sources.join('; ') : undefined} />
     </>
   );
 }
@@ -143,7 +143,7 @@ export function RevenueLine({ slide, beat, datasets }: SceneProps) {
         ].map((r, k) => (
           <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 28, marginBottom: 26 }}>
             <div style={{ width: 380, fontSize: 30, color: color.ink, lineHeight: 1.2 }}>{r.n}</div>
-            <motion.div style={{ height: 78, background: r.c, borderRadius: 4 }} initial={{ width: 0 }} animate={{ width: panel && r.v != null ? (r.v / 30) * 640 : 0 }} transition={{ duration: 1.1, delay: 0.5 + k * 0.6, ease: ease.out }} />
+            <motion.div style={{ height: 78, background: r.c, backgroundImage: cells, borderRadius: 4 }} initial={{ width: 0 }} animate={{ width: panel && r.v != null ? (r.v / 30) * 640 : 0 }} transition={{ duration: 1.1, delay: 0.5 + k * 0.6, ease: ease.out }} />
             <div className="sx-h2" style={{ color: k ? color.dim : color.green }}>{r.v != null ? `${r.v}%` : '…'}</div>
           </div>
         ))}
@@ -189,7 +189,7 @@ export function TwentyYears({ slide, beat, datasets }: SceneProps) {
           <CountUp to={devs ?? 0} active={beat >= 2} seconds={1.2} format={(v) => `${Math.round(v)} million`} /> <span className="sx-dim" style={{ fontSize: 56, fontWeight: 500 }}>developers</span>
         </div>
       </Appear>
-      <Source keys={['research_facts', 'research_cuda']} datasets={datasets} show={beat >= 2} />
+      <Source keys={[]} refs={[['research_cuda', 'Years of CUDA'], ['research_facts', 'CUDA developers'], ['research_facts', 'CUDA-X libraries']]} datasets={datasets} show={beat >= 1} />
     </>
   );
 }
@@ -206,16 +206,16 @@ export function FourLayers({ slide, beat, datasets }: SceneProps) {
     <>
       <Title text={slide.title} />
       {rows.map((r, i) => (
-        <div key={r.name} className="sx-pos" style={{ left: 120, top: 290 + i * 172, width: 1680 }}>
-          <Appear show={beat >= i + 2} y={26} style={{ display: 'flex', alignItems: 'baseline', gap: 48 }}>
-            <div className="sx-h1" style={{ width: 600, fontSize: 96 }}>{r.name}</div>
-            <div className="sx-display" style={{ fontSize: 100, color: color.green, minWidth: 420 }}>{r.big}</div>
-            <div className="sx-body" style={{ color: color.dim, fontSize: 38 }}>{r.small}</div>
+        <div key={r.name} className="sx-pos" style={{ left: 120, top: 270 + i * 156, width: 1680 }}>
+          <Appear show={beat >= i + 2} y={26} style={{ display: 'flex', alignItems: 'baseline', gap: 40 }}>
+            <div className="sx-h1" style={{ width: 700, fontSize: 92 }}>{r.name}</div>
+            <div className="sx-display" style={{ fontSize: 96, color: color.green, width: 470 }}>{r.big}</div>
+            <div className="sx-body" style={{ color: color.dim, fontSize: 34, maxWidth: 470, lineHeight: 1.15 }}>{r.small}</div>
           </Appear>
           <motion.div style={{ height: 3, background: color.green, marginTop: 14, originX: 0, opacity: 0.55 }} initial={{ scaleX: 0 }} animate={{ scaleX: beat >= i + 2 ? 1 : 0 }} transition={{ duration: 0.9, ease: ease.out }} />
         </div>
       ))}
-      <Source keys={['peers_datacenter_revenue', 'research_facts', 'research_cowos_share']} datasets={datasets} show={beat >= 2} />
+      <Source keys={['peers_datacenter_revenue', 'research_cowos_share']} refs={[['research_facts', 'CUDA developers'], ['research_facts', 'GPUs per NVL72 rack']]} datasets={datasets} show={beat >= 2} />
     </>
   );
 }
@@ -237,7 +237,7 @@ export function ChipShare({ slide, beat, datasets }: SceneProps) {
           const nv = name === 'NVIDIA';
           return (
             <div key={name}>
-              <motion.div style={{ position: 'absolute', left, bottom: 280, width: 320, background: nv ? color.green : color.core, borderRadius: '6px 6px 0 0', boxShadow: nv ? '0 0 60px rgba(118,185,0,.35)' : undefined }} initial={{ height: 0 }} animate={{ height: on ? (v / 100) * H : 0 }} transition={{ duration: 1.5, ease: ease.out }} />
+              <motion.div style={{ position: 'absolute', left, bottom: 280, width: 320, background: nv ? color.green : color.core, backgroundImage: cells, borderRadius: '6px 6px 0 0', boxShadow: nv ? '0 0 60px rgba(118,185,0,.35)' : undefined }} initial={{ height: 0 }} animate={{ height: on ? (v / 100) * H : 0 }} transition={{ duration: 1.5, ease: ease.out }} />
               <Appear show={on} delay={0.9} y={14} style={{ position: 'absolute', left, width: 320, top: 800 - (v / 100) * H - 140, textAlign: 'center' }}>
                 <div className="sx-display" style={{ fontSize: 110, color: nv ? color.green : color.ink }}>
                   <CountUp to={v} active={on} seconds={1.4} format={(x) => `${Math.round(x)}%`} />

@@ -2,7 +2,7 @@
   "key": "peers_ev_ebitda",
   "title": "Enterprise value / EBITDA, forward",
   "unit": "x",
-  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD)",
+  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD). NVIDIA re-struck at the team price $164.39 (Bloomberg's was $135.46); the others are Bloomberg's",
   "asOf": "2026-11-20",
   "placeholder": false,
   "x": [
@@ -14,7 +14,7 @@
   ],
   "series": {
     "EV/EBITDA": [
-      11.42,
+      13.904,
       44.89,
       13.58,
       20.77,

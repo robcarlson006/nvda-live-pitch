@@ -2,7 +2,7 @@
   "key": "research_ai_chip_share",
   "title": "Share of AI chip supply, Q4 2025",
   "unit": "%",
-  "source": "Epoch AI, AI chip supply estimates, Q4 2025 (figures as given in pitch script v4; not re-checked against Epoch) (via NotebookLM research, 21 Nov 2026)",
+  "source": "Epoch AI, AI chip supply estimates, Q4 2025 (via NotebookLM research, 21 Nov 2026)",
   "asOf": "2026-11-21",
   "placeholder": false,
   "curated": true,

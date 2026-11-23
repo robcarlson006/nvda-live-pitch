@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import { LineChart, type Pt } from '../LineChart.tsx';
 import { Appear, CountUp, Missing, Source, Words, get, num, useTween, usd1, type SceneProps } from '../primitives.tsx';
-import { color, ease, fn } from '../tokens.ts';
+import { cells, color, ease, fn } from '../tokens.ts';
 import { Title } from './rob.tsx';
 
 const usd0 = (v: number) => `$${Math.round(v).toLocaleString('en-GB')}`;
@@ -14,7 +14,7 @@ const signed = (v: number) => `${v < 0 ? '−' : '+'}${Math.abs(Math.round(v))}%
 function VBar({ x, w, base, h, fill, on, delay = 0, glow = false, outline = false }: { x: number; w: number; base: number; h: number; fill: string; on: boolean; delay?: number; glow?: boolean; outline?: boolean }) {
   return (
     <motion.div
-      style={{ position: 'absolute', left: x, bottom: 1080 - base, width: w, background: outline ? 'transparent' : fill, border: outline ? `4px solid ${fill}` : undefined, borderBottom: 'none', borderRadius: '6px 6px 0 0', boxShadow: glow ? `0 0 70px ${fill}66` : undefined, boxSizing: 'border-box' }}
+      style={{ position: 'absolute', left: x, bottom: 1080 - base, width: w, background: outline ? "transparent" : fill, backgroundImage: outline ? undefined : cells, border: outline ? `4px solid ${fill}` : undefined, borderBottom: 'none', borderRadius: '6px 6px 0 0', boxShadow: glow ? `0 0 70px ${fill}66` : undefined, boxSizing: 'border-box' }}
       initial={{ height: 0 }}
       animate={{ height: on ? h : 0 }}
       transition={{ duration: on ? 1.2 : 0.25, delay: on ? delay : 0, ease: ease.out }}
@@ -32,8 +32,9 @@ export function RevenueRecent({ slide, beat, datasets }: SceneProps) {
   const i26 = pts.length - 1;
   // The chart opens on the whole twenty-year line, then zooms in on the last four years: the same line, closer.
   const i0 = useTween(beat >= 1 ? i22 : 0, { dur: 2.6, ease: fn.inOut, delay: 0.5, from: 0 });
-  const draw = useTween(beat >= 1 ? i26 : i22, { dur: 5.5, ease: fn.inOut, delay: 3.0, from: i22 });
-  const shade = useTween(beat >= 2 ? i26 : i22, { dur: 3.2, ease: fn.inOut, delay: 0.3, from: i22 });
+  const draw = useTween(beat >= 1 ? i26 : i22, { dur: 4.6, ease: fn.inOut, delay: 2.4, from: i22 });
+  const shadeTo = useTween(beat >= 2 ? i26 : i22, { dur: 3.0, ease: fn.inOut, delay: 0.2, from: i22 });
+  const shade = Math.min(shadeTo, draw); // the shading never runs ahead of the line it sits under
   if (!rev || !seg || !pts.length) return <Missing what="nvda_revenue_annual, nvda_segments_annual" />;
   const first = pts[i22].v!;
   const last = pts[i26].v!;
@@ -55,11 +56,11 @@ export function RevenueRecent({ slide, beat, datasets }: SceneProps) {
           { i: i26, align: 'right', dy: -34, show: draw >= i26 - 0.02, node: <b className="sx-display" style={{ fontSize: 130, color: color.ink }}><CountUp to={last} from={first} active={beat >= 1} delay={3.2} seconds={5} format={usd1} /></b> },
         ]}
       />
-      <Appear show={beat >= 2} delay={2.4} style={{ position: 'absolute', left: 560, top: 640 }} y={14}>
-        <div className="sx-label" style={{ fontSize: 38, color: color.green }}>Data Center</div>
-        <div className="sx-h1" style={{ fontSize: 84, color: color.green }}><CountUp to={dcLast} active={beat >= 2} delay={2.4} seconds={2.5} format={usd1} /></div>
+      <Appear show={beat >= 2} delay={1.2} style={{ position: 'absolute', left: 1130, top: 600 }} y={14}>
+        <div className="sx-label" style={{ fontSize: 38, color: color.green }}>of which Data Center</div>
+        <div className="sx-h1" style={{ fontSize: 84, color: color.green }}><CountUp to={dcLast} active={beat >= 2} delay={1.2} seconds={2.5} format={usd1} /></div>
       </Appear>
-      <Source keys={['nvda_revenue_annual', 'nvda_segments_annual']} datasets={datasets} show={beat >= 1} />
+      <Source keys={[]} text="Bloomberg FA, NVDA US, annual revenue and Data Center segment; fiscal years end late January; 20 Nov 2026" datasets={datasets} show={beat >= 1} />
     </>
   );
 }
@@ -93,14 +94,14 @@ export function Margins({ slide, beat, datasets }: SceneProps) {
       <Appear show={beat >= 2} delay={0.2} y={10} style={{ position: 'absolute', left: 150, top: 232 }}>
         <span className="sx-label">Operating profit kept from each dollar of sales</span>
       </Appear>
-      <Appear show={beat >= 3} y={40} style={{ position: 'absolute', left: 1230, top: 300, width: 600 }}>
+      <Appear show={beat >= 3} y={40} style={{ position: 'absolute', left: 1200, top: 300, width: 640 }}>
         <div className="sx-label" style={{ fontSize: 36 }}>Free cash flow, last year</div>
-        <div className="sx-display" style={{ fontSize: 190, color: color.green, marginTop: 10 }}>
+        <div className="sx-display" style={{ fontSize: 140, color: color.green, marginTop: 10, whiteSpace: 'nowrap' }}>
           <CountUp to={fcf} active={beat >= 3} seconds={1.8} format={usd1} />
         </div>
         <div className="sx-label" style={{ marginTop: 14 }}>cash left after running the business and building new chips</div>
       </Appear>
-      <Source keys={['margin_compare', 'nvda_fcf_annual']} datasets={datasets} show={beat >= 2} />
+      <Source keys={[]} text="Bloomberg FA, 20 Nov 2026. NVIDIA reported FY26 (year to Jan 2026); AMD and Intel are analyst consensus for this fiscal year" datasets={datasets} show={beat >= 2} />
     </>
   );
 }
@@ -119,8 +120,8 @@ export function Forecast({ slide, beat, datasets }: SceneProps) {
   const eps = e && get(datasets, 'nvda_eps_quarterly', 'EPS', e.x.at(-1)!);
   const epsC = e && get(datasets, 'nvda_eps_quarterly', 'Consensus', e.x.at(-1)!);
   if (a == null || b == null || c == null || g27 == null || g28 == null || rev == null || revC == null || eps == null || epsC == null) return <Missing what="revenue forecast, growth, last quarter" />;
-  const BASE = 880;
-  const H = 540;
+  const BASE = 800;
+  const H = 430;
   const bars = [
     { name: 'FY26', sub: 'reported', v: a, on: beat >= 1, c: color.core },
     { name: 'FY27', sub: 'analysts expect', v: b, on: beat >= 2, c: color.greenDeep },
@@ -164,7 +165,7 @@ export function Forecast({ slide, beat, datasets }: SceneProps) {
           </div>
         ))}
       </Appear>
-      <Source keys={['nvda_revenue_forecast', 'model_forecast_growth', 'nvda_revenue_quarterly']} datasets={datasets} show={beat >= 2} />
+      <Source keys={[]} text="Bloomberg FA, NVDA US: annual consensus estimates and quarterly results vs consensus (FY27 Q3 preliminary), 20 Nov 2026. Growth computed from the consensus" datasets={datasets} show={beat >= 2} />
     </>
   );
 }
@@ -182,25 +183,25 @@ export function Worth({ slide, beat, datasets }: SceneProps) {
   return (
     <>
       <div className="sx-pos" style={{ left: 120, top: 100, width: 1700 }}>
-        <h1 className="sx-display" style={{ fontSize: 150 }}><Words text={slide.title} show={beat >= 1} delay={0.2} step={0.12} /></h1>
+        <h1 className="sx-display" style={{ fontSize: 100 }}><Words text={slide.title} show={beat >= 1} delay={0.2} step={0.12} /></h1>
         <Appear show={beat >= 1} delay={1.6} y={10}><p className="sx-label" style={{ marginTop: 28, fontSize: 38 }}>The return investors demand: the rate we shrink future cash back by.</p></Appear>
       </div>
       {/* a 0–20% scale with the two rates marked on it */}
-      <div className="sx-pos" style={{ left: 210, top: 800, width: 1500, height: 3, background: color.faint }} />
+      <div className="sx-pos" style={{ left: 210, top: 806, width: 1500, height: 3, background: color.faint }} />
       {[0, 5, 10, 15, 20].map((t) => (
-        <div key={t} className="sx-pos" style={{ left: 210 + t * SC - 30, top: 816, width: 60, textAlign: 'center', fontSize: 28, color: color.dim }}>{t}%</div>
+        <div key={t} className="sx-pos" style={{ left: 210 + t * SC - 30, top: 822, width: 60, textAlign: 'center', fontSize: 28, color: color.dim }}>{t}%</div>
       ))}
       {rates.map((r, i) => (
         <div key={r.name}>
-          <motion.div style={{ position: 'absolute', left: 210, top: 770 - i * 0, height: 30, background: r.c, borderRadius: 4, boxShadow: `0 0 40px ${r.c}55`, opacity: i ? 1 : 1 }} initial={{ width: 0 }} animate={{ width: r.on ? r.v * SC : 0 }} transition={{ duration: 1.5, ease: ease.out, delay: r.on ? 0.15 : 0 }} />
-          <Appear show={r.on} delay={0.1} y={30} style={{ position: 'absolute', left: i ? 210 + 40 : 210 + 1200, top: i ? 400 : 400, width: 640 }}>
-            <div className="sx-display" style={{ fontSize: 230, color: r.c, lineHeight: 1 }}><CountUp to={r.v} active={r.on} seconds={1.4} format={(x) => `${x.toFixed(x >= 15 ? 1 : 2).replace(/0$/, '')}%`} /></div>
+          <motion.div style={{ position: 'absolute', left: 210, top: 726 + i * 40, height: 30, background: r.c, backgroundImage: cells, borderRadius: 4, boxShadow: `0 0 40px ${r.c}55` }} initial={{ width: 0 }} animate={{ width: r.on ? r.v * SC : 0 }} transition={{ duration: 1.5, ease: ease.out, delay: r.on ? 0.15 : 0 }} />
+          <Appear show={r.on} delay={0.1} y={30} style={{ position: 'absolute', left: i ? 1040 : 210, top: 390, width: 800 }}>
+            <div className="sx-display" style={{ fontSize: 190, color: r.c, lineHeight: 1 }}><CountUp to={r.v} active={r.on} seconds={1.4} format={(x) => `${x.toFixed(x >= 15 ? 1 : 2).replace(/0$/, '')}%`} /></div>
             <div className="sx-h2" style={{ fontSize: 46, marginTop: 6 }}>{r.name}</div>
             <div className="sx-label" style={{ marginTop: 6 }}>{r.sub}</div>
           </Appear>
         </div>
       ))}
-      <Source keys={['model_rates']} datasets={datasets} show={beat >= 2} />
+      <Source keys={[]} text="Bloomberg WACC screen, NVDA US Equity, 20 Nov 2026; Damodaran (NYU Stern), Cost of Capital by Industry, US semiconductors (66 firms), Jan 2026" datasets={datasets} show={beat >= 2} />
     </>
   );
 }
@@ -216,8 +217,8 @@ export function ValueBars({ slide, beat, datasets }: SceneProps) {
   const bb = get(datasets, 'model_rates', 'Discount rate', 'Bloomberg');
   const us = get(datasets, 'model_rates', 'Discount rate', 'US semiconductor average');
   if (bear == null || base == null || hi == null || bull == null || today == null || bb == null || us == null) return <Missing what="model_valuation, model_rates" />;
-  const BASE = 860;
-  const H = 520;
+  const BASE = 800;
+  const H = 470;
   const top = Math.max(bear, base, hi, bull, today);
   const px = (x: number) => (x / top) * H;
   const rate = (r: number) => `${r}%`;
@@ -251,7 +252,7 @@ export function ValueBars({ slide, beat, datasets }: SceneProps) {
           </div>
         );
       })}
-      <Source keys={['model_valuation', 'model_rates']} datasets={datasets} show={beat >= 2} />
+      <Source keys={[]} text="Team DCF model on Bloomberg data, valuation date 20 Nov 2026. Rates: Bloomberg WACC screen; Damodaran (NYU Stern) US semiconductors, Jan 2026" datasets={datasets} show={beat >= 2} />
     </>
   );
 }
@@ -263,8 +264,8 @@ export function Implied({ slide, beat, datasets }: SceneProps) {
   if (!ds || g == null) return <Missing what="model_implied_sales" />;
   const sales = ds.series.Sales;
   const top = sales.at(-1) ?? 1;
-  const BASE = 860;
-  const H = 560;
+  const BASE = 820;
+  const H = 480;
   return (
     <>
       <Title text={slide.title} />
@@ -285,11 +286,11 @@ export function Implied({ slide, beat, datasets }: SceneProps) {
           </div>
         );
       })}
-      <Appear show={beat >= 2} delay={2.3} y={20} style={{ position: 'absolute', left: 1200, top: 210, width: 600, textAlign: 'right' }}>
-        <div className="sx-display" style={{ fontSize: 130, color: color.green }}>${(top / 1000).toFixed(1)} trillion</div>
+      <Appear show={beat >= 2} delay={2.3} y={20} style={{ position: 'absolute', left: 980, top: 208, width: 830, textAlign: 'right' }}>
+        <div className="sx-display" style={{ fontSize: 100, color: color.green, whiteSpace: 'nowrap' }}>${(top / 1000).toFixed(1)} trillion</div>
         <div className="sx-label" style={{ fontSize: 32 }}>of sales in {ds.x.at(-1)}</div>
       </Appear>
-      <Source keys={['model_implied_sales']} datasets={datasets} show={beat >= 1} />
+      <Source keys={[]} text="Team DCF model on Bloomberg consensus (reverse DCF at the Bloomberg 19.3% rate), valuation date 20 Nov 2026" datasets={datasets} show={beat >= 1} />
     </>
   );
 }
@@ -308,10 +309,10 @@ export function Bear({ slide, beat, datasets }: SceneProps) {
   // alone = the axis zooms in on the $31 bar until it fills the frame; the other bar and today's line leave
   const p = useTween(alone ? 1 : 0, { dur: 2.2, ease: fn.inOut, delay: 0.2 });
   if (a == null || b == null || da == null || db == null || today == null || bb == null || us == null) return <Missing what="model_bear_bull_rates" />;
-  const BASE = 900;
+  const BASE = 810;
   const ymax = today * 1.08 + (a * 1.2 - today * 1.08) * p;
-  const px = (x: number) => (x / ymax) * 640;
-  const x1 = 440 + (860 - 440) * p;
+  const px = (x: number) => (x / ymax) * 560;
+  const x1 = 440 + (1000 - 440) * p;
   const w = 280 + 280 * p;
   const shown1 = alone || beat >= 2;
   const shown2 = !alone && beat >= 3;
@@ -328,7 +329,7 @@ export function Bear({ slide, beat, datasets }: SceneProps) {
       <VBar x={x1} w={w} base={BASE} h={px(a)} fill={color.amber} on={shown1} glow />
       <VBar x={1000} w={280} base={BASE} h={px(b) * fade} fill={color.amber} on={shown2} />
       <Appear show={shown1} delay={0.9} y={14} style={{ position: 'absolute', left: x1 - 100, width: w + 200, top: BASE - px(a) - (alone ? 250 : 190), textAlign: 'center' }}>
-        <div className="sx-display" style={{ fontSize: alone ? 250 : 112, color: color.amber, lineHeight: 1 }}>{usd0(a)}</div>
+        <div className="sx-display" style={{ fontSize: alone ? 190 : 112, color: color.amber, lineHeight: 1 }}>{usd0(a)}</div>
         {!alone && <div className="sx-h2" style={{ fontSize: 54, color: color.amber }}>{signed(da)}</div>}
       </Appear>
       <Appear show={shown2} delay={0.9} y={14} style={{ position: 'absolute', left: 900, width: 480, top: BASE - px(b) * fade - 190, textAlign: 'center', opacity: fade }}>
@@ -346,14 +347,14 @@ export function Bear({ slide, beat, datasets }: SceneProps) {
         </>
       )}
       {alone && (
-        <Appear show={beat >= 2} y={20} style={{ position: 'absolute', left: 120, right: 120, bottom: 150, textAlign: 'center' }}>
+        <Appear show={beat >= 2} y={20} style={{ position: 'absolute', left: 120, right: 120, top: 856, textAlign: 'center' }}>
           <div className="sx-h2">{slide.bullets[0]}</div>
         </Appear>
       )}
       <Appear show={alone && beat >= 1} delay={1.8} y={0} style={{ position: 'absolute', left: 120, top: 235 }}>
-        <div className="sx-label">Our bear case, at Bloomberg's {bb}% rate: {signed(da)} from today</div>
+        <div className="sx-label" style={{ maxWidth: 640 }}>Our bear case, at Bloomberg's {bb}% rate: {signed(da)} from today</div>
       </Appear>
-      <Source keys={['model_bear_bull_rates', 'model_valuation']} datasets={datasets} show={beat >= 2} />
+      <Source keys={[]} text="Team DCF model on Bloomberg data, valuation date 20 Nov 2026. Bear case = AI spending pauses. Rates: Bloomberg WACC screen; Damodaran (NYU Stern), Jan 2026" datasets={datasets} show={beat >= 2} />
     </>
   );
 }

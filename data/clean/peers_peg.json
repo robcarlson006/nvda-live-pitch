@@ -2,7 +2,7 @@
   "key": "peers_peg",
   "title": "PEG: forward P/E divided by expected EPS growth",
   "unit": "x",
-  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD). Lower = cheaper for the growth",
+  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD). Lower = cheaper for the growth. NVIDIA re-struck at the team price $164.39 (Bloomberg's was $135.46); the others are Bloomberg's",
   "asOf": "2026-11-20",
   "placeholder": false,
   "x": [
@@ -14,7 +14,7 @@
   ],
   "series": {
     "PEG": [
-      0.195,
+      0.237,
       0.446,
       1.819,
       0.403,

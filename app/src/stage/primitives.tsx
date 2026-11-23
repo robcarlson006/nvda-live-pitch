@@ -92,8 +92,12 @@ export function CountUp({ to, active, from = 0, delay = 0, seconds = dur.count, 
 }
 
 /** The source line under a slide. Names every dataset the slide draws on, with its date. */
-export function Source({ keys, datasets, show, extra }: { keys: string[]; datasets: Datasets; show: boolean; extra?: string }) {
-  const parts = [...new Set(keys.map((k) => datasets[k]).filter((d): d is Dataset => !!d).map((d) => `${d.source.replace(/\s*\(via NotebookLM[^)]*\)/, '')}, as of ${d.asOf}`))];
+export function Source({ keys, datasets, show, extra, refs = [], text }: { keys: string[]; datasets: Datasets; show: boolean; extra?: string; refs?: [string, string][]; text?: string }) {
+  if (text) return <Appear show={show} y={8} className="sx-foot" delay={0.5}>{`Source: ${text}`}</Appear>; // a hand-written short form, for the long model sources
+  const clean = (s: string) => s.replace(/\s*\(via NotebookLM[^)]*\)/, '');
+  // `refs` are (dataset, series) pairs for fact tables, where each figure has its own publisher
+  const exact = refs.map(([k, s]) => datasets[k]?.seriesSources?.[s]).filter((s): s is string => !!s);
+  const parts = [...new Set([...exact, ...keys.map((k) => datasets[k]).filter((d): d is Dataset => !!d).map((d) => `${clean(d.source)}, as of ${d.asOf}`)])];
   if (extra) parts.push(extra);
   return (
     <Appear show={show} y={8} className="sx-foot" delay={0.5}>

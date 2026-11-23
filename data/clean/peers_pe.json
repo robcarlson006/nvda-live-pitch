@@ -2,7 +2,7 @@
   "key": "peers_pe",
   "title": "Price/earnings: today and on this year’s expected earnings",
   "unit": "x",
-  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD). Forward = fiscal year ending Oct 2026 to Jan 2027",
+  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD). Forward = fiscal year ending Oct 2026 to Jan 2027. NVIDIA re-struck at the team price $164.39 (Bloomberg's was $135.46); the others are Bloomberg's",
   "asOf": "2026-11-20",
   "placeholder": false,
   "x": [
@@ -14,14 +14,14 @@
   ],
   "series": {
     "Current P/E": [
-      16.32,
+      19.805,
       100.08,
       46.27,
       36.83,
       20.35
     ],
     "Forward P/E": [
-      14.07,
+      17.075,
       53.35,
       35.41,
       26.31,

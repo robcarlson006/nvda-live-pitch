@@ -5,7 +5,8 @@ import { leadScore, LEAD_REVEAL } from './lead.ts';
 import { apply, emptyState, loadDatasets, loadSpine } from './state.ts';
 
 const datasets = loadDatasets();
-const spine = loadSpine(datasets);
+const FIXTURE = new URL('./fixtures/spine-v3.yaml', import.meta.url).pathname; // engine tests run on the frozen v3 script; the live v4 spine is checked in spine-v4.test.ts
+const spine = loadSpine(datasets, FIXTURE);
 const ctx = { datasets, spine, cueSlides: false };
 const idx = (id: string) => spine.findIndex((s) => s.id === id);
 const say = (text: string, final = false) => ({ type: 'transcript', text, final });

@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Component, useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { resolveText, slideSources, type Slide } from '../../shared/schema.ts';
 import { Backdrop } from './Backdrop.tsx';
+import { CoreDie } from './CoreDie.tsx';
 import { Words, type Datasets } from './primitives.tsx';
 import { SCENES } from './scenes/index.ts';
 import { dur, ease, H, W } from './tokens.ts';
@@ -53,12 +54,15 @@ export function SceneHost({ slide, reveal, datasets, calm, live, dim = 0 }: { sl
     seen.current = key;
     pulse.current++;
   }
+  const [noGl, setNoGl] = useState(false);
+  const dimNow = slide.scene === 'finale' ? 1 : dim;
   const resolved = resolveSlide(slide, datasets);
   const Scene = SCENES[slide.scene].Component;
   return (
     <div className="sx">
+      {!noGl && <CoreDie pulse={pulse.current} dim={dimNow} calm={calm} level={live} onFail={() => setNoGl(true)} />}
       <div className="sx-frame" style={{ transform: `translate(${-W * k * 0.5}px, ${-H * k * 0.5}px) scale(${k})` }}>
-        <Backdrop pulse={pulse.current} dim={slide.scene === 'finale' ? 1 : dim} calm={calm} level={live} />
+        {noGl && <Backdrop pulse={pulse.current} dim={dimNow} calm={calm} level={live} />}
         <AnimatePresence>
           <motion.div
             key={slide.scene}
