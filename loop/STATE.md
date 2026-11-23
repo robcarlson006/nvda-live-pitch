@@ -56,3 +56,5 @@ API cap now $2.50 (cap line in follow-eval.ts edited; commit it with your next c
 Added M1 (DCF check, reverse DCF, P/E vs peers with reasoning), M2 (those on stage + valuation Q&A) and C (keep improving all night from evidence, retro every 4th round). Re-read CARD.md and NEXT.md.
 ## run 2 · 8 · 02:02 · R0 eval cache · KEPT
 `follow-eval.ts` stores each director answer in `loop/eval-cache/` (hash of the whole request, plus recorded latency so the virtual clock is identical). Evidence: a-full live $0.1467 (197 calls); the same run again: 197 hits, **$0.0000**, identical result (25/27, p50 20, 0 false). Cap 2.5 enforced by `Budget`; total spent $1.272. `NO_CACHE=1` bypasses. Note: `python3` is an empty alias in this shell: use `/opt/homebrew/bin/python3`.
+## run 2 · 9 · 02:12 · R1 filmstrip · KEPT
+`npm run filmstrip -- <slide>[,slide] [--out dir] [--label before]` → `<id>-film.png`, 6 frames tiled 3x2 at 1600x600, each stamped with ms since the slide change and element k/n; uses only installed Chrome. Opened valuation's: showed my first version sent Next past the last element and changed slide (fixed: stops at n). Costs ~9 s per slide.

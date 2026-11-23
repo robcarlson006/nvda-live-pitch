@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "data": "tsx scripts/build-data.ts && tsx scripts/research-data.ts && tsx scripts/model.ts",
     "shoot": "tsx scripts/shoot.ts",
+    "filmstrip": "tsx scripts/filmstrip.ts",
     "follow-eval": "tsx scripts/follow-eval.ts",
     "xlsx": "tsx scripts/xlsx.ts",
     "xlsx-check": "tsx scripts/xlsx-check.ts",
