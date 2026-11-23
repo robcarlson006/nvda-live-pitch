@@ -27,3 +27,6 @@ Format: `- [ ] <question>. **Default used:** <what the loop did>. (ticket)`. Rob
 
 ## Run 2: follow accuracy
 True holdout: 89.0% right, 23 words late, 2.17 false moves per run (target 90 / 15 / 1.5). Improving it needs live eval runs, about $1 per pass. The $1.50 run cap is gone ($1.13 spent). Raise the cap in `app/scripts/follow-eval.ts` if you want another attempt. Cue words remain the safety net.
+
+## Run 2: DCF bridge
+`data/clean/model_dcf_bridge.json` is ready (stacked bars, Bear/Base/Bull: cash flow years 1-6, value after year 6, net cash; adds up to model_valuation, tested). It is not on any slide. To show it, add a stackedBar chart with datasetKey model_dcf_bridge to a valuation slide or the Q&A bank (your call: it changes what you say). Check: Base and Bull revenue paths in `model_revenue_paths` are identical, so Bull differs only by margin or other inputs: confirm that is what you mean.

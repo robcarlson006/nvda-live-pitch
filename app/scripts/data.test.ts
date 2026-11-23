@@ -59,3 +59,11 @@ test('curated research datasets are marked, and [VERIFY] figures are flagged unv
   assert.equal(ds('research_facts_unverified').verified, false);
   assert.equal(val('research_facts_unverified', 'Supply commitments', 'value'), 279);
 });
+
+test('DCF bridge parts add up to the value per share in model_valuation', () => {
+  const b = ds('model_dcf_bridge'), v = ds('model_valuation');
+  b.x.forEach((c: string, i: number) => {
+    const total = Object.values<number[]>(b.series).reduce((t, s) => t + s[i], 0);
+    assert.ok(Math.abs(total - v.series['Value per share'][v.x.indexOf(c)]) <= 0.05, `${c}: ${total}`);
+  });
+});

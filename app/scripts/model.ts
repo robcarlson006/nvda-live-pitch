@@ -114,6 +114,17 @@ function main() {
     x: ['Share price today', 'Bear case', 'Base case', 'Bull case', 'Peer P/E check'],
     series: { 'Value per share': [price, results.bear.perShare, results.base.perShare, results.bull.perShare, peerValue].map(r2) },
   });
+  const cases = ['bear', 'base', 'bull'] as const;
+  const perShare = (f: (r: (typeof results)[string]) => number) => cases.map((n) => r2(f(results[n]) / shares));
+  write({
+    key: 'model_dcf_bridge', title: 'Where the value per share comes from', unit: 'USD', source: `${source}. Each part is a present value divided by ${shares}bn shares`,
+    x: ['Bear case', 'Base case', 'Bull case'],
+    series: {
+      'Cash flow, years 1-6': perShare((r) => r.pv.reduce((a: number, b: number) => a + b, 0)),
+      'Value after year 6': perShare((r) => r.pvTv),
+      'Net cash': perShare(() => netCash),
+    },
+  });
   write({
     key: 'model_revenue_paths', title: 'Revenue paths in the model', unit: 'USD bn', source: `${source}. FY27 = consensus`,
     x: ['FY26', 'FY27', ...years],

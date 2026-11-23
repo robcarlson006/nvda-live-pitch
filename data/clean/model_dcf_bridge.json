@@ -1,0 +1,30 @@
+{
+  "key": "model_dcf_bridge",
+  "title": "Where the value per share comes from",
+  "unit": "USD",
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Each part is a present value divided by 24.1bn shares",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "Bear case",
+    "Base case",
+    "Bull case"
+  ],
+  "series": {
+    "Cash flow, years 1-6": [
+      15.68,
+      73.41,
+      81.52
+    ],
+    "Value after year 6": [
+      13.24,
+      91.62,
+      101.74
+    ],
+    "Net cash": [
+      2.47,
+      2.47,
+      2.47
+    ]
+  }
+}
