@@ -84,3 +84,5 @@ Weakest blind-scored slide (5): long bar series now label first, middle, FY22 an
 The fallback PDF was from run 1 (54 pages) and lacked the new slides and answers. Regenerated: **58 pages (24 answers)**, includes dcf-bridge, reverse-dcf, pe-peers, student-model. Gate PASS.
 ## run 2 · 22 · 02:53 · retro 2 · DONE
 Lessons in `loop/LESSONS-run2.md` (blind review per round on the weakest slide, regenerate the fallback with every new slide, list-tests are the cheap net, no live spend needed). CARD.md got one line of tool traps.
+## run 2 · 23 · 02:57 · C `m` kills the glow: verified · KEPT
+R4's done-when ("m kills it") had no proof. New `npm run calm-check` (headless, own port): glow visible before calm (computed opacity 0.10, mid-breathe), `t` toggles the ghost line, **m → glow opacity 0.00 and ghost line gone**. 4/4 pass.
