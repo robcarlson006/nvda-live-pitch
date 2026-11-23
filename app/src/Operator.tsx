@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { elementCount, isUnverified, resolveText, type ShowState, type SpineSlide } from '../shared/schema.ts';
+import { pace, panicMessages } from '../shared/pace.ts';
 import { LivePanel } from './LivePanel.tsx';
 import { demoSlides } from './demoSlides.ts';
 import { useSpeech, type Engine } from './useSpeech.ts';
@@ -26,7 +27,7 @@ function useNow(ms = 500) {
   return now;
 }
 
-function Timer({ state, spine, send }: { state: ShowState | null; spine: SpineSlide[]; send: ReturnType<typeof useShow>['send'] }) {
+function Timer({ state, spine, send, text }: { state: ShowState | null; spine: SpineSlide[]; send: ReturnType<typeof useShow>['send']; text: (t: string) => string }) {
   const now = useNow();
   const run = state?.rehearsal ?? null;
   const end = sectionEnd(spine);
@@ -35,6 +36,7 @@ function Timer({ state, spine, send }: { state: ShowState | null; spine: SpineSl
     ? run.entries.reduce((t, e, i) => (e.index <= end ? t + ((run.entries[i + 1]?.at ?? now) - e.at) : t), 0)
     : 0;
   const over = section > TARGET_S * 1000;
+  const pc = pace(spine, state ?? { index: -1, skipped: [] }, run ? (now - run.startedAt) / 1000 : 0);
 
   return (
     <section className="op-timer">
@@ -50,6 +52,17 @@ function Timer({ state, spine, send }: { state: ShowState | null; spine: SpineSl
         <div className="label">Whole run</div>
         <div className="op-clock">{run ? clock(now - run.startedAt) : '–'}</div>
       </div>
+      {run && (
+        <div>
+          <div className="label">Time left vs script</div>
+          <div className={`op-clock ${pc.over > 0 ? 'over' : ''}`}>
+            {clock(pc.timeLeft * 1000)} / {clock(pc.plannedLeft * 1000)}
+          </div>
+          <div className="op-meta">
+            {pc.over > 0 ? `Behind by about ${clock(pc.over * 1000)}. Consider cutting: ${pc.suggest.map((s) => `${text(spine.find((x) => x.id === s.id)!.title)} (${clock(s.seconds * 1000)})`).join(', ') || 'no ✂ slides left'}` : 'On time'}
+          </div>
+        </div>
+      )}
       <div className="op-timer-actions">
         {run ? (
           <button className="primary" onClick={() => send({ type: 'rehearsal', action: 'stop' })}>
@@ -141,13 +154,14 @@ export function Operator() {
             Next
           </button>
           <button onClick={() => send({ type: 'clear' })}>Standby</button>
+          <button className="primary" title="Esc or P" onClick={() => panicMessages().forEach(send)}>Panic: stop following, standby (Esc)</button>
           <div className="op-meta">Keys: → or Space next, ← back</div>
         </div>
       </section>
 
       <LivePanel state={state} ai={ai} bank={bank} pending={pending} datasets={datasets} send={send} />
 
-      <Timer state={state} spine={spine} send={send} />
+      <Timer state={state} spine={spine} send={send} text={text} />
 
       <section className="op-speech">
         <div className="op-mic">

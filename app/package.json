@@ -6,7 +6,7 @@
     "dev": "tsx watch --ignore ./src --ignore ./state.json server/index.ts",
     "build": "vite build",
     "start": "NODE_ENV=production tsx server/index.ts",
-    "test": "node --import tsx --test server/*.test.ts scripts/*.test.ts",
+    "test": "node --import tsx --test server/*.test.ts scripts/*.test.ts shared/*.test.ts",
     "typecheck": "tsc --noEmit",
     "data": "tsx scripts/build-data.ts && tsx scripts/research-data.ts && tsx scripts/model.ts",
     "shoot": "tsx scripts/shoot.ts",

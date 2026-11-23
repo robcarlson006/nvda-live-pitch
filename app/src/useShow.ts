@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { panicMessages } from '../shared/pace.ts';
 import type { AiInfo, ClientMsg, Dataset, Draft, MicInfo, ServerMsg, ShowState, SpineSlide } from '../shared/schema.ts';
 
 /** Live connection to the backend. Reconnects forever with backoff, so a server restart or Wi-Fi blip heals itself. */
@@ -82,6 +83,7 @@ export function useNavKeys(send: (m: ClientMsg) => void, state: ShowState | null
       else if (e.key === 'a' && state?.drafts[0]) send({ type: 'draft', action: 'show', id: state.drafts[0].id });
       else if (e.key === 'x' && state?.drafts[0]) send({ type: 'draft', action: 'reject', id: state.drafts[0].id });
       else if (e.key === 'r') send({ type: 'resume' });
+      else if (e.key === 'Escape' || e.key === 'p') panicMessages().forEach(send); // panic: stop following speech, standby screen
       else return;
       e.preventDefault();
     };
