@@ -86,12 +86,13 @@
   speaker: Rob
   scene: four-layers
   layout: statement
-  cues: [the software sits on the best of everything else, best of everything else]
+  cues: [and the software sits, the software sits on]
   title: A rival has to match all of it at once.
   bullets:
+    - text: Software
+      cue: best of everything else
     - text: Chips
       cue: data centre sales twelve times
-    - text: Software
     - text: Networking
       cue: seventy two chips wired
     - text: Supply
@@ -105,9 +106,10 @@
   cues: [only one company has come close, one company has come close google]
   title: Share of AI chip supply, Q4 2025
   bullets:
-    - text: NVIDIA
-      cue: google has nineteen percent
     - text: Google
+      cue: has nineteen percent
+    - text: NVIDIA
+      cue: nvidia has sixty eight
   say: "Only one company has come close: Google. It started building its own AI chip in 2015, over a decade ago, with all of Google's cash. Even so, Google has nineteen percent of AI chip supply and NVIDIA has sixty-eight. Almost nobody has the cash or the years."
 
 - id: do-numbers-agree

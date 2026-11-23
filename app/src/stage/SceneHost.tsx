@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Component, useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { resolveText, slideSources, type Slide } from '../../shared/schema.ts';
 import { Backdrop } from './Backdrop.tsx';
+import { usePaced } from './pacing.ts';
 import { CoreDie } from './CoreDie.tsx';
 import { Words, type Datasets } from './primitives.tsx';
 import { SCENES } from './scenes/index.ts';
@@ -39,7 +40,8 @@ export function resolveSlide(s: Slide, datasets: Datasets): Slide {
 export const hasScene = (s: Slide | null | undefined): s is Slide & { scene: string } => !!s?.scene && s.scene in SCENES;
 
 /** The whole stage for a scripted slide: fixed 1920×1080 canvas scaled to the window, particle backdrop, one scene on top. */
-export function SceneHost({ slide, reveal, datasets, calm, live, dim = 0 }: { slide: Slide & { scene: string }; reveal: number; datasets: Datasets; calm: boolean; live: RefObject<{ level: number }>; dim?: number }) {
+export function SceneHost({ slide, reveal: revealIn, datasets, calm, live, dim = 0 }: { slide: Slide & { scene: string }; reveal: number; datasets: Datasets; calm: boolean; live: RefObject<{ level: number }>; dim?: number }) {
+  const reveal = usePaced(revealIn, slide.id);
   const [k, setK] = useState(() => Math.min(innerWidth / W, innerHeight / H));
   useEffect(() => {
     const on = () => setK(Math.min(innerWidth / W, innerHeight / H));

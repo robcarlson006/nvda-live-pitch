@@ -197,8 +197,8 @@ export function TwentyYears({ slide, beat, datasets }: SceneProps) {
 // ---------- 7. Four layers ----------
 export function FourLayers({ slide, beat, datasets }: SceneProps) {
   const rows = [
-    { name: 'Chips', big: `${num(get(datasets, 'peers_datacenter_revenue', 'Multiple of AMD', 'NVIDIA'), 1)}×`, small: "AMD's data-centre sales" },
     { name: 'Software', big: `${num(get(datasets, 'research_facts', 'CUDA developers', 'value'))} million`, small: 'developers writing for it' },
+    { name: 'Chips', big: `${num(get(datasets, 'peers_datacenter_revenue', 'Multiple of AMD', 'NVIDIA'), 1)}×`, small: "AMD's data-centre sales" },
     { name: 'Networking', big: num(get(datasets, 'research_facts', 'GPUs per NVL72 rack', 'value')), small: 'chips wired into one machine' },
     { name: 'Supply', big: `~${num(get(datasets, 'research_cowos_share', 'Share of CoWoS', 'NVIDIA'))}%`, small: "of TSMC's advanced packaging booked" },
   ];
@@ -232,7 +232,7 @@ export function ChipShare({ slide, beat, datasets }: SceneProps) {
         <div className="sx-pos" style={{ left: 330, top: 800, width: 1260, height: 3, background: color.faint }} />
         {ds.x.map((name, i) => {
           const v = ds.series['Share of AI chip supply'][i] ?? 0;
-          const on = beat >= i + 2;
+          const on = beat >= (name === 'Google' ? 2 : 3); // spoken order: Google's 19% first, then NVIDIA's 68%
           const left = 480 + i * 560;
           const nv = name === 'NVIDIA';
           return (
