@@ -86,3 +86,5 @@ The fallback PDF was from run 1 (54 pages) and lacked the new slides and answers
 Lessons in `loop/LESSONS-run2.md` (blind review per round on the weakest slide, regenerate the fallback with every new slide, list-tests are the cheap net, no live spend needed). CARD.md got one line of tool traps.
 ## run 2 · 23 · 02:57 · C `m` kills the glow: verified · KEPT
 R4's done-when ("m kills it") had no proof. New `npm run calm-check` (headless, own port): glow visible before calm (computed opacity 0.10, mid-breathe), `t` toggles the ghost line, **m → glow opacity 0.00 and ghost line gone**. 4/4 pass.
+## run 2 · 24 · 03:00 · C early-move precision on unseen data (offline, $0) · MEASURED
+Local word-evidence alone (next slide only, 12 words, 3.0, x1.5, none of the live guards) on the holdout transcripts: right for **95 of 164 beats (58%), wrong 18 (11%), silent 51**, median 15 words in. Dev was 53% / 7%. So unguarded precision is 84% on holdout (dev 89%): the guards (slide built, two in a row, Claude answering, not into a ✂ slide) are what keep false moves down; do not loosen them. No code changed; nothing retuned.
