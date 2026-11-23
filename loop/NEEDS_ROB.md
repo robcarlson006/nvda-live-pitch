@@ -33,3 +33,8 @@ True holdout: 89.0% right, 23 words late, 2.17 false moves per run (target 90 / 
 
 ## Run 2: Networking figure
 Slide "connections" now shows Networking FY26 as the verified $31.4bn (Bloomberg FA p.175: $31,376m), previously "$31bn" from research notes. Same sentence, more exact number; `say:` text untouched. If you say "31 billion" aloud, that still matches.
+
+## Run 2: remaining [VERIFY] figures (2 of 8 searches used; I could not open the primary pages, so these stay UNVERIFIED in the app)
+- **Supply commitments $279bn:** a search summary points to NVIDIA's 10-Q for the quarter to 26 Jul 2026 (https://investor.nvidia.com/files/doc_financials/2027/NVDA-2027-Q2-10Q-Final-including-exhibits.pdf) and says $279bn, which includes about $99bn equity investments and $25bn equity commitments (so "supply" alone may overstate it). Open the PDF, find the commitments note, and check the wording before you say "supply commitments".
+- **Security "0 humans":** the Google GTIG report (https://cloud.google.com/blog/topics/threat-intelligence/agentic-threat-activity-crosses-a-significant-threshold) describes activity from late Aug to early Oct 2026 with no human intervention, not events of 16-17 Nov as the slide source says. Anthropic's own case (Nov 2025) was 80-90% AI with humans choosing targets. Reword the source date, or cut "0".
+- **CUDA ~$0.5bn a year, 90% of AI training, 80% of AI chip spending:** not searched. Cut or reword to "most"/"the large majority" unless you can source them.
