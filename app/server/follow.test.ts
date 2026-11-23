@@ -177,3 +177,55 @@ test('follow: one sentence never runs the deck forward several slides', async ()
   await r.say('and that is how it goes', 700);
   assert.ok(['beats', 'last-quarter'].includes(r.at()), r.at());
 });
+
+test('early move: clear talk about the NEXT slide moves the deck before Claude commits, but only while Claude is answering', async () => {
+  const text = 'investors despised it because the chips cost more and gamers could not see the point of cuda';
+  // Claude says "stay" (as a cautious model would), so any move here is the local one.
+  const r = rig(async () => reply(verdict('stay')));
+  r.box.state = apply(r.box.state, { type: 'goto', index: idx('cuda') }, { datasets, spine }) as ShowState;
+  r.follow.manual();
+  r.director.sinceMove = 99;
+  r.tick(5_000);
+  await r.say('and that is the whole idea of the software platform'); // Claude answers: healthy
+  assert.ok(r.director.lastOk > 0);
+  assert.equal(r.at(), 'cuda');
+  await r.say(text); // the slide on screen is not built yet: Claude's call
+  assert.equal(r.at(), 'cuda', 'not while the slide on screen is still being built');
+  r.box.state = { ...r.box.state, reveal: spine[idx('cuda')].bullets.length + 1 };
+  await r.say(text);
+  assert.equal(r.at(), 'cuda', 'one result is not enough');
+  await r.say(text);
+  assert.equal(r.at(), 'wall-street', 'two in a row, slide built: ahead of Claude');
+  // right after a move, more of the same must not run the deck forward again
+  await r.say('wall street hated it and the share price fell and the stock was halved in the crisis');
+  assert.equal(r.at(), 'wall-street');
+});
+
+test('early move: never before Claude has answered, never across a skipped-ahead slide, never while a person holds the deck', async () => {
+  const text = 'investors despised it because the chips cost more and gamers could not see the point of cuda';
+  const dead = rig(async () => { throw new Error('offline'); });
+  dead.box.state = apply(dead.box.state, { type: 'goto', index: idx('cuda') }, { datasets, spine }) as ShowState;
+  dead.director.sinceMove = 99;
+  dead.box.state = { ...dead.box.state, reveal: spine[idx('cuda')].bullets.length + 1 };
+  await dead.say(text);
+  await dead.say(text);
+  assert.equal(dead.at(), 'cuda', 'Claude never answered');
+
+  const held = rig(async () => reply(verdict('stay')));
+  held.box.state = apply(held.box.state, { type: 'goto', index: idx('cuda') }, { datasets, spine }) as ShowState;
+  held.director.sinceMove = 99;
+  await held.say('and that is the whole idea of the software platform');
+  held.follow.manual(); // the operator pressed a key just now
+  held.box.state = { ...held.box.state, reveal: spine[idx('cuda')].bullets.length + 1 };
+  await held.say(text, 500);
+  await held.say(text, 500);
+  assert.equal(held.at(), 'cuda', 'held for a few seconds after a person moved the deck');
+
+  const far = rig(async () => reply(verdict('stay')));
+  far.box.state = apply(far.box.state, { type: 'goto', index: idx('cuda') }, { datasets, spine }) as ShowState;
+  far.director.sinceMove = 99;
+  await far.say('and that is the whole idea of the software platform');
+  far.tick(5_000);
+  await far.say('the biggest companies and governments are all building AI and you would have to stop innovation itself to stop this company');
+  assert.equal(far.at(), 'cuda', 'a slide further ahead is Claude\'s call, not the early rule\'s');
+});

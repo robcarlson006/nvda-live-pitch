@@ -32,3 +32,16 @@ export function evidence(said: string, spine: SpineSlide[]): { id: string; score
 
 /** Rarity of each telling word across the whole script (high = appears on few slides). */
 export const idfOf = (spine: SpineSlide[]): Map<string, number> => index(spine).idf;
+
+/**
+ * Does what was just said point at this slide (and clearly more than at the one on screen)? Used for the early move to the NEXT slide.
+ * Measured offline on the dev scripts (12 words, 3.0, x1.5): right slide for 33 of 60 beats at a median 14 words in (Claude alone: 19), 3 beats one slide early.
+ */
+export const EARLY = { words: 12, min: 3, margin: 1.5 };
+export function points(said: string, to: SpineSlide, from: SpineSlide | undefined, spine: SpineSlide[]): boolean {
+  const { docs, idf } = index(spine);
+  const said_ = new Set(terms(said));
+  const score = (id: string) => [...said_].reduce((n, t) => n + (docs.get(id)!.has(t) ? idf.get(t)! : 0), 0);
+  const a = score(to.id);
+  return a >= EARLY.min && a >= EARLY.margin * (from ? score(from.id) : 0);
+}

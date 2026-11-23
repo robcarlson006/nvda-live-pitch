@@ -1,7 +1,7 @@
-import { type Dataset, type ShowState, type SpineSlide } from '../shared/schema.ts';
+import { type Dataset, elementCount, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { accept, type Director, type Verdict } from './director.ts';
-import { evidence } from './evidence.ts';
-import { liveGo, livePoints } from './state.ts';
+import { EARLY, evidence, points } from './evidence.ts';
+import { isCovered, liveGo, livePoints } from './state.ts';
 
 /**
  * Live mode, joined up: speech goes to the Director, its verdicts move the deck.
@@ -21,6 +21,7 @@ const HOLD_MS = 4_000; // after a person moves the deck, leave it where they put
 export class Follow {
   private held = 0;
   private running = false;
+  private pointing = 0; // results in a row that pointed at the next slide
   constructor(
     readonly director: Director,
     private d: FollowDeps,
@@ -34,7 +35,32 @@ export class Follow {
   hear(text: string, final: boolean) {
     if (!this.active()) return;
     this.director.hear(text, final);
+    this.early();
     void this.tick();
+  }
+
+  /**
+   * Faster than asking Claude: when the newest words clearly belong to the NEXT slide and not to the one on screen, go now.
+   * Claude is still asked in parallel and can carry on from there; the usual guards apply (a person's move holds, one sentence can't run the deck forward).
+   */
+  private early() {
+    const s = this.d.get();
+    if (this.clock() < this.held || this.director.sinceMove < 9 || isCovered(s)) return;
+    if (this.director.error || !this.director.lastOk || this.clock() - this.director.lastOk > 30_000) return; // Claude isn't answering: cue words and the operator are in charge
+    const spine = this.d.spine();
+    const next = spine.find((x, i) => i > s.index && !s.skipped.includes(x.id));
+    if (next?.optional) return; // a slide the speakers may skip is Claude's call (measured: the early rule once walked into a skipped one)
+    const cur = spine[s.index];
+    // Only once the slide on screen is (nearly) all built, and only when two results in a row point at the same next slide.
+    const pointing = !!next && !!cur && s.reveal >= elementCount(cur) - 1 && points(this.director.newest(EARLY.words), next, cur, spine);
+    this.pointing = pointing ? this.pointing + 1 : 0;
+    if (!next || this.pointing < 2) return;
+    this.pointing = 0;
+    const out = liveGo(s, spine, next.id, 0);
+    if (out === s) return;
+    this.d.log?.(`early ${next.id}`);
+    this.director.moved(); // those words stay unjudged: Claude still hears them and can build points
+    this.d.set(out, 'slide');
   }
 
   /** A person moved the deck: what was said before that no longer counts, and the deck stays put for a few seconds. */

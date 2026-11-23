@@ -81,6 +81,8 @@ export class Director {
   private votes: string[] = []; // the last few verdicts
   error: string | null = null;
   ms = 0;
+  /** When Claude last answered properly (0 = never). The early local move only runs while this is recent: it speeds Claude up, it doesn't stand in for it. */
+  lastOk = 0;
 
   constructor(
     private budget: Budget,
@@ -128,6 +130,8 @@ export class Director {
 
   private words = () => `${this.finals} ${this.tail}`.trim().split(/\s+/).filter(Boolean);
   recent = (n = 70) => this.words().slice(-n).join(' ');
+  /** The newest words, but never any from before the last move (they were dealt with). */
+  newest = (n: number) => this.words().slice(Math.max(this.floor, this.words().length - n)).join(' ');
 
   /** Enough new speech for another look? */
   ready(now = this.clock()): boolean {
@@ -169,6 +173,7 @@ export class Director {
       this.budget.settle(worst, costOf(DIRECTOR_MODEL, msg.usage));
       const v = Verdict.safeParse(JSON.parse(msg.content.flatMap((b) => (b.type === 'text' ? [b.text] : [])).join('')));
       this.error = null;
+      if (v.success) this.lastOk = this.clock();
       return v.success ? v.data : null;
     } catch (e) {
       this.budget.settle(worst, e instanceof Anthropic.APIError && e.status ? 0 : worst);
