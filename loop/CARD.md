@@ -64,3 +64,6 @@ safe default, write it in NEEDS_ROB.md, carry on.
    what needs his decision; how to merge (`git merge loop/2026-11-22` from the main folder). Be honest about what is weak, untested, or unfinished,
    including time lost to the usage limit and API spend.
 4. `git tag loop-final-2`; then `touch loop/STOP` and stop.
+
+## Added at retro 2
+- `npm run build` before any shoot/filmstrip (they serve the built client). After adding a slide or answer: `npm run fallback`. `python3` is an empty alias here: use /opt/homebrew/bin/python3.
