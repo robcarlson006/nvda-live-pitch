@@ -10,7 +10,7 @@ Skip list tonight (don't start): live ticker, second-device operator, spreadshee
   draw-in, spotlight the highlighted series and dim the rest, direct labels, source line, bars from zero. Then Panshul's **DCF bridge**
   (revenue → FCF → PV → value per share vs the price line, bear/base/bull; all values from `data/clean/model_*.json`). ≤ 2 stills a round,
   1280×720. Calm on ESG slides; no triumphant motion on bad news. Perf must not regress (p95 frame ≤ 17 ms on the existing perf run).
-- [ ] **N3 · ANSWER latency + honesty.** Live answers took 4–6 s (target: something visible by 3 s). Show the question-distilling animation and
+- [~] **N3 · PARTIAL (claim check + tests done; skeleton-at-once latency not done) · ANSWER latency + honesty.** Live answers took 4–6 s (target: something visible by 3 s). Show the question-distilling animation and
   the title/skeleton immediately while Claude works. Also: a title once claimed something its data didn't show. Add a code check (and a test) that
   a generated title/claim must be supported by the looked-up values (direction, comparison, "more/less than"), else fall back to a neutral title.
   Fake-caller tests first; ≤ 6 live questions (budgeted).
