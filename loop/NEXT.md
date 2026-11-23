@@ -2,7 +2,7 @@
 
 Skip list tonight (don't start): live ticker, second-device operator, spreadsheet appendix sheets, new fonts/theme work, rewriting anything we *say*.
 
-- [ ] **N1 · FOLLOW (the headline feature).** Run 1 holdout (before the last fix, not re-run): 89.6% right of 164 beats, 21 words late (p50),
+- [~] **N1 · PARTIAL (holdout measured: 89.0% right, 23 late, 2.17 false/run; no fix, eval budget spent) · FOLLOW (the headline feature).** Run 1 holdout (before the last fix, not re-run): 89.6% right of 164 beats, 21 words late (p50),
   3.2 flagged false moves/run, one run raced through 4 slides (fixed, untested on holdout). Round 1: run the holdout ONCE to get the true
   number. Then fix only the top failure patterns (read ≤ 30 lines of failures). Targets: ≥ 90% right, ≤ 1.5 false moves/run, p50 lateness
   ≤ 15 words. Re-run holdout once at the end. Never tune on holdout; use dev. Keep cue words as the safety net.
