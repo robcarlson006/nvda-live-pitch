@@ -91,12 +91,19 @@ button.primary { background: var(--green); border-color: var(--green); color: #0
 button:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
 .op-history { margin: 0; padding-left: 20px; color: #cfd3da; }
 .toggle { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
-.op-now { display: grid; grid-template-columns: 1fr auto; gap: 20px; padding: 18px; border-radius: 12px; border: 1px solid #262a30; background: #0c0e11; }
+.op-now { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: 18px; border-radius: 12px; border: 1px solid #262a30; background: #0c0e11; }
 .op-now-main { min-width: 0; }
 .op-say { margin: 12px 0 0; color: var(--detail); line-height: 1.5; max-width: 70ch; }
 .op-meta { font-size: 13px; color: var(--detail); margin-top: 6px; }
-.op-nav { display: flex; flex-direction: column; gap: 8px; align-items: stretch; min-width: 160px; }
-button.big { padding: 18px 24px; font-size: 20px; }
+.op-nav { display: grid; gap: 10px; }
+.op-ctl { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+.op-ctl button { padding: 22px 24px; font-size: 22px; }
+.op-sec { display: flex; flex-wrap: wrap; gap: 8px; }
+.op-sec button { padding: 8px 12px; font-size: 14px; }
+.op-keys { margin-top: 2px; }
+.op-keys summary { cursor: pointer; font-size: 13px; color: var(--detail); }
+.op-keys p { margin: 6px 0 0; font-size: 13px; line-height: 1.7; color: var(--detail); }
+button.big { font-size: 24px; }
 .op-speech { padding: 16px; border-radius: 12px; border: 1px solid #262a30; }
 .op-heard { font-size: 18px; min-height: 1.5em; }
 .op-sim input { width: 100%; margin-top: 12px; padding: 10px 12px; border-radius: 8px; border: 1px solid #333840; background: #0c0e11; color: var(--white); font: inherit; }

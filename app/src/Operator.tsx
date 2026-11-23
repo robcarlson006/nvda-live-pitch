@@ -127,6 +127,9 @@ export function Operator() {
         <span className={`pill ${mic.listening ? 'ok' : mic.problem || mic.on ? 'bad' : ''}`}>
           Mic {mic.listening ? `on: ${mic.engine === 'deepgram' ? 'Deepgram' : 'Chrome'} (${mic.lang})` : mic.on ? 'connecting…' : 'off'}
         </span>
+        <button className={mic.on ? 'danger' : 'primary'} onClick={mic.on ? mic.stop : mic.start}>
+          {mic.on ? 'Stop mic' : 'Start mic'}
+        </button>
         <label className="pill toggle">
           <input type="checkbox" checked={state?.autoCue ?? false} onChange={(e) => send({ type: 'autoCue', on: e.target.checked })} /> Follow speech
         </label>
@@ -157,12 +160,16 @@ export function Operator() {
           {cur?.say && <p className="op-say">{cur.say}</p>}
         </div>
         <div className="op-nav">
-          <button onClick={() => send({ type: 'back' })}>Back</button>
-          <button className="primary big" onClick={() => send({ type: 'next' })}>
-            Next
-          </button>
+          <div className="op-ctl">
+            <button onClick={() => send({ type: 'back' })}>← Back</button>
+            <button className="primary big" onClick={() => send({ type: 'next' })}>
+              Next →
+            </button>
+          </div>
+          <div className="op-sec">
+          <button onClick={() => state && state.index > 0 && send({ type: 'goto', index: state.index - 1 })}>Previous slide (P)</button>
+          <button onClick={() => send({ type: 'goto', index: (state?.index ?? -1) + 1 })}>Next slide (N)</button>
           <button onClick={() => send({ type: 'clear' })}>Standby</button>
-          <button className="primary" title="Esc" onClick={() => panicMessages().forEach(send)}>Panic: stop following, standby (Esc)</button>
           <button
             className={auto ? 'primary' : ''}
             title="Plays every beat of the script by itself in about nine minutes. Speech following is paused while it runs."
@@ -176,9 +183,12 @@ export function Operator() {
             {auto ? 'Stop auto-play' : 'Auto-play (9 min)'}
           </button>
           <button className={state?.backup ? 'primary' : ''} onClick={() => send({ type: 'backup', on: !state?.backup })}>{state?.backup ? 'Backup deck is ON (B)' : 'Backup deck (B)'}</button>
-          <div className="op-meta op-keys">
-            <b>Keys</b> · Space / → next beat · Backspace / ← back · N next slide · P previous slide · B backup deck · F freeze speech (follow off/on) · Q question · A / X approve / reject · R resume · Esc panic
+          <button className="danger" title="Esc" onClick={() => panicMessages().forEach(send)}>Panic (Esc)</button>
           </div>
+          <details className="op-keys">
+            <summary>Keyboard</summary>
+            <p>Space or → next beat · Backspace or ← back · N next slide · P previous slide · B backup deck · F freeze speech following · Q question · A / X approve or reject · R resume · Esc panic (stop following, standby)</p>
+          </details>
         </div>
       </section>
 
