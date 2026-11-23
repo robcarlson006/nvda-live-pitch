@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import type ExcelJS from 'exceljs';
-import { ALLOWED, APPENDIX_MAX_FORMULAS, AT, clean, EXTRA, load, OUT, PEERS, RD, SHEETS, shown, SOFFICE, soffice } from './xlsx.ts';
+import { ALLOWED, APPENDIX_MAX_FORMULAS, AT, clean, EXTRA, load, OUT, PEERS, RD, SHEETS, SIMPLE, shown, SOFFICE, soffice } from './xlsx.ts';
 import { dcf as modelDcf, grow } from './model.ts';
 
 const TOL = 0.01;
@@ -120,7 +120,7 @@ if (live) {
     const revs = ['C', 'D', 'E', 'F', 'G'].map((c) => at(w, 'DCF', `${c}${AT.mainRow.revenue}`) as number);
     ok(revs.every((r, k) => Math.abs(r - P.series[n][P.x.indexOf(`FY${28 + k}`)]!) <= TOL), `  revenue FY28 to FY32 matches model_revenue_paths (${n})`);
   });
-  const alt = `${Math.round((at(wb, 'Inputs', 'B17') as number) * 1000) / 10}%`;
+  const alt = `${Math.round((at(wb, 'Inputs', 'B17') as number) * 10000) / 100}%`;
   const g = `Terminal growth ${Math.round((at(wb, 'Inputs', 'B24') as number) * 1000) / 10}%`;
   close(`WACC switch 2 (${alt}, ${g.toLowerCase()})`, at(calc.wacc2, 'DCF', AT.perShare), S.series[g]?.[S.x.indexOf(alt)] ?? NaN);
 }
@@ -151,6 +151,23 @@ if (live) {
   reverse('Reverse DCF if the price were $200', calc.price200, 200);
   ok((at(calc.price200, 'Reverse DCF', RD.implied) as number) > (at(wb, 'Reverse DCF', RD.implied) as number), 'a dearer share needs more growth');
   close('Peers: P/E moves with the price ($200)', at(calc.price200, 'Peers', PEERS.pe), 200 / eps, 'x');
+}
+console.log('Simple DCF and Financials');
+{
+  const sd = file.getWorksheet('Simple DCF')!;
+  const n = ideas(cellsOf(sd).filter((c) => c.formula));
+  ok(n <= SIMPLE.max, `Simple DCF: ${n} different formulas; limit ${SIMPLE.max}`);
+  const a = (r: string) => at(wb, 'Simple DCF', r) as number;
+  // Independent recomputation with whole years 1 to 5, through the model's own maths (model.ts)
+  const worth = modelDcf({ path: grow(a('B5'), ['C', 'D', 'E', 'F', 'G'].map((c) => (at(wb, 'Simple DCF', `${c}16`) as number) * 100)), margin: a('B6'), wacc: a('B7') * 100, g: a('B8') * 100, netCash: a('B9'), shares: a('B10'), t: [1, 2, 3, 4, 5] }).perShare;
+  close('Simple DCF value per share, recomputed outside the sheet', a(SIMPLE.value), worth);
+  const gap = a(SIMPLE.value) / (at(wb, 'DCF', `C${AT.table.base}`) as number) - 1;
+  ok(gap > 0 && gap < 0.1, `Simple DCF is above the detailed base case by ${(gap * 100).toFixed(1)}% (whole years are discounted less); expected 0 to 10%`);
+  const f = (r: string) => at(wb, 'Financials', r) as number;
+  close('Financials: FY26 sales equal Bloomberg', f('F13'), clean('nvda_revenue_annual').series['Revenue'].at(-1)!);
+  close('Financials: FY26 Data Center share', f('F16'), clean('nvda_segments_annual').series['Data Center'].at(-1)! / f('F13'));
+  close('Financials: FY27E sales equal Inputs', f('G13'), at(wb, 'Inputs', 'B26') as number);
+  close('Financials: FY26 free cash flow margin', f('F22'), clean('nvda_fcf_annual').series['Free cash flow'].at(-1)! / f('F13'));
 }
 console.log(`${bad ? `FAIL: ${bad} problem(s)` : live ? 'PASS' : 'PASS on saved answers only (not recalculated)'} in ${((Date.now() - t0) / 1000).toFixed(1)} s`);
 process.exit(bad ? 1 : 0);

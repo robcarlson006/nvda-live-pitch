@@ -32,7 +32,9 @@ export function CoreDie({ pulse, dim, calm, level, onFail }: { pulse: number; di
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => eng.current?.calm(calm), [calm]);
+  useEffect(() => {
+    eng.current?.calm(calm);
+  }, [calm]);
   useEffect(() => {
     if (lastPulse.current === pulse) return;
     lastPulse.current = pulse;

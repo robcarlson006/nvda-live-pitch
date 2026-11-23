@@ -19,7 +19,9 @@ test('parsed values match the Bloomberg exports', () => {
   assert.equal(val('nvda_revenue_quarterly', 'Revenue', 'FY27 Q3'), 115.844); // FA Earnings
   assert.equal(val('nvda_revenue_quarterly', 'Consensus', 'FY24 Q3'), 16.09);
   assert.equal(val('nvda_revenue_forecast', 'Consensus estimate', 'FY27'), 422.222); // DES FY27: 422.22B
-  assert.equal(val('peers_pe', 'Forward P/E', 'NVIDIA'), 14.07); // DES Est P/E 14.06
+  // DES Est P/E 14.06 at Bloomberg's $135.46; build-data re-strikes NVIDIA's row at the team price (assumptions.json), so scale it back.
+  const teamPx = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, '../../data/model/assumptions.json'), 'utf8')).priceOverride?.value ?? 135.46;
+  assert.ok(Math.abs(val('peers_pe', 'Forward P/E', 'NVIDIA') - (14.07 * teamPx) / 135.46) < 0.01);
   assert.equal(val('peers_pe', 'Current P/E', 'AMD'), 100.08); // FA Multiples, "Current" column
   assert.equal(val('peers_pe', 'Forward P/E', 'AMD'), 53.35); // FA Multiples, Estimate 2026
   assert.equal(val('nvda_emissions', 'Scope 1', 'FY14'), 2.74);

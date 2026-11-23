@@ -14,7 +14,14 @@ cd app && npm install && npm run dev
 - Checks: `npm test` and `npm run typecheck`
 - For the pitch itself: `npm run build && npm start` (no dev tooling running).
 
-## Latest: overnight loop, 22 Nov (branch loop/2026-11-22)
+## Latest: stage v4, 23 Nov (branch stage-v4)
+- **/stage rebuilt for script v4**: 22 scenes in `app/src/stage/` on a 1920×1080 canvas, the GPU-die core grid behind everything (WebGL, particle fallback), cell-textured bars, morphs between slides that share a scene. Design notes: `app/src/stage/design.md`. How to run and what is unverified: `docs/stage-demo.md`.
+- `docs/script/spine.yaml` is the v4 order (old one kept as `spine-v3-old.yaml`; engine tests run on `app/server/fixtures/spine-v3.yaml`).
+- Operator keys: Space/Backspace beat, N/P slide, B backup deck, F freeze; Auto-play (9 min) rehearsal button. Backup deck regenerated from v4 and served at `/backup/`.
+- New data: model_rates, model_bear_bull_rates, model_implied_sales, model_forecast_growth, margin_compare, research_ai_chip_share (copied from script, unchecked), research_cuda, research_discoveries (unverified).
+- Open: official NVIDIA logo file missing; mic and projector untested.
+
+## Earlier: overnight loop, 22 Nov (branch loop/2026-11-22)
 - **Follows meaning, not trigger words.** `director.ts` (Claude Haiku) is now wired in through `server/follow.ts`, backed by a no-AI word check (`evidence.ts`), and on by default. If Claude is unreachable, cue words take over and the operator panel says so. Measured: `npm run follow-eval -- dev|holdout`. Blind holdout 89.6% of 164 beats, about 21 words (8 s) late. **Use the clicker when a moment matters.**
 - **New stage engine** (`app/src/cores/`): WebGL, about 1080p of pixels on any screen. The cores fly from one slide's picture to the next. If it fails, the old canvas takes over. Loop strip along the bottom, question mode, finale with measured figures, `m` = calm.
 - **Spreadsheet** `data/model/NVDA_DCF.xlsx` (`npm run xlsx`), checked against the app on every gate run. AUDIT.md, DEFEND.md, MODEL.md in `docs/financials/`.

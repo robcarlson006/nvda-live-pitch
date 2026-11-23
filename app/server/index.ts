@@ -226,7 +226,12 @@ if (prod) {
   frontend = vite.middlewares;
 }
 
+const backupDeck = (await import('sirv')).default(path.resolve(root, '../fallback'), { dev: true }); // the static backup deck (npm run fallback), one key away on the stage
 const server = http.createServer((req, res) => {
+  if (req.url?.startsWith('/backup/')) {
+    req.url = req.url.slice('/backup'.length);
+    return backupDeck(req, res);
+  }
   if (req.url === '/api/datasets') {
     res.setHeader('content-type', 'application/json');
     return res.end(JSON.stringify(Object.fromEntries(datasets)));

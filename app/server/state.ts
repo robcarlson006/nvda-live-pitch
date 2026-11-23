@@ -94,7 +94,7 @@ export function relocate(state: ShowState, spine: SpineSlide[]): Pick<ShowState,
 }
 
 export function emptyState(): ShowState {
-  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false, follow: 'live', seen: [], words: 0, startedAt: 0, approveTangents: false, glow: null };
+  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, backup: false, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false, follow: 'live', seen: [], words: 0, startedAt: 0, approveTangents: false, glow: null };
 }
 
 export function loadState(): ShowState {
@@ -296,6 +296,8 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
       return show(state, spine[msg.index], msg.index); // explicit jumps may land on a skipped slide
     case 'autoCue':
       return { ...state, autoCue: msg.on, heard: '', consumed: 0 };
+    case 'backup':
+      return { ...state, backup: msg.on };
     case 'skip': {
       const slide = spine.find((s) => s.id === msg.id);
       if (!slide?.optional) return `"${msg.id}" is not an optional slide`;

@@ -141,6 +141,7 @@ export type ShowState = {
   liveSince: number; // bumps whenever a new slide goes live, so the stage rebuilds from scratch
   history: Slide[];
   autoCue: boolean;
+  backup: boolean; // the stage shows the static backup deck instead of the live scenes
   heard: string; // speech since the last cue fired (normalised words)
   consumed: number; // words of the in-progress (interim) utterance already used by a cue
   lastCue: { phrase: string; target: string; at: number } | null;
@@ -173,6 +174,7 @@ export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('goto'), index: z.number().int() }),
   z.object({ type: z.literal('transcript'), text: z.string().max(2000), final: z.boolean() }),
   z.object({ type: z.literal('autoCue'), on: z.boolean() }),
+  z.object({ type: z.literal('backup'), on: z.boolean() }),
   z.object({ type: z.literal('skip'), id: z.string(), on: z.boolean() }),
   z.object({ type: z.literal('rehearsal'), action: z.enum(['start', 'stop']) }),
   z.object({ type: z.literal('question'), action: z.enum(['start', 'answer', 'cancel']) }),

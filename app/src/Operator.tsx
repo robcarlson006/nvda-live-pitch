@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { elementCount, isUnverified, resolveText, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { pace, panicMessages } from '../shared/pace.ts';
+import { useAutoplay } from './autoplay.ts';
 import { LivePanel } from './LivePanel.tsx';
 import { demoSlides } from './demoSlides.ts';
 import { useSpeech, type Engine } from './useSpeech.ts';
@@ -88,6 +89,13 @@ export function Operator() {
   const [said, setSaid] = useState('');
   const mic = useSpeech((text, final) => send({ type: 'transcript', text, final }));
   useNavKeys(send, state, pending);
+  const [auto, setAuto] = useState(false);
+  const wasFollowing = useRef(true);
+  const stopAuto = () => {
+    setAuto(false);
+    send({ type: 'autoCue', on: wasFollowing.current });
+  };
+  useAutoplay(auto, state, spine, send, stopAuto);
 
   // Tell the server (and so the stage) what the microphone is doing, and how loud the room is.
   const sendRef = useRef(send);
@@ -154,8 +162,23 @@ export function Operator() {
             Next
           </button>
           <button onClick={() => send({ type: 'clear' })}>Standby</button>
-          <button className="primary" title="Esc or P" onClick={() => panicMessages().forEach(send)}>Panic: stop following, standby (Esc)</button>
-          <div className="op-meta">Keys: → or Space next, ← back</div>
+          <button className="primary" title="Esc" onClick={() => panicMessages().forEach(send)}>Panic: stop following, standby (Esc)</button>
+          <button
+            className={auto ? 'primary' : ''}
+            title="Plays every beat of the script by itself in about nine minutes. Speech following is paused while it runs."
+            onClick={() => {
+              if (auto) return stopAuto();
+              wasFollowing.current = state?.autoCue ?? true;
+              send({ type: 'autoCue', on: false });
+              setAuto(true);
+            }}
+          >
+            {auto ? 'Stop auto-play' : 'Auto-play (9 min)'}
+          </button>
+          <button className={state?.backup ? 'primary' : ''} onClick={() => send({ type: 'backup', on: !state?.backup })}>{state?.backup ? 'Backup deck is ON (B)' : 'Backup deck (B)'}</button>
+          <div className="op-meta op-keys">
+            <b>Keys</b> · Space / → next beat · Backspace / ← back · N next slide · P previous slide · B backup deck · F freeze speech (follow off/on) · Q question · A / X approve / reject · R resume · Esc panic
+          </div>
         </div>
       </section>
 

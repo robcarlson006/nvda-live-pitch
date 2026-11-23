@@ -17,7 +17,8 @@
     "xlsx": "tsx scripts/xlsx.ts",
     "xlsx-check": "tsx scripts/xlsx-check.ts",
     "fallback": "tsx scripts/fallback.ts",
-    "check": "bash ../loop/check.sh"
+    "check": "bash ../loop/check.sh",
+    "price": "tsx scripts/set-price.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.12.0",

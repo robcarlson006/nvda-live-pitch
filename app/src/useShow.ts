@@ -76,14 +76,20 @@ export function useNavKeys(send: (m: ClientMsg) => void, state: ShowState | null
       const t = e.target as HTMLElement;
       if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || e.metaKey || e.ctrlKey) return;
       if (['ArrowRight', 'PageDown', ' '].includes(e.key)) send({ type: 'next' });
-      else if (['ArrowLeft', 'PageUp'].includes(e.key)) send({ type: 'back' });
+      else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) send({ type: 'back' });
       else if (e.repeat) return;
+      else if (e.key === 'n' || e.key === 'p') {
+        // N / P: whole slides, whatever has been built
+        const to = (state?.index ?? -1) + (e.key === 'n' ? 1 : -1);
+        if (to >= 0) send({ type: 'goto', index: to });
+      } else if (e.key === 'b') send({ type: 'backup', on: !state?.backup });
+      else if (e.key === 'f') send({ type: 'autoCue', on: !(state?.autoCue ?? true) }); // freeze: speech stops moving the deck
       else if (e.key === 'q') send({ type: 'question', action: state?.mode === 'question' ? 'answer' : 'start' });
       else if (pending && (e.key === 'a' || e.key === 'x')) send({ type: 'tangent', action: e.key === 'a' ? 'show' : 'block' });
       else if (e.key === 'a' && state?.drafts[0]) send({ type: 'draft', action: 'show', id: state.drafts[0].id });
       else if (e.key === 'x' && state?.drafts[0]) send({ type: 'draft', action: 'reject', id: state.drafts[0].id });
       else if (e.key === 'r') send({ type: 'resume' });
-      else if (e.key === 'Escape' || e.key === 'p') panicMessages().forEach(send); // panic: stop following speech, standby screen
+      else if (e.key === 'Escape') panicMessages().forEach(send); // panic: stop following speech, standby screen
       else return;
       e.preventDefault();
     };

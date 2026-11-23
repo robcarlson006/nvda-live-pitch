@@ -58,6 +58,10 @@ export function Stage() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // One key on the operator view (B) swaps in the static backup deck: pictures of every slide, no animation, nothing to go wrong.
+  if (state?.backup)
+    return <iframe title="Backup deck" src={`/backup/index.html#${Math.max(0, state.index + 1)}`} style={{ position: 'fixed', inset: 0, width: '100vw', height: '100vh', border: 0, background: '#000' }} />;
+
   // Scripted slides of script v4 have their own scene (app/src/stage). Everything else (standby, Q&A, off-script) keeps the old stage.
   if (slide && hasScene(slide) && !asking && state)
     return (
