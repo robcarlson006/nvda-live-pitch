@@ -9,6 +9,7 @@
     "test": "node --import tsx --test server/*.test.ts scripts/*.test.ts shared/*.test.ts",
     "typecheck": "tsc --noEmit",
     "data": "tsx scripts/build-data.ts && tsx scripts/research-data.ts && tsx scripts/model.ts",
+    "voice": "tsx scripts/voice-run.ts",
     "shoot": "tsx scripts/shoot.ts",
     "filmstrip": "tsx scripts/filmstrip.ts",
     "smoke": "tsx scripts/smoke.ts",

@@ -149,7 +149,7 @@
   speaker: Panshul
   scene: forecast
   layout: statement
-  cues: [analysts expect sales of four hundred and twenty two billion, four hundred and twenty two billion this year]
+  cues: [analysts expect sales of four hundred and twenty two billion, expect sales of four hundred and twenty two]
   title: What analysts expect
   bullets:
     - text: FY27 consensus revenue
@@ -219,7 +219,7 @@
   speaker: "Mi'kael"
   scene: bear
   layout: statement
-  cues: [as panshul said, if ai spending slows, a share is worth thirty one dollars]
+  cues: [as panshul said, as panshul said if ai spending slows, panshul said a share is worth thirty one dollars]
   title: If AI spending slows
   bullets:
     - text: The one number
@@ -250,7 +250,7 @@
   speaker: "Mi'kael"
   scene: race
   layout: statement
-  cues: [the second reason is that no government can afford to stop, no government can afford to stop, reason two]
+  cues: [the second reason is that no government can afford to stop, no government can afford to stop, the second reason is]
   title: "Reason two: the AI race."
   bullets:
     - text: "United States|“To remain the leading economic and military power, the United States must win the AI race.” David Sacks, White House AI adviser, July 2025"

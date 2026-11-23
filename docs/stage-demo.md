@@ -44,3 +44,11 @@ npm run price -- <price>    # update today's share price; the valuation bars mov
 - **NVIDIA logo:** the finale uses the PNG Rob supplied (`app/public/nvidia-logo.png`, 600 px wide, so slightly soft on a 4K projector).
 - The slide "Implied" shows $2.1 trillion for FY32 (the model's number); the script says "about two trillion".
 - Governance (slide 21) has no figures, so no source line; its facts are in `docs/research/huang-reinstatement.md`.
+
+## Voice rehearsal (no people needed)
+```bash
+npm run voice                 # a computer voice reads the whole script; words reach the show like speech-to-text; ~10 min
+npm run voice -- --play       # same, out loud, so you can watch the stage build with it
+npm run voice -- --slides margins,forecast
+```
+Writes `rehearsal/voice-<time>/voice-report.md` (what built, when, and which slides misfired) and a photo per beat. It tests the cue-word fallback on a throwaway server with no API keys, so it cannot spend money.
