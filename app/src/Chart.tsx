@@ -64,7 +64,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
             value: v,
             itemStyle: { color: spec.series.length > 1 ? (i === 0 ? GREEN : OTHERS[i - 1]) : barColor(v, j) },
             label: {
-              show: spec.series.length === 1 && (n <= 8 || j === hiIdx || j === 0), // long series: label the first bar (where it started) and the highlight
+              show: spec.series.length === 1 && (n <= 8 || j === hiIdx || j === 0 || j === Math.round((n - 1) / 2) || j === n - 5), // long series: first bar, middle, four years before the end, and the highlight: the climb reads as steps
               position: 'top',
               distance: vh,
               formatter: () => (v == null ? '' : fmt(v)),
