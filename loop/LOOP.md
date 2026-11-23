@@ -110,3 +110,9 @@ What: ... Why: ... Evidence: <path or command output summary> Score: <track> a �
 `loop/BOARD.md` tickets+scores · `loop/STATE.md` log · `loop/NEEDS_ROB.md` decisions · `loop/RUBRIC.md` visual scoring ·
 `loop/check.sh` gate · `loop/clock.sh` clock · `loop/stop-hook.sh` keeps the loop alive · `loop/ACTIVE` deadline (untracked) ·
 `loop/shots/` screenshots (untracked) · `loop/eval-spend.json` your API budget (untracked).
+
+## Usage-limit pause (done by the hook, not by you)
+`loop/statusline.sh` saves the plan-usage numbers; at `LIMIT_PCT` (95%) of the 5-hour limit the Stop hook pauses the session (it just
+waits), resumes after the window resets and `RESUME_EPOCH` (23:00), and extends the deadline by `EXTEND_MIN`. When you wake from a pause the
+hook says so and `STATE.md` has a "usage pause" entry. Re-read the files, then continue. If you ever see "limit reached" errors, don't loop
+on them: finish the current commit state cleanly (gate green, STATE.md updated) so a pause or stop loses nothing. Don't edit ACTIVE yourself.

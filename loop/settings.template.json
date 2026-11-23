@@ -103,10 +103,19 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR/loop/stop-hook.sh\""
+            "command": "bash \"$CLAUDE_PROJECT_DIR/loop/stop-hook.sh\"",
+            "timeout": 21600
           }
         ]
       }
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"${CLAUDE_PROJECT_DIR:-.}/loop/statusline.sh\""
+  },
+  "model": "sonnet",
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
   }
 }

@@ -12,5 +12,7 @@ It's the overnight loop for our NVIDIA stock pitch. You're running until the dea
 4. Anything I need to decide goes in `loop/NEEDS_ROB.md`: pick a sensible default and keep going.
 5. In the last ~30 minutes follow the wrap-up checklist in LOOP.md and finish with `loop/MORNING.md`.
 
+Note: near my usage limit the Stop hook pauses you by itself and wakes you at 23:00 with a longer deadline; when that happens re-read your files and carry on. Keep every commit state clean so a pause costs nothing.
+
 Don't recap the plan back to me; just start.
 ---

@@ -2,15 +2,16 @@
 # Arms the overnight loop. Run ONCE from the main pitch folder:
 #     bash loop/arm.sh --checkpoint            # deadline 23:55 tonight
 #     bash loop/arm.sh --checkpoint --until 23:30
+#     bash loop/arm.sh --resume-at 23:00 --limit 95   # pause at 95% of the 5-hour usage limit, resume 23:00 (defaults)
 #     bash loop/arm.sh --dry-run               # show what it would do, change nothing
 # It: (1) commits your current work as a checkpoint (needs --checkpoint if the tree is dirty),
 #     (2) makes a separate git worktree on a new branch OUTSIDE iCloud, so this folder stays untouched and demo-able,
 #     (3) copies node_modules (APFS clone, no extra disk) and app/.env into it,
 #     (4) installs the permissions + Stop hook there, and writes loop/ACTIVE with the deadline.
 set -euo pipefail
-CHECKPOINT=0; DRY=0; UNTIL="23:55"; WRAP_MIN=30
+CHECKPOINT=0; DRY=0; UNTIL="23:55"; WRAP_MIN=30; RESUME="23:00"; EXTEND_MIN=120; LIMIT_PCT=95
 while [ $# -gt 0 ]; do case "$1" in
-  --checkpoint) CHECKPOINT=1;; --dry-run) DRY=1;; --until) UNTIL="$2"; shift;;
+  --checkpoint) CHECKPOINT=1;; --dry-run) DRY=1;; --until) UNTIL="$2"; shift;; --resume-at) RESUME="$2"; shift;; --limit) LIMIT_PCT="$2"; shift;;
   *) echo "unknown option $1"; exit 1;; esac; shift; done
 MAIN="$(cd "$(dirname "$0")/.." && pwd)"; cd "$MAIN"
 DAY="$(date +%Y-%m-%d)"; BRANCH="loop/$DAY"; WT="${LOOP_WORKTREE:-$HOME/Developer/nvidia-pitch-loop}"
@@ -25,8 +26,10 @@ git show-ref --verify --quiet "refs/heads/$BRANCH" && { say "Branch $BRANCH alre
 read -r DL WR < <(node -e '
   const [h,m]=process.argv[1].split(":").map(Number); const d=new Date(); d.setHours(h,m,0,0);
   const dl=Math.floor(d/1000); console.log(dl, dl-Number(process.argv[2])*60);' "$UNTIL" "$WRAP_MIN")
+RES=$(node -e 'const [h,m]=process.argv[1].split(":").map(Number); const d=new Date(); d.setHours(h,m,0,0); console.log(Math.floor(d/1000));' "$RESUME")
 NOW=$(date +%s); [ "$DL" -gt "$NOW" ] || { say "Deadline $UNTIL is already past."; exit 1; }
 say "Deadline $UNTIL local ($(( (DL-NOW)/60 )) min from now); wrap-up starts $WRAP_MIN min before."
+say "At ${LIMIT_PCT}% of your 5-hour usage limit the loop pauses itself, resumes at $RESUME (or when the limit resets, if later) and extends the deadline by $EXTEND_MIN min."
 
 if [ -n "$(git status --porcelain)" ]; then
   say "Uncommitted work in $MAIN:"; git status --short | sed 's/^/    /'
@@ -45,7 +48,7 @@ if [ $DRY -eq 0 ]; then
   [ -f "$MAIN/app/.env" ] && { cp "$MAIN/app/.env" "$WT/app/.env"; chmod 600 "$WT/app/.env"; }
   mkdir -p "$WT/.claude"; cp "$WT/loop/settings.template.json" "$WT/.claude/settings.local.json"
   EXC="$(git -C "$WT" rev-parse --git-path info/exclude)"; case "$EXC" in /*) ;; *) EXC="$WT/$EXC";; esac
-  printf '%s\n' '.claude/settings.local.json' 'loop/ACTIVE' 'loop/STOP' 'loop/.blocks' 'loop/shots/' 'loop/eval-spend.json' >> "$EXC"
+  printf '%s\n' '.claude/settings.local.json' 'loop/ACTIVE' 'loop/STOP' 'loop/.blocks' 'loop/shots/' 'loop/eval-spend.json' 'loop/usage.json' 'loop/usage.json.tmp' 'loop/PAUSED' 'loop/ACTIVE.tmp' >> "$EXC"
   cat > "$WT/loop/ACTIVE" <<ACT
 BASE=$BASE
 BRANCH=$BRANCH
@@ -53,6 +56,9 @@ START_EPOCH=$NOW
 WRAPUP_EPOCH=$WR
 DEADLINE_EPOCH=$DL
 MAX_BLOCKS=300
+RESUME_EPOCH=$RES
+EXTEND_MIN=$EXTEND_MIN
+LIMIT_PCT=$LIMIT_PCT
 ACT
 else
   say "  would copy node_modules + app/.env, install settings + Stop hook, write loop/ACTIVE in $WT"
