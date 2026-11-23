@@ -196,3 +196,20 @@ test('private lives and gossip are never shown; long facts keep their first sent
   const long = 'The board announced that the chief executive resigned, effective immediately. ' + 'And then it carried on at great length about the process. '.repeat(4);
   assert.equal(shorten(long), 'The board announced that the chief executive resigned, effective immediately.');
 });
+
+test('claims in titles and bullets must be shown by the chart data, else neutral title / bullet dropped', async () => {
+  const { unsupportedClaim } = await import('./ai.ts');
+  const ds = new Map([
+    ['t', { key: 't', title: 'Neutral dataset title', unit: 'USD', source: 's', asOf: '2026-01-01', placeholder: false, x: ['A', 'B', 'C'], series: { S: [10, 20, 30] } }],
+    ['d', { key: 'd', title: 'Falling', unit: 'USD', source: 's', asOf: '2026-01-01', placeholder: false, x: ['A', 'B', 'C'], series: { S: [30, 20, 10] } }],
+  ]) as unknown as Map<string, import('../shared/schema.ts').Dataset>;
+  const sl = (key: string, type: 'line' | 'bar', highlight?: string) => ({ id: 'x', layout: 'split', title: '', bullets: [], chart: { type, datasetKey: key, series: ['S'], ...(highlight ? { highlight } : {}) }, sources: [] }) as unknown as Slide;
+  assert.equal(unsupportedClaim('Sales grew steadily', sl('t', 'line'), ds), false);
+  assert.equal(unsupportedClaim('Sales grew steadily', sl('d', 'line'), ds), true, 'grew on a falling line');
+  assert.equal(unsupportedClaim('Sales fell', sl('d', 'line'), ds), false);
+  assert.equal(unsupportedClaim('NVIDIA has the highest figure', sl('t', 'bar', 'C'), ds), false);
+  assert.equal(unsupportedClaim('NVIDIA has the highest figure', sl('t', 'bar', 'A'), ds), true, 'highest, but highlight is the lowest');
+  assert.equal(unsupportedClaim('Intel looks cheaper on some measures', sl('t', 'bar', 'A'), ds), true, 'a comparison we cannot check');
+  assert.equal(unsupportedClaim('Revenue by segment', sl('t', 'bar', 'A'), ds), false, 'no claim');
+  assert.equal(unsupportedClaim('Sales grew', { ...sl('t', 'line'), chart: undefined } as Slide, ds), false, 'no chart: nothing to check against');
+});

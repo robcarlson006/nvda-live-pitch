@@ -62,6 +62,34 @@ ${script}`;
 
 const NUMBER_WORDS = /\b(hundreds?|thousands?|millions?|billions?|trillions?|per ?cent|half|halved|double[ds]?|doubling|triple[ds]?|quadrupled?|twice|dozens?|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|two[- ]thirds|a third|a quarter of|tenfold|\w+fold)\b/i;
 
+const UP = /\b(grew|grow(?:s|n|ing)?|rose|rises?|rising|increas\w*|climb\w*|surg\w*|soar\w*)\b/i;
+const DOWN = /\b(fell|falls?|falling|drop\w*|declin\w*|shr[au]nk|shrink\w*|reduc\w*|decreas\w*|plung\w*)\b/i;
+const MOST = /\b(highest|most|largest|biggest|leads?|tops?)\b/i;
+const LEAST = /\b(lowest|least|smallest|cheapest|fewest)\b/i;
+const VAGUE = /\b(cheaper|pricier|more expensive|higher than|lower than|better than|worse than|outperform\w*|beats?|ahead of|behind|faster|slower|less than|more than|more|less|fewer)\b/i;
+
+/** Whether a title/bullet claims something (direction, rank, comparison) that the chart's own values do not show. Checkable claims are checked; comparisons we can't check count as unsupported. */
+export function unsupportedClaim(text: string, slide: Slide, datasets: Map<string, Dataset>): boolean {
+  const t = text.replace(/\{\{.*?\}\}/g, ' ');
+  const claims = [UP, DOWN, MOST, LEAST, VAGUE].some((re) => re.test(t));
+  if (!claims || !slide.chart) return false;
+  const ds = datasets.get(slide.chart.datasetKey);
+  const vals = ds?.series[slide.chart.series[0]];
+  if (!ds || !vals) return true;
+  const [a, b] = slide.chart.range ? [ds.x.indexOf(slide.chart.range[0]), ds.x.indexOf(slide.chart.range[1])] : [0, ds.x.length - 1];
+  const v = vals.slice(Math.max(0, a), b + 1).filter((n): n is number => n != null);
+  if (v.length < 2) return true;
+  const line = slide.chart.type === 'line';
+  if (VAGUE.test(t) && !(UP.test(t) || DOWN.test(t) || MOST.test(t) || LEAST.test(t))) return true;
+  if (VAGUE.test(t) && !line) return true;
+  if (UP.test(t) && !(line && v.at(-1)! > v[0])) return true;
+  if (DOWN.test(t) && !(line && v.at(-1)! < v[0])) return true;
+  const hi = slide.chart.highlight ? vals[ds.x.indexOf(slide.chart.highlight)] : v.at(-1);
+  if (MOST.test(t) && !(hi != null && hi >= Math.max(...v))) return true;
+  if (LEAST.test(t) && !(hi != null && hi <= Math.min(...v))) return true;
+  return false;
+}
+
 /** Reply → Slide, or a string saying why it can't be shown. */
 export function toSlide(r: Reply, datasets: Map<string, Dataset>, id: string): Slide | string {
   const chart = r.layout === 'split' || r.layout === 'chart' ? r.chart : null;
@@ -101,6 +129,9 @@ export function toSlide(r: Reply, datasets: Map<string, Dataset>, id: string): S
     const m = bare.match(NUMBER_WORDS);
     if (m) return `"${m[0]}" is a number written in words in "${t}". Use {{dataset | series | x}} or leave it out`;
   }
+  // A claim the data doesn't show never reaches the screen: neutral title (the dataset's own), unsupported bullets dropped.
+  if (unsupportedClaim(slide.title, slide, datasets)) slide.title = datasets.get(slide.chart!.datasetKey)?.title ?? slide.title;
+  slide.bullets = slide.bullets.filter((b) => !unsupportedClaim(b, slide, datasets));
   return slide;
 }
 
