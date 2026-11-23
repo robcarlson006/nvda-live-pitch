@@ -55,7 +55,17 @@ body.is-stage { overflow: hidden; cursor: none; }
 .placeholder { color: var(--black); background: #e8b04a; padding: calc(0.2 * var(--u)) 0.6vw; border-radius: 2px; font-weight: 600; }
 .sources { position: absolute; left: var(--margin); right: var(--margin); bottom: calc(5.2 * var(--u)); font-size: calc(2.1 * var(--u)); color: #b4b9ae; }
 
-@media (prefers-reduced-motion: reduce) { .reveal, .word { animation: none; } }
+/* Anticipation: the next point shows faintly, out of focus, as it is being said, then lands from there. Slow breathing, never a flash. */
+.ghost { color: var(--green, #76b900); pointer-events: none; opacity: 0; animation: ghost-in 0.35s ease-out both, ghost-breathe 2.4s ease-in-out 0.35s infinite; }
+.ghost.g1 { --peak: 0.34; filter: blur(4px); }
+.ghost.g2 { --peak: 0.6; filter: blur(1.5px); }
+@keyframes ghost-in { to { opacity: var(--peak); } }
+@keyframes ghost-breathe { 50% { opacity: calc(var(--peak) * 1.5); } }
+.from-ghost { animation-name: wipe-from-ghost; }
+@keyframes wipe-from-ghost { from { clip-path: inset(-10% 100% -10% 0); opacity: 0.4; } to { clip-path: inset(-10% -2% -10% 0); opacity: 1; } }
+.ghost-line { position: absolute; left: 0; right: 0; bottom: calc(1.6 * var(--u)); text-align: center; font-size: calc(1.9 * var(--u)); color: rgba(255, 255, 255, 0.28); letter-spacing: 0.02em; pointer-events: none; }
+.calm .ghost { animation: none; opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .reveal, .word, .ghost { animation: none; } .ghost { opacity: 0; } }
 
 /* ---------- Operator ---------- */
 body.is-operator { font-size: 15px; }

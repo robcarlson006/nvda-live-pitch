@@ -2,6 +2,7 @@
  * Filmstrip: motion on one page. For a slide, 6 frames across the build (about 1.5 s), tiled into ONE png.
  *   npm run filmstrip -- cuda                 -> loop/shots/film/cuda-film.png (3x2, 1600 px wide)
  *   npm run filmstrip -- cuda,bubble --out loop/shots/r2 --frames 6 --gap 260 --size 1280x720 --label before
+ * With --say "words…" the frames are speech instead of Next: the words arrive a few at a time as interim results (shows the pre-glow and the cue landing).
  * Frame k is taken `gap` ms after the k-th Next (elements land one at a time, as a cue would send them); frame 0 is the slide arriving.
  * Each tile is stamped with the milliseconds since the slide change. Uses only the installed Chrome (also to tile): no extra packages.
  */
@@ -44,10 +45,14 @@ async function main() {
       srv.send({ type: 'goto', index: i });
       const t0 = Date.now();
       await sleep(gap);
+      const say = opt('say')?.split(/\s+/);
+      const per = say ? Math.ceil(say.length / frames) : 0;
       const shots: { png: Buffer; label: string }[] = [];
       for (let k = 0; k < frames; k++) {
-        if (k > 0 && k <= n) srv.send({ type: "next" }); // never past the last element: that would change slide
+        if (say) srv.send({ type: 'transcript', text: say.slice(0, Math.min(say.length, (k + 1) * per)).join(' '), final: false }); // speech arrives a few words at a time
+        else if (k > 0 && k <= n) srv.send({ type: 'next' }); // never past the last element: that would change slide
         await sleep(gap);
+        if (opt('debug')) console.log(k, 'ghosts', await page.locator('.ghost').count(), JSON.stringify(srv.box.state?.glow), srv.box.state?.reveal);
         const png = await page.screenshot();
         shots.push({ png, label: `${id} +${Date.now() - t0}ms · el ${Math.min(k, n)}/${n}` });
       }

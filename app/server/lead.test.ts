@@ -48,3 +48,16 @@ test('lead: never builds past the last element and never un-builds', () => {
   assert.equal(leadScore(['taiwan'], sl, 0, spine), 0, 'one word is never enough');
   assert.ok(LEAD_REVEAL >= 0.4, 'threshold is not loosened below what was measured');
 });
+
+test('glow: speech arriving word by word lights the next element before it lands; glow never dims', () => {
+  const s0 = live('supply');
+  const words = "one company TSMC in Taiwan makes nine in ten of the world's top chips".split(' ');
+  let s = s0, lit = -1, landed = -1, last = 0;
+  words.forEach((_, k) => {
+    s = feed(s, words.slice(0, k + 1).join(' '));
+    const g = s.glow && s.glow.since === s.liveSince && s.glow.at === s.reveal ? s.glow.v : 0;
+    if (s.reveal === s0.reveal) { assert.ok(g >= last, 'never dims'); last = g; if (g > 0 && lit < 0) lit = k; }
+    if (s.reveal > s0.reveal && landed < 0) landed = k;
+  });
+  assert.ok(lit >= 0 && landed >= 0 && lit < landed, `glowed at word ${lit}, landed at word ${landed}`);
+});

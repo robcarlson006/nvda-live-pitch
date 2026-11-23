@@ -155,6 +155,7 @@ export type ShowState = {
   words: number; // words heard since the pitch began, for the finale
   startedAt: number; // when the first slide went up, or 0
   approveTangents: boolean; // live mode: wait for a tap before a tangent slide goes up
+  glow: { since: number; at: number; v: 1 | 2 } | null; // the next element is becoming likely (1) or nearly said (2): the stage pre-glows it. Only valid while liveSince and reveal still equal since and at
 };
 
 /** What the operator panel shows about Claude. Not saved with the show. */

@@ -9,7 +9,8 @@ import { idfOf, terms } from './evidence.ts';
  * The score is the share of the signature's weight heard in the last few words: 0 = nothing, 1 = all of it.
  */
 export const LEAD_REVEAL = Number(process.env.LEAD_T ?? 0.5); // reveal at this share
-export const LEAD_GLOW = 0.25; // the element is becoming likely: the stage can pre-glow it
+export const LEAD_GLOW = 0.15; // the element is becoming likely: the stage can pre-glow it (one telling word is enough)
+export const LEAD_NEAR = 0.3; // nearly said: brighter
 const RECENT = 16; // words that count
 
 type Sig = Map<string, number>;
@@ -47,11 +48,11 @@ function signatures(s: SpineSlide, spine: SpineSlide[]): Sig[] {
 }
 
 /** 0..1: how much of element `j` (0 = the first bullet) of this slide was said in the last few words of `heard`. */
-export function leadScore(heard: string[], s: SpineSlide, j: number, spine: SpineSlide[]): number {
+export function leadScore(heard: string[], s: SpineSlide, j: number, spine: SpineSlide[], minWords = 2): number {
   const sig = signatures(s, spine)[j];
   if (!sig || !sig.size) return 0;
   const said = new Set(terms(heard.slice(-RECENT).join(' ')));
   let got = 0, all = 0, n = 0;
   for (const [t, w] of sig) (all += w), said.has(t) && ((got += w), n++);
-  return n >= 2 ? got / all : 0;
+  return n >= minWords ? got / all : 0;
 }

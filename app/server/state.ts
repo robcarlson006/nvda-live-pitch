@@ -4,7 +4,7 @@ import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
 import { ClientMsg, Dataset, elementCount, lookup, resolveText, SpineSlide, tokenRefs, type Draft, type Rehearsal, type RunEntry, type ShowState, type Slide } from '../shared/schema.ts';
 import { findCue, words, type Candidate } from './cues.ts';
-import { LEAD_REVEAL, leadScore } from './lead.ts';
+import { LEAD_GLOW, LEAD_NEAR, LEAD_REVEAL, leadScore } from './lead.ts';
 
 export const DATA_DIR = path.resolve(import.meta.dirname, '../../data/clean');
 export const SPINE_FILE = path.resolve(import.meta.dirname, '../../docs/script/spine.yaml');
@@ -94,7 +94,7 @@ export function relocate(state: ShowState, spine: SpineSlide[]): Pick<ShowState,
 }
 
 export function emptyState(): ShowState {
-  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false, follow: 'live', seen: [], words: 0, startedAt: 0, approveTangents: false };
+  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false, follow: 'live', seen: [], words: 0, startedAt: 0, approveTangents: false, glow: null };
 }
 
 export function loadState(): ShowState {
@@ -239,9 +239,18 @@ function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[
       used = buf.length;
     }
   }
+  // Anticipation: tell the stage when the next element is becoming likely, so it can glow just before it lands.
+  let glow = s.glow;
+  if (state.autoCue && s.mode === 'script' && s.index >= 0 && s.live?.id === spine[s.index]?.id && s.reveal < elementCount(s.live)) {
+    const sc = leadScore(buf.slice(used), spine[s.index], s.reveal - 1, spine, 1);
+    const v = sc >= LEAD_NEAR ? 2 : sc >= LEAD_GLOW ? 1 : 0;
+    const same = glow && glow.since === s.liveSince && glow.at === s.reveal;
+    if (v > (same ? glow!.v : 0)) glow = { since: s.liveSince, at: s.reveal, v: v as 1 | 2 }; // only ever brighter for this element
+  }
+  if (glow !== s.glow) s = { ...s, glow };
   if (final) return { ...s, heard: buf.slice(used).slice(-40).join(' '), consumed: 0 };
   // Interim: its words arrive again in the final result, so only record what was used.
-  if (used === 0) return state; // nothing fired: no change, so no broadcast or disk write for every partial result
+  if (used === 0) return glow !== state.glow ? { ...state, glow } : state; // nothing fired: no change, so no broadcast or disk write for every partial result
   if (used <= prior.length) return { ...s, heard: prior.slice(used).join(' '), consumed: state.consumed };
   return { ...s, heard: '', consumed: state.consumed + used - prior.length };
 }

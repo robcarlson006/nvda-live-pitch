@@ -1,4 +1,4 @@
-import { Component, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { Component, useEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { elementCount, lookup, resolveText, slideSources, tokenRefs, type Dataset, type Slide, type SpineSlide } from '../shared/schema.ts';
 import { Chart } from './Chart.tsx';
 import { Field } from './cores/Field.tsx';
@@ -31,6 +31,7 @@ class Safe extends Component<{ children: ReactNode; at: number }, { bad: number 
 
 export function Stage() {
   const { state, send, spine, ai, pending, live } = useShow();
+  const [ghostLine, setGhostLine] = useState(false); // key t: the last words heard, faint at the bottom. Off unless asked.
   const [calm, setCalm] = useState(() => matchMedia('(prefers-reduced-motion: reduce)').matches);
   const datasets = useDatasets();
   useNavKeys(send, state, pending);
@@ -49,6 +50,7 @@ export function Stage() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'm') setCalm((c) => !c);
+      if (e.key === 't') setGhostLine((g) => !g);
       if (e.key === 'f') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
     };
     window.addEventListener('keydown', onKey);
@@ -63,7 +65,7 @@ export function Stage() {
           <h1 className="statement"><span className="word" style={{ '--at': '0.1s' } as CSSProperties}>{asking}</span></h1>
         </main>
       ) : (
-        slide && <Safe at={state!.liveSince}><SlideView key={state!.liveSince} slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} /></Safe>
+        slide && <Safe at={state!.liveSince}><SlideView key={state!.liveSince} slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} glow={state!.glow && state!.glow.since === state!.liveSince && state!.glow.at === state!.reveal ? state!.glow.v : 0} /></Safe>
       )}
       {slide?.effect === 'compare' && slide.stat && !asking && (
         <>
@@ -78,9 +80,20 @@ export function Stage() {
           {state.startedAt > 0 && state.liveSince - state.startedAt > 60_000 && <span><b>{Math.round((state.liveSince - state.startedAt) / 60_000)}</b> {Math.round((state.liveSince - state.startedAt) / 60_000) === 1 ? 'minute' : 'minutes'}</span>}
         </div>
       )}
+      {ghostLine && !calm && <GhostLine live={live} />}
       {slide && <LoopStrip spine={spine} seen={state!.seen} current={slide.id} />}
     </div>
   );
+}
+
+/** Key t: the words the microphone just heard, faint, so a room can see that the deck is listening. Off by default; m (calm) hides it. */
+function GhostLine({ live }: { live: RefObject<{ hearing: string }> }) {
+  const [text, setText] = useState('');
+  useEffect(() => {
+    const t = setInterval(() => setText(live.current?.hearing.split(/\s+/).slice(-9).join(' ') ?? ''), 300);
+    return () => clearInterval(t);
+  }, [live]);
+  return text ? <div className="ghost-line" aria-hidden>{text}</div> : null;
 }
 
 /** The loop pedal: every slide shown so far leaves a layer here, as tall as the number of things built on it. */
@@ -124,7 +137,7 @@ function Delayed({ at, children }: { at: number; children: ReactNode }) {
   return ready ? <>{children}</> : null;
 }
 
-function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: number; datasets: Record<string, Dataset>; figure?: string }) {
+function SlideView({ slide, reveal, datasets, figure, glow = 0 }: { slide: Slide; reveal: number; datasets: Record<string, Dataset>; figure?: string; glow?: number }) {
   // Elements: 0 = title, 1..n = bullets, n+1 = chart. Those revealed in the same step are staggered.
   const prev = useRef(0);
   const batchStart = prev.current;
@@ -133,6 +146,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   });
   const at = (k: number) => (batchStart === 0 ? (k === 0 ? TITLE_AT : 0.5 + k * GAP) : 0.1 + (k - batchStart) * GAP);
   const shown = (k: number) => k < reveal;
+  const ghosted = useRef(-1); // the bullet that glowed before it landed: it lands from the glow, not from nothing
 
   const dataset = slide.chart ? datasets[slide.chart.datasetKey] : undefined;
   const chartIdx = 1 + slide.bullets.length;
@@ -158,10 +172,13 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
     <div className="points">
       {slide.bullets.map((b, i) =>
         shown(i + 1) ? (
-          <Reveal key={i} as="p" className="point" at={at(i + 1)}>
+          <Reveal key={i} as="p" className={`point${ghosted.current === i ? ' from-ghost' : ''}`} at={at(i + 1)}>
             {b}
           </Reveal>
         ) : null,
+      )}
+      {glow > 0 && reveal >= 1 && reveal - 1 < slide.bullets.length && (ghosted.current = reveal - 1) >= 0 && (
+        <p className={`point ghost g${glow}`} aria-hidden key={`ghost${reveal}`}>{slide.bullets[reveal - 1]}</p>
       )}
     </div>
   );
