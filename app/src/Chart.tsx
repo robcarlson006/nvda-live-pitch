@@ -5,7 +5,7 @@ import { formatValue, type Dataset, type Slide } from '../shared/schema.ts';
 const GREEN = '#76b900';
 const DIM_GREEN = '#2f4a05';
 const OTHERS = ['#8d9388', '#d9dccf', '#5d6358'];
-const FAINT = '#9aa193';
+const FAINT = '#b4b9ae';
 const FONT = "'Archivo Variable', system-ui, sans-serif";
 
 /** Only the x values from range[0] to range[1], e.g. FY05–FY13. */
@@ -66,7 +66,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
               distance: vh,
               formatter: () => (v == null ? '' : fmt(v)),
               color: j === hiIdx ? '#f4f6f1' : FAINT,
-              fontSize: j === hiIdx ? vh * 4 : vh * 2.6,
+              fontSize: j === hiIdx ? vh * 4 : vh * 3,
               fontWeight: j === hiIdx ? 700 : 500,
               fontFamily: FONT,
             },
@@ -83,7 +83,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
         animationDuration: 2400,
         animationEasing: 'linear',
         // Direct labels at the line ends instead of a legend.
-        endLabel: { show: i === 0 || Math.abs((values.at(-1) ?? 0) - (dataset.series[spec.series[0]].at(-1) ?? 0)) > 0.04 * Math.max(...spec.series.flatMap((n) => dataset.series[n].map((v) => v ?? 0))), formatter: '{a}', color, fontSize: vh * 2.2, fontFamily: FONT, fontWeight: i === 0 ? 650 : 450, distance: vh },
+        endLabel: { show: i === 0 || Math.abs((values.at(-1) ?? 0) - (dataset.series[spec.series[0]].at(-1) ?? 0)) > 0.04 * Math.max(...spec.series.flatMap((n) => dataset.series[n].map((v) => v ?? 0))), formatter: '{a}', color, fontSize: vh * 2.7, fontFamily: FONT, fontWeight: i === 0 ? 650 : 450, distance: vh },
         markPoint:
           i === 0 && hiIdx >= 0
             ? {
@@ -108,7 +108,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
         boundaryGap: isBar,
         axisLine: { show: !isBar, lineStyle: { color: '#262a23' } },
         axisTick: { show: false },
-        axisLabel: { color: FAINT, fontSize: n <= 5 && Math.max(...dataset.x.map((l) => l.length)) <= 10 ? vh * 2.5 : vh * 1.95, overflow: 'break', width: n <= 5 ? el.current!.clientWidth / n - vh : undefined, margin: vh * 1.4, interval: isBar && n <= 14 ? 0 : 'auto' },
+        axisLabel: { color: FAINT, fontSize: n <= 5 && Math.max(...dataset.x.map((l) => l.length)) <= 10 ? vh * 2.9 : vh * 2.4, overflow: 'break', width: n <= 5 ? el.current!.clientWidth / n - vh : undefined, margin: vh * 1.4, interval: isBar && n <= 14 ? 0 : 'auto' },
       },
       yAxis: {
         type: 'value',
@@ -116,7 +116,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
         max: dataset.unit === '%' && !isBar ? 100 : undefined, interval: dataset.unit === '%' && !isBar ? 25 : undefined,
         splitNumber: 3,
         splitLine: { lineStyle: { color: '#1b1f19' } },
-        axisLabel: { color: FAINT, fontSize: vh * 1.9 },
+        axisLabel: { color: FAINT, fontSize: vh * 2.3 },
       },
       // The highlight's label isn't animated by ECharts, so add the highlight once the line has drawn.
       series: series.map((s) => ({ ...s, markPoint: undefined })),

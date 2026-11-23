@@ -53,7 +53,7 @@ body.is-stage { overflow: hidden; cursor: none; }
 .chart figcaption { font-size: calc(2.4 * var(--u)); color: #9aa193; margin-bottom: calc(1.5 * var(--u)); display: flex; gap: 1vw; align-items: center; }
 .chart-body { flex: 1; min-height: 0; }
 .placeholder { color: var(--black); background: #e8b04a; padding: calc(0.2 * var(--u)) 0.6vw; border-radius: 2px; font-weight: 600; }
-.sources { position: absolute; left: var(--margin); right: var(--margin); bottom: calc(5.2 * var(--u)); font-size: calc(1.6 * var(--u)); color: #8d9388; }
+.sources { position: absolute; left: var(--margin); right: var(--margin); bottom: calc(5.2 * var(--u)); font-size: calc(2.1 * var(--u)); color: #b4b9ae; }
 
 @media (prefers-reduced-motion: reduce) { .reveal, .word { animation: none; } }
 
