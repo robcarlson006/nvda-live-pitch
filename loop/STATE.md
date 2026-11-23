@@ -48,3 +48,11 @@ Checked the PDF myself: Bloomberg FA annual p.175 prints Networking 31,376.00 fo
 **5.7/10 average** (revenue-long 5, last-quarter 7, valuation 5, scope3 6, close 6, qa-energy 5), lower than run 1's 6.2: take 5.7. Top faults: (1) source lines, axis labels, bar value labels about 10-12 px grey, unreadable at 10 m; (2) crowded or unlabelled chart ends (qa-energy dashed renewable line has no label; scope3 end label near the edge); (3) wasted layout (dead gap above revenue-long, early bars invisible, close half empty, valuation's off-palette orange and long headline). Stills in `loop/shots/r2`. A stray copy of the shoot output is in `/Users/robmcarlson/Developer/loop/` (the `--out ../loop/...` path resolves outside the worktree; use `--out loop/shots/x`): Rob may delete that folder.
 ## run 2 · 7 · 01:55 · N7 legibility (from review fault 1) · KEPT
 Source lines 1.6u→2.1u and lighter grey; chart axis, bar and line-end labels about 20% bigger and lighter. Looked at valuation and scope3 at 1280x720 (`loop/shots/r2b`): clearly easier to read, no collisions. Score not raised (needs a fresh blind review). Not done: unlabelled renewable line in qa-energy, dead gap above revenue-long, close layout, valuation headline (the headline is Rob's).
+
+## Rob · 01:51 · queue and rules updated
+API cap now $2.50 (cap line in follow-eval.ts edited; commit it with your next commit). Queue is v2 in NEXT.md: cache first, then reactivity (R2-R4), demo by morning (R8). Read CARD.md again: new sections "Done means done", "Demo ready by morning".
+
+## Rob · 01:55 · queue v3
+Added M1 (DCF check, reverse DCF, P/E vs peers with reasoning), M2 (those on stage + valuation Q&A) and C (keep improving all night from evidence, retro every 4th round). Re-read CARD.md and NEXT.md.
+## run 2 · 8 · 02:02 · R0 eval cache · KEPT
+`follow-eval.ts` stores each director answer in `loop/eval-cache/` (hash of the whole request, plus recorded latency so the virtual clock is identical). Evidence: a-full live $0.1467 (197 calls); the same run again: 197 hits, **$0.0000**, identical result (25/27, p50 20, 0 false). Cap 2.5 enforced by `Budget`; total spent $1.272. `NO_CACHE=1` bypasses. Note: `python3` is an empty alias in this shell: use `/opt/homebrew/bin/python3`.

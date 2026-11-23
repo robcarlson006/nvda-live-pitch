@@ -4,12 +4,15 @@
  *   npm run follow-eval -- dev            (rehearsal/evals/dev)      npm run follow-eval -- holdout
  *   ... -- dev --only a-full              one scenario               ... --verbose   every verdict
  *   ... -- dev --skip a-                  all but
- * Spend goes to loop/eval-spend.json (hard cap $3).
+ * Spend goes to loop/eval-spend.json (hard cap $2.50); answers cached in loop/eval-cache.
  */
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import type { ShowState } from '../shared/schema.ts';
 import { Budget } from '../server/budget.ts';
+import Anthropic from '@anthropic-ai/sdk';
+import { env } from '../server/ai.ts';
 import { Director, type DirectorCaller } from '../server/director.ts';
 import { cueSlides, Follow } from '../server/follow.ts';
 import { apply, emptyState, loadDatasets, loadSpine } from '../server/state.ts';
@@ -20,6 +23,37 @@ export type Scenario = { id: string; kind: string; note?: string; wpm?: number; 
 const ROOT = path.resolve(import.meta.dirname, '../..');
 const datasets = loadDatasets();
 const spine = loadSpine(datasets);
+
+/**
+ * Replay cache: a model answer is stored under a hash of (model + whole request) with the latency it took, so the same dev run
+ * a second time costs $0.00 and gives identical results (the virtual clock reuses the recorded latency). NO_CACHE=1 bypasses it.
+ */
+const CACHE_DIR = path.join(ROOT, 'loop/eval-cache');
+export const cacheStats = { hits: 0, misses: 0 };
+function cachedCaller(): { call: DirectorCaller; ms: () => number | null } {
+  let recorded: number | null = null;
+  let live: Anthropic | null = null;
+  const call: DirectorCaller = async (body, signal) => {
+    recorded = null;
+    const key = crypto.createHash('sha256').update(JSON.stringify(body)).digest('hex').slice(0, 40);
+    const file = path.join(CACHE_DIR, `${key}.json`);
+    if (!process.env.NO_CACHE && fs.existsSync(file)) {
+      const hit = JSON.parse(fs.readFileSync(file, 'utf8')) as { ms: number; message: Anthropic.Message };
+      cacheStats.hits++;
+      recorded = hit.ms;
+      return { ...hit.message, usage: { ...hit.message.usage, input_tokens: 0, output_tokens: 0, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 } };
+    }
+    live ??= new Anthropic({ apiKey: env('ANTHROPIC_API_KEY'), baseURL: 'https://api.anthropic.com', maxRetries: 0, timeout: 5_000 });
+    const began = performance.now();
+    const message = await live.messages.create(body, { signal });
+    cacheStats.misses++;
+    fs.mkdirSync(CACHE_DIR, { recursive: true });
+    fs.writeFileSync(file + '.tmp', JSON.stringify({ ms: Math.round(performance.now() - began), message }));
+    fs.renameSync(file + '.tmp', file);
+    return message;
+  };
+  return { call, ms: () => recorded };
+}
 const norm = (w: string) => w.replace(/\s+/g, ' ').trim();
 
 export type Result = {
@@ -55,15 +89,15 @@ export async function replay(sc: Scenario, budget: Budget, call?: DirectorCaller
   const moves: { word: number; to: string; via: string }[] = [];
   const tangents: number[] = [];
   let inflight: { done: number; resolve: () => void } | null = null;
-  const real: DirectorCaller | undefined = call;
-  const director = new Director(budget, real, () => now);
+  const cc = call ? null : cachedCaller();
+  const director = new Director(budget, call ?? cc!.call, () => now);
   // Wrap look(): measure the real wait, and make the virtual clock pass by the same amount before the verdict lands.
   const look = director.look.bind(director);
   director.look = async (...a) => {
     const began = performance.now();
     const p = look(...a);
     const v = await p;
-    const ms = performance.now() - began;
+    const ms = cc?.ms() ?? performance.now() - began;
     calls++;
     latency.push(ms);
     if (!v) errors++;
@@ -153,7 +187,7 @@ async function main() {
   const skip = args.includes('--skip') ? args[args.indexOf('--skip') + 1].split(',') : [];
   const verbose = args.includes('--verbose');
   const dir = path.join(ROOT, 'rehearsal/evals', set);
-  const budget = new Budget(path.join(ROOT, 'loop/eval-spend.json'), 1.5);
+  const budget = new Budget(path.join(ROOT, 'loop/eval-spend.json'), 2.5);
   const start = budget.spent;
   const all: Scenario[] = fs.readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'results.json' && !f.startsWith('_')).sort().map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')))
     .filter((s) => (!only || only.some((o) => s.id.startsWith(o))) && !skip.some((o) => s.id.startsWith(o)));
@@ -179,6 +213,7 @@ async function main() {
     latencyP50: Math.round(pct(lat, 0.5)), latencyP95: Math.round(pct(lat, 0.95)), calls: sum((r) => r.calls), errors: sum((r) => r.errors), spent: Math.round((budget.spent - start) * 10000) / 10000, totalSpent: Math.round(budget.spent * 1000) / 1000,
   };
   console.log(JSON.stringify(total));
+  console.log(`cache: ${cacheStats.hits} hits, ${cacheStats.misses} live calls; spent this run $${total.spent.toFixed(4)}; total $${total.totalSpent} of $${budget.cap}`);
   if (!only) fs.writeFileSync(path.join(dir, 'results.json'), JSON.stringify({ total, results }, null, 1));
 }
 if (process.argv[1] === import.meta.filename) await main();
