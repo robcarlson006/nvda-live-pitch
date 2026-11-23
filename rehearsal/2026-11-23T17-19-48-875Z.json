@@ -1,0 +1,44 @@
+{
+  "startedAt": "2026-11-23T17:17:57.217Z",
+  "stoppedAt": "2026-11-23T17:19:48.879Z",
+  "totalSeconds": 111.7,
+  "openingSectionSeconds": 111.6,
+  "openingSectionTargetSeconds": 240,
+  "cueFired": 2,
+  "followed": 2,
+  "manual": 1,
+  "slides": [
+    {
+      "id": "chips",
+      "speaker": "Rob",
+      "seconds": 30.5,
+      "via": "goto"
+    },
+    {
+      "id": "founding",
+      "speaker": "Rob",
+      "seconds": 30.4,
+      "via": "live"
+    },
+    {
+      "id": "near-bust",
+      "speaker": "Rob",
+      "seconds": 22,
+      "via": "cue",
+      "cue": "first chip the nv1"
+    },
+    {
+      "id": "cuda",
+      "speaker": "Rob",
+      "seconds": 18.8,
+      "via": "cue",
+      "cue": "november two thousand and six"
+    },
+    {
+      "id": "near-bust",
+      "speaker": "Rob",
+      "seconds": 9.9,
+      "via": "live"
+    }
+  ]
+}

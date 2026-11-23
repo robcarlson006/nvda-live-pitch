@@ -141,10 +141,7 @@ export function CoreArray({ buildKey, glyph, compact, effect, reveal = 0 }: Prop
     for (let y = 0; y < s.rows; y++) {
       for (let x = 0; x < s.cols; x++) {
         const i = y * s.cols + x;
-        const arrive = (x / s.cols) * WAVE_MS + (y / s.rows) * 140;
-        const dt = t - arrive;
-        const wave = dt > -60 && dt < 500 ? Math.exp(-((dt / 110) ** 2)) * 0.42 : 0;
-        if (dt < 500) busy = true;
+        const wave = 0; // the left→right green sweep is switched off (it was distracting); the grid and glyphs remain
 
         const target = s.mask[i] ? (t > s.delay[i] ? Math.min(1, (t - s.delay[i]) / 180) : 0) : 0;
         if (s.mask[i] && t < s.delay[i] + 200) busy = true;

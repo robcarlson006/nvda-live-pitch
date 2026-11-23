@@ -8,7 +8,7 @@
  * Director, and applies its verdicts exactly as server/index.ts does. Truth is which slide's speech each word belongs to.
  * dev = the first half of the deck (tune on this). holdout = the second half (look at it ONCE, at the end).
  * `nocue` removes the words of the slide's own cue phrases, so it can only be followed by meaning.
- * Every model reply is cached on disk (loop/eval-cache/), so a repeat run costs $0.00. Hard cap: $2.50.
+ * Every model reply is cached on disk (app/eval-cache/), so a repeat run costs $0.00. Hard cap: $2.50.
  * Numbers are slightly kind: a real call takes ~0.5 s, about 2 more words of speech than the replay allows.
  */
 import crypto from 'node:crypto';
@@ -27,7 +27,7 @@ const set = arg('set', 'dev');
 const variant = arg('variant', 'nocue');
 const CAP = 2.5;
 const SLACK = 4; // words: about the director's reaction time
-const CACHE = path.resolve(import.meta.dirname, '../../loop/eval-cache');
+const CACHE = path.resolve(import.meta.dirname, '../eval-cache');
 fs.mkdirSync(CACHE, { recursive: true });
 
 const datasets = loadDatasets();

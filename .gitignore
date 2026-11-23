@@ -5,3 +5,5 @@ app/.env
 dist/
 app/state.json
 app/ai-spend.json*
+app/eval-cache/
+~$*

@@ -1,0 +1,173 @@
+/**
+ * Gate for data/model/NVDA_DCF.xlsx. Recalculates it from scratch with LibreOffice (cached answers stripped first)
+ * and compares with data/clean/model_*.json. Also flips the scenario and WACC switches in throwaway copies.
+ * Run: npx tsx scripts/xlsx-check.ts   Exit code 1 on any mismatch.
+ */
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import type ExcelJS from 'exceljs';
+import { ALLOWED, APPENDIX_MAX_FORMULAS, AT, clean, EXTRA, load, OUT, PEERS, RD, SHEETS, SIMPLE, shown, SOFFICE, soffice } from './xlsx.ts';
+import { dcf as modelDcf, grow } from './model.ts';
+
+const TOL = 0.01;
+let bad = 0;
+const ok = (pass: boolean, msg: string) => { if (!pass) bad++; console.log(`  ${pass ? '✓' : '✗'} ${msg}`); };
+const close = (label: string, got: unknown, want: number, unit = '$') => ok(typeof got === 'number' && Math.abs(got - want) <= TOL, `${label.padEnd(44)} ${typeof got === 'number' ? got.toFixed(2) : String(got)}  app ${want.toFixed(2)} ${unit}`);
+const cellsOf = (ws: ExcelJS.Worksheet) => { const out: ExcelJS.Cell[] = []; ws.eachRow((r) => r.eachCell((c) => { if (!c.isMerged || c.master === c) out.push(c); })); return out; };
+const at = (wb: ExcelJS.Workbook, sheet: string, ref: string) => shown(wb.getWorksheet(sheet)!.getCell(ref));
+const colNo = (s: string) => [...s].reduce((n, ch) => n * 26 + ch.charCodeAt(0) - 64, 0);
+/** A formula copied along a row or down a column is the same idea: rewrite cell references relative to where it sits. */
+const idea = (c: ExcelJS.Cell) => c.formula!.replace(/(\$?)([A-Z]{1,2})(\$?)(\d+)/g, (_, ca, col, ra, row) => `R${ra ? row : `[${Number(row) - Number(c.row)}]`}C${ca ? col : `[${colNo(col) - Number(c.col)}]`}`);
+const num = (c: ExcelJS.Cell) => typeof c.value === 'number' || c.value instanceof Date;
+
+const t0 = Date.now();
+if (!fs.existsSync(OUT)) { console.error('No workbook. Run: npm run xlsx'); process.exit(1); }
+const file = await load(OUT);
+
+console.log('Shape');
+ok(file.worksheets.map((w) => w.name).join('|') === SHEETS.join('|'), `exactly ${SHEETS.length} sheets: ${file.worksheets.map((w) => w.name).join(', ')}`);
+ok(file.worksheets.every((w) => w.state === 'visible' && ![...Array(w.columnCount)].some((_, i) => w.getColumn(i + 1).hidden) && !cellsOf(w).some((c) => w.getRow(Number(c.row)).hidden)), 'no hidden sheets, columns or rows');
+ok(!((file as any).definedNames?.model ?? []).some((n: any) => !/Print_/.test(n.name)), 'no named ranges');
+let total = 0;
+const strange: string[] = [], array: string[] = [], colour: string[] = [], empty: string[] = [];
+for (const ws of file.worksheets) for (const c of cellsOf(ws)) {
+  const blue = c.font?.color?.argb === 'FF0000FF';
+  if (c.formula) {
+    total++;
+    const allowed = [...ALLOWED, ...(EXTRA[ws.name] ?? [])];
+    for (const m of c.formula.replace(/"[^"]*"/g, '').matchAll(/([A-Z][A-Z.]*)\(/g)) if (!allowed.includes(m[1])) strange.push(`${ws.name}!${c.address} ${m[1]}`);
+    if ((c.model as any).shareType || /^\{/.test(c.formula)) array.push(`${ws.name}!${c.address}`);
+    if (c.result === undefined || c.result === null) empty.push(`${ws.name}!${c.address}`);
+    if (blue) colour.push(`${ws.name}!${c.address} formula in blue`);
+  } else if (num(c) && !blue && ws.name !== 'Checks') colour.push(`${ws.name}!${c.address} typed number not blue`);
+}
+ok(!strange.length, `only ${ALLOWED.join(', ')} and + − × ÷ ^ (TEXT on Start here, MEDIAN on Peers) ${strange.join('; ')}`);
+ok(!array.length, `no array formulas or data tables ${array.join('; ')}`);
+ok(!colour.length, `every typed number is blue, every formula is not ${colour.join('; ')}`);
+ok(!empty.length, `${total} formulas, all with saved answers ${empty.join('; ')}`);
+const dcf = file.worksheets.find((w) => w.name === 'DCF')!;
+const dcfF = cellsOf(dcf).filter((c) => c.formula);
+const main = dcfF.filter((c) => Number(c.row) <= 23);
+const ideas = (cs: ExcelJS.Cell[]) => new Set(cs.map(idea)).size;
+ok(ideas(main) <= 25, `DCF, scenario on show: ${ideas(main)} different formulas to learn (${main.length} cells once copied across); limit 25`);
+console.log(`    DCF sheet in all: ${ideas(dcfF)} different formulas, ${dcfF.length} cells`);
+
+// ---------- recalculate: the file as it is, three scenarios, the other discount rate, all in one LibreOffice launch ----------
+const cases: Record<string, (wb: ExcelJS.Workbook) => void> = {
+  asis: () => {},
+  ...Object.fromEntries([1, 2, 3].map((n) => [`scenario${n}`, (wb: ExcelJS.Workbook) => { wb.getWorksheet('Inputs')!.getCell(AT.scenario).value = n; }])),
+  wacc2: (wb) => { wb.getWorksheet('Inputs')!.getCell(AT.waccSwitch).value = 2; },
+  price200: (wb) => { wb.getWorksheet('Inputs')!.getCell('B10').value = 200; },
+};
+const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nvda-xlsx-check-'));
+const calc: Record<string, ExcelJS.Workbook> = {};
+let live = Boolean(SOFFICE);
+try {
+  if (live) {
+    fs.mkdirSync(path.join(tmp, 'out'));
+    const files: string[] = [];
+    for (const [name, change] of Object.entries(cases)) {
+      const wb = await load(OUT);
+      change(wb);
+      for (const ws of wb.worksheets) for (const c of cellsOf(ws)) if (c.formula) c.value = { formula: c.formula } as ExcelJS.CellFormulaValue;
+      files.push(path.join(tmp, `${name}.xlsx`));
+      await wb.xlsx.writeFile(files.at(-1)!);
+    }
+    const out = soffice(files, path.join(tmp, 'out'), 30_000);
+    for (const [i, name] of Object.keys(cases).entries()) calc[name] = await load(out[i]);
+  }
+} catch (e) {
+  live = false;
+  console.warn(`! ${(e as Error).message}`);
+} finally {
+  fs.rmSync(tmp, { recursive: true, force: true });
+}
+if (!live) console.warn('! WARNING: LibreOffice is not available. Comparing the SAVED answers only; the formulas were NOT recalculated and the switches were NOT tested.');
+const wb = live ? calc.asis : file;
+
+const V = clean('model_valuation');
+const P = clean('model_revenue_paths');
+const S = clean('model_sensitivity');
+const price = V.series['Value per share'][V.x.indexOf('Share price today')]!;
+const want = (n: string) => V.series['Value per share'][V.x.indexOf(`${n} case`)]!;
+const NAMES = ['Bear', 'Base', 'Bull'] as const;
+const rowOf = (n: string) => AT.table[n.toLowerCase() as keyof typeof AT.table];
+
+console.log('Same answers as data/clean/model_*.json');
+for (const n of NAMES) {
+  close(`${n} value per share`, at(wb, 'DCF', `C${rowOf(n)}`), want(n));
+  close(`${n} value vs price`, (at(wb, 'DCF', `E${rowOf(n)}`) as number) * 100, (want(n) / price - 1) * 100, '%');
+}
+close('Share price', at(wb, 'DCF', 'C21'), price);
+let gridBad = 0;
+Object.entries(S.series).forEach(([, vals], j) => vals.forEach((v, i) => { if (Math.abs((at(wb, 'Sensitivity', `${AT.grid.cols[i]}${AT.grid.top + j}`) as number) - v!) > TOL) gridBad++; }));
+ok(gridBad === 0, `Sensitivity: all ${S.x.length * Object.keys(S.series).length} cells match ${gridBad ? `(${gridBad} do not)` : ''}`);
+
+console.log('Inside the workbook');
+const errors = wb.worksheets.flatMap((ws) => cellsOf(ws).filter((c) => { const v = shown(c) as any; return v?.error || (typeof v === 'string' && /^(#|Err:)/.test(v)) || (c.formula && typeof v === 'number' && !Number.isFinite(v)); }).map((c) => `${ws.name}!${c.address}`));
+ok(!errors.length, `no error cells ${errors.join(' ')}`);
+const tf = cellsOf(wb.getWorksheet('Checks')!).filter((c) => c.formula && typeof shown(c) === 'boolean');
+ok(tf.length >= 20 && tf.every((c) => shown(c) === true), `Checks sheet: ${tf.filter((c) => shown(c) === true).length} of ${tf.length} TRUE`);
+if (live) {
+  const stale = file.worksheets.flatMap((ws) => cellsOf(ws).filter((c) => c.formula).filter((c) => { const a = shown(c), b = at(wb, ws.name, c.address); return typeof a === 'number' ? Math.abs(a - (b as number)) > 1e-6 : a !== b; }).map((c) => `${ws.name}!${c.address}`));
+  ok(!stale.length, `saved answers equal a fresh recalculation ${stale.slice(0, 5).join(' ')}`);
+
+  console.log('Switches');
+  NAMES.forEach((n, i) => {
+    const w = calc[`scenario${i + 1}`];
+    close(`Scenario switch ${i + 1} shows ${n}`, at(w, 'DCF', AT.perShare), want(n));
+    const revs = ['C', 'D', 'E', 'F', 'G'].map((c) => at(w, 'DCF', `${c}${AT.mainRow.revenue}`) as number);
+    ok(revs.every((r, k) => Math.abs(r - P.series[n][P.x.indexOf(`FY${28 + k}`)]!) <= TOL), `  revenue FY28 to FY32 matches model_revenue_paths (${n})`);
+  });
+  const alt = `${Math.round((at(wb, 'Inputs', 'B17') as number) * 10000) / 100}%`;
+  const g = `Terminal growth ${Math.round((at(wb, 'Inputs', 'B24') as number) * 1000) / 10}%`;
+  close(`WACC switch 2 (${alt}, ${g.toLowerCase()})`, at(calc.wacc2, 'DCF', AT.perShare), S.series[g]?.[S.x.indexOf(alt)] ?? NaN);
+}
+console.log('Appendix sheets (Reverse DCF, Peers)');
+for (const n of ['Reverse DCF', 'Peers']) {
+  const f = cellsOf(file.getWorksheet(n)!).filter((c) => c.formula).length;
+  ok(f <= APPENDIX_MAX_FORMULAS, `${n}: ${f} formulas; limit ${APPENDIX_MAX_FORMULAS}`);
+}
+{ const got = (at(wb, 'Reverse DCF', RD.implied) as number) * 100, want = clean('model_implied_growth').series['Growth per year'][0]!; ok(Math.abs(got - want) <= 0.1, `Growth the price implies, vs model_implied_growth: ${got.toFixed(2)} v ${want.toFixed(2)} (allowed gap 0.1 percentage points: straight-line steps)`); }
+/** Independent recomputation: put the growth the sheet found back through the model's own maths (model.ts); the share must be worth the price. */
+const reverse = (label: string, w: ExcelJS.Workbook, pr: number) => {
+  const implied = at(w, 'Reverse DCF', RD.implied) as number;
+  const n = (s: string, r: string) => at(w, s, r) as number;
+  const worth = modelDcf({ path: grow(n('Inputs', 'B26'), Array(5).fill(implied * 100)), margin: n('DCF', 'B27'), wacc: n('DCF', 'G1') * 100, g: n('DCF', 'G2') * 100, netCash: n('Inputs', 'B14'), shares: n('Inputs', 'B11'), t: ['C', 'D', 'E', 'F', 'G'].map((c) => n('DCF', `${c}5`)) }).perShare;
+  ok(Math.abs(worth - pr) <= 1, `${label}: ${(implied * 100).toFixed(2)}% a year puts one share at $${worth.toFixed(2)}; price $${pr.toFixed(2)}`);
+};
+reverse('Reverse DCF, as saved', wb, price);
+const med = (xs: number[]) => { const s = [...xs].sort((a, b) => a - b); return (s[1] + s[2]) / 2; };
+const peerPe = clean('peers_pe');
+const others = peerPe.series['Forward P/E'].filter((_, i) => peerPe.x[i] !== 'NVIDIA') as number[];
+const eps = at(wb, 'Peers', PEERS.eps) as number;
+close('Peers: median forward P/E, recomputed outside the sheet', at(wb, 'Peers', PEERS.median), med(others), 'x');
+close('Peers: value per share at that median', at(wb, 'Peers', PEERS.value), med(others) * eps);
+close('Peers: NVIDIA P/E at today’s price', at(wb, 'Peers', PEERS.pe), price / eps, 'x');
+if (live) {
+  // At 12% the price needs less growth than the table's lowest row: the sheet must say so, not print a wrong number.
+  ok(at(calc.wacc2, 'Reverse DCF', RD.implied) === 0 && /^No/.test(String(at(calc.wacc2, 'Reverse DCF', RD.gap))), 'Reverse DCF at the 12% discount rate: price is below the table, and the sheet says so');
+  reverse('Reverse DCF if the price were $200', calc.price200, 200);
+  ok((at(calc.price200, 'Reverse DCF', RD.implied) as number) > (at(wb, 'Reverse DCF', RD.implied) as number), 'a dearer share needs more growth');
+  close('Peers: P/E moves with the price ($200)', at(calc.price200, 'Peers', PEERS.pe), 200 / eps, 'x');
+}
+console.log('Simple DCF and Financials');
+{
+  const sd = file.getWorksheet('Simple DCF')!;
+  const n = ideas(cellsOf(sd).filter((c) => c.formula));
+  ok(n <= SIMPLE.max, `Simple DCF: ${n} different formulas; limit ${SIMPLE.max}`);
+  const a = (r: string) => at(wb, 'Simple DCF', r) as number;
+  // Independent recomputation with whole years 1 to 5, through the model's own maths (model.ts)
+  const worth = modelDcf({ path: grow(a('B5'), ['C', 'D', 'E', 'F', 'G'].map((c) => (at(wb, 'Simple DCF', `${c}16`) as number) * 100)), margin: a('B6'), wacc: a('B7') * 100, g: a('B8') * 100, netCash: a('B9'), shares: a('B10'), t: [1, 2, 3, 4, 5] }).perShare;
+  close('Simple DCF value per share, recomputed outside the sheet', a(SIMPLE.value), worth);
+  const gap = a(SIMPLE.value) / (at(wb, 'DCF', `C${AT.table.base}`) as number) - 1;
+  ok(gap > 0 && gap < 0.1, `Simple DCF is above the detailed base case by ${(gap * 100).toFixed(1)}% (whole years are discounted less); expected 0 to 10%`);
+  const f = (r: string) => at(wb, 'Financials', r) as number;
+  close('Financials: FY26 sales equal Bloomberg', f('F13'), clean('nvda_revenue_annual').series['Revenue'].at(-1)!);
+  close('Financials: FY26 Data Center share', f('F16'), clean('nvda_segments_annual').series['Data Center'].at(-1)! / f('F13'));
+  close('Financials: FY27E sales equal Inputs', f('G13'), at(wb, 'Inputs', 'B26') as number);
+  close('Financials: FY26 free cash flow margin', f('F22'), clean('nvda_fcf_annual').series['Free cash flow'].at(-1)! / f('F13'));
+}
+console.log(`${bad ? `FAIL: ${bad} problem(s)` : live ? 'PASS' : 'PASS on saved answers only (not recalculated)'} in ${((Date.now() - t0) / 1000).toFixed(1)} s`);
+process.exit(bad ? 1 : 0);

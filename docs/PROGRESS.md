@@ -135,11 +135,11 @@ cd app && npm install && npm run dev
   - Big moves need care: the next two slides move at once; anything further, or a tangent, needs two verdicts in a row. A verdict that arrives after the operator pressed Next, or a cue fired, is thrown away. Pressing Next/Back, switching mode or starting a question forgets the speech heard so far.
   - A tangent uses the same path as "react off script": a slide built from our data, queued for A/X unless "Show without approval" is ticked. (`approveTangents` in the state is not used yet.)
   - **Cost:** about 2 cents for 170 calls on the Haiku price table; counts against the same $4 cap.
-  - **Measured** (`npm run`-less: `cd app && npx tsx scripts/follow-eval.ts --set dev|holdout --variant nocue|verbatim`; `--dry` estimates the cost; replies are cached in `loop/eval-cache/`). It reads each slide's `say` text aloud with the slide's own cue words removed, so only meaning can move the deck, and applies verdicts as the server does:
+  - **Measured** (`npm run`-less: `cd app && npx tsx scripts/follow-eval.ts --set dev|holdout --variant nocue|verbatim`; `--dry` estimates the cost; replies are cached in `app/eval-cache/`). It reads each slide's `say` text aloud with the slide's own cue words removed, so only meaning can move the deck, and applies verdicts as the server does:
     - dev (first 16 slides): 14/16 on strict scoring, **16/16** when a slide is judged 4 words before its end (the tolerance was chosen after seeing the first run); median 5 words late; no wrong moves.
     - **holdout (last 15 slides, run once, not tuned on): 13/15 = 87%, below the 90% target.** Median 4 words late; 1 early move to the next slide. Missed: `handoff` and `last-quarter` (short slides with little to hear).
     - These are read-aloud transcripts: no mic errors, no ums, no real paraphrasing. **A live rehearsal is still needed** before trusting it on the day.
-  - The earlier numbers in `loop/NEXT.md` (89%, 23 words late) have no harness or log behind them; ignore them.
+  - The earlier numbers in the old loop queue (89%, 23 words late) have no harness or log behind them; ignore them.
   - 12 tests in `server/director.test.ts` (fake model): moves, jump rules, never un-building, unreachable AI, spending cap, garbled replies.
   - Also fixed: `tsc` was failing (`ServerMsg` required `mic`/`pending` that nothing sends; now optional).
 
