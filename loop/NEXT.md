@@ -14,7 +14,7 @@ Skip list tonight (don't start): live ticker, second-device operator, spreadshee
   the title/skeleton immediately while Claude works. Also: a title once claimed something its data didn't show. Add a code check (and a test) that
   a generated title/claim must be supported by the looked-up values (direction, comparison, "more/less than"), else fall back to a neutral title.
   Fake-caller tests first; ≤ 6 live questions (budgeted).
-- [ ] **N4 · FACTS.** Networking $31bn: Bloomberg FA p.175 prints $31,376m for FY26 → record it as verified (source + page). For the other [VERIFY]
+- [~] **N4 · PARTIAL (Networking verified; others left unverified, notes in NEEDS_ROB) · FACTS.** Networking $31bn: Bloomberg FA p.175 prints $31,376m for FY26 → record it as verified (source + page). For the other [VERIFY]
   figures (CUDA spend ~$0.5bn/yr, supply commitments $279bn, 90%/80% AI-chip share, security "0") use ≤ 6 searches total, primary sources only,
   quote ≤ 15 words with publisher + URL + date. Can't source → leave unverified, list "cut or reword" in NEEDS_ROB.md.
 - [ ] **N5 · TIME PRESSURE + PANIC (we may run out of time and skip parts).** Operator panel: time left vs plan, and which ✂ beats to drop to
