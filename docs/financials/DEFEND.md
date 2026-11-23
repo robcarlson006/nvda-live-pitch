@@ -12,8 +12,26 @@
 | EV-to-equity bridge | $3,977bn + $59.6bn net cash, ÷ 24.1bn shares | Bloomberg | Missing quarter: +$2.44 to +$2.80 [A] |
 | Bull | Base sales, 5 points more cash | Software, networking | $185.74 [V] |
 | Bear | Sales 0, −20, 0, 3, 3%; 10 points less cash | AI spending pauses | $31.40 [V] |
+| Share count 24.1bn | One share is a 24.1-billionth of the company | Bloomberg DES, 20 Nov | Each 1% more shares lowers the value by 1% (about $1.68). We ignore new shares paid to staff, so ours is a little generous [D] |
+| Reverse DCF: **32.1%** | The price needs sales to grow 32.1% a year, FY28–FY32 | Same DCF run backwards, appendix sheet *Reverse DCF* | At 25% a year a share is worth $107.71; 30%: $126.72; 35%: $148.59; 40%: $173.63 [S2]. At a 12% discount rate the price needs only 13.1% [D] |
+| P/E cross-check | NVIDIA is on 14.1x (Bloomberg’s 14.07; price ÷ EPS in the Peers sheet gives 14.05) this year's profit; the four peers' middle is 30.9x | Bloomberg multiples, appendix sheet *Peers* | At that middle multiple a share is $297.49; at TSMC's, the cheapest peer, $173.33; our DCF base is $167.50 [S2]. If profits fall short, the low multiple is a trap, not a bargain |
+
 
 Each row changes one thing; two misses together are worse. **Say so first.**
+
+## The reverse DCF in four sentences (appendix sheet "Reverse DCF")
+
+1. **What it asks.** Not "what is a share worth?" but "what sales growth does $135.46 already pay for?", using the same margin (45.25%), discount rate (19.3%), long-run growth (3%), net cash and share count as the DCF.
+2. **The answer.** 32.1% a year for five years (the sheet shows 32.0%: its straight-line read-off sits 0.08 points under the exact answer; say "about 32%"): sales from $422bn (FY27) to $1,697bn (FY32), 4.0 times. Our base case is 35.5%, to $1,932bn, 4.6 times: 3.5 points a year more than the price needs, and that gap is the whole of our upside.
+3. **How the sheet finds it.** It values a share at six growth rates (20% to 45%) and draws a straight line between the two that bracket the price. Fifteen formulas, within 0.1 point of the exact answer; the gate recomputes it independently with the model's own maths.
+4. **Say it straight.** The 32.1% rests on Bloomberg's 19.3% discount rate. At 16% the price needs 24.1%; at 12%, 13.1%; at 10%, 6.5%. So "the market expects 32%" is not a claim we can make; "at our discount rate the price needs 32%" is.
+
+## P/E against peers: which number is which (appendix sheet "Peers")
+
+- **14.1x (Bloomberg, on the slide):** price ÷ this year's expected profit per share ($9.64; the year ends January 2027, so it is nearly known). Peers on the same measure: AMD 53.4x, Intel 35.4x, Broadcom 26.3x, TSMC 18.0x. NVIDIA is cheapest of the five, 54% below the peers' middle (30.9x).
+- **22.7x (research notes):** we cannot rebuild it from any file we hold. We do not know which: a higher share price or a different year’s profit would explain it. Not in any number we show. If a board member quotes it, the answer is: at 22.7x NVIDIA would be dearer than TSMC (18.0x) but still cheaper than AMD, Intel and Broadcom. The conclusion "not the dearest of the group" survives; "cheaper than all of them" does not.
+- **What the peers imply.** Median multiple: $297.49 a share. That is inflated by AMD and Intel (Intel’s 35x sits on low profits: 15% operating margin). The cautious cross-check is TSMC, $173.33, close to our DCF's $167.50. PEG (P/E per point of growth): NVIDIA 0.20, peers' middle 0.49, which would say $338.51; do not use it, it leans on one year of 72% profit growth.
+- **What our data does not say.** Whether NVIDIA deserves a premium or a discount to peers: we have one year of multiples, no history of the gap.
 
 ## Hardest questions
 
@@ -35,4 +53,4 @@ Each row changes one thing; two misses together are worse. **Say so first.**
 - "Peers say $297" (TSMC alone: $173); "forecasts haven't fallen" (no proof)
 - Mi'kael: "Glassdoor's best place" (NVIDIA was fifth); "runs on renewables" ("matches"); "founder resigned last week" (**co-founder, 12 November**); "bear = governance" (it's an AI pause)
 
-*V valuation.csv · S model_sensitivity · I model_implied_growth · P peers_pe · G nvda_segments · A AUDIT.md · M MODEL.md · D loop/audit/dcf.py. New price: recheck every comparison.*
+*V valuation.csv · S model_sensitivity · S2 the workbook's Reverse DCF / Peers sheets · I model_implied_growth · P peers_pe · G nvda_segments · A AUDIT.md · M MODEL.md · D loop/audit/dcf.py. New price: recheck every comparison.*

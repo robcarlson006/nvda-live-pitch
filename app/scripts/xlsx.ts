@@ -15,9 +15,16 @@ import { pdfText } from './fa-parse.ts';
 
 const ROOT = path.resolve(import.meta.dirname, '../..');
 export const OUT = path.join(ROOT, 'data/model/NVDA_DCF.xlsx');
-export const SHEETS = ['Start here', 'Inputs', 'DCF', 'Sensitivity', 'Checks'];
+export const SHEETS = ['Start here', 'Inputs', 'DCF', 'Sensitivity', 'Reverse DCF', 'Peers', 'Checks'];
+/** The two appendix sheets: each at most this many formulas (Rob: simple enough to read in one sitting). */
+export const APPENDIX_MAX_FORMULAS = 15;
+/** Row of the Reverse DCF growth table, and where the answers sit. */
+export const RD = { top: 8, bottom: 13, price: 'B16', implied: 'B17', base: 'B18', gap: 'B19' } as const;
+export const PEERS = { eps: 'B12', pe: 'B13', median: 'B14', value: 'B16' } as const;
 /** Functions a first-year student knows. TEXT is for the sentences on Start here only. */
 export const ALLOWED = ['SUM', 'IF', 'CHOOSE', 'MAX', 'ABS', 'AVERAGE', 'ROUND'];
+/** Extra words allowed on one sheet only: the median of four peers. */
+export const EXTRA: Record<string, string[]> = { 'Start here': ['TEXT'], Peers: ['MEDIAN'] };
 export const clean = (key: string): Dataset => JSON.parse(fs.readFileSync(path.join(ROOT, 'data/clean', `${key}.json`), 'utf8'));
 
 // ---------- where things are (used by xlsx-check.ts too) ----------
@@ -99,9 +106,14 @@ function inputs() {
     rev27: get(fc, 'Consensus estimate', 'FY27'), rev28: get(fc, 'Consensus estimate', 'FY28'),
     fcfs: marginYears.map((y) => get(fcf, 'Free cash flow', y)), revs: marginYears.map((y) => get(rev, 'Revenue', y)),
     fcAsOf: fc.asOf!, fcfAsOf: fcf.asOf!,
+    eps27: num(des, /Est EPS\s+([\d.]+)/),
+    peers: (() => {
+      const pe = clean('peers_pe'), gr = clean('peers_growth'), om = clean('peers_operating_margin');
+      return pe.x.map((name, i) => ({ name, pe: pe.series['Forward P/E'][i]!, growth: gr.series['EPS growth'][gr.x.indexOf(name)]!, margin: om.series['Operating margin'][om.x.indexOf(name)]!, asOf: pe.asOf! }));
+    })(),
     app: {
       value: clean('model_valuation').series['Value per share'] as number[], valueX: clean('model_valuation').x,
-      paths: clean('model_revenue_paths'), implied: clean('model_implied_growth').series['Growth per year'][1]!,
+      paths: clean('model_revenue_paths'), implied: clean('model_implied_growth').series['Growth per year'][1]!, priced: clean('model_implied_growth').series['Growth per year'][0]!,
       ev: Object.fromEntries(names.map((n, i) => [n, evs[i]])) as Record<string, number>,
       netCash: csvOf('Net cash'), margin: csvOf('Base FCF margin'),
     },
@@ -170,6 +182,8 @@ function build(answers?: ExcelJS.Workbook): ExcelJS.Workbook {
   buildInputs(sheet('Inputs', [40, 13, 9.5, 9.5, 9.5, 9.5, 9.5, 8, 37, 12, 62], 90), I);
   buildDcf(sheet('DCF', [34, 13, 12, 12, 12, 12, 12, 80], 90), I);
   buildSensitivity(sheet('Sensitivity', [34, 13, 13, 13, 13, 13, 62]), I);
+  buildReverse(sheet('Reverse DCF', [52, 15, 15, 4, 4, 4, 4, 70], 100), I);
+  buildPeers(sheet('Peers', [44, 14, 16, 12, 16, 74], 100), I);
   buildChecks(sheet('Checks', [50, 15, 15, 12, 10, 76]), I);
   buildStart(start, I);
   return wb;
@@ -334,6 +348,93 @@ function buildDcf(s: Sheet, I: In) {
   s.finish(4, 'H33');
 }
 
+
+// ---------- Reverse DCF (appendix) ----------
+/**
+ * What yearly sales growth, FY28 to FY32, does today's share price already assume? A DCF cannot be turned round in one formula, so this
+ * does what you would do by hand: value the share at six growth rates, then see where the price falls between two of them.
+ * Eleven short formulas, three of them repeated down the table.
+ */
+function buildReverse(s: Sheet, I: In) {
+  s.title('Reverse DCF', 'Appendix. Instead of asking what a share is worth, ask what growth today’s price already needs.');
+  s.header(4, ['How it works', '', '', '', '', '', '', '']);
+  s.put('A5', 'Method: value one share if sales grew by the same percentage every year FY28 to FY32, with the same cash margin, discount rate, long-run growth, net cash and share count as the DCF sheet.', { size: 9, color: GREY, wrap: true });
+  s.ws.mergeCells('A5:H5'); s.ws.getRow(5).height = 28;
+  s.header(7, ['Sales growth, every year (you can change these)', 'Value per share', 'Price falls between this row and the next, at', '', '', '', '', 'What this row says']);
+  s.ws.getRow(7).height = 42; s.ws.getCell('C7').alignment = { wrapText: true, horizontal: 'right', vertical: 'middle' }; s.ws.getCell('B7').alignment = { wrapText: true, horizontal: 'right', vertical: 'middle' };
+  const rows = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45];
+  const t = (c: string) => `DCF!${c}$5`;
+  rows.forEach((g, i) => {
+    const r = RD.top + i;
+    s.input(`A${r}`, g, '0%');
+    // one share: five years of cash + the terminal value, then net cash, ÷ shares (the DCF sheet's own steps in one line)
+    const grown = (k: number, c: string) => `(1+$A${r})^${k}/(1+DCF!$G$1)^${t(c)}`;
+    const years = ['C', 'D', 'E', 'F', 'G'].map((c, k) => grown(k + 1, c)).join('+');
+    s.calc(`B${r}`, `(Inputs!$B$26*DCF!$B$27*(${years}+(1+$A${r})^5*(1+DCF!$G$2)/(DCF!$G$1-DCF!$G$2)/(1+DCF!$G$1)^${t('G')})+Inputs!$B$14)/Inputs!$B$11`, USD);
+    if (i < rows.length - 1) s.calc(`C${r}`, `IF(B${r}<=$B$16,IF(B${r + 1}>$B$16,A${r}+($B$16-B${r})/(B${r + 1}-B${r})*(A${r + 1}-A${r}),0),0)`, '0.0%;-0.0%;"-"');
+  });
+  s.note('H8', 'Each row is a full DCF in one line: five years of cash, plus everything after FY32, plus net cash, divided by shares.');
+  s.note('H9', 'More growth, more cash, higher value: the column rises as you go down.');
+  s.note('H10', 'We look for the two rows whose values sit either side of today’s price.');
+  s.note('H11', 'Between them we draw a straight line to find where the price falls (the next block shows the answer).');
+  s.note('H12', 'Only one cell in this column is not zero.');
+  s.header(15, ['The answer', '', '', '', '', '', '', 'What this row says']);
+  const line = (ref: string, label: string, f: string, fmt: string, say: string, o: Opt = {}) => { const n = ref.slice(1); s.put(`A${n}`, label, { bold: o.bold }); s.calc(ref, f, fmt, o); s.note(`H${n}`, say); };
+  line(RD.price, 'Share price today (USD)', 'Inputs!B10', USD, 'What one share costs, from Inputs.');
+  line(RD.implied, 'Growth the price already needs, a year, FY28 to FY32', `SUM(C${RD.top}:C${RD.bottom - 1})`, '0.0%;-0.0%;"outside table"', 'Read off the table above: the steady yearly growth at which one share is worth exactly the price.', { bold: true });
+  line(RD.base, 'Our base case grows, a year, FY28 to FY32', '(DCF!G27/(Inputs!B26*DCF!B27))^(1/5)-1', PCT, 'Base-case FY32 sales ÷ FY27 sales, taken to the fifth root: the same kind of steady yearly rate, for comparison.');
+  line(RD.gap, 'Does the table reach the price?', `IF(${RD.implied}=0,"No: change the blue growth rates in column A","Yes")`, undefined, 'If the price or the discount rate moves a lot, the table may not reach it; then the answer above says “outside table” and you widen column A. Base minus price-implied growth is our room for error.', { bold: true });
+  s.ws.getCell('B17').fill = s.ws.getCell('A17').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: PALE } };
+  s.put('A21', 'Read it like this: “At Bloomberg’s discount rate the market is already paying for the growth shown in B17. If you think NVIDIA will grow faster than that for five years, the share is cheap; slower, expensive.” It says nothing about whether the growth is likely.', { size: 9, color: GREY, wrap: true });
+  s.ws.mergeCells('A21:H21'); s.ws.getRow(21).height = 40;
+  for (let n = 8; n <= 13; n++) s.ws.getRow(n).height = 16;
+  s.rules(8, 13, 'H'); s.rules(16, 19, 'H');
+  s.finish(4, 'H21');
+}
+
+// ---------- Peers (appendix) ----------
+/**
+ * NVIDIA's price-to-earnings ratio against AMD, Intel, Broadcom and TSMC, and what the peers' multiple would make one share worth.
+ * The ratios are Bloomberg's (typed in blue, dated); everything else is a formula.
+ */
+function buildPeers(s: Sheet, I: In) {
+  s.title('Peers', 'Appendix. Is NVIDIA cheap or dear next to its rivals, and what would their multiple make one share worth?');
+  s.header(4, ['Company', 'Forward P/E', 'Expected EPS growth', 'PEG', 'Operating margin', 'What this row says']);
+  I.peers.forEach((p, i) => {
+    const r = 5 + i;
+    s.put(`A${r}`, p.name, { bold: i === 0 });
+    s.input(`B${r}`, p.pe, '0.0"x"');
+    s.input(`C${r}`, p.growth / 100, '0%');
+    s.calc(`D${r}`, `B${r}/(C${r}*100)`, '0.00');
+    s.input(`E${r}`, p.margin / 100, '0%');
+  });
+  s.note('F5', 'NVIDIA: price ÷ this year’s expected profit per share, Bloomberg, 20 Nov 2026. This year ends in January 2027, so it is nearly all known.');
+  s.note('F6', 'AMD: lots of growth expected, so a high multiple.');
+  s.note('F7', 'Intel: little growth expected, yet a high multiple (profits are low now).');
+  s.note('F8', 'Broadcom: the closest to NVIDIA in size and margin.');
+  s.note('F9', 'TSMC: NVIDIA’s chip maker, and the cheapest of the four.');
+  s.header(11, ['What the peers imply', 'Value', '', '', '', 'What this row says']);
+  const line = (n: number, label: string, f: string | number, fmt: string, say: string, o: Opt = {}) => {
+    s.put(`A${n}`, label, { bold: o.bold });
+    typeof f === 'number' ? s.input(`B${n}`, f, fmt) : s.calc(`B${n}`, f, fmt, o);
+    s.note(`F${n}`, say);
+  };
+  line(12, 'NVIDIA expected profit per share this year (USD)', I.eps27, USD, 'Bloomberg DES, year to January 2027.');
+  line(13, 'NVIDIA forward P/E at today’s price', 'Inputs!B10/B12', '0.0"x"', 'Share price ÷ expected profit per share; moves if you change the price on Inputs.');
+  line(14, 'Median of the four peers’ forward P/E', 'MEDIAN(B6:B9)', '0.0"x"', 'The middle of AMD, Intel, Broadcom and TSMC (with four, the average of the middle two).');
+  line(15, 'NVIDIA compared with that median', 'B13/B14-1', '+0%;-0%', 'Below zero: NVIDIA is cheaper than its peers on this year’s profit.', { bold: true });
+  line(16, 'One share at the peer median P/E (USD)', 'B14*B12', USD, 'Peer median multiple × NVIDIA’s profit per share: what a share would cost if NVIDIA were priced like its peers.', { bold: true });
+  line(17, 'That compared with today’s price', 'B16/Inputs!B10-1', '+0%;-0%', 'It is high because AMD and Intel carry very high multiples. Do not lean on it: see the next two rows.');
+  line(18, 'One share at TSMC’s multiple (USD)', 'B9*B12', USD, 'TSMC is the closest and cheapest comparable, so this is the cautious peer cross-check.');
+  line(19, 'One share at the peers’ median PEG (USD)', 'MEDIAN(D6:D9)*C5*100*B12', USD, 'Allows for growth: the peers’ median P/E-per-point-of-growth × NVIDIA’s growth × its profit per share.');
+  line(20, 'Our DCF base case (USD)', `DCF!C${AT.table.base}`, USD, 'For comparison. The DCF is our main answer; the peer lines are only a cross-check.');
+  s.put('A22', 'Two figures for NVIDIA’s P/E exist. The research notes quote about 22.7x; Bloomberg, which we use, says 14.1x. We cannot rebuild 22.7x from any file we hold, so it stays out of the numbers. At 22.7x NVIDIA would be dearer than TSMC (18.0x) and still cheaper than AMD, Intel and Broadcom; at 14.1x it is cheaper than all four. Neither says whether the profits will last.', { size: 9, color: GREY, wrap: true });
+  s.ws.mergeCells('A22:F22'); s.ws.getRow(22).height = 54;
+  for (let n = 5; n <= 20; n++) s.ws.getRow(n).height = 18;
+  s.rules(5, 9, 'F'); s.rules(12, 20, 'F');
+  s.finish(4, 'F22');
+}
+
 // ---------- Sensitivity ----------
 function buildSensitivity(s: Sheet, I: In) {
   s.title('Sensitivity', 'Base case: what one share is worth if the discount rate or long-run growth is different.');
@@ -418,6 +519,8 @@ function buildChecks(s: Sheet, I: In) {
   const path = (n: string) => I.app.paths.series[n][I.app.paths.x.indexOf('FY32')]!;
   for (const n of ['Bear', 'Base'] as const) { const row = n === 'Bear' ? 26 : 27; check(`${n} FY32 revenue (USD bn)`, `DCF!G${row}/DCF!B${row}`, path(n), '#,##0.00', 'From model_revenue_paths.json; cash ÷ margin gives revenue back.'); }
   check('Base growth per year, FY28 to FY32 (%)', '((DCF!G27/DCF!B27/Inputs!B26)^(1/5)-1)*100', I.app.implied, '0.00', 'From model_implied_growth.json: the steady yearly rate that gets to FY32 revenue.');
+  check('Growth the share price implies (%)', `'Reverse DCF'!${RD.implied}*100`, I.app.priced, '0.00', 'From model_implied_growth.json. The sheet reads it off its table by straight-line steps, so allow up to 0.1 percentage points.', `ABS(B${r}-C${r})/10`);
+  check('Peers: value per share at the peer median P/E (USD)', `Peers!${PEERS.value}`, val('Peer P/E check'), USD, 'From model_valuation.json, the bar on our valuation slide.');
   const gs = Object.keys(I.sens.series);
   const last = AT.grid.cols.length - 1;
   const corner = (j: number, i: number) => check(`Sensitivity: WACC ${I.sens.x[i]}, growth ${gs[j].match(/([\d.]+)%/)![0]}`, `Sensitivity!${AT.grid.cols[i]}${AT.grid.top + j}`, I.sens.series[gs[j]][i]!, USD, 'From model_sensitivity.json.');
@@ -439,6 +542,7 @@ function buildChecks(s: Sheet, I: In) {
   check('Main DCF equals its row in the three-scenario table', 'DCF!C20', { f: `CHOOSE(Inputs!B6,DCF!C${T.bear},DCF!C${T.base},DCF!C${T.bull})` }, USD, 'Two ways of doing the sum give the same answer.');
   check('Base growth lands on long-run growth in FY32 (%)', 'Inputs!G35*100', { f: 'Inputs!B24*100' }, '0.00', 'The straight line ends where we said it ends.');
   check('Bull ≥ base ≥ bear (bull and bear shown)', `DCF!C${T.bull}`, { f: `DCF!C${T.bear}` }, USD, 'The scenarios are in a sensible order.', `IF(DCF!C${T.bull}>=DCF!C${T.base},IF(DCF!C${T.base}>=DCF!C${T.bear},0,1),1)`);
+  check('Share price is inside the Reverse DCF table', 'Inputs!B10', { f: `'Reverse DCF'!B${RD.top}` }, USD, 'If you change the price a lot, the table may no longer reach it; widen the blue growth rates in column A.', `IF(B${r}>=C${r},IF(B${r}<'Reverse DCF'!B${RD.bottom},0,1),1)`);
   s.put(`A${r}`, 'All of the above hold', { bold: true, top: true });
   s.calc(`D${r}`, `MAX(D${firstSum}:D${r - 1})`, '0.000', { top: true });
   s.calc(`E${r}`, `D${r}<=$B$3`, undefined, { bold: true, align: 'center', top: true });
@@ -498,6 +602,7 @@ function buildStart(s: Sheet, I: In) {
     '3.  Read the DCF sheet from top to bottom; the grey note on the right says what each row means.',
     '4.  On Sensitivity, see what happens if our discount rate or long-run growth is wrong.',
     '5.  Look at Checks: if a row in the lower block says FALSE, undo what you just did.',
+    '6.  Appendix: Reverse DCF (what growth the price already assumes) and Peers (NVIDIA’s P/E against four rivals).',
   ].forEach((t, i) => wide(19 + i, t));
 
   section(25, 'What would change our mind');

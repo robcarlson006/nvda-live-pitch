@@ -7,7 +7,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import type ExcelJS from 'exceljs';
-import { ALLOWED, AT, clean, load, OUT, SHEETS, shown, SOFFICE, soffice } from './xlsx.ts';
+import { ALLOWED, APPENDIX_MAX_FORMULAS, AT, clean, EXTRA, load, OUT, PEERS, RD, SHEETS, shown, SOFFICE, soffice } from './xlsx.ts';
+import { dcf as modelDcf, grow } from './model.ts';
 
 const TOL = 0.01;
 let bad = 0;
@@ -25,7 +26,7 @@ if (!fs.existsSync(OUT)) { console.error('No workbook. Run: npm run xlsx'); proc
 const file = await load(OUT);
 
 console.log('Shape');
-ok(file.worksheets.map((w) => w.name).join('|') === SHEETS.join('|'), `exactly five sheets: ${file.worksheets.map((w) => w.name).join(', ')}`);
+ok(file.worksheets.map((w) => w.name).join('|') === SHEETS.join('|'), `exactly ${SHEETS.length} sheets: ${file.worksheets.map((w) => w.name).join(', ')}`);
 ok(file.worksheets.every((w) => w.state === 'visible' && ![...Array(w.columnCount)].some((_, i) => w.getColumn(i + 1).hidden) && !cellsOf(w).some((c) => w.getRow(Number(c.row)).hidden)), 'no hidden sheets, columns or rows');
 ok(!((file as any).definedNames?.model ?? []).some((n: any) => !/Print_/.test(n.name)), 'no named ranges');
 let total = 0;
@@ -34,14 +35,14 @@ for (const ws of file.worksheets) for (const c of cellsOf(ws)) {
   const blue = c.font?.color?.argb === 'FF0000FF';
   if (c.formula) {
     total++;
-    const allowed = ws.name === 'Start here' ? [...ALLOWED, 'TEXT'] : ALLOWED;
+    const allowed = [...ALLOWED, ...(EXTRA[ws.name] ?? [])];
     for (const m of c.formula.replace(/"[^"]*"/g, '').matchAll(/([A-Z][A-Z.]*)\(/g)) if (!allowed.includes(m[1])) strange.push(`${ws.name}!${c.address} ${m[1]}`);
     if ((c.model as any).shareType || /^\{/.test(c.formula)) array.push(`${ws.name}!${c.address}`);
     if (c.result === undefined || c.result === null) empty.push(`${ws.name}!${c.address}`);
     if (blue) colour.push(`${ws.name}!${c.address} formula in blue`);
   } else if (num(c) && !blue && ws.name !== 'Checks') colour.push(`${ws.name}!${c.address} typed number not blue`);
 }
-ok(!strange.length, `only ${ALLOWED.join(', ')} and + − × ÷ ^ (TEXT on Start here) ${strange.join('; ')}`);
+ok(!strange.length, `only ${ALLOWED.join(', ')} and + − × ÷ ^ (TEXT on Start here, MEDIAN on Peers) ${strange.join('; ')}`);
 ok(!array.length, `no array formulas or data tables ${array.join('; ')}`);
 ok(!colour.length, `every typed number is blue, every formula is not ${colour.join('; ')}`);
 ok(!empty.length, `${total} formulas, all with saved answers ${empty.join('; ')}`);
@@ -57,6 +58,7 @@ const cases: Record<string, (wb: ExcelJS.Workbook) => void> = {
   asis: () => {},
   ...Object.fromEntries([1, 2, 3].map((n) => [`scenario${n}`, (wb: ExcelJS.Workbook) => { wb.getWorksheet('Inputs')!.getCell(AT.scenario).value = n; }])),
   wacc2: (wb) => { wb.getWorksheet('Inputs')!.getCell(AT.waccSwitch).value = 2; },
+  price200: (wb) => { wb.getWorksheet('Inputs')!.getCell('B10').value = 200; },
 };
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nvda-xlsx-check-'));
 const calc: Record<string, ExcelJS.Workbook> = {};
@@ -121,6 +123,34 @@ if (live) {
   const alt = `${Math.round((at(wb, 'Inputs', 'B17') as number) * 1000) / 10}%`;
   const g = `Terminal growth ${Math.round((at(wb, 'Inputs', 'B24') as number) * 1000) / 10}%`;
   close(`WACC switch 2 (${alt}, ${g.toLowerCase()})`, at(calc.wacc2, 'DCF', AT.perShare), S.series[g]?.[S.x.indexOf(alt)] ?? NaN);
+}
+console.log('Appendix sheets (Reverse DCF, Peers)');
+for (const n of ['Reverse DCF', 'Peers']) {
+  const f = cellsOf(file.getWorksheet(n)!).filter((c) => c.formula).length;
+  ok(f <= APPENDIX_MAX_FORMULAS, `${n}: ${f} formulas; limit ${APPENDIX_MAX_FORMULAS}`);
+}
+{ const got = (at(wb, 'Reverse DCF', RD.implied) as number) * 100, want = clean('model_implied_growth').series['Growth per year'][0]!; ok(Math.abs(got - want) <= 0.1, `Growth the price implies, vs model_implied_growth: ${got.toFixed(2)} v ${want.toFixed(2)} (allowed gap 0.1 percentage points: straight-line steps)`); }
+/** Independent recomputation: put the growth the sheet found back through the model's own maths (model.ts); the share must be worth the price. */
+const reverse = (label: string, w: ExcelJS.Workbook, pr: number) => {
+  const implied = at(w, 'Reverse DCF', RD.implied) as number;
+  const n = (s: string, r: string) => at(w, s, r) as number;
+  const worth = modelDcf({ path: grow(n('Inputs', 'B26'), Array(5).fill(implied * 100)), margin: n('DCF', 'B27'), wacc: n('DCF', 'G1') * 100, g: n('DCF', 'G2') * 100, netCash: n('Inputs', 'B14'), shares: n('Inputs', 'B11'), t: ['C', 'D', 'E', 'F', 'G'].map((c) => n('DCF', `${c}5`)) }).perShare;
+  ok(Math.abs(worth - pr) <= 1, `${label}: ${(implied * 100).toFixed(2)}% a year puts one share at $${worth.toFixed(2)}; price $${pr.toFixed(2)}`);
+};
+reverse('Reverse DCF, as saved', wb, price);
+const med = (xs: number[]) => { const s = [...xs].sort((a, b) => a - b); return (s[1] + s[2]) / 2; };
+const peerPe = clean('peers_pe');
+const others = peerPe.series['Forward P/E'].filter((_, i) => peerPe.x[i] !== 'NVIDIA') as number[];
+const eps = at(wb, 'Peers', PEERS.eps) as number;
+close('Peers: median forward P/E, recomputed outside the sheet', at(wb, 'Peers', PEERS.median), med(others), 'x');
+close('Peers: value per share at that median', at(wb, 'Peers', PEERS.value), med(others) * eps);
+close('Peers: NVIDIA P/E at today’s price', at(wb, 'Peers', PEERS.pe), price / eps, 'x');
+if (live) {
+  // At 12% the price needs less growth than the table's lowest row: the sheet must say so, not print a wrong number.
+  ok(at(calc.wacc2, 'Reverse DCF', RD.implied) === 0 && /^No/.test(String(at(calc.wacc2, 'Reverse DCF', RD.gap))), 'Reverse DCF at the 12% discount rate: price is below the table, and the sheet says so');
+  reverse('Reverse DCF if the price were $200', calc.price200, 200);
+  ok((at(calc.price200, 'Reverse DCF', RD.implied) as number) > (at(wb, 'Reverse DCF', RD.implied) as number), 'a dearer share needs more growth');
+  close('Peers: P/E moves with the price ($200)', at(calc.price200, 'Peers', PEERS.pe), 200 / eps, 'x');
 }
 console.log(`${bad ? `FAIL: ${bad} problem(s)` : live ? 'PASS' : 'PASS on saved answers only (not recalculated)'} in ${((Date.now() - t0) / 1000).toFixed(1)} s`);
 process.exit(bad ? 1 : 0);

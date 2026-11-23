@@ -7,13 +7,15 @@
 - `B7`: discount rate (1 = Bloomberg's, our headline; 2 = the 12% our first model used).
 - `B10`: share price. On pitch morning, change it here **and** in `assumptions.json` (below), so slides and sheet agree.
 
-**The five sheets**
+**The seven sheets**
 | Sheet | What it is for |
 |---|---|
 | Start here | The answer in one sentence, how to use the file, what would change our mind |
 | Inputs | Every assumption with its unit, source and date |
 | DCF | Growth → revenue → cash → today's money → value per share, then all three scenarios together |
 | Sensitivity | Base-case value per share for other discount rates and long-run growth rates |
+| Reverse DCF | Appendix. What yearly sales growth the share price already needs (a table of six growth rates and a straight-line read-off; 15 formulas) |
+| Peers | Appendix. NVIDIA's P/E against AMD, Intel, Broadcom, TSMC and what their multiple would make a share worth (13 formulas; the one sheet that may use MEDIAN) |
 | Checks | TRUE/FALSE. Top block: matches the slides (turns FALSE if you change an input; that is fine). Bottom block: the sums hold (must stay TRUE) |
 
 **Rebuild it** (throws away changes made in the spreadsheet). In `app/`:
@@ -27,4 +29,4 @@
 - Bull has the same sales as base; only the margin differs. No scenario prices power, water or regulation limits.
 - Bloomberg's WACC export gives the cost of equity but not the risk-free rate or beta behind it, so there is no CAPM rebuild.
   That page also uses an older, larger market value than Bloomberg's DES page; with today's it would be 19.23% (see AUDIT.md).
-- The peer P/E check and the reverse DCF are on the slides, not in this file.
+- The reverse DCF table only reaches growth rates from 20% to 45%. If you move the price or the discount rate a lot, it says "outside table"; widen the blue growth rates in its column A.
