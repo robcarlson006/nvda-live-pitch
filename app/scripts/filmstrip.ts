@@ -50,7 +50,7 @@ async function main() {
       const shots: { png: Buffer; label: string }[] = [];
       for (let k = 0; k < frames; k++) {
         if (say) srv.send({ type: 'transcript', text: say.slice(0, Math.min(say.length, (k + 1) * per)).join(' '), final: false }); // speech arrives a few words at a time
-        else if (k > 0 && k <= n) srv.send({ type: 'next' }); // never past the last element: that would change slide
+        else if (k > 0 && k < n) srv.send({ type: 'next' }); // never past the last element: that would change slide
         await sleep(gap);
         if (opt('debug')) console.log(k, 'ghosts', await page.locator('.ghost').count(), JSON.stringify(srv.box.state?.glow), srv.box.state?.reveal);
         const png = await page.screenshot();

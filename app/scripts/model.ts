@@ -120,8 +120,8 @@ function main() {
     key: 'model_dcf_bridge', title: 'Where the value per share comes from', unit: 'USD', source: `${source}. Each part is a present value divided by ${shares}bn shares`,
     x: ['Bear case', 'Base case', 'Bull case'],
     series: {
-      'Cash flow, years 1-6': perShare((r) => r.pv.reduce((a: number, b: number) => a + b, 0)),
-      'Value after year 6': perShare((r) => r.pvTv),
+      'Cash flow FY28 to FY32': perShare((r) => r.pv.reduce((a: number, b: number) => a + b, 0)),
+      'Everything after FY32': perShare((r) => r.pvTv),
       'Net cash': perShare(() => netCash),
     },
   });

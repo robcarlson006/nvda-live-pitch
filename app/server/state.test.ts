@@ -20,7 +20,7 @@ const optional = spine.filter((s) => s.optional).map((s) => s.id);
 
 test('the script loads and every chart/number points at real data', () => {
   assert.ok(spine.length >= 25);
-  assert.deepEqual(optional, ['near-bust', 'revenue-long', 'not-one-person', 'different', 'everyday']);
+  assert.deepEqual(optional, ['near-bust', 'revenue-long', 'not-one-person', 'different', 'everyday', 'dcf-bridge']);
   assert.deepEqual([...new Set(spine.map((s) => s.speaker))], ['Rob', 'Panshul', "Mi'kael"]);
   assert.equal(spine[sectionLastIndex(spine)].id, 'handoff');
 });

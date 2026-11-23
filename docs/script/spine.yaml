@@ -411,6 +411,23 @@
   chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Base case }
   say: We built a five-year cash-flow model, using Bloomberg's own discount rate, which is very cautious. Our base case uses analysts' forecasts. Even our bear case, where AI spending pauses, is on the chart.
 
+- id: dcf-bridge
+  speaker: Panshul
+  optional: true
+  cues: [where the value comes from, break it down, how the value adds up]
+  layout: split
+  title: Where one share's worth comes from
+  bullets:
+    - text: "Five years of cash, in today's money: {{model_dcf_bridge | Cash flow FY28 to FY32 | Base case}} a share"
+      cue: five years of cash
+    - text: "Everything after FY32: {{model_dcf_bridge | Everything after FY32 | Base case}} a share"
+      cue: after that
+    - text: "Cash already in the bank, after debt: {{model_dcf_bridge | Net cash | Base case}}"
+      cue: in the bank
+  chart: { type: stackedBar, datasetKey: model_dcf_bridge, series: [Cash flow FY28 to FY32, Everything after FY32, Net cash], highlight: Base case }
+  chartCue: bear and bull
+  say: Here is where the base-case value comes from. About seventy-three dollars a share is five years of cash. Most of the rest, about ninety-two, is everything after that. Only two and a half is cash in the bank. So the answer leans on what happens after 2032, which is why the bear and bull cases are next to it.
+
 - id: governance
   speaker: Mi'kael
   effect: morph
