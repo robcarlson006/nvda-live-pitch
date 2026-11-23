@@ -137,7 +137,7 @@ function main() {
   });
   write({
     key: 'model_implied_growth', title: 'Yearly revenue growth FY28–FY32', unit: '%', source: `${source}. Reverse DCF at $${price}`,
-    x: ['Priced in today', 'Base case (consensus, then slowing)'],
+    x: ['Priced in today', 'Our base case'],
     series: { 'Growth per year': [r2(implied), r2(baseCagr)] },
   });
 

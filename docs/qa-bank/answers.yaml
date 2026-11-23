@@ -211,7 +211,7 @@
     layout: split
     title: The price already assumes strong growth
     bullets:
-      - "Priced in: {{model_implied_growth | Growth per year | Priced in today}} a year. Our base: {{model_implied_growth | Growth per year | Base case (consensus, then slowing)}}"
+      - "Priced in: {{model_implied_growth | Growth per year | Priced in today}} a year. Our base: {{model_implied_growth | Growth per year | Our base case}}"
       - The gap is small at Bloomberg's discount rate, so misses hurt
       - "It rests on Bloomberg's discount rate: at a lower rate the price would need much less growth"
     chart: { type: bar, datasetKey: model_implied_growth, series: [Growth per year], highlight: Priced in today }

@@ -36,12 +36,15 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
     const barColor = (v: number | null, j: number) => (ref != null && j === hiIdx && v != null && v < ref && j !== price ? '#f0a22e' : j === hiIdx ? GREEN : ref == null ? DIM_GREEN : j === price ? '#d9dccf' : v != null && v < ref ? '#c9821b' : DIM_GREEN);
     const stagger = Math.min(160, 1000 / n); // the whole chart builds in about a second, however many bars
 
+    const stackMax = Math.max(...dataset.x.map((_, j) => spec.series.reduce((t, n) => t + (dataset.series[n][j] ?? 0), 0)));
     const series = spec.series.map((name, i) => {
       const values = dataset.series[name];
       if (spec.type === 'stackedBar') {
         // ECharts can't stack pictorial bars, so stacked charts use plain bars in the same colours.
         const color = i === 0 ? GREEN : ['#4a5045', '#6b7166', '#8d9388', '#b4b9ae'][(i - 1) % 4];
-        return { name, type: 'bar', stack: 'total', data: values, barCategoryGap: '28%', itemStyle: { color }, animationDuration: 1600, animationDelay: (j: number) => j * stagger };
+        return { name, type: 'bar', stack: 'total', data: values, barCategoryGap: '28%', itemStyle: { color }, animationDuration: 1600, animationDelay: (j: number) => j * stagger,
+          // value inside each segment (skip slivers: they would collide)
+          label: { show: true, position: 'inside', color: i === 0 ? '#0b0d0a' : '#f4f6f1', fontFamily: FONT, fontWeight: 700, fontSize: vh * 2.8, formatter: (p: { value: number | null }) => (p.value != null && p.value >= 0.08 * stackMax ? fmt(p.value) : '') } };
       }
       if (isBar) {
         // Bars are stacks of cores, matching the stage background.

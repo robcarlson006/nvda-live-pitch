@@ -437,7 +437,7 @@
   bullets:
     - text: "At Bloomberg's discount rate: {{model_implied_growth | Growth per year | Priced in today}} a year for five years"
       cue: five years
-    - text: "Our base case: {{model_implied_growth | Growth per year | Base case (consensus, then slowing)}} a year"
+    - text: "Our base case: {{model_implied_growth | Growth per year | Our base case}} a year"
       cue: our base case
     - text: At a lower discount rate, the price would need much less growth
       cue: much less
