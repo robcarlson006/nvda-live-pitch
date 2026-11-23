@@ -61,7 +61,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
             value: v,
             itemStyle: { color: spec.series.length > 1 ? (i === 0 ? GREEN : OTHERS[i - 1]) : barColor(v, j) },
             label: {
-              show: spec.series.length === 1 && (n <= 8 || j === hiIdx), // long series: label only the highlight
+              show: spec.series.length === 1 && (n <= 8 || j === hiIdx || j === 0), // long series: label the first bar (where it started) and the highlight
               position: 'top',
               distance: vh,
               formatter: () => (v == null ? '' : fmt(v)),
@@ -74,6 +74,9 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
         };
       }
       const color = i === 0 ? GREEN : OTHERS[(i - 1) % OTHERS.length];
+      // Lines that end on the same spot would hide each other's label: the first label carries their names too.
+      const top = Math.max(...spec.series.flatMap((n) => dataset.series[n].map((v) => v ?? 0)));
+      const together = i === 0 ? spec.series.slice(1).filter((o) => Math.abs((dataset.series[o].at(-1) ?? 0) - (values.at(-1) ?? 0)) <= 0.04 * top) : [];
       return {
         name,
         type: 'line',
@@ -83,7 +86,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
         animationDuration: 2400,
         animationEasing: 'linear',
         // Direct labels at the line ends instead of a legend.
-        endLabel: { show: i === 0 || Math.abs((values.at(-1) ?? 0) - (dataset.series[spec.series[0]].at(-1) ?? 0)) > 0.04 * Math.max(...spec.series.flatMap((n) => dataset.series[n].map((v) => v ?? 0))), formatter: '{a}', color, fontSize: vh * 2.7, fontFamily: FONT, fontWeight: i === 0 ? 650 : 450, distance: vh },
+        endLabel: { show: i === 0 || Math.abs((values.at(-1) ?? 0) - (dataset.series[spec.series[0]].at(-1) ?? 0)) > 0.04 * top, formatter: i === 0 ? [name, ...together].join('\n+ ') : '{a}', color, fontSize: vh * 2.7, fontFamily: FONT, fontWeight: i === 0 ? 650 : 450, distance: vh },
         markPoint:
           i === 0 && hiIdx >= 0
             ? {
@@ -100,7 +103,7 @@ export function Chart({ spec, dataset: full }: { spec: NonNullable<Slide['chart'
     chart.setOption({
       backgroundColor: 'transparent',
       textStyle: { fontFamily: FONT },
-      grid: { left: 0, right: isBar ? (n > 10 ? vh * 7 : 0) : vh * 14, top: vh * 6, bottom: 0, containLabel: true },
+      grid: { left: 0, right: isBar ? (n > 10 ? vh * 7 : 0) : vh * (spec.series.length > 1 ? 27 : 14), top: vh * 6, bottom: 0, containLabel: true },
       legend: isBar && spec.series.length > 1 ? { top: 0, left: 0, textStyle: { color: '#b4b9ae', fontSize: vh * 2 }, icon: 'rect' } : undefined,
       xAxis: {
         type: 'category',

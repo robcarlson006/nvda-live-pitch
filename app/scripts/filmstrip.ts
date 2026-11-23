@@ -2,6 +2,7 @@
  * Filmstrip: motion on one page. For a slide, 6 frames across the build (about 1.5 s), tiled into ONE png.
  *   npm run filmstrip -- cuda                 -> loop/shots/film/cuda-film.png (3x2, 1600 px wide)
  *   npm run filmstrip -- cuda,bubble --out loop/shots/r2 --frames 6 --gap 260 --size 1280x720 --label before
+ * With --grid name the last frame of every slide is also tiled into <name>.png (ids starting qa- are prepared answers, e.g. qa-energy).
  * With --say "words…" the frames are speech instead of Next: the words arrive a few at a time as interim results (shows the pre-glow and the cue landing).
  * Frame k is taken `gap` ms after the k-th Next (elements land one at a time, as a cue would send them); frame 0 is the slide arriving.
  * Each tile is stamped with the milliseconds since the slide change. Uses only the installed Chrome (also to tile): no extra packages.
@@ -38,7 +39,14 @@ async function main() {
   try {
     await page.goto(`${srv.url}/stage`);
     await sleep(1500);
+    const finals: { png: Buffer; label: string }[] = [];
     for (const id of ids) {
+      if (id.startsWith('qa-')) { // a prepared answer: one still, once it has built
+        srv.send({ type: 'bank', id: id.slice(3) });
+        await sleep(6500);
+        finals.push({ png: await page.screenshot(), label: id });
+        continue;
+      }
       const i = srv.box.spine.findIndex((s) => s.id === id);
       if (i < 0) throw new Error(`no slide "${id}"`);
       const n = elementCount(srv.box.spine[i]);
@@ -50,16 +58,18 @@ async function main() {
       const shots: { png: Buffer; label: string }[] = [];
       for (let k = 0; k < frames; k++) {
         if (say) srv.send({ type: 'transcript', text: say.slice(0, Math.min(say.length, (k + 1) * per)).join(' '), final: false }); // speech arrives a few words at a time
-        else if (k > 0 && k < n) srv.send({ type: 'next' }); // never past the last element: that would change slide
+        else if (k > 0 && (srv.box.state?.reveal ?? 0) < n) srv.send({ type: 'next' }); // never past the last element: that would change slide
         await sleep(gap);
         if (opt('debug')) console.log(k, 'ghosts', await page.locator('.ghost').count(), JSON.stringify(srv.box.state?.glow), srv.box.state?.reveal);
         const png = await page.screenshot();
         shots.push({ png, label: `${id} +${Date.now() - t0}ms · el ${Math.min(k, n)}/${n}` });
       }
+      finals.push({ png: shots.at(-1)!.png, label: id });
       const file = path.join(out, `${id}-film${opt('label') ? '-' + opt('label') : ''}.png`);
       await tile(await browser.newPage(), shots, file);
       console.log(`saved ${file} (${fs.statSync(file).size >> 10} KB)`);
     }
+    if (opt('grid')) { const f = path.join(out, `${opt('grid')}.png`); await tile(await browser.newPage(), finals, f, Math.min(2, finals.length)); console.log(`saved ${f}`); }
   } finally {
     await browser.close();
     srv.stop();
