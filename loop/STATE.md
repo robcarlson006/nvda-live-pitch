@@ -80,3 +80,5 @@ Blind review (1 Sonnet, 7 stills, `loop/shots/blind2`): **5.9/10 average**: valu
 From the blind review: valuation's secondary bars brighter (#2f4a05→#436b0d), line charts put the end figure above the marker so it no longer crowds the series name (scope3). `loop/shots/r8/after.png`. Still weak: revenue-long dead space.
 ## run 2 · 20 · 02:46 · C revenue-long step labels · KEPT
 Weakest blind-scored slide (5): long bar series now label first, middle, FY22 and last bar ($0.4bn → $4.3bn → $26.9bn → $215.9bn) so the early climb reads. `loop/shots/r9/after.png`. R9 (blind review) closed: done at entry 18. Dead space remains (bars from zero).
+## run 2 · 21 · 02:50 · C fallback deck regenerated · KEPT
+The fallback PDF was from run 1 (54 pages) and lacked the new slides and answers. Regenerated: **58 pages (24 answers)**, includes dcf-bridge, reverse-dcf, pe-peers, student-model. Gate PASS.
