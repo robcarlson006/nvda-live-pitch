@@ -24,3 +24,6 @@ Format: `- [ ] <question>. **Default used:** <what the loop did>. (ticket)`. Rob
 - [ ] Bloomberg: export beta, risk-free and equity risk premium (no CAPM check is possible without them) and the unit for water.
 - [ ] Open the workbook once in Excel or Numbers: it has only been opened in LibreOffice.
 - [ ] The **fallback deck adds about 31 MB** to the repo.
+
+## Run 2: follow accuracy
+True holdout: 89.0% right, 23 words late, 2.17 false moves per run (target 90 / 15 / 1.5). Improving it needs live eval runs, about $1 per pass. The $1.50 run cap is gone ($1.13 spent). Raise the cap in `app/scripts/follow-eval.ts` if you want another attempt. Cue words remain the safety net.

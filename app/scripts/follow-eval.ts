@@ -153,7 +153,7 @@ async function main() {
   const skip = args.includes('--skip') ? args[args.indexOf('--skip') + 1].split(',') : [];
   const verbose = args.includes('--verbose');
   const dir = path.join(ROOT, 'rehearsal/evals', set);
-  const budget = new Budget(path.join(ROOT, 'loop/eval-spend.json'), 3);
+  const budget = new Budget(path.join(ROOT, 'loop/eval-spend.json'), 1.5);
   const start = budget.spent;
   const all: Scenario[] = fs.readdirSync(dir).filter((f) => f.endsWith('.json') && f !== 'results.json' && !f.startsWith('_')).sort().map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')))
     .filter((s) => (!only || only.some((o) => s.id.startsWith(o))) && !skip.some((o) => s.id.startsWith(o)));
