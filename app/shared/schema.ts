@@ -185,7 +185,7 @@ export type ClientMsg = z.input<typeof ClientMsg>;
 export type MicInfo = { stage: boolean; on: boolean; listening: boolean; engine: 'deepgram' | 'chrome'; lang: 'en-GB' | 'en-US'; device: string; problem: string | null };
 
 export type ServerMsg =
-  | { type: 'state'; state: ShowState; spine: SpineSlide[]; spineError: string | null; clients: number; ai: AiInfo; bank: { id: string; question: string }[]; mic: MicInfo; pending: Draft | null }
+  | { type: 'state'; state: ShowState; spine: SpineSlide[]; spineError: string | null; clients: number; ai: AiInfo; bank: { id: string; question: string }[]; mic?: MicInfo; pending?: Draft | null }
   | { type: 'hearing'; text: string }
   | { type: 'micCmd'; action: 'start' | 'stop'; engine?: 'deepgram' | 'chrome'; lang?: 'en-GB' | 'en-US' }
   | { type: 'error'; message: string }

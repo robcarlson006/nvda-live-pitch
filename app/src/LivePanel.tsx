@@ -27,6 +27,13 @@ export function LivePanel({ state, ai, bank, datasets, send }: Props) {
           </button>
         )}
         {covered && <button onClick={() => send({ type: 'resume' })}>Back to script (R)</button>}
+        <label className="pill toggle" title="Live: the deck follows what is meant, in any words. Cue words still work as the backup.">
+          Follow by
+          <select value={state.follow} onChange={(e) => send({ type: 'follow', mode: e.target.value as 'script' | 'live' })}>
+            <option value="script">cue words</option>
+            <option value="live">meaning (AI)</option>
+          </select>
+        </label>
         <label className="pill toggle">
           <input type="checkbox" checked={state.riff} onChange={(e) => send({ type: 'setting', key: 'riff', on: e.target.checked })} /> React off script
         </label>
@@ -39,6 +46,12 @@ export function LivePanel({ state, ai, bank, datasets, send }: Props) {
         {ai.busy && <span className="pill ok">{ai.busy === 'research' ? 'Not in our data: searching the web…' : ai.busy === 'answer' ? 'Building answer…' : 'Building reaction…'}</span>}
       </div>
       {asking && <div className="op-heard">{`${state.question} ${state.questionTail}`.trim() || 'Listening to the question…'}</div>}
+      {state.follow === 'live' && (
+        <div className="op-meta">
+          Following meaning{ai.follow.ms ? ` · ${ai.follow.ms} ms` : ''}: {ai.follow.text ? `…${ai.follow.text}` : 'waiting for speech'}
+        </div>
+      )}
+      {state.follow === 'live' && ai.follow.error && <div className="op-error">{ai.follow.error}</div>}
       {ai.note && <div className="op-error">{ai.note}</div>}
       {ai.bankError && <div className="op-error">Prepared answers not loaded: {ai.bankError}</div>}
 

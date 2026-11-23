@@ -7,7 +7,8 @@ import { findAnswer, loadBank, type BankEntry } from './bank.ts';
 import { Budget } from './budget.ts';
 import type { AiInfo, ClientMsg, Draft, ServerMsg, SpineSlide } from '../shared/schema.ts';
 import { deepgramKey, deepgramUrl, relay } from './deepgram.ts';
-import { addDraft, apply, cover, isCovered, offScript, loadDatasets, loadSpine, loadState, relocate, runReport, saveState, SPINE_FILE } from './state.ts';
+import { accept, Director } from './director.ts';
+import { addDraft, apply, cover, isCovered, liveGo, livePoints, logMove, offScript, loadDatasets, loadSpine, loadState, relocate, runReport, saveState, SPINE_FILE } from './state.ts';
 
 const PORT = Number(process.env.PORT ?? 5173);
 const prod = process.env.NODE_ENV === 'production';
@@ -48,7 +49,8 @@ let job: { kind: 'answer' | 'riff' | 'research'; abort: AbortController } | null
 let note: string | null = null;
 let lastRiff = 0;
 const RIFF_GAP = 25_000; // at most one reaction per 25 s: keeps the stage calm and the bill small
-const aiInfo = (): AiInfo => ({ busy: job?.kind ?? null, note, spent: ai.budget.spent, cap: ai.budget.cap, model: MODEL, hasKey: ai.hasKey(), bankError });
+const director = new Director(ai.budget);
+const aiInfo = (): AiInfo => ({ follow: { text: director.recent(14), ms: director.ms, error: director.error }, busy: job?.kind ?? null, note, spent: ai.budget.spent, cap: ai.budget.cap, model: MODEL, hasKey: ai.hasKey(), bankError });
 
 const draft = (kind: Draft['kind'], heard: string, slide: Draft['slide'], from: Draft['from'], links?: Draft['links']): Draft => ({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, kind, heard, slide, from, at: Date.now(), ...(links ? { links } : {}) });
 const stopJob = () => {
@@ -131,7 +133,39 @@ function maybeRiff() {
   void build('riff', heard);
 }
 
+/**
+ * Live mode: every few words, a fast model says where the talk is now. Cue words keep working beside it,
+ * so if the AI is slow, wrong or unreachable the deck still moves. Its verdicts only ever choose among our own slides.
+ */
+async function followSpeech() {
+  if (state.follow !== 'live' || !state.autoCue || state.mode !== 'script' || !director.ready()) return;
+  const was = state;
+  const v = await director.look(was, spine, datasets);
+  if (!v) return broadcast(); // shows the error banner, if any
+  // The operator or a cue moved the show while the model was thinking: this verdict is about a screen that is gone.
+  if (state.liveSince !== was.liveSince || state.index !== was.index || state.reveal !== was.reveal || state.follow !== 'live' || state.mode !== 'script') return broadcast();
+  const votes = director.vote(v.action === 'slide' ? `slide:${v.slide}` : v.action);
+  if (!accept(v, state, spine, votes)) return broadcast();
+  if (v.action === 'tangent') {
+    // Same path as an off-script reaction: built from our data, queued for approval unless "Show without approval" is on.
+    if (!job && !state.drafts.length && Date.now() - lastRiff >= RIFF_GAP && !isCovered(state) && state.riff) {
+      lastRiff = Date.now();
+      void build('riff', director.recent(60));
+    }
+    return broadcast();
+  }
+  const out = v.action === 'slide' && v.slide ? liveGo(state, spine, v.slide, v.covered) : livePoints(state, spine, v.covered);
+  if (out !== state) {
+    const target = v.action === 'slide' ? String(v.slide) : `${spine[state.index]?.id}: points`;
+    state = logMove(state, { ...out, lastCue: { phrase: `(heard) ${director.recent(8)}`, target, at: Date.now() } }, 'live', spine);
+    saveState(state);
+  }
+  broadcast();
+}
+
 function handleAi(msg: ClientMsg, before: typeof state): void {
+  // Speech from before a manual move, a toggle or a question is about a different moment: never judge it again.
+  if (['next', 'back', 'goto', 'clear', 'follow', 'resume', 'bank', 'question', 'autoCue', 'draft'].includes(msg.type)) director.reset();
   if (msg.type === 'question') {
     if (msg.action === 'answer') {
       const q = `${before.question} ${before.questionTail}`.trim();
@@ -207,6 +241,10 @@ wss.on('connection', (ws) => {
     const next = apply(state, raw, { datasets, spine });
     if (typeof next === 'string') return send(ws, { type: 'error', message: next });
     const msg = raw as ClientMsg; // apply() has validated it
+    if (msg.type === 'transcript' && state.follow === 'live' && state.mode === 'script' && state.autoCue) {
+      director.hear(msg.text, msg.final); // interim results too: most of them change nothing else
+      void followSpeech();
+    }
     if (next === state && !['ask', 'bank', 'clear'].includes(msg.type)) return;
     if (state.rehearsal && !next.rehearsal) {
       // A rehearsal run just stopped: log it. A failed write must never take the show down.

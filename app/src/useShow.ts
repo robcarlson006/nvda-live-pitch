@@ -35,7 +35,7 @@ export function useShow() {
           setAi(msg.ai);
           setBank(msg.bank);
         } else if (msg.type === 'saved') setNotice(`Rehearsal saved to ${msg.file}`);
-        else setError(msg.message);
+        else if (msg.type === 'error') setError(msg.message);
       };
       sock.onclose = () => {
         setConnected(false);
