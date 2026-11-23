@@ -55,7 +55,7 @@ if pct_ge "$five" "$limit"; then
     : > loop/FINAL_WRAP
     printf '\n## (hook) · %s · usage limit before the deadline\nUsage %s%%; it will not reset before the deadline (%s). Asked for the wrap-up now.\n' "$(fmt "$now")" "$five" "$(fmt "$dl")" >> loop/STATE.md
     echo "loop: usage ${five}%, no reset before the deadline: asking for the wrap-up now" >&2
-    printf '{"decision":"block","reason":"%s"}\n' "USAGE LIMIT: you are at ${five}% of the session limit and it will not reset before the deadline. Do the wrap-up NOW with as few tokens as possible: no new features, no subagents, no screenshots. Run bash loop/check.sh --quick, commit anything green, write loop/MORNING-2.md as loop/CARD.md says, git tag loop-final-2, then touch loop/STOP and stop."
+    printf '{"decision":"block","reason":"%s"}\n' "USAGE LIMIT: you are at ${five}% of the session limit and it will not reset before the deadline. Do the wrap-up NOW with as few tokens as possible: no new features, no subagents, no screenshots. Run bash loop/check.sh --quick, commit anything green, write loop/DEMO.md and then loop/MORNING-2.md as loop/CARD.md says, git tag loop-final-2, then touch loop/STOP and stop."
     exit 0
   fi
   printf 'PAUSED at %s: usage %s%%, resuming %s\n' "$(fmt "$real")" "$five" "$(fmt "$target")" > loop/PAUSED

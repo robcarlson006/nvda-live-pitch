@@ -6,10 +6,10 @@ Priority: **P0** must land tonight · **P1** should · **P2** if time.
 ## Scores (0–10, honest, evidence-backed; `?` until PV-0 measures it). Target ≥ 8 each.
 | Track | Baseline | Now | What the score means |
 |---|---|---|---|
-| SHOW (animation/graphics) | ~4.5 (mine) | 6.2 (blind) | mean RUBRIC score over all spine slides + finale |
-| FOLLOW (no trigger words) | 0 (not wired in) | 6.5 | follow-eval: right slide, in time, no false jumps (dev and holdout) |
-| MONEY (financials) | 5 | 7 (blind) | model audited, spreadsheet live-formula and reconciled, defensible in plain English |
-| ANSWER (Q&A) | 5 | 6 (live path not drilled) | bank-eval + hostile-question drills: honest, sourced, fast, ESG-strong |
+| SHOW (animation/graphics) | ~4.5 (mine) | 5.9 (blind, 7 slides incl. 2 new; run 1 said 6.2 on others: lower taken) | mean RUBRIC score over all spine slides + finale |
+| FOLLOW (no trigger words) | 0 (not wired in) | 6.5 (unchanged: dev a-full 26/27, p50 17 words; holdout half 88.9%, p50 20, 1.83 false/run, targets missed) | follow-eval: right slide, in time, no false jumps (dev and holdout) |
+| MONEY (financials) | 5 | 7.5 (student defended 7 of 7 questions; reverse DCF + peers sheets reconcile) | model audited, spreadsheet live-formula and reconciled, defensible in plain English |
+| ANSWER (Q&A) | 5 | 6.5 (10 more paraphrase tests, 2 new valuation answers; live path still not drilled) | bank-eval + hostile-question drills: honest, sourced, fast, ESG-strong |
 | FALLBACK (reliability) | 4 | 7 | every failure drill degrades gracefully; static fallback deck exists |
 | ORG (organisation) | 5 | 7 (no outside reader yet) | someone new could run the pitch from docs/RUNBOOK.md alone |
 
