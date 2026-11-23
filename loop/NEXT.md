@@ -6,7 +6,7 @@ Skip list tonight (don't start): live ticker, second-device operator, spreadshee
   3.2 flagged false moves/run, one run raced through 4 slides (fixed, untested on holdout). Round 1: run the holdout ONCE to get the true
   number. Then fix only the top failure patterns (read ≤ 30 lines of failures). Targets: ≥ 90% right, ≤ 1.5 false moves/run, p50 lateness
   ≤ 15 words. Re-run holdout once at the end. Never tune on holdout; use dev. Keep cue words as the safety net.
-- [ ] **N2 · SHOW: charts + money.** Charts still use the old drawing and look plainer than the rest. Move chart slides onto the WebGL engine:
+- [~] **N2 · PARTIAL (chart features already exist, WebGL port skipped; DCF bridge dataset + test done, not on a slide) · SHOW: charts + money.** Charts still use the old drawing and look plainer than the rest. Move chart slides onto the WebGL engine:
   draw-in, spotlight the highlighted series and dim the rest, direct labels, source line, bars from zero. Then Panshul's **DCF bridge**
   (revenue → FCF → PV → value per share vs the price line, bear/base/bull; all values from `data/clean/model_*.json`). ≤ 2 stills a round,
   1280×720. Calm on ESG slides; no triumphant motion on bad news. Perf must not regress (p95 frame ≤ 17 ms on the existing perf run).
