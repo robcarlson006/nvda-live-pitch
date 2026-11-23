@@ -17,7 +17,7 @@ Skip list tonight (don't start): live ticker, second-device operator, spreadshee
 - [~] **N4 · PARTIAL (Networking verified; others left unverified, notes in NEEDS_ROB) · FACTS.** Networking $31bn: Bloomberg FA p.175 prints $31,376m for FY26 → record it as verified (source + page). For the other [VERIFY]
   figures (CUDA spend ~$0.5bn/yr, supply commitments $279bn, 90%/80% AI-chip share, security "0") use ≤ 6 searches total, primary sources only,
   quote ≤ 15 words with publisher + URL + date. Can't source → leave unverified, list "cut or reword" in NEEDS_ROB.md.
-- [ ] **N5 · TIME PRESSURE + PANIC (we may run out of time and skip parts).** Operator panel: time left vs plan, and which ✂ beats to drop to
+- [x] **N5 · DONE (pace.ts + tests; Esc/P panic; not eyeballed in a browser) · TIME PRESSURE + PANIC (we may run out of time and skip parts).** Operator panel: time left vs plan, and which ✂ beats to drop to
   finish on time (suggest only, never auto-skip). One-key panic → standby/fallback, working with AI and mic dead. Deterministic tests.
 - [ ] **N6 · LAST: one blind review.** One subagent, sonnet, re-scores 6 stills (new chart slide, DCF bridge, finale, one ESG slide, valuation,
   a Q&A slide) with RUBRIC.md; take its number if lower. Spawn it only if ≥ 45 minutes remain.
