@@ -1,0 +1,18 @@
+{
+  "key": "model_forecast_growth",
+  "title": "Consensus revenue growth, year on year",
+  "unit": "%",
+  "source": "Computed from Bloomberg consensus revenue (nvda_revenue_forecast), NVDA US Equity",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "FY27",
+    "FY28"
+  ],
+  "series": {
+    "Growth": [
+      95.53,
+      72.57
+    ]
+  }
+}

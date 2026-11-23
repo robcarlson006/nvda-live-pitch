@@ -1,0 +1,25 @@
+/* The scene stage. Fixed 1920×1080 canvas, scaled to fit. Tokens match tokens.ts. See design.md. */
+.sx { --bg: #000; --ink: #f4f6f1; --dim: #b4b9ae; --faint: #7a8174; --grid: #1b1f19; --core: #2b3028; --green: #76b900; --green-deep: #436b0d; --amber: #f0a22e;
+  position: absolute; inset: 0; background: #000; overflow: hidden; font-family: 'Archivo Variable', system-ui, sans-serif; color: var(--ink); }
+.sx-frame { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: 0 0; font-variant-numeric: tabular-nums lining-nums; }
+.sx-backdrop { position: absolute; inset: 0; width: 1920px; height: 1080px; }
+.sx-scene { position: absolute; inset: 0; width: 1920px; height: 1080px; will-change: opacity, transform, filter; }
+
+/* type */
+.sx-display { font-stretch: 125%; font-weight: 800; font-size: 190px; line-height: 0.98; letter-spacing: -0.02em; margin: 0; }
+.sx-h1 { font-stretch: 118%; font-weight: 760; font-size: 116px; line-height: 1.02; letter-spacing: -0.015em; margin: 0; }
+.sx-h2 { font-stretch: 112%; font-weight: 720; font-size: 76px; line-height: 1.06; letter-spacing: -0.01em; margin: 0; }
+.sx-body { font-stretch: 100%; font-weight: 450; font-size: 46px; line-height: 1.25; margin: 0; color: var(--ink); }
+.sx-label { font-stretch: 100%; font-weight: 560; font-size: 32px; letter-spacing: 0.01em; color: var(--dim); margin: 0; }
+.sx-foot { position: absolute; left: 120px; right: 120px; bottom: 74px; font-size: 24px; line-height: 1.35; color: var(--dim); }
+.sx-green { color: var(--green); }
+.sx-amber { color: var(--amber); }
+.sx-dim { color: var(--dim); }
+
+/* masked text reveal: the text rises out of a clip, so nothing fades or blurs (a poor projector shows soft edges as mush) */
+.sx-mask { display: inline-block; overflow: hidden; vertical-align: top; padding: 0.06em 0.04em 0.14em; margin: -0.06em -0.04em -0.14em; }
+.sx-mask > span { display: inline-block; will-change: transform; }
+
+.sx-pos { position: absolute; }
+.sx-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.sx-hold { position: absolute; left: 120px; top: 108px; right: 120px; }

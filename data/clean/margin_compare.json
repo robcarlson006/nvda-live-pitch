@@ -1,0 +1,20 @@
+{
+  "key": "margin_compare",
+  "title": "Operating margin: NVIDIA reported, AMD and Intel expected",
+  "unit": "%",
+  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD). NVIDIA = reported FY26 (year to Jan 2026); AMD and Intel = consensus for this fiscal year",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "NVIDIA",
+    "AMD",
+    "Intel"
+  ],
+  "series": {
+    "Operating margin": [
+      60.38,
+      29.05,
+      15.07
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "key": "model_rates",
+  "title": "The two discount rates we show",
+  "unit": "%",
+  "source": "Bloomberg WACC screen, NVDA US Equity, 20 Nov 2026; Damodaran (NYU Stern), Cost of Capital by Industry, US, Semiconductors (66 firms), data as of January 2026",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "Bloomberg",
+    "US semiconductor average"
+  ],
+  "series": {
+    "Discount rate": [
+      19.3,
+      10.55
+    ]
+  }
+}

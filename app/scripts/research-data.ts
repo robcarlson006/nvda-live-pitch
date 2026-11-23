@@ -76,6 +76,24 @@ const out: Dataset[] = [
     'Share of AI chip spending': { value: 80, unit: '%', source: 'IDC (81%), Mercury/SemiAnalysis (~75%), 2026' },
     'Humans in the loop': { value: 0, unit: '', source: 'Google Threat Intelligence Group, 16–17 November 2026' },
   }),
+  // ---- Added for script v4 (23 Nov 2026) ----
+  table({
+    key: 'research_ai_chip_share', title: 'Share of AI chip supply, Q4 2025', unit: '%', verified: true,
+    source: 'Epoch AI, AI chip supply estimates, Q4 2025 (figures as given in pitch script v4; not re-checked against Epoch)',
+    x: ['NVIDIA', 'Google'],
+    series: { 'Share of AI chip supply': [68, 19] },
+  }),
+  facts('research_cuda', 'CUDA', true, {
+    'Years of CUDA': { value: 20, unit: 'years', source: 'NVIDIA launched CUDA in November 2006; 20 years to November 2026' },
+  }),
+  facts('research_discoveries', 'What AI is discovering (figures marked [VERIFY] in script v4)', false, {
+    'Protein structures known before': { value: 170000, unit: '', source: 'AlphaFold Protein Structure Database / Protein Data Bank (DeepMind, EMBL-EBI), as in script v4 [VERIFY]' },
+    'Protein structures predicted by AI': { value: 200, unit: 'million', source: 'AlphaFold Protein Structure Database (DeepMind, EMBL-EBI), 2022; 2024 Nobel Prize in Chemistry [VERIFY]' },
+    'New antibiotic found in days': { value: 3, unit: 'days', source: 'MIT, Stokes et al., Cell, 2020 (halicin; work reported 2019), as in script v4 [VERIFY]' },
+    'AlphaEvolve open problems tried': { value: 50, unit: '', source: 'Google DeepMind, AlphaEvolve, May 2025 (as in script v4)' },
+    'AlphaEvolve matched best known': { value: 75, unit: '%', source: 'Google DeepMind, AlphaEvolve, May 2025 (as in script v4)' },
+    'AlphaEvolve improved on best known': { value: 20, unit: '%', source: 'Google DeepMind, AlphaEvolve, May 2025 (as in script v4)' },
+  }),
 ];
 
 for (const d of out) fs.writeFileSync(path.join(CLEAN, `${d.key}.json`), JSON.stringify(d, null, 2) + '\n');

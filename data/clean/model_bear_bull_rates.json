@@ -1,0 +1,28 @@
+{
+  "key": "model_bear_bull_rates",
+  "title": "Bear and bull cases at both discount rates",
+  "unit": "USD",
+  "units": {
+    "Change from today": "%"
+  },
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Bear = AI spending pauses; share price $164.39",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "Bear at Bloomberg rate",
+    "Bear at US semiconductor average",
+    "Bull at US semiconductor average"
+  ],
+  "series": {
+    "Value per share": [
+      31.4,
+      64.41,
+      434.36
+    ],
+    "Change from today": [
+      -80.9,
+      -60.82,
+      164.22
+    ]
+  }
+}

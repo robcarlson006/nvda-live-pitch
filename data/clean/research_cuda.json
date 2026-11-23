@@ -1,0 +1,24 @@
+{
+  "key": "research_cuda",
+  "title": "CUDA",
+  "unit": "",
+  "units": {
+    "Years of CUDA": "years"
+  },
+  "source": "Research notes (via NotebookLM research, 21 Nov 2026)",
+  "seriesSources": {
+    "Years of CUDA": "NVIDIA launched CUDA in November 2006; 20 years to November 2026"
+  },
+  "asOf": "2026-11-21",
+  "placeholder": false,
+  "curated": true,
+  "verified": true,
+  "x": [
+    "value"
+  ],
+  "series": {
+    "Years of CUDA": [
+      20
+    ]
+  }
+}

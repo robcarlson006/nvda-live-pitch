@@ -113,9 +113,18 @@ export const companies: [string, Loaded, string][] = [['NVIDIA', nvdaA, 'FY27'],
     const v = pick(r, { template: 'Multiples', section: '', label }).values[at(fwd)];
     return v == null ? null : round(v);
   });
+  // NVIDIA's own multiples are price-based. If the team has typed a newer share price (data/model/assumptions.json),
+  // re-strike NVIDIA's row at that price: P/E and PEG scale with price; EV/EBITDA with enterprise value (EV moves by the price change x shares).
+  const des = pdfText(path.join(RAW, 'nvda_des_2026-11-20.pdf'));
+  const desNum = (re: RegExp) => Number(des.match(re)![1].replace(/,/g, ''));
+  const desPx = desNum(/Last Px\s+USD\/([\d.]+)/), desShares = desNum(/Curr Shares Out\s+([\d.]+)B/), desEv = desNum(/Curr EV\s+([\d,.]+)B/);
+  const teamPx: number | null = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/model/assumptions.json'), 'utf8')).priceOverride?.value ?? null;
+  const pK = teamPx ? teamPx / desPx : 1, evK = teamPx ? (desEv + (teamPx - desPx) * desShares) / desEv : 1;
+  const restruck = (a: (number | null)[], k: number) => a.map((v, i) => (i === 0 && v != null ? round(v * k) : v));
   const peerSrc = 'Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD)';
-  add({ key: 'peers_pe', title: 'Price/earnings: today and on this year’s expected earnings', unit: 'x', source: peerSrc + '. Forward = fiscal year ending Oct 2026 to Jan 2027', asOf: nvdaA.asOf, x, series: { 'Current P/E': val('P/E', () => 'Current'), 'Forward P/E': val('P/E', (f) => f) } });
-  add({ key: 'peers_ev_ebitda', title: 'Enterprise value / EBITDA, forward', unit: 'x', source: peerSrc, asOf: nvdaA.asOf, x, series: { 'EV/EBITDA': val('EV/EBITDA', (f) => f) } });
+  const pxNote = teamPx ? `. NVIDIA re-struck at the team price $${teamPx} (Bloomberg's was $${desPx}); the others are Bloomberg's` : '';
+  add({ key: 'peers_pe', title: 'Price/earnings: today and on this year’s expected earnings', unit: 'x', source: peerSrc + '. Forward = fiscal year ending Oct 2026 to Jan 2027' + pxNote, asOf: nvdaA.asOf, x, series: { 'Current P/E': restruck(val('P/E', () => 'Current'), pK), 'Forward P/E': restruck(val('P/E', (f) => f), pK) } });
+  add({ key: 'peers_ev_ebitda', title: 'Enterprise value / EBITDA, forward', unit: 'x', source: peerSrc + pxNote, asOf: nvdaA.asOf, x, series: { 'EV/EBITDA': restruck(val('EV/EBITDA', (f) => f), evK) } });
 
   const rows = companies.map(([, r, fwd]) => {
     const eps = pick(r, { template: 'Earnings', section: 'Earnings Per Share', label: 'Consensus Estimate' }).values;
@@ -126,8 +135,11 @@ export const companies: [string, Loaded, string][] = [['NVIDIA', nvdaA, 'FY27'],
     return { g: g == null ? null : round(g), peg: g && g > 0 && fpe ? round(fpe / g) : null, om: om == null ? null : round(om) };
   });
   add({ key: 'peers_growth', title: 'Expected EPS growth next year (consensus)', unit: '%', source: peerSrc + '. Growth from this fiscal year to next', asOf: nvdaA.asOf, x, series: { 'EPS growth': rows.map((r) => r.g) } });
-  add({ key: 'peers_peg', title: 'PEG: forward P/E divided by expected EPS growth', unit: 'x', source: peerSrc + '. Lower = cheaper for the growth', asOf: nvdaA.asOf, x, series: { PEG: rows.map((r) => r.peg) } });
+  add({ key: 'peers_peg', title: 'PEG: forward P/E divided by expected EPS growth', unit: 'x', source: peerSrc + '. Lower = cheaper for the growth' + pxNote, asOf: nvdaA.asOf, x, series: { PEG: restruck(rows.map((r) => r.peg), pK) } });
   add({ key: 'peers_operating_margin', title: 'Operating margin, this fiscal year (consensus)', unit: '%', source: peerSrc, asOf: nvdaA.asOf, x, series: { 'Operating margin': rows.map((r) => r.om) } });
+  // The margin slide: NVIDIA's reported FY26 margin against what analysts expect AMD and Intel to keep this year.
+  const nvdaOmFy26 = pick(nvdaA, { template: 'Profitability', section: 'Margins', label: 'Operating Margin' }).values['FY26'];
+  add({ key: 'margin_compare', title: 'Operating margin: NVIDIA reported, AMD and Intel expected', unit: '%', source: peerSrc + '. NVIDIA = reported FY26 (year to Jan 2026); AMD and Intel = consensus for this fiscal year', asOf: nvdaA.asOf, x: ['NVIDIA', 'AMD', 'Intel'], series: { 'Operating margin': [round(nvdaOmFy26), rows[1].om, rows[2].om] } });
 
   const ghg = companies.map(([, r]) => {
     const s1 = pick(r, { template: 'Environmental', label: 'GHG Scope 1' }).values;

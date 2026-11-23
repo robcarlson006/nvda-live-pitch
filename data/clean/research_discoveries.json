@@ -1,0 +1,49 @@
+{
+  "key": "research_discoveries",
+  "title": "What AI is discovering (figures marked [VERIFY] in script v4)",
+  "unit": "",
+  "units": {
+    "Protein structures known before": "",
+    "Protein structures predicted by AI": "million",
+    "New antibiotic found in days": "days",
+    "AlphaEvolve open problems tried": "",
+    "AlphaEvolve matched best known": "%",
+    "AlphaEvolve improved on best known": "%"
+  },
+  "source": "Research notes (via NotebookLM research, 21 Nov 2026)",
+  "seriesSources": {
+    "Protein structures known before": "AlphaFold Protein Structure Database / Protein Data Bank (DeepMind, EMBL-EBI), as in script v4 [VERIFY]",
+    "Protein structures predicted by AI": "AlphaFold Protein Structure Database (DeepMind, EMBL-EBI), 2022; 2024 Nobel Prize in Chemistry [VERIFY]",
+    "New antibiotic found in days": "MIT, Stokes et al., Cell, 2020 (halicin; work reported 2019), as in script v4 [VERIFY]",
+    "AlphaEvolve open problems tried": "Google DeepMind, AlphaEvolve, May 2025 (as in script v4)",
+    "AlphaEvolve matched best known": "Google DeepMind, AlphaEvolve, May 2025 (as in script v4)",
+    "AlphaEvolve improved on best known": "Google DeepMind, AlphaEvolve, May 2025 (as in script v4)"
+  },
+  "asOf": "2026-11-21",
+  "placeholder": false,
+  "curated": true,
+  "verified": false,
+  "x": [
+    "value"
+  ],
+  "series": {
+    "Protein structures known before": [
+      170000
+    ],
+    "Protein structures predicted by AI": [
+      200
+    ],
+    "New antibiotic found in days": [
+      3
+    ],
+    "AlphaEvolve open problems tried": [
+      50
+    ],
+    "AlphaEvolve matched best known": [
+      75
+    ],
+    "AlphaEvolve improved on best known": [
+      20
+    ]
+  }
+}

@@ -32,6 +32,9 @@ export const Slide = z.object({
   chart: ChartSpec.optional(),
   stat: StatSpec.optional(),
   effect: Effect.optional(),
+  // Scripted slides of script v4 are drawn by a hand-built scene (app/src/stage/scenes). Its beats are the title, then one per bullet.
+  // The bullets of a scene slide are its beat labels, or its text when the scene is a text slide. Slides without a scene use the layouts above.
+  scene: z.string().optional(),
   icons: z.array(z.enum(ICON_NAMES)).max(5).optional(), // drawn by the cores on the right: one big, or 2–3 in a chain
   sources: z.array(z.string()).default([]),
 });
@@ -113,6 +116,7 @@ export const isUnverified = (s: Slide, datasets: Record<string, Dataset>) => sli
 
 /** A slide in the scripted spine: a Slide plus the phrases that trigger it and its elements. */
 export const SpineSlide = Slide.extend({
+  bullets: z.array(z.string().max(420)).max(8).default([]), // scene slides may have up to eight beats; live-built slides stay at four
   cues: z.array(z.coerce.string().min(1)).min(1),
   say: z.string().optional(),
   optional: z.boolean().default(false), // can be skipped from the operator panel

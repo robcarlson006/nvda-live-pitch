@@ -95,7 +95,9 @@ function main() {
     }),
   ) as Record<string, { label: string; path: number[]; margin: number } & ReturnType<typeof dcf>>;
 
-  const waccs = [10, 12, 14, 16, bbgWacc];
+  const altWacc: number = A.altWacc.value;
+  const baseAlt = dcf({ path: results.base.path, margin: baseMargin, wacc: altWacc, g, netCash, shares, t }).perShare;
+  const waccs = [altWacc, 12, 14, 16, bbgWacc];
   const gs = [2, 3, 4];
   const sens = gs.map((gg) => waccs.map((w) => r2(dcf({ path: results.base.path, margin: baseMargin, wacc: w, g: gg, netCash, shares, t }).perShare)));
   const implied = impliedGrowth({ rev27, margin: baseMargin, wacc, g, netCash, shares, t }, price);
@@ -110,9 +112,9 @@ function main() {
   const source = 'Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data';
   const write = (d: Omit<Dataset, 'placeholder' | 'asOf'>) => fs.writeFileSync(path.join(CLEAN, `${d.key}.json`), JSON.stringify(Dataset.parse({ ...d, asOf: valuationDate, placeholder: false }), null, 2) + '\n');
   write({
-    key: 'model_valuation', title: 'What one NVIDIA share is worth', unit: 'USD', source: `${source}. WACC ${wacc}%, terminal growth ${g}%`,
-    x: ['Share price today', 'Bear case', 'Base case', 'Bull case', 'Peer P/E check'],
-    series: { 'Value per share': [price, results.bear.perShare, results.base.perShare, results.bull.perShare, peerValue].map(r2) },
+    key: 'model_valuation', title: 'What one NVIDIA share is worth', unit: 'USD', source: `${source}. WACC ${wacc}%, terminal growth ${g}%; 'rival-average rate' = ${altWacc}% (Damodaran, US semiconductors, Jan 2026)`,
+    x: ['Share price today', 'Bear case', 'Base case', 'Bull case', 'Base case at rival-average rate', 'Peer P/E check'],
+    series: { 'Value per share': [price, results.bear.perShare, results.base.perShare, results.bull.perShare, baseAlt, peerValue].map(r2) },
   });
   const cases = ['bear', 'base', 'bull'] as const;
   const perShare = (f: (r: (typeof results)[string]) => number) => cases.map((n) => r2(f(results[n]) / shares));
@@ -139,6 +141,33 @@ function main() {
     key: 'model_implied_growth', title: 'Yearly revenue growth FY28–FY32', unit: '%', source: `${source}. Reverse DCF at $${price}`,
     x: ['Priced in today', 'Our base case'],
     series: { 'Growth per year': [r2(implied), r2(baseCagr)] },
+  });
+  // Slide data for the stage (not part of the spreadsheet reconcile): the two discount rates, the bear case at both,
+  // and what "the price already assumes" means in dollars of sales. Everything the stage shows comes from here.
+  const bearAlt = dcf({ path: results.bear.path, margin: results.bear.margin, wacc: altWacc, g, netCash, shares, t }).perShare;
+  const bullAlt = dcf({ path: results.bull.path, margin: results.bull.margin, wacc: altWacc, g, netCash, shares, t }).perShare;
+  const vsPrice = (v: number) => r2((v / price - 1) * 100);
+  write({
+    key: 'model_rates', title: 'The two discount rates we show', unit: '%', source: `Bloomberg WACC screen, NVDA US Equity, 20 Nov 2026; ${A.altWacc.source}`,
+    x: ['Bloomberg', 'US semiconductor average'],
+    series: { 'Discount rate': [bbgWacc, altWacc] },
+  });
+  write({
+    key: 'model_bear_bull_rates', title: 'Bear and bull cases at both discount rates', unit: 'USD', source: `${source}. Bear = AI spending pauses; share price $${price}`,
+    x: ['Bear at Bloomberg rate', 'Bear at US semiconductor average', 'Bull at US semiconductor average'],
+    series: { 'Value per share': [results.bear.perShare, bearAlt, bullAlt].map(r2), 'Change from today': [vsPrice(results.bear.perShare), vsPrice(bearAlt), vsPrice(bullAlt)] },
+    units: { 'Change from today': '%' },
+  });
+  write({
+    key: 'model_implied_sales', title: 'What the share price already assumes, at the Bloomberg rate', unit: 'USD bn', source: `${source}. Reverse DCF at $${price}: FY27 consensus revenue grown at the implied rate for five years`,
+    x: ['FY27', 'FY28', 'FY29', 'FY30', 'FY31', 'FY32'],
+    series: { Sales: [0, 1, 2, 3, 4, 5].map((k) => r2(rev27 * (1 + implied / 100) ** k)), 'Growth per year': Array(6).fill(r2(implied)) },
+    units: { 'Growth per year': '%' },
+  });
+  write({
+    key: 'model_forecast_growth', title: 'Consensus revenue growth, year on year', unit: '%', source: 'Computed from Bloomberg consensus revenue (nvda_revenue_forecast), NVDA US Equity',
+    x: ['FY27', 'FY28'],
+    series: { Growth: [r2((rev27 / at('Actual', 'FY26') - 1) * 100), r2((rev28 / rev27 - 1) * 100)] },
   });
 
   // ---------- CSV for Excel ----------

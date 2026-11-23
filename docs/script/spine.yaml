@@ -1,507 +1,306 @@
-# The scripted spine: the slides in order, and the phrases that trigger them.
-# Running order: Rob (why) → Panshul (financials) → Mi'kael (ESG) → Rob (close).
+# The scripted spine, script v4 (23 Nov 2026): 22 slides, each drawn by a hand-built scene in app/src/stage/scenes.
+# Order: Rob (the why) → Panshul (the numbers) → Mi'kael (why spending won't stop, ESG, the close).
+# Source of truth for wording and order: docs/script/pitch-script-v4.md. `say` is the spoken text, verbatim.
 #
 # How it works on the day
 #   - When the mic hears any phrase in `cues`, that slide starts building.
-#   - Bullets and charts build one after another. A bullet or chart with its own `cue` waits until
-#     that phrase is heard, so it lands exactly as you say it. Pressing Next does the same thing.
+#   - A slide's beats are its title (beat 1), then one beat per bullet. A bullet with its own `cue` waits until that phrase
+#     is heard; a bullet without one builds straight after the one before. Space / → builds the next beat. Backspace / ← un-builds one.
+#   - On a `scene` slide the bullets are the labels of its beats (or its text, for text slides). The picture is drawn by the scene,
+#     from data/clean, never from the words here.
 #   - Only the next element and the next two slides are listened for, so a stray phrase can't jump the deck.
-#   - `optional: true` slides (the ✂ beats) can be switched off on the operator panel; the deck then skips them.
 #
-# Writing good cues
-#   - 2–5 distinctive words you will definitely say, e.g. "announced cuda". Avoid common words alone.
-#   - Give 3+ alternatives per slide: speech-to-text writes "CUDA" as "cooda", "1993" as digits, etc.
-#   - Numbers: write them as words AND digits ("nineteen ninety three", "1993"); speech-to-text varies.
-#   - Avoid apostrophes in cues ("dennys" as well as "denny's").
-#
-# Data rules
-#   - Charts and big numbers name a dataset in data/clean/. The numbers are always looked up, never typed.
-#   - A figure inside a title or bullet is written {{dataset | series | x}} and looked up too. The server refuses
-#     any other digits in slide text, except years, dates, FY/Q labels, Scope 1/2/3 and product names.
-#   - `say` is the script for the operator screen. It is never shown to the board.
-#
-# Rob's section (beats 1–21, 22–23): from docs/script/rob-why-script.md, draft 1, 21 Nov 2026. `say` is verbatim.
+# Writing good cues: 2–5 distinctive words you will definitely say. Numbers as words AND digits (speech-to-text varies).
+# Data rules: figures in text are written {{dataset | series | x}} and looked up. The server refuses any other digits
+# except years, dates, FY/Q labels, Scope 1/2/3 and product names. `scene` slides draw their numbers from data/clean.
 
 # ---------------- Rob: the why ----------------
 
-# Beat 1. Cold open
+- id: hook
+  speaker: Rob
+  scene: hook
+  layout: statement
+  cues: [here is our answer first, answer first nvidia, hardest position in ai to copy]
+  title: "NVIDIA: the hardest position in AI to copy."
+  say: "Here is our answer first. NVIDIA holds the hardest position in AI to copy, and today's share price sits at the low end of what we think it is worth. We'll show you how low, and what could prove us wrong. One thing: watch the screen. We'll explain it at the end."
+
 - id: founding
   speaker: Rob
-  effect: morph
-  icons: [coffee, laptop, game]
-  cues: ["1993", nineteen ninety three, three engineers, booth at a denny's, booth at a dennys]
+  scene: founding
   layout: statement
-  title: "1993. A booth at Denny's."
+  cues: [it starts in 1993, in a denny's in san jose, denny's in san jose, dennys in san jose]
+  title: "1993. A Denny's in San Jose."
   bullets:
-    - text: Workstation 3D graphics, on every PC
-      cue: every pc
-    - text: Paid for by video games
-      cue: video games
-  say: "In 1993, three engineers, Jensen Huang, Chris Malachowsky and Curtis Priem, sat in a booth at a Denny's in San Jose and drank a lot of coffee. Their idea was simple. The 3D graphics that lived on expensive workstations should be on every PC. And the way to pay for it was video games. People told them nobody starts a company to play games."
-  sources: [NVIDIA company history (Wikipedia; Sequoia Capital)]
+    - text: Graphics on every PC. Video games pay for it.
+      cue: video games would pay
+  say: "It starts in 1993, in a Denny's in San Jose. Jensen Huang, Chris Malachowsky and Curtis Priem wanted to put workstation graphics in every PC, and video games would pay for it. People told them nobody starts a company to play games."
 
-# Beat 2. Nearly going bust ✂
-- id: near-bust
-  speaker: Rob
-  effect: tiles
-  optional: true
-  cues: [first chip the nv1, nv1, nv one, n v one, wrong technology]
-  layout: number
-  title: The NV1 bet on the wrong technology.
-  stat: { datasetKey: research_facts, series: NV1 chips returned, x: value, label: "of {{research_facts | NV1 chips made | value}} NV1 chips came back" }
-  bullets:
-    - text: "Sega invested {{research_facts | Sega investment | value}} anyway"
-      cue: sega invested
-    - text: "RIVA 128, August 1997: {{research_facts | RIVA 128 sold in four months | value}} sold in four months"
-      cue: bet the company
-  say: "Their first chip, the NV1, bet on the wrong technology. Of 250,000 made, about 249,000 came back. NVIDIA had less than six months of cash. Their next chip, for Sega, was heading the same way, so they told Sega's CEO the truth. Sega invested five million dollars anyway. With about one month of payroll left, they bet the company on the RIVA 128. It launched in August 1997 and sold a million units in four months."
-
-# Beat 3. The first GPU
 - id: first-gpu
   speaker: Rob
-  effect: morph
-  icons: [chip, game, trophy, star]
-  cues: ["1999", nineteen ninety nine, geforce 256, geforce, g force]
+  scene: first-chip
   layout: statement
-  title: "1999: the world's first GPU."
+  cues: [their first chip failed, first chip failed, two hundred and fifty thousand made]
+  title: Their first chip failed.
   bullets:
-    - text: "2000: Microsoft picks NVIDIA for the first Xbox, paying {{research_facts | Xbox advance | value}} up front"
-      cue: first xbox
-    - text: "2007: Forbes company of the year"
-      cue: company of the year
-    - text: A successful gaming company. They could have stopped there.
-      cue: stopped there
-  say: "In 1999 they launched the GeForce 256 and gave it a new name: the GPU. In 2000 Microsoft picked NVIDIA for the first Xbox and paid two hundred million dollars up front. By 2007, Forbes named NVIDIA company of the year. A successful gaming company. They could have stopped there."
-  sources: [GeForce 256 launch, 1999; Forbes, 3 January 2008]
+    - text: "1999|NVIDIA called it the world's first GPU."
+      cue: six years later
+  say: "Their first chip failed. Of two hundred and fifty thousand made, two hundred and forty-nine thousand came back. Six years later, in 1999, they launched the GeForce 256 and called it the world's first GPU. They had invented the graphics processing unit."
+  sources: [GeForce 256 launched 11 October 1999; NVIDIA's own marketing called it the world's first GPU]
 
-# Beat 4. What CUDA is (the cores: a handful light one by one, then thousands at once)
 - id: cuda
   speaker: Rob
-  effect: cpu-gpu
-  cues: [announced cuda, announced cooda, announced kuda, november 2006, november two thousand and six]
+  scene: revenue-line
   layout: statement
-  title: "2006: CUDA."
+  cues: [in november 2006, november 2006 they made a bet, november two thousand and six]
+  title: November 2006. CUDA.
   bullets:
-    - text: "A normal processor: a handful of fast workers, one job after another"
-      cue: one job after another
-    - text: "A graphics chip: thousands of workers, all at the same time"
-      cue: at the same time
-    - text: CUDA lets anyone put those workers to work
-      cue: let anyone
-    - text: Given away free, and built into every gaming card
-      cue: away for free
-  say: "Instead, in November 2006, they announced CUDA. Here's the idea. A normal processor is a handful of very fast workers doing one job after another. A graphics chip is thousands of smaller workers all doing the same job at the same time, in parallel. The screen behind me is exactly that: thousands of cores firing together. CUDA let anyone, not just graphics programmers, put those thousands of workers to work. It grew out of a Stanford PhD project by Ian Buck, who NVIDIA hired in 2004. And here's the part that matters: they gave it away for free, and they built it into every gaming card they sold."
-  sources: [NVIDIA, SC06, November 2006; Ian Buck, Brook for GPUs (Stanford)]
+    - text: Revenue line draws, FY07 to FY16
+      cue: the year cuda launched
+  say: "Then, in November 2006, they made a bet that looked like a mistake. A normal processor is a few fast workers doing one job after another. A graphics chip is thousands of slower workers doing the same job at once. CUDA, NVIDIA's software, let anyone program those thousands of workers. NVIDIA gave it away inside every card, which made every chip dearer for gamers who never asked for it. The year CUDA launched, revenue was three billion dollars. Nine years later it was five."
 
-# Beat 5. Wall Street hated it
-- id: wall-street
-  speaker: Rob
-  cues: [wall street hated it, wall street hated, street hated it]
-  layout: split
-  title: Wall Street hated it.
-  bullets:
-    - Bigger, pricier chips, for gamers who didn't care
-    - text: "About {{research_facts_unverified | CUDA spend per year | value}} a year spent on CUDA"
-      cue: half a billion
-    - text: The stock more than halved in 2008. An activist fund circled in 2013.
-      cue: activist fund
-    - text: Revenue stuck for years. NVIDIA held on anyway.
-      cue: look at revenue
-  chart: { type: bar, datasetKey: nvda_revenue_annual, series: [Revenue], range: [FY05, FY13], highlight: FY13 }
-  say: "Wall Street hated it. CUDA made every chip bigger and more expensive, for gamers who didn't care. NVIDIA was spending around half a billion dollars a year on it. The stock fell by more than half in 2008, and as late as 2013 an activist fund was questioning the spending. Look at revenue: stuck at three to four billion dollars for years. Shareholders wanted profits, not innovation. NVIDIA held on, because innovation is what creates the profits."
-  sources: [Share price and Starboard Value stake, research notes]
-
-# Beat 6. The payoff
 - id: alexnet
   speaker: Rob
-  cues: [2009 a stanford team, stanford team, andrew ng, led by andrew]
-  layout: split
-  title: Then AI found CUDA.
+  scene: revenue-line
+  layout: statement
+  cues: [in 2012 a student in toronto, a student in toronto, twenty twelve a student]
+  title: "2012: the image-recognition contest."
   bullets:
-    - text: "2009: Stanford trains neural networks up to {{research_facts | Stanford speed-up | value}} faster on CUDA"
-      cue: times faster
-    - text: "2012: AlexNet, trained on NVIDIA gaming cards, wins ImageNet by a mile"
-      cue: university of toronto
-  chart: { type: bar, datasetKey: research_alexnet, series: [Top-5 error], highlight: "AlexNet, on NVIDIA GPUs" }
-  chartCue: error rate
-  say: "In 2009, a Stanford team led by Andrew Ng showed that CUDA graphics cards could train neural networks up to 70 times faster. Then in 2012, a student at the University of Toronto, Alex Krizhevsky, entered an image-recognition contest with a neural network trained on two NVIDIA gaming cards. He won by more than ten points: an error rate of 15 percent against 26. Anyone who wanted to copy him needed CUDA. In 2016 NVIDIA declared the AI revolution, and Jensen personally delivered its first AI supercomputer to a small lab called OpenAI. By the time ChatGPT launched in 2022, CUDA had fifteen years of tools built on it. Modern AI was built on NVIDIA."
+    - text: Contest error rates appear
+      cue: his error rate
+    - text: Revenue line continues to FY26
+      cue: revenue went from five billion
+  say: "In 2012 a student in Toronto trained a neural network on two NVIDIA gaming cards and entered an image-recognition contest. His error rate was fifteen percent. The runner-up's was twenty-six. Anyone who wanted to copy him needed CUDA. Revenue went from five billion dollars in 2016 to two hundred and sixteen billion last year."
 
-# Beat 7. What the bet did ✂
-- id: revenue-long
+- id: twenty-years
   speaker: Rob
-  optional: true
-  cues: [what that bet did, twenty seven years, 27 years of revenue]
-  layout: chart
-  title: What the bet did.
-  chart: { type: bar, datasetKey: nvda_revenue_annual, series: [Revenue], highlight: FY26 }
-  say: "Here's what that bet did. Twenty-seven years of revenue. Three to four billion a year for a decade, and then this. Panshul will show you whether it lasts. My job is to show you why it happened."
+  scene: twenty-years
+  layout: statement
+  cues: [that is the moat, the moat and it is twenty years deep, twenty years deep]
+  title: years of CUDA
+  bullets:
+    - text: Libraries and developers
+      cue: over a thousand libraries
+  say: "That is the moat, and it is twenty years deep. CUDA is twenty years old this month. It has over a thousand libraries built on it and six million developers writing for it. A rival can copy a chip. It cannot copy twenty years of software."
 
-# Beat 8. Four layers
 - id: four-layers
   speaker: Rob
-  effect: layers
-  cues: [gold standard, why is nvidia the gold, the gold standard]
+  scene: four-layers
   layout: statement
-  title: Why NVIDIA is the gold standard.
+  cues: [the software sits on the best of everything else, best of everything else]
+  title: A rival has to match all of it at once.
   bullets:
-    - text: Chips. Software. Connections. Supply.
-      cue: four layers
-    - text: A competitor has to beat all of them, at once.
-      cue: at once
-  say: "So why is NVIDIA the gold standard? Four layers. And a competitor has to beat all four at once."
+    - text: Chips
+      cue: data centre sales twelve times
+    - text: Software
+    - text: Networking
+      cue: seventy two chips wired
+    - text: Supply
+      cue: sixty percent of tsmc
+  say: "And the software sits on the best of everything else: data-centre sales twelve times AMD's, seventy-two chips wired into one machine, and about sixty percent of TSMC's advanced packaging booked. A rival has to match all of it at once."
 
-# Beat 9. Chips
-- id: chips
+- id: chip-share
   speaker: Rob
-  cues: [one chips, 1 chips, on paper amd, amds latest chip]
-  layout: split
-  title: "One: chips."
-  bullets:
-    - text: "On paper AMD wins: {{research_facts | AMD MI355X memory | value}} of memory against {{research_facts | NVIDIA B200 memory | value}}, and cheaper"
-      cue: gigabytes
-    - text: "In data centres, NVIDIA makes {{peers_datacenter_revenue | Multiple of AMD | NVIDIA}} what AMD makes"
-      cue: every dollar
-  chart: { type: bar, datasetKey: peers_datacenter_revenue, series: [Data centre revenue], highlight: NVIDIA }
-  chartCue: billion against
-  say: "One: chips. On paper, AMD's latest chip beats NVIDIA's main one. It has 288 gigabytes of memory against 192, and it's cheaper. Yet for every dollar AMD makes from data centres, NVIDIA makes about twelve. Last year that was about 194 billion dollars against 17. Why? Because a chip is only as good as the software that runs on it."
-
-# Beat 10. Software
-- id: software
-  speaker: Rob
-  icons: [code]
-  cues: [two software, 2 software, iphone versus android, iphone vs android]
-  layout: number
-  title: "Two: software. It just works."
-  stat: { datasetKey: research_facts, series: CUDA developers, x: value, label: developers use CUDA }
-  bullets:
-    - text: "More than {{research_facts | CUDA-X libraries | value}} libraries, refined since 2007, and free"
-      cue: libraries
-    - text: "AMD's answer, ROCm, arrived in 2016: nine years behind"
-      cue: years behind
-    - text: New AI breakthroughs are written for CUDA on day one
-      cue: breakthrough comes out
-  say: "Two: software. Think iPhone versus Android. NVIDIA builds the hardware and the software together, so it just works. More than six million developers use CUDA. It has over a thousand libraries, refined for nearly twenty years, and it's free. AMD's answer, ROCm, launched in 2016, nine years behind. When a new AI breakthrough comes out, it's written for CUDA on day one. Everyone else gets it months later, if at all."
-
-# Beat 11. Connections (the cores: clusters merge into one block)
-- id: connections
-  speaker: Rob
-  effect: merge72
-  cues: [three connections, 3 connections, connections nvidia, nvlink wires, nv link wires]
+  scene: chip-share
   layout: statement
-  title: "Three: connections."
+  cues: [only one company has come close, one company has come close google]
+  title: Share of AI chip supply, Q4 2025
   bullets:
-    - text: "NVLink: {{research_facts | GPUs per NVL72 rack | value}} chips in a rack act as one giant chip"
-      cue: single rack
-    - text: "2019: NVIDIA buys Mellanox for about {{research_facts | Mellanox price | value}}"
-      cue: agreed to buy
-    - text: "Last year that networking business made {{research_facts | Networking revenue FY26 | value}}. In one year."
-      cue: networking business
-  say: "Three: connections. NVIDIA's NVLink wires 72 chips in a single rack so tightly that the software sees them as one giant chip. Then, in 2019, NVIDIA agreed to buy Mellanox, the company whose networking links those racks into clusters of a hundred thousand chips. It paid about seven billion dollars. Last year, that networking business made more than 31 billion. In one year."
+    - text: NVIDIA
+      cue: google has nineteen percent
+    - text: Google
+  say: "Only one company has come close: Google. It started building its own AI chip in 2015, over a decade ago, with all of Google's cash. Even so, Google has nineteen percent of AI chip supply and NVIDIA has sixty-eight. Almost nobody has the cash or the years."
 
-# Beat 12. Supply
-- id: supply
+- id: do-numbers-agree
   speaker: Rob
-  cues: [four supply, 4 supply, for supply]
-  layout: split
-  title: "Four: supply."
-  bullets:
-    - text: "TSMC in Taiwan makes about {{research_facts | TSMC share of leading-edge chips | value}} of the most advanced chips"
-      cue: most advanced chips
-    - text: The bottleneck is packaging, and NVIDIA has booked most of it
-      cue: bottleneck
-    - text: "Supply commitments: {{research_facts_unverified | Supply commitments | value}}"
-      cue: supply commitments
-  chart: { type: bar, datasetKey: research_cowos_share, series: [Share of CoWoS], highlight: NVIDIA }
-  say: "Four: supply. About nine in ten of the world's most advanced chips are made by one company, TSMC, in Taiwan. The real bottleneck is the packaging that assembles AI chips, and NVIDIA has reserved around 60 percent of it. Its supply commitments have reached 279 billion dollars. So even if you design a better chip, you can't get enough of it built."
-
-# Beat 13. Can anyone catch up?
-- id: catch-up
-  speaker: Rob
-  effect: waffle
-  cues: [has anyone caught up, anyone caught up, caught up]
-  layout: number
-  title: Has anyone caught up?
-  stat: { datasetKey: research_facts_unverified, series: Share of AI training, x: value, label: of AI models are trained on NVIDIA }
-  bullets:
-    - text: Google came closest, with its own chips since 2015 and tens of billions spent
-      cue: come closest
-    - text: Amazon, Microsoft and Meta are trying too, and still buy NVIDIA
-      cue: still buy
-    - text: "NVIDIA takes about {{research_facts_unverified | Share of AI chip spending | value}} of all AI chip spending"
-      cue: takes about
-  say: "Has anyone caught up? Google has come closest, with its own chips, software and networking. That's eleven years and tens of billions of dollars. Amazon, Microsoft and Meta are trying too, and they all still buy NVIDIA. Microsoft is its biggest customer. NVIDIA still trains over 90 percent of AI models and takes about 80 percent of all AI chip spending. To compete with NVIDIA, you have to be one of the richest companies on earth, with a decade to spare."
-
-# Beat 14. Not one person ✂ (check with Panshul so it isn't duplicated)
-- id: not-one-person
-  speaker: Rob
-  effect: morph
-  icons: [people, person, chip, code, people]
-  optional: true
-  cues: [isn't one person, isnt one person, not one person]
+  scene: question
   layout: statement
-  title: NVIDIA isn't one person.
-  bullets:
-    - text: Co-founder Chris Malachowsky is still there
-      cue: still there
-    - text: Its leadership team has worked together for decades
-      cue: worked together
-    - text: Ian Buck, who built CUDA, still runs it
-      cue: still runs it
-    - text: "2023: Glassdoor's best place to work in America"
-      cue: best place to work
-  say: "And NVIDIA isn't one person. Co-founder Chris Malachowsky is still there. The people who run its sales, its supply chain, its research and its finances have worked together for fifteen to twenty years. Ian Buck, who built CUDA, still runs it. In 2023, Glassdoor ranked NVIDIA the best place to work in America."
-  sources: [NVIDIA leadership; Glassdoor Best Places to Work 2023]
+  cues: [that's the why, thats the why, show you whether the numbers agree]
+  title: Do the numbers agree?
+  say: "That's the why. Panshul will show you whether the numbers agree, and what you'd pay for it."
 
-# Beat 15. Is it a bubble?
-- id: bubble
-  speaker: Rob
-  cues: [dot com bubble, dotcom bubble, the obvious question, bubble again]
-  layout: chart
-  title: Is this the dot-com bubble again?
-  chart: { type: bar, datasetKey: research_infra_gdp, series: [Average yearly spend], highlight: "AI 2025–32" }
-  chartCue: interstate highways
-  say: "The obvious question: is this the dot-com bubble again? Look at the scale. Building the interstate highways took about 1.1 percent of US GDP a year. The dot-com fibre boom, at its peak in 2000: 1.4 percent. The railroads: 2.2. The AI build-out is projected at more than 3.6 percent of GDP every year to 2032. That makes it the biggest infrastructure project in American history, relative to the size of the economy."
+# ---------------- Panshul: the numbers ----------------
 
-# Beat 16. Why it's different ✂
-- id: different
-  speaker: Rob
-  effect: compare
-  optional: true
-  cues: [different in two ways, different in 2 ways, this is different]
-  layout: number
-  title: "Cisco in 2000: {{research_facts | Cisco forward P/E, March 2000 | value}} expected earnings. NVIDIA today:"
-  stat: { datasetKey: peers_pe, series: Forward P/E, x: NVIDIA, label: "NVIDIA's share price ÷ this year's expected earnings" }
-  bullets:
-    - text: In 2000 most new fibre sat unused. Today US data centres are almost full.
-      cue: almost completely full
-    - text: The buyers are some of the most profitable companies in history
-      cue: most profitable
-  say: "But this is different in two ways. In 2000, Cisco, the NVIDIA of its day, traded at about 140 times its expected earnings. NVIDIA today trades at a fraction of that. And in 2000 only a few percent of the fibre that was laid actually got used. Today, US data centres are almost completely full. The companies paying for this are some of the most profitable in history. Panshul will take you through the numbers, including the risks."
-
-# Beat 17. What AI is already doing
-- id: already-doing
-  speaker: Rob
-  effect: morph
-  icons: [brain, dna, pill, hospital]
-  cues: [isn't a fad, isnt a fad, not a fad, already doing]
+- id: revenue
+  speaker: Panshul
+  scene: revenue-recent
   layout: statement
-  title: AI isn't a fad.
+  cues: [four years ago nvidia sold, twenty seven billion dollars, eight times as much]
+  title: Revenue, FY22 to FY26
   bullets:
-    - text: "2024 Nobel Prize in Chemistry: AI that predicts and designs proteins"
-      cue: nobel prize
-    - text: "A lung-disease drug: idea to clinical trials in under {{research_facts | Drug: idea to trials, months | value}} months"
-      cue: lung disease
-    - text: "Sweden: {{research_facts | Sweden: more cancers found | value}} more breast cancers found, with {{research_facts | Sweden: less reading work | value}} less work for doctors"
-      cue: breast cancers
-  say: "And AI isn't a fad, because of what it's already doing. In 2024 the Nobel Prize in Chemistry went to AI work on proteins: predicting the shape of almost every protein known, and designing new proteins that don't exist in nature. A drug for a lung disease went from idea to clinical trials in under 30 months, less than half the usual time. In Sweden, AI-assisted screening found 20 percent more breast cancers while cutting doctors' workload by 44 percent."
-  sources: [Nobel Prize in Chemistry 2024]
+    - text: Data Center shaded
+      cue: ninety percent of that is data center
+  say: "Do the numbers agree? Yes. Four years ago NVIDIA sold twenty-seven billion dollars. Last year it sold two hundred and sixteen: eight times as much. Ninety percent of that is Data Center. In the latest quarter alone, Data Center sold a hundred and eight billion dollars, four times the whole company's sales in 2023."
 
-# Beat 18. The everyday person ✂
-- id: everyday
-  speaker: Rob
-  effect: morph
-  icons: [people, briefcase, chat, bank]
-  optional: true
-  cues: [everyday people, for everyday people, every day people]
+- id: margins
+  speaker: Panshul
+  scene: margins
   layout: statement
-  title: AI takes over tasks, not people.
+  cues: [nvidia keeps sixty cents, sixty cents of profit]
+  title: What each company keeps from a dollar of sales
   bullets:
-    - text: "Business writers: {{research_facts | Writers: faster | value}} faster, with better quality"
-      cue: business writers
-    - text: "Support staff: {{research_facts | Support: more solved | value}} more problems solved, new staff {{research_facts | Support: more solved, new staff | value}}"
-      cue: customer support
-    - text: ATMs arrived. Teller jobs grew.
-      cue: bank tellers
-  say: "For everyday people, it's already making work faster. In one study, business writers finished tasks 40 percent faster, with better quality. Customer support staff solved 14 percent more problems, and new staff 34 percent more. People worry robots will take jobs. When ATMs arrived, everyone said bank tellers were finished. Instead, banks opened more branches and teller jobs grew. AI takes over tasks, and leaves people more time for creative work."
+    - text: Operating margin bars
+    - text: Free cash flow
+      cue: ninety seven billion dollars of free cash
+  say: "NVIDIA keeps sixty cents of profit from every dollar of sales. Analysts expect AMD to keep twenty-nine and Intel fifteen. Last year that left NVIDIA with ninety-seven billion dollars of free cash."
 
-# Beat 19. National security
-- id: security
-  speaker: Rob
-  effect: morph
-  icons: [warning, eye, shield]
-  cues: [national security, matter of national security, a matter of national]
-  layout: number
-  title: Found the flaw. Wrote the attack. Launched it.
-  stat: { datasetKey: research_facts_unverified, series: Humans in the loop, x: value, label: "humans involved. Google Threat Intelligence, November 2026" }
-  bullets:
-    - text: "Anthropic, 2025: AI ran {{research_facts | Spying campaign run by AI, low | value}} to {{research_facts | Spying campaign run by AI, high | value}} of a state-backed spying campaign"
-      cue: spying campaign
-    - text: The defence against AI is AI
-      cue: defend yourself
-  say: "AI is also now a matter of national security. This month, Google's threat intelligence team reported hacking software that found security flaws, wrote the attack and launched it with zero humans involved. Last year, Anthropic found a state-backed group using AI to carry out 80 to 90 percent of a spying campaign. These AI agents work 24 hours a day. How do you defend yourself against them? With AI. Google's own AI has already found security flaws before attackers could use them."
-
-# Beat 20. Two superpowers
-- id: superpowers
-  speaker: Rob
-  effect: morph
-  icons: [globe, flag, lock]
-  cues: [two superpowers, 2 superpowers, superpowers know it]
+- id: forecast
+  speaker: Panshul
+  scene: forecast
   layout: statement
-  title: Neither superpower is going to stop.
+  cues: [analysts expect sales of four hundred and twenty two billion, four hundred and twenty two billion this year]
+  title: What analysts expect
   bullets:
-    - text: "China's official plan: lead the world in AI by 2030"
-      cue: official plan
-    - text: The US restricts which AI chips can be sold to China
-      cue: restricts
-  say: "And the world's two superpowers know it. China's official plan is to lead the world in AI by 2030. The US treats AI chips as so strategic that it restricts which ones can be sold to China. Neither side is going to stop."
-  sources: [China State Council, New Generation AI Development Plan, 2017; US BIS export controls]
+    - text: FY27 consensus revenue
+    - text: FY28 consensus revenue
+      cue: seven hundred and twenty nine billion
+    - text: Last quarter, against forecast
+      cue: last quarter nvidia reported
+  say: "Analysts expect sales of four hundred and twenty-two billion this year, up ninety-six percent, and seven hundred and twenty-nine billion next year, up seventy-three. Last quarter NVIDIA reported a hundred and sixteen billion against a hundred and nine forecast."
 
-# Beat 21. Handoff
-- id: handoff
-  speaker: Rob
-  effect: layers
-  cues: [the best chips, has the best chips, best chips the best software]
+- id: worth
+  speaker: Panshul
+  scene: worth
   layout: statement
-  title: The best chips, software, connections and supply.
+  cues: [what is one share worth, one share worth]
+  title: What is one share worth?
   bullets:
-    - text: The biggest companies and governments are all building AI
-      cue: biggest governments
-    - text: The only way to stop NVIDIA is to stop innovation.
-      cue: stop innovation
-  say: "NVIDIA has the best chips, the best software, the best connections and the best supply chain. The world's biggest companies and its two biggest governments are all building AI. The only way to stop NVIDIA is to stop innovation. Panshul is going to show you whether the numbers back that up."
+    - text: Bloomberg's rate
+      cue: bloomberg's is nineteen percent
+    - text: US semiconductor average
+      cue: average for american semiconductor
+  say: "So what is one share worth? We built a discounted cash flow. We forecast the cash NVIDIA will make over five years, add everything after that, and shrink it all back into today's money at the return investors demand. We show two rates. Bloomberg's is nineteen percent, a very high bar. The second is the average for American semiconductor companies, which is ten and a half."
 
-# ---------------- Panshul: financials · Mi'kael: ESG ----------------
-
-- id: last-quarter
+- id: value-bars
   speaker: Panshul
-  cues: [last quarter, three months, single quarter]
-  layout: number
-  title: Revenue in a single quarter
-  stat: { datasetKey: nvda_revenue_quarterly, series: Revenue, x: FY27 Q3, label: Three months to 25 October 2026. Preliminary figure. }
-  say: In the three months to October, NVIDIA's revenue was this. In one quarter.
-
-- id: beats
-  speaker: Panshul
-  cues: [beaten, beat expectations, every quarter]
-  layout: split
-  title: Revenue has beaten consensus thirteen quarters running
+  scene: value-bars
+  layout: statement
+  cues: [at bloomberg's rate our base case, our base case is a hundred and sixty seven]
+  title: What one share is worth
   bullets:
-    - text: The grey line is what analysts expected
-      cue: analysts expected
-    - text: The green line is what NVIDIA delivered
-      cue: delivered
-  chart: { type: line, datasetKey: nvda_revenue_quarterly, series: [Revenue, Consensus], highlight: FY27 Q3 }
-  say: And it isn't luck. Thirteen quarters in a row, revenue has beaten what analysts expected. Grey is what analysts expected. Green is what NVIDIA delivered.
+    - text: Base case
+    - text: Today's price
+      cue: today's price is a hundred and sixty four
+    - text: Base case at the industry rate
+      cue: at the industry rate the same cash
+    - text: Bull case
+      cue: low end of our range
+    - text: Bear case
+  say: "At Bloomberg's rate our base case is a hundred and sixty-seven dollars fifty. Today's price is a hundred and sixty-four. At the industry rate the same cash is worth three hundred and ninety-one dollars, more than double. So today's price is the low end of our range. It only looks fair if you demand Bloomberg's very high return."
 
-- id: segments
+- id: implied
   speaker: Panshul
-  cues: [data center, where the money comes from]
-  layout: chart
-  title: Data Center became almost the whole company
-  chart: { type: stackedBar, datasetKey: nvda_segments_annual, series: [Data Center, Gaming, Pro Visualization, Automotive, OEM & Other] }
-  say: Where does it come from? Data centres. The chips that train and run AI. Gaming, where NVIDIA started, is now the thin grey band.
-
-- id: peers
-  speaker: Panshul
-  cues: [expensive, compared to its peers, price to earnings]
-  layout: split
-  title: The cheapest of the five on this year's expected earnings
+  scene: implied
+  layout: statement
+  cues: [turn it around, at bloomberg's rate today's price already assumes]
+  title: What today's price already assumes
   bullets:
-    - text: Forward P/E on the fiscal year ending around January 2027
-    - text: The share price has fallen since the CEO resigned; the earnings forecasts haven't
-      cue: forecasts
-  chart: { type: bar, datasetKey: peers_pe, series: [Forward P/E], highlight: NVIDIA }
-  say: You might think it's expensive. On this year's expected earnings it's the cheapest of the five big chip companies. The share price has fallen since the CEO resigned. The earnings forecasts haven't.
+    - text: Sales by 2032
+      cue: that is about two trillion
+  say: "Turn it around. At Bloomberg's rate, today's price already assumes sales grow thirty-eight percent a year for five years. That is about two trillion dollars of sales in 2032."
 
-- id: valuation
+- id: bear-bars
   speaker: Panshul
-  cues: [what is it worth, our valuation, discounted cash flow, cash flow model, built a five year]
-  layout: chart
-  title: Even on Bloomberg's own cautious discount rate, the shares are worth more
-  chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Base case }
-  say: We built a five-year cash-flow model, using Bloomberg's own discount rate, which is very cautious. Our base case uses analysts' forecasts. Even our bear case, where AI spending pauses, is on the chart.
-
-- id: dcf-bridge
-  speaker: Panshul
-  optional: true
-  cues: [where the value comes from, break it down, how the value adds up]
-  layout: split
-  title: Where one share's worth comes from
+  scene: bear
+  layout: statement
+  cues: [now the risk from us first, the risk from us first]
+  title: The risk, from us first.
   bullets:
-    - text: "Five years of cash, in today's money: {{model_dcf_bridge | Cash flow FY28 to FY32 | Base case}} a share"
-      cue: five years of cash
-    - text: "Everything after FY32: {{model_dcf_bridge | Everything after FY32 | Base case}} a share"
-      cue: after that
-    - text: "Cash already in the bank, after debt: {{model_dcf_bridge | Net cash | Base case}}"
-      cue: in the bank
-  chart: { type: stackedBar, datasetKey: model_dcf_bridge, series: [Cash flow FY28 to FY32, Everything after FY32, Net cash], highlight: Base case }
-  chartCue: bear and bull
-  say: Here is where the base-case value comes from. About seventy-three dollars a share is five years of cash. Most of the rest, about ninety-two, is everything after that. Only two and a half is cash in the bank. So the answer leans on what happens after 2032, which is why the bear and bull cases are next to it.
+    - text: Bear case at Bloomberg's rate
+      cue: our bear case is thirty one dollars
+    - text: Bear case at the industry rate
+      cue: sixty four dollars at the industry rate
+  say: "Now the risk, from us first. Everything here depends on AI spending continuing. If it pauses, our bear case is thirty-one dollars at Bloomberg's rate, eighty-one percent below today, and sixty-four dollars at the industry rate, sixty-one percent below. That is the downside, and we are showing it to you. Mi'kael will tell you why we think it is very unlikely."
 
-- id: reverse-dcf
-  speaker: Panshul
-  optional: true
-  cues: [turn it round, already pays for, what growth is in the price]
-  layout: split
-  title: What growth is the price already paying for?
+# ---------------- Mi'kael: why spending won't stop, ESG, the close ----------------
+
+- id: bear-alone
+  speaker: "Mi'kael"
+  scene: bear
+  layout: statement
+  cues: [as panshul said, if ai spending slows, a share is worth thirty one dollars]
+  title: If AI spending slows
   bullets:
-    - text: "At Bloomberg's discount rate: {{model_implied_growth | Growth per year | Priced in today}} a year for five years"
-      cue: five years
-    - text: "Our base case: {{model_implied_growth | Growth per year | Our base case}} a year"
-      cue: our base case
-    - text: At a lower discount rate, the price would need much less growth
-      cue: much less
-  chart: { type: bar, datasetKey: model_implied_growth, series: [Growth per year], highlight: Priced in today }
-  chartCue: a miss hurts
-  say: Now turn it round. Instead of asking what a share is worth, ask what growth today's price already pays for. At Bloomberg's discount rate, it is about thirty-two percent a year for five years. Our base case is a few points higher. At a lower discount rate the price would need much less, but a miss hurts.
+    - text: The one number
+      cue: so the question is whether it slows
+  say: "As Panshul said, if AI spending slows, a share is worth thirty-one dollars. So the question is whether it slows. We think it is very unlikely, for two reasons."
+
+- id: discovering
+  speaker: "Mi'kael"
+  scene: discovering
+  layout: statement
+  cues: [the first reason is what the spending buys, what the spending buys, reason one]
+  title: "Reason one: it is discovering things."
+  bullets:
+    - text: Gold-medal level at the International Mathematical Olympiad, 2025
+      cue: international mathematical olympiad
+    - text: "AlphaEvolve: {{research_discoveries | AlphaEvolve open problems tried | value}} open maths problems. Best known answer matched on {{research_discoveries | AlphaEvolve matched best known | value}}, beaten on {{research_discoveries | AlphaEvolve improved on best known | value}}."
+      cue: alphaevolve was given
+    - text: "{{research_discoveries | Protein structures known before | value}} protein structures known. Then {{research_discoveries | Protein structures predicted by AI | value}}, and the 2024 Nobel Prize in Chemistry."
+      cue: protein structures
+    - text: "A new antibiotic found in {{research_discoveries | New antibiotic found in days | value}}, for drug-resistant bacteria"
+      cue: found a new antibiotic
+    - text: "Swedish breast screening: +{{research_facts | Sweden: more cancers found | value}} cancers found, {{research_facts | Sweden: less reading work | value}} less reading work"
+      cue: in sweden
+  say: "The first reason is what the spending buys. Start with maths, the purest test of thinking there is. In 2025, AI systems from Google DeepMind and OpenAI reached gold-medal level at the International Mathematical Olympiad. Google's AlphaEvolve was given fifty open maths problems. It matched the best known answer on three-quarters of them, and beat it on one in five. It reaches past maths. For sixty years, scientists mapped about a hundred and seventy thousand protein structures. In 2022, AI predicted around two hundred million, nearly every known protein, and won the 2024 Nobel Prize in Chemistry. In 2019, AI found a new antibiotic that works on drug-resistant bacteria in three days. In Sweden, AI breast screening found at least twenty percent more cancers and cut doctors' reading work by forty-four percent."
+  sources: [All figures on this slide are marked VERIFY in script v4 and are not yet checked against primary sources]
+
+- id: ai-race
+  speaker: "Mi'kael"
+  scene: race
+  layout: statement
+  cues: [the second reason is that no government can afford to stop, no government can afford to stop, reason two]
+  title: "Reason two: the AI race."
+  bullets:
+    - text: "United States|“To remain the leading economic and military power, the United States must win the AI race.” David Sacks, White House AI adviser, July 2025"
+      cue: white house published its ai action plan
+    - text: "China|President Xi told the Politburo in April 2025 that China must be self-reliant in AI and close the gap with the United States."
+      cue: president xi told china's politburo
+    - text: "Neither can stop.|Whoever stops loses."
+      cue: neither can stop
+  say: "The second reason is that no government can afford to stop. In July 2025 the White House published its AI Action Plan. Its own AI adviser wrote that to remain the leading economic and military power, the United States must win the AI race. In April 2025 President Xi told China's Politburo that China must be self-reliant in AI and close the gap with the United States. And Vladimir Putin has said that whoever leads in AI will become the ruler of the world. Each side thinks the winner gets the economy and the military. So neither can stop, because whoever stops loses. And the chips they are racing on are NVIDIA's."
+  sources: [White House, AI Action Plan press release, 23 July 2025 (David Sacks); Xi Jinping, Politburo study session, 25 April 2025 (Reuters, CSET). Quote and paraphrase marked VERIFY in script v4]
+
+- id: emissions
+  speaker: "Mi'kael"
+  scene: emissions
+  layout: statement
+  cues: [is ai an environmental disaster, that leaves the question you came with, here are nvidia's own operations]
+  title: Is AI an environmental disaster?
+  bullets:
+    - text: NVIDIA
+      cue: a twentieth of a tonne
+    - text: AMD
+      cue: amd emits one point two
+    - text: Broadcom
+      cue: broadcom two point eight
+    - text: Intel
+      cue: intel twenty five
+    - text: TSMC
+      cue: tsmc a hundred and nine
+  say: "That leaves the question you came with. Is it worth the cost? Here are NVIDIA's own operations. NVIDIA's own operations emitted about ten thousand tonnes of carbon dioxide last year. For every million dollars of sales, that is a twentieth of a tonne. AMD emits one point two. Broadcom, two point eight. Intel, twenty-five. TSMC, a hundred and nine. All the electricity NVIDIA uses is renewable."
 
 - id: governance
-  speaker: Mi'kael
-  effect: morph
-  icons: [scales, person, people, search]
-  cues: [governance, chief executive, start with the hard one] # "the ceo" removed 21 Nov: Panshul's "peers" script says "the CEO resigned" and jumped here
+  speaker: "Mi'kael"
+  scene: governance
   layout: statement
-  title: The first ESG question is governance.
+  cues: [then governance, earlier this month the founder resigned]
+  title: Governance
   bullets:
-    - text: Jensen Huang resigned as CEO on 12 November 2026
-    - text: CFO Colette Kress is interim CEO; the board has appointed its first-ever chair
-      cue: founder resigned
-    - text: SEC and California investigations have been reported
-  say: Let's start with the hard one. Governance. The founder resigned last week. VERIFY these facts against a major news source on the morning of the pitch.
-  sources: [CNBC, 12 Nov 2026; NBC News, Nov 2026]
+    - text: The founder is back. The board reinstated him unanimously on Monday.
+      cue: the board reinstated him
+    - text: A new committee of independent directors for national security and export control
+      cue: committee of independent directors
+    - text: A search for a chief compliance officer. The investigation continues.
+      cue: chief compliance officer
+  say: "Then governance. Earlier this month the founder resigned. On Monday the board reinstated him, unanimously. It created a committee of independent directors for national security and export control, started a search for a chief compliance officer, and kept its investigation going."
 
-- id: renewables
-  speaker: Mi'kael
-  cues: [renewable, own operations]
-  layout: split
-  title: NVIDIA's own operations now run on renewable energy
-  bullets:
-    - text: Up from about a third in FY18
-  chart: { type: line, datasetKey: nvda_renewable_share, series: [Renewable], highlight: FY26 }
-  say: Environment. NVIDIA's own operations now run on renewable energy, up from about a third in 2018.
-
-- id: scope3
-  speaker: Mi'kael
-  cues: [supply chain, scope three, scope 3]
-  layout: split
-  title: The harder number is the supply chain
-  bullets:
-    - text: Most emissions come from making the chips, at partners like TSMC
-    - text: They are rising as output rises
-      cue: they rise
-  chart: { type: line, datasetKey: nvda_emissions, series: [Scope 3], highlight: FY26 }
-  say: But the honest number is the supply chain, Scope 3. Most emissions come from manufacturing at partners like TSMC, and they rise as NVIDIA sells more.
-
-
-# ---------------- Rob: the close ----------------
-
-# Beat 22. The reveal
-- id: built-live
-  speaker: Rob
-  cues: [one more thing, 1 more thing, built live as we spoke]
+- id: finale
+  speaker: "Mi'kael"
+  scene: finale
   layout: statement
-  title: Every visual you just saw was built live, as we spoke.
-  say: "One more thing. Every visual, every bullet point, every chart and every animation you just saw was built live, as we spoke."
-
-# Beat 23. Final line
-- id: close
-  speaker: Rob
-  cues: [built and run by ai, everything you just watched, built and run by a i]
-  layout: statement
-  title: Everything you just watched was built and run by AI.
+  cues: [every visual you saw was generated live, every visual you saw]
+  title: Every visual you saw was generated live, as we spoke.
   bullets:
-    - text: The AI industry runs on infrastructure NVIDIA built.
-      cue: infrastructure nvidia built
-    - text: If three university students can do this for a stock pitch, imagine what the world's companies are doing.
-      cue: imagine what
-  say: "Everything you just watched was built and run by AI. The AI industry runs on infrastructure NVIDIA built. If three university students can do this for a stock pitch, imagine what the world's companies are doing."
+    - text: The NVIDIA logo, after thank you
+      cue: thank you
+  say: "Every visual you saw was generated live, as we spoke. That's how powerful AI has become. And none of it happens without NVIDIA. Thank you."

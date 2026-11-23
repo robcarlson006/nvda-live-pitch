@@ -2,6 +2,7 @@ import { Component, useEffect, useRef, useState, type CSSProperties, type ReactN
 import { elementCount, lookup, resolveText, slideSources, tokenRefs, type Dataset, type Slide, type SpineSlide } from '../shared/schema.ts';
 import { Chart } from './Chart.tsx';
 import { Field } from './cores/Field.tsx';
+import { SceneHost, hasScene } from './stage/SceneHost.tsx';
 import { useDatasets, useNavKeys, useShow } from './useShow.ts';
 
 // Elements revealed together come in one after another, this far apart (seconds).
@@ -57,6 +58,14 @@ export function Stage() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // Scripted slides of script v4 have their own scene (app/src/stage). Everything else (standby, Q&A, off-script) keeps the old stage.
+  if (slide && hasScene(slide) && !asking && state)
+    return (
+      <div className={`stage${calm ? ' calm' : ''}`}>
+        <SceneHost slide={slide} reveal={state.reveal} datasets={datasets} calm={calm} live={live} />
+        <LoopStrip spine={spine} seen={state.seen} current={slide.id} />
+      </div>
+    );
   return (
     <div className={`stage${calm ? ' calm' : ''}`}>
       <Safe at={state?.liveSince ?? 0}><Field buildKey={state?.liveSince ?? 0} slide={slide} reveal={state?.reveal ?? 0} datasets={datasets} asking={!!asking} seen={seen} calm={calm} live={live} glyph={glyph} /></Safe>
