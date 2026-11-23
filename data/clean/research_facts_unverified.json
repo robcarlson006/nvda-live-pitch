@@ -4,7 +4,6 @@
   "unit": "",
   "units": {
     "CUDA spend per year": "USD bn",
-    "Networking revenue FY26": "USD bn",
     "Supply commitments": "USD bn",
     "Share of AI training": "%",
     "Share of AI chip spending": "%",
@@ -13,7 +12,6 @@
   "source": "Research notes (via NotebookLM research, 21 Nov 2026)",
   "seriesSources": {
     "CUDA spend per year": "Rob May, \"The CUDA Backstory\"; secondary estimates",
-    "Networking revenue FY26": "NVIDIA FY26 results, as reported in research notes",
     "Supply commitments": "NVIDIA Form 10-Q, quarter to 26 July 2026, as reported in research notes",
     "Share of AI training": "Industry estimates, 2026",
     "Share of AI chip spending": "IDC (81%), Mercury/SemiAnalysis (~75%), 2026",
@@ -29,9 +27,6 @@
   "series": {
     "CUDA spend per year": [
       0.5
-    ],
-    "Networking revenue FY26": [
-      31
     ],
     "Supply commitments": [
       279

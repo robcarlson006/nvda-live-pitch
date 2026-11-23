@@ -30,3 +30,6 @@ True holdout: 89.0% right, 23 words late, 2.17 false moves per run (target 90 / 
 
 ## Run 2: DCF bridge
 `data/clean/model_dcf_bridge.json` is ready (stacked bars, Bear/Base/Bull: cash flow years 1-6, value after year 6, net cash; adds up to model_valuation, tested). It is not on any slide. To show it, add a stackedBar chart with datasetKey model_dcf_bridge to a valuation slide or the Q&A bank (your call: it changes what you say). Check: Base and Bull revenue paths in `model_revenue_paths` are identical, so Bull differs only by margin or other inputs: confirm that is what you mean.
+
+## Run 2: Networking figure
+Slide "connections" now shows Networking FY26 as the verified $31.4bn (Bloomberg FA p.175: $31,376m), previously "$31bn" from research notes. Same sentence, more exact number; `say:` text untouched. If you say "31 billion" aloud, that still matches.

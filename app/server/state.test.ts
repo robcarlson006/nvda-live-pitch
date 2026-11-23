@@ -41,7 +41,7 @@ test('slide text may not contain hand-typed numbers; {{tokens}} must resolve', (
 test('operator sees which slides still rely on unverified figures', () => {
   const ds = Object.fromEntries(datasets);
   assert.equal(isUnverified(spine[idx('catch-up')], ds), true);
-  assert.equal(isUnverified(spine[idx('connections')], ds), true, 'figure inside a bullet');
+  assert.equal(isUnverified(spine[idx('supply')], ds), true, 'figure inside a bullet');
   assert.equal(isUnverified(spine[idx('chips')], ds), false);
 });
 

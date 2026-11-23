@@ -194,7 +194,7 @@
       cue: single rack
     - text: "2019: NVIDIA buys Mellanox for about {{research_facts | Mellanox price | value}}"
       cue: agreed to buy
-    - text: "Last year that networking business made {{research_facts_unverified | Networking revenue FY26 | value}}. In one year."
+    - text: "Last year that networking business made {{research_facts | Networking revenue FY26 | value}}. In one year."
       cue: networking business
   say: "Three: connections. NVIDIA's NVLink wires 72 chips in a single rack so tightly that the software sees them as one giant chip. Then, in 2019, NVIDIA agreed to buy Mellanox, the company whose networking links those racks into clusters of a hundred thousand chips. It paid about seven billion dollars. Last year, that networking business made more than 31 billion. In one year."
 

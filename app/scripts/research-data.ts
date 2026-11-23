@@ -56,6 +56,7 @@ const out: Dataset[] = [
     'CUDA developers': { value: 6, unit: 'm', source: 'NVIDIA, GTC March 2026' },
     'CUDA-X libraries': { value: 1000, unit: '', source: 'NVIDIA CUDA-X' },
     'GPUs per NVL72 rack': { value: 72, unit: '', source: 'NVIDIA GB200 NVL72 specifications' },
+    'Networking revenue FY26': { value: 31.4, unit: 'USD bn', source: 'Bloomberg FA (annual), p.175: Networking $31,376m, year to 25 Jan 2026' },
     'Mellanox price': { value: 6.9, unit: 'USD bn', source: 'NVIDIA, 11 March 2019 (enterprise value)' },
     'TSMC share of leading-edge chips': { value: 90, unit: '%', source: 'Industry estimates (Mordor Intelligence; Bloomberg Intelligence), 2026' },
     'Cisco forward P/E, March 2000': { value: 140, unit: 'x', source: 'Market data, March 2000' },
@@ -70,7 +71,6 @@ const out: Dataset[] = [
   }),
   facts('research_facts_unverified', 'Figures marked [VERIFY] in the script', false, {
     'CUDA spend per year': { value: 0.5, unit: 'USD bn', source: 'Rob May, "The CUDA Backstory"; secondary estimates' },
-    'Networking revenue FY26': { value: 31, unit: 'USD bn', source: 'NVIDIA FY26 results, as reported in research notes' },
     'Supply commitments': { value: 279, unit: 'USD bn', source: 'NVIDIA Form 10-Q, quarter to 26 July 2026, as reported in research notes' },
     'Share of AI training': { value: 90, unit: '%', source: 'Industry estimates, 2026' },
     'Share of AI chip spending': { value: 80, unit: '%', source: 'IDC (81%), Mercury/SemiAnalysis (~75%), 2026' },

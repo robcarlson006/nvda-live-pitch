@@ -14,6 +14,7 @@
     "CUDA developers": "m",
     "CUDA-X libraries": "",
     "GPUs per NVL72 rack": "",
+    "Networking revenue FY26": "USD bn",
     "Mellanox price": "USD bn",
     "TSMC share of leading-edge chips": "%",
     "Cisco forward P/E, March 2000": "x",
@@ -39,6 +40,7 @@
     "CUDA developers": "NVIDIA, GTC March 2026",
     "CUDA-X libraries": "NVIDIA CUDA-X",
     "GPUs per NVL72 rack": "NVIDIA GB200 NVL72 specifications",
+    "Networking revenue FY26": "Bloomberg FA (annual), p.175: Networking $31,376m, year to 25 Jan 2026",
     "Mellanox price": "NVIDIA, 11 March 2019 (enterprise value)",
     "TSMC share of leading-edge chips": "Industry estimates (Mordor Intelligence; Bloomberg Intelligence), 2026",
     "Cisco forward P/E, March 2000": "Market data, March 2000",
@@ -91,6 +93,9 @@
     ],
     "GPUs per NVL72 rack": [
       72
+    ],
+    "Networking revenue FY26": [
+      31.4
     ],
     "Mellanox price": [
       6.9
