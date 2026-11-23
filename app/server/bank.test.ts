@@ -26,6 +26,14 @@ test('paraphrased board questions find their prepared answer', () => {
     ['how do we know the ai didnt make these numbers up', 'hallucinate'],
     ['what would change your mind about this stock', 'wrong'],
     ['what if china invades taiwan', 'taiwan'],
+    ['how does the p e compare with amd and broadcom', 'pe-peers'],
+    ['is it cheaper than tsmc on price to earnings compared with theirs', 'pe-peers'],
+    ['why should we trust a student model like yours', 'student-model'],
+    ['you are students so why believe your numbers', 'student-model'],
+    ['what does the reverse dcf actually tell us', 'priced-in'],
+    ['what is the implied growth in the share price', 'priced-in'],
+    ['isnt this just like 1999 all over again', 'bubble'],
+    ['this looks the same as 1999 to me', 'bubble'],
   ];
   for (const [q, id] of asked) assert.equal(findAnswer(bank, q)?.id, id, q);
 });

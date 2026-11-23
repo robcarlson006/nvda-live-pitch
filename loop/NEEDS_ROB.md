@@ -41,3 +41,6 @@ Slide "connections" now shows Networking FY26 as the verified $31.4bn (Bloomberg
 
 ## Added by the loop (02:40): new optional slide `dcf-bridge` (Panshul), your call
 R5 asked for the DCF bridge in the spine, so I wrote the slide and its `say:` (after `valuation`, ✂ optional so it can be cut). Words and cues are mine: edit freely. It says base = $73 five-year cash + $92 after FY32 + $2.5 net cash (all looked up from `model_dcf_bridge`). Also fixed the bridge labels ("years 1-6" was wrong: it is FY28–FY32). `state.test.ts` lists the optional slides; I added `dcf-bridge` there.
+
+## Added by the loop (02:45): `reverse-dcf` slide and new prepared answers
+New optional Panshul slide `reverse-dcf` (price needs 32.1% a year, base 35.5%, at a lower discount rate much less): text is mine. P/E against peers: the existing `peers` slide already charts it; its title ("The cheapest of the five…") is yours and is the triumphant kind: the honest version is in the new `pe-peers` answer ("…only matters if profits last"). Bank: new `pe-peers`, `student-model`; `bubble` now also matches "1999"; `priced-in` matches "reverse DCF" and gained the discount-rate caveat.

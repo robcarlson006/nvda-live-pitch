@@ -428,6 +428,23 @@
   chartCue: bear and bull
   say: Here is where the base-case value comes from. About seventy-three dollars a share is five years of cash. Most of the rest, about ninety-two, is everything after that. Only two and a half is cash in the bank. So the answer leans on what happens after 2032, which is why the bear and bull cases are next to it.
 
+- id: reverse-dcf
+  speaker: Panshul
+  optional: true
+  cues: [turn it round, already pays for, what growth is in the price]
+  layout: split
+  title: What growth is the price already paying for?
+  bullets:
+    - text: "At Bloomberg's discount rate: {{model_implied_growth | Growth per year | Priced in today}} a year for five years"
+      cue: five years
+    - text: "Our base case: {{model_implied_growth | Growth per year | Base case (consensus, then slowing)}} a year"
+      cue: our base case
+    - text: At a lower discount rate, the price would need much less growth
+      cue: much less
+  chart: { type: bar, datasetKey: model_implied_growth, series: [Growth per year], highlight: Priced in today }
+  chartCue: a miss hurts
+  say: Now turn it round. Instead of asking what a share is worth, ask what growth today's price already pays for. At Bloomberg's discount rate, it is about thirty-two percent a year for five years. Our base case is a few points higher. At a lower discount rate the price would need much less, but a miss hurts.
+
 - id: governance
   speaker: Mi'kael
   effect: morph

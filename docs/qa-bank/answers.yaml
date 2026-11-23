@@ -87,7 +87,7 @@
 
 - id: bubble
   question: Isn't this an AI bubble?
-  ask: [ai bubble, a bubble, dot com, overvalued, too expensive, bubble burst]
+  ask: [ai bubble, a bubble, dot com, overvalued, too expensive, bubble burst, like 1999, same as 1999, 1999 all over]
   slide:
     layout: split
     title: If spending stops, the bear case is severe
@@ -206,13 +206,14 @@
 
 - id: priced-in
   question: How much growth is already in the price?
-  ask: [already priced in, growth is priced in, price imply, market pricing in, priced into the shares]
+  ask: [already priced in, growth is priced in, price imply, market pricing in, priced into the shares, reverse dcf, reverse discounted cash flow, implied growth]
   slide:
     layout: split
     title: The price already assumes strong growth
     bullets:
       - "Priced in: {{model_implied_growth | Growth per year | Priced in today}} a year. Our base: {{model_implied_growth | Growth per year | Base case (consensus, then slowing)}}"
       - The gap is small at Bloomberg's discount rate, so misses hurt
+      - "It rests on Bloomberg's discount rate: at a lower rate the price would need much less growth"
     chart: { type: bar, datasetKey: model_implied_growth, series: [Growth per year], highlight: Priced in today }
 
 - id: custom-chips
@@ -266,3 +267,27 @@
       - Cash margins falling well below our forecast
       - A governance finding, or no permanent chief executive
     sources: [Team judgement]
+
+- id: pe-peers
+  question: How does the P/E compare with its competitors?
+  ask: [p e against peers, p e compared to peers, p e compare, pe compare, price to earnings against, price to earnings compared, multiple against peers, cheaper than amd, versus broadcom, versus tsmc, compared to competitors p e]
+  slide:
+    layout: split
+    title: The lowest multiple of the five, which only matters if profits last
+    bullets:
+      - "NVIDIA {{peers_pe | Forward P/E | NVIDIA}}, TSMC {{peers_pe | Forward P/E | TSMC}}, Broadcom {{peers_pe | Forward P/E | Broadcom}}"
+      - "AMD {{peers_pe | Forward P/E | AMD}} and Intel {{peers_pe | Forward P/E | Intel}} are higher still"
+      - "If profits fall short, a low multiple is a trap: our bear case is {{model_valuation | Value per share | Bear case}}"
+    chart: { type: bar, datasetKey: peers_pe, series: [Forward P/E], highlight: NVIDIA }
+
+- id: student-model
+  question: Why should we trust a student valuation model?
+  ask: [trust a student model, trust your model, trust your numbers, student model, student valuation, built by students, why believe your model, believe your numbers, you are students]
+  slide:
+    layout: split
+    title: "Don't trust it blindly: every step is written down so you can check it"
+    bullets:
+      - Each input is either a Bloomberg figure or a choice we can defend, with its source and date
+      - "It shows the downside too: bear {{model_valuation | Value per share | Bear case}}, base {{model_valuation | Value per share | Base case}}"
+      - "The spreadsheet is open: change any blue number and the answer moves"
+    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Base case }
