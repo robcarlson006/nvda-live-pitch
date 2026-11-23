@@ -1,3 +1,5 @@
+> **STALE FIGURES (23 Nov 2026):** the numbers below were written at the 20 Nov Bloomberg price ($135.46). At today's $163.66 base is +2% (not +24%), the price already needs 38.1% yearly growth (not 32.1%), and the bear case is 81% below. Value-per-share answers are unchanged. Re-read before quoting; the spreadsheet is current.
+
 # Numbers audit (PV-M1), 22 Nov 2026
 
 **Verdict**

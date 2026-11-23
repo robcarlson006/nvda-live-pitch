@@ -1,3 +1,5 @@
+> **STALE FIGURES (23 Nov 2026):** the numbers below were written at the 20 Nov Bloomberg price ($135.46). At today's $163.66 base is +2% (not +24%), the price already needs 38.1% yearly growth (not 32.1%), and the bear case is 81% below. Value-per-share answers are unchanged. Re-read before quoting; the spreadsheet is current.
+
 # Defend the valuation (Panshul, Mi'kael)
 
 **The answer in one breath.** "Our base case is **$167.50** against **$135.46** on 20 November; our bear case is **$31.40**, 77% below. At Bloomberg's discount rate, today's price already needs sales to grow **32.1%** a year for five years; base needs **35.5%**. If you think an AI pause is likelier than about one in four (**23.5%**), our numbers say don't buy." [V, I, A]

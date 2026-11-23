@@ -104,7 +104,7 @@
     title: The answer depends heavily on the discount rate
     bullets:
       - "Bloomberg's rate, the one we use: {{model_sensitivity | Terminal growth 3% | 19.3%}} a share"
-      - "Across the lower rates shown: from {{model_sensitivity | Terminal growth 3% | 16%}} up to {{model_sensitivity | Terminal growth 3% | 10%}}"
+      - "Across the lower rates shown: from {{model_sensitivity | Terminal growth 3% | 16%}} up to {{model_sensitivity | Terminal growth 3% | 10.55%}} (the average for US semiconductor companies)"
     chart: { type: bar, datasetKey: model_sensitivity, series: ["Terminal growth 3%"], highlight: "19.3%" }
 
 - id: concentration

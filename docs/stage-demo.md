@@ -41,6 +41,6 @@ npm run price -- <price>    # update today's share price; the valuation bars mov
 - `research_ai_chip_share` (68% v 19%) is copied from the script's table, not re-checked against Epoch AI. `research_discoveries` is marked unverified; the Sacks quote and the Xi paraphrase in the script are marked [VERIFY].
 
 ## Missing
-- **The official NVIDIA logo.** The finale falls back to the word NVIDIA in white. Drop the official file at `app/public/nvidia-logo.svg` and it appears.
+- **NVIDIA logo:** the finale uses the PNG Rob supplied (`app/public/nvidia-logo.png`, 600 px wide, so slightly soft on a 4K projector).
 - The slide "Implied" shows $2.1 trillion for FY32 (the model's number); the script says "about two trillion".
 - Governance (slide 21) has no figures, so no source line; its facts are in `docs/research/huang-reinstatement.md`.

@@ -193,7 +193,7 @@ export function Governance({ slide, beat }: SceneProps) {
 
 // ---------- 22. The finale ----------
 // beat 1: the screen clears (the host fades the backdrop to black), a long pause, then one large line.
-// beat 2: after "thank you" the line goes, and the logo fades in on black. Drop the official logo at app/public/nvidia-logo.svg.
+// beat 2: after "thank you" the line goes, and the logo fades in on black. Drop the official logo at app/public/nvidia-logo.png (supplied by Rob, 600 px wide).
 export function Finale({ slide, beat }: SceneProps) {
   const [noLogo, setNoLogo] = useState(false);
   const line = beat >= 1 && beat < 2;
@@ -208,7 +208,7 @@ export function Finale({ slide, beat }: SceneProps) {
         {noLogo ? (
           <div className="sx-display" style={{ fontSize: 170, letterSpacing: '0.04em', color: color.ink }}>NVIDIA</div>
         ) : (
-          <img src="/nvidia-logo.svg" alt="NVIDIA" style={{ width: 760 }} onError={() => setNoLogo(true)} />
+          <img src="/nvidia-logo.png" alt="NVIDIA" style={{ width: 880 }} onError={() => setNoLogo(true)} />
         )}
       </motion.div>
     </>
