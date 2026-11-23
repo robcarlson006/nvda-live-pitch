@@ -1,0 +1,26 @@
+{
+ "_note": "Where each element's idea is complete in a-full (the last words of the phrase that finishes it). Written by hand from the say text, used only to time element reveals: seg index -> [phrase per bullet, in order; null = not marked].",
+ "a-full": {
+  "0": ["have that at home", "was gaming"],
+  "1": ["wouldn't work", "in a few months"],
+  "2": ["in advance", "in the country", "happy with that"],
+  "3": ["list one by one", "one small thing simultaneously", "any programmer", "with every card"],
+  "4": ["couldn't see the point", "hundreds of millions a year", "telling them to stop", "But they kept going"],
+  "6": ["way quicker on these cards", "destroys everyone"],
+  "7": ["four different pieces", "every single one"],
+  "8": ["costs less money", "twelve to one"],
+  "9": [null, "years afterwards"],
+  "10": ["one enormous processor", "for seven billion", "every year"],
+  "11": ["firm in Taiwan", "reserved the majority of it"],
+  "12": ["over a decade", "biggest customers"],
+  "15": ["won the Nobel", "usual time", "reading scans"],
+  "16": ["espionage operation", "more of it"],
+  "17": ["end of the decade", "best processors"],
+  "18": ["is investing", "stop this company"],
+  "20": ["shown in grey", "in green"],
+  "22": ["this year's profits", "profit estimates"],
+  "24": ["stepped down", "for the first time", "looking into it"],
+  "26": ["over at TSMC", "they ship more"],
+  "28": ["what NVIDIA has made", "major corporations can do"]
+ }
+}

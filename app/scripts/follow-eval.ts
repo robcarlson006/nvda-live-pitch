@@ -14,6 +14,7 @@ import { Budget } from '../server/budget.ts';
 import Anthropic from '@anthropic-ai/sdk';
 import { env } from '../server/ai.ts';
 import { Director, type DirectorCaller } from '../server/director.ts';
+import { findCue, words as cueWords } from '../server/cues.ts';
 import { cueSlides, Follow } from '../server/follow.ts';
 import { apply, emptyState, loadDatasets, loadSpine } from '../server/state.ts';
 
@@ -54,15 +55,17 @@ function cachedCaller(): { call: DirectorCaller; ms: () => number | null } {
   };
   return { call, ms: () => recorded };
 }
+const marks: Record<string, Record<string, (string | null)[]>> = JSON.parse(fs.readFileSync(path.join(ROOT, 'rehearsal/evals/dev/_marks.json'), 'utf8'));
 const norm = (w: string) => w.replace(/\s+/g, ' ').trim();
 
 export type Result = {
   id: string; kind: string; beats: number; right: number; late: number[]; falseJumps: string[]; misses: string[];
   tangents: { wanted: number; hit: number; false: number }; latency: number[]; calls: number; errors: number;
+  elem: { late: number[]; signed: number[]; early: number; missed: number }; // element reveals vs the word where each element's idea is complete (hand marks in dev/_marks.json, else a verbatim cue)
 };
 
 /** One scenario, on a virtual clock driven by real call latency. */
-export async function replay(sc: Scenario, budget: Budget, call?: DirectorCaller, verbose = false): Promise<Result> {
+export async function replay(sc: Scenario, budget: Budget, call?: DirectorCaller, verbose = false, oracle = false): Promise<Result> {
   // ---- the audio: every word with the time it is spoken, then chunked as Deepgram does
   const msPerWord = 60_000 / (sc.wpm ?? 150);
   const words: { w: string; at: number; seg: number }[] = [];
@@ -88,9 +91,18 @@ export async function replay(sc: Scenario, budget: Budget, call?: DirectorCaller
   const box = { state: { ...emptyState(), follow: 'live' as const, seen: [] } as ShowState };
   const moves: { word: number; to: string; via: string }[] = [];
   const tangents: number[] = [];
+  const reveals: { word: number; id: string; reveal: number }[] = [];
+  const track = () => { const st = box.state; const id = st.live?.id; if (id && st.index >= 0 && st.reveal > (reveals.filter((x) => x.id === id).at(-1)?.reveal ?? 0)) reveals.push({ word: heardWord, id, reveal: st.reveal }); };
   let inflight: { done: number; resolve: () => void } | null = null;
-  const cc = call ? null : cachedCaller();
-  const director = new Director(budget, call ?? cc!.call, () => now);
+  // oracle: a free, perfect slide-follower that never reveals points itself, so what is measured is the local element logic alone
+  const oracleCall: DirectorCaller = async () => {
+    const want = sc.segments[words[Math.max(0, heardWord)].seg].on;
+    const here = spine[box.state.index]?.id;
+    const v = spine.some((x) => x.id === want) && want !== here ? { action: 'slide', slide: want, covered: 0 } : { action: 'stay', slide: null, covered: 0 };
+    return { content: [{ type: 'text', text: JSON.stringify(v) }], usage: { input_tokens: 0, output_tokens: 0 } } as any;
+  };
+  const cc = call || oracle ? null : cachedCaller();
+  const director = new Director(budget, call ?? (oracle ? oracleCall : cc!.call), () => now);
   // Wrap look(): measure the real wait, and make the virtual clock pass by the same amount before the verdict lands.
   const look = director.look.bind(director);
   director.look = async (...a) => {
@@ -110,6 +122,7 @@ export async function replay(sc: Scenario, budget: Budget, call?: DirectorCaller
     set: (s, why) => {
       if (why === 'slide') moves.push({ word: heardWord, to: spine[s.index].id, via: 'live' });
       box.state = s;
+      track();
     },
     spine: () => spine,
     datasets,
@@ -143,6 +156,7 @@ export async function replay(sc: Scenario, budget: Budget, call?: DirectorCaller
     const s = apply(box.state, { type: 'transcript', text: e.text, final: e.final }, { datasets, spine, cueSlides: cueSlides(box.state, director.error, true) }) as ShowState;
     if (s.liveSince !== box.state.liveSince) moves.push({ word: heardWord, to: spine[s.index].id, via: 'cue' });
     box.state = s;
+    track();
     follow.hear(e.text, e.final);
     await settle();
   }
@@ -151,7 +165,8 @@ export async function replay(sc: Scenario, budget: Budget, call?: DirectorCaller
 
   // ---- score: for each segment, was the deck on the right slide by its end (+ a few words' grace)?
   const at = (word: number) => moves.filter((m) => m.word <= word).at(-1)?.to ?? 'standby';
-  const r: Result = { id: sc.id, kind: sc.kind, beats: 0, right: 0, late: [], falseJumps: [], misses: [], tangents: { wanted: 0, hit: 0, false: 0 }, latency, calls, errors };
+  const r: Result = { id: sc.id, kind: sc.kind, beats: 0, right: 0, late: [], falseJumps: [], misses: [], tangents: { wanted: 0, hit: 0, false: 0 }, latency, calls, errors, elem: { late: [], signed: [], early: 0, missed: 0 } };
+  const nw = words.map((x) => cueWords(x.w).join(''));
   let expected = 'standby';
   sc.segments.forEach((seg, k) => {
     const first = words.findIndex((w) => w.seg === k), last = words.findLastIndex((w) => w.seg === k);
@@ -171,6 +186,22 @@ export async function replay(sc: Scenario, budget: Budget, call?: DirectorCaller
       if (good) (r.right++, r.late.push(Math.max(0, (hit?.word ?? first) - first)));
       else r.misses.push(`${k}:${seg.on} (was ${at(last + 4)})`);
     }
+    // element reveals: when was each element's cue phrase complete, and when did that element land?
+    const slide = spine.find((x) => x.id === seg.on);
+    if (slide) slide.elementCues.forEach((cue, j) => {
+      const mark = marks[sc.id]?.[String(k)]?.[j]; // hand-marked: the words that finish this element's idea
+      let end = -1;
+      if (mark) {
+        const m = cueWords(mark);
+        for (let e = first + m.length - 1; e <= last && end < 0; e++) if (m.every((t, i) => nw[e - m.length + 1 + i] === t)) end = e;
+      } else if (cue) for (let e = first; e <= last && end < 0; e++) if (findCue(nw.slice(first, e + 1), [{ cue, target: 0 }])) end = e;
+      if (end < 0) return; // no mark and not said verbatim: nothing to measure against
+      const ev = reveals.find((x) => x.id === slide.id && x.reveal >= j + 2 && x.word >= first - 2);
+      if (!ev || ev.word > last + 10) return void r.elem.missed++;
+      if (ev.word < end - 12) r.elem.early++; // landed more than 12 words before its cue phrase was finished
+      r.elem.late.push(Math.max(0, ev.word - end));
+      r.elem.signed.push(ev.word - end);
+    });
     // a move during this segment to anything that is neither this segment's slide nor the one before (late arrival) nor the next (early)
     for (const m of moves.filter((m) => m.word >= first && m.word <= last))
       if (m.to !== expected && m.to !== prev && !(m.to === nextWanted && m.word >= last - 6)) r.falseJumps.push(`${k}(${seg.on}): → ${m.to} [${m.via}]`);
@@ -196,9 +227,9 @@ async function main() {
   await Promise.all(Array.from({ length: verbose ? 1 : 4 }, async () => {
     for (let sc = queue.shift(); sc; sc = queue.shift()) {
       try {
-        const r = await replay(sc, budget, undefined, verbose);
+        const r = await replay(sc, budget, undefined, verbose, args.includes('--oracle'));
         results.push(r);
-        console.log(`${r.id.padEnd(26)} ${r.right}/${r.beats} right · late p50 ${pct(r.late, 0.5)} · false ${r.falseJumps.length} · tangents ${r.tangents.hit}/${r.tangents.wanted} (+${r.tangents.false} false) · ${r.calls} calls${r.errors ? ` · ${r.errors} errors` : ''}`);
+        console.log(`${r.id.padEnd(26)} ${r.right}/${r.beats} right · late p50 ${pct(r.late, 0.5)} · false ${r.falseJumps.length} · tangents ${r.tangents.hit}/${r.tangents.wanted} (+${r.tangents.false} false) · elems late p50 ${pct(r.elem.late, 0.5)} early ${r.elem.early} missed ${r.elem.missed} · ${r.calls} calls${r.errors ? ` · ${r.errors} errors` : ''}`);
         if (r.misses.length) console.log(`     missed: ${r.misses.join(' | ')}`);
         if (r.falseJumps.length) console.log(`     false:  ${r.falseJumps.join(' | ')}`);
       } catch (e) { console.log(`${sc.id}: FAILED ${(e as Error).stack}`); }
@@ -210,6 +241,7 @@ async function main() {
     set, scenarios: results.length, accuracy: Math.round((1000 * sum((r) => r.right)) / Math.max(1, sum((r) => r.beats))) / 10, beats: sum((r) => r.beats),
     falseJumps: sum((r) => r.falseJumps.length), falseJumpsPerRun: Math.round((100 * sum((r) => r.falseJumps.length)) / Math.max(1, results.length)) / 100,
     wordsLateP50: pct(late, 0.5), wordsLateP90: pct(late, 0.9), tangentHit: `${sum((r) => r.tangents.hit)}/${sum((r) => r.tangents.wanted)}`, tangentFalse: sum((r) => r.tangents.false),
+    elemSigned: results.flatMap((r) => r.elem.signed).sort((a, b) => a - b).join(","), elemLateP50: pct(results.flatMap((r) => r.elem.late), 0.5), elemLateP90: pct(results.flatMap((r) => r.elem.late), 0.9), elemMeasured: results.flatMap((r) => r.elem.late).length, elemEarly: sum((r) => r.elem.early), elemMissed: sum((r) => r.elem.missed),
     latencyP50: Math.round(pct(lat, 0.5)), latencyP95: Math.round(pct(lat, 0.95)), calls: sum((r) => r.calls), errors: sum((r) => r.errors), spent: Math.round((budget.spent - start) * 10000) / 10000, totalSpent: Math.round(budget.spent * 1000) / 1000,
   };
   console.log(JSON.stringify(total));

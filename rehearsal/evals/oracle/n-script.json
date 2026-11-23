@@ -1,0 +1,162 @@
+{
+ "id": "n-script",
+ "kind": "near-script (the say: text read as written)",
+ "note": "Rehearsed speakers: element-level lead measured against each element's own cue phrase. Use with --oracle (free).",
+ "segments": [
+  {
+   "on": "founding",
+   "say": "In 1993, three engineers, Jensen Huang, Chris Malachowsky and Curtis Priem, sat in a booth at a Denny's in San Jose and drank a lot of coffee. Their idea was simple. The 3D graphics that lived on expensive workstations should be on every PC. And the way to pay for it was video games. People told them nobody starts a company to play games.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "near-bust",
+   "say": "Their first chip, the NV1, bet on the wrong technology. Of 250,000 made, about 249,000 came back. NVIDIA had less than six months of cash. Their next chip, for Sega, was heading the same way, so they told Sega's CEO the truth. Sega invested five million dollars anyway. With about one month of payroll left, they bet the company on the RIVA 128. It launched in August 1997 and sold a million units in four months.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "first-gpu",
+   "say": "In 1999 they launched the GeForce 256 and gave it a new name: the GPU. In 2000 Microsoft picked NVIDIA for the first Xbox and paid two hundred million dollars up front. By 2007, Forbes named NVIDIA company of the year. A successful gaming company. They could have stopped there.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "cuda",
+   "say": "Instead, in November 2006, they announced CUDA. Here's the idea. A normal processor is a handful of very fast workers doing one job after another. A graphics chip is thousands of smaller workers all doing the same job at the same time, in parallel. The screen behind me is exactly that: thousands of cores firing together. CUDA let anyone, not just graphics programmers, put those thousands of workers to work. It grew out of a Stanford PhD project by Ian Buck, who NVIDIA hired in 2004. And here's the part that matters: they gave it away for free, and they built it into every gaming card they sold.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "wall-street",
+   "say": "Wall Street hated it. CUDA made every chip bigger and more expensive, for gamers who didn't care. NVIDIA was spending around half a billion dollars a year on it. The stock fell by more than half in 2008, and as late as 2013 an activist fund was questioning the spending. Look at revenue: stuck at three to four billion dollars for years. Shareholders wanted profits, not innovation. NVIDIA held on, because innovation is what creates the profits.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "alexnet",
+   "say": "In 2009, a Stanford team led by Andrew Ng showed that CUDA graphics cards could train neural networks up to 70 times faster. Then in 2012, a student at the University of Toronto, Alex Krizhevsky, entered an image-recognition contest with a neural network trained on two NVIDIA gaming cards. He won by more than ten points: an error rate of 15 percent against 26. Anyone who wanted to copy him needed CUDA. In 2016 NVIDIA declared the AI revolution, and Jensen personally delivered its first AI supercomputer to a small lab called OpenAI. By the time ChatGPT launched in 2022, CUDA had fifteen years of tools built on it. Modern AI was built on NVIDIA.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "revenue-long",
+   "say": "Here's what that bet did. Twenty-seven years of revenue. Three to four billion a year for a decade, and then this. Panshul will show you whether it lasts. My job is to show you why it happened.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "four-layers",
+   "say": "So why is NVIDIA the gold standard? Four layers. And a competitor has to beat all four at once.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "chips",
+   "say": "One: chips. On paper, AMD's latest chip beats NVIDIA's main one. It has 288 gigabytes of memory against 192, and it's cheaper. Yet for every dollar AMD makes from data centres, NVIDIA makes about twelve. Last year that was about 194 billion dollars against 17. Why? Because a chip is only as good as the software that runs on it.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "software",
+   "say": "Two: software. Think iPhone versus Android. NVIDIA builds the hardware and the software together, so it just works. More than six million developers use CUDA. It has over a thousand libraries, refined for nearly twenty years, and it's free. AMD's answer, ROCm, launched in 2016, nine years behind. When a new AI breakthrough comes out, it's written for CUDA on day one. Everyone else gets it months later, if at all.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "connections",
+   "say": "Three: connections. NVIDIA's NVLink wires 72 chips in a single rack so tightly that the software sees them as one giant chip. Then, in 2019, NVIDIA agreed to buy Mellanox, the company whose networking links those racks into clusters of a hundred thousand chips. It paid about seven billion dollars. Last year, that networking business made more than 31 billion. In one year.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "supply",
+   "say": "Four: supply. About nine in ten of the world's most advanced chips are made by one company, TSMC, in Taiwan. The real bottleneck is the packaging that assembles AI chips, and NVIDIA has reserved around 60 percent of it. Its supply commitments have reached 279 billion dollars. So even if you design a better chip, you can't get enough of it built.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "catch-up",
+   "say": "Has anyone caught up? Google has come closest, with its own chips, software and networking. That's eleven years and tens of billions of dollars. Amazon, Microsoft and Meta are trying too, and they all still buy NVIDIA. Microsoft is its biggest customer. NVIDIA still trains over 90 percent of AI models and takes about 80 percent of all AI chip spending. To compete with NVIDIA, you have to be one of the richest companies on earth, with a decade to spare.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "not-one-person",
+   "say": "And NVIDIA isn't one person. Co-founder Chris Malachowsky is still there. The people who run its sales, its supply chain, its research and its finances have worked together for fifteen to twenty years. Ian Buck, who built CUDA, still runs it. In 2023, Glassdoor ranked NVIDIA the best place to work in America.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "bubble",
+   "say": "The obvious question: is this the dot-com bubble again? Look at the scale. Building the interstate highways took about 1.1 percent of US GDP a year. The dot-com fibre boom, at its peak in 2000: 1.4 percent. The railroads: 2.2. The AI build-out is projected at more than 3.6 percent of GDP every year to 2032. That makes it the biggest infrastructure project in American history, relative to the size of the economy.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "different",
+   "say": "But this is different in two ways. In 2000, Cisco, the NVIDIA of its day, traded at about 140 times its expected earnings. NVIDIA today trades at a fraction of that. And in 2000 only a few percent of the fibre that was laid actually got used. Today, US data centres are almost completely full. The companies paying for this are some of the most profitable in history. Panshul will take you through the numbers, including the risks.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "already-doing",
+   "say": "And AI isn't a fad, because of what it's already doing. In 2024 the Nobel Prize in Chemistry went to AI work on proteins: predicting the shape of almost every protein known, and designing new proteins that don't exist in nature. A drug for a lung disease went from idea to clinical trials in under 30 months, less than half the usual time. In Sweden, AI-assisted screening found 20 percent more breast cancers while cutting doctors' workload by 44 percent.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "everyday",
+   "say": "For everyday people, it's already making work faster. In one study, business writers finished tasks 40 percent faster, with better quality. Customer support staff solved 14 percent more problems, and new staff 34 percent more. People worry robots will take jobs. When ATMs arrived, everyone said bank tellers were finished. Instead, banks opened more branches and teller jobs grew. AI takes over tasks, and leaves people more time for creative work.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "security",
+   "say": "AI is also now a matter of national security. This month, Google's threat intelligence team reported hacking software that found security flaws, wrote the attack and launched it with zero humans involved. Last year, Anthropic found a state-backed group using AI to carry out 80 to 90 percent of a spying campaign. These AI agents work 24 hours a day. How do you defend yourself against them? With AI. Google's own AI has already found security flaws before attackers could use them.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "superpowers",
+   "say": "And the world's two superpowers know it. China's official plan is to lead the world in AI by 2030. The US treats AI chips as so strategic that it restricts which ones can be sold to China. Neither side is going to stop.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "handoff",
+   "say": "NVIDIA has the best chips, the best software, the best connections and the best supply chain. The world's biggest companies and its two biggest governments are all building AI. The only way to stop NVIDIA is to stop innovation. Panshul is going to show you whether the numbers back that up.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "last-quarter",
+   "say": "In the three months to October, NVIDIA's revenue was this. In one quarter.",
+   "speaker": "Panshul"
+  },
+  {
+   "on": "beats",
+   "say": "And it isn't luck. Thirteen quarters in a row, revenue has beaten what analysts expected. Grey is what analysts expected. Green is what NVIDIA delivered.",
+   "speaker": "Panshul"
+  },
+  {
+   "on": "segments",
+   "say": "Where does it come from? Data centres. The chips that train and run AI. Gaming, where NVIDIA started, is now the thin grey band.",
+   "speaker": "Panshul"
+  },
+  {
+   "on": "peers",
+   "say": "You might think it's expensive. On this year's expected earnings it's the cheapest of the five big chip companies. The share price has fallen since the CEO resigned. The earnings forecasts haven't.",
+   "speaker": "Panshul"
+  },
+  {
+   "on": "valuation",
+   "say": "We built a five-year cash-flow model, using Bloomberg's own discount rate, which is very cautious. Our base case uses analysts' forecasts. Even our bear case, where AI spending pauses, is on the chart.",
+   "speaker": "Panshul"
+  },
+  {
+   "on": "governance",
+   "say": "Let's start with the hard one. Governance. The founder resigned last week. VERIFY these facts against a major news source on the morning of the pitch.",
+   "speaker": "Mi'kael"
+  },
+  {
+   "on": "renewables",
+   "say": "Environment. NVIDIA's own operations now run on renewable energy, up from about a third in 2018.",
+   "speaker": "Mi'kael"
+  },
+  {
+   "on": "scope3",
+   "say": "But the honest number is the supply chain, Scope 3. Most emissions come from manufacturing at partners like TSMC, and they rise as NVIDIA sells more.",
+   "speaker": "Mi'kael"
+  },
+  {
+   "on": "built-live",
+   "say": "One more thing. Every visual, every bullet point, every chart and every animation you just saw was built live, as we spoke.",
+   "speaker": "Rob"
+  },
+  {
+   "on": "close",
+   "say": "Everything you just watched was built and run by AI. The AI industry runs on infrastructure NVIDIA built. If three university students can do this for a stock pitch, imagine what the world's companies are doing.",
+   "speaker": "Rob"
+  }
+ ]
+}

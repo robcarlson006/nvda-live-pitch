@@ -4,6 +4,7 @@ import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
 import { ClientMsg, Dataset, elementCount, lookup, resolveText, SpineSlide, tokenRefs, type Draft, type Rehearsal, type RunEntry, type ShowState, type Slide } from '../shared/schema.ts';
 import { findCue, words, type Candidate } from './cues.ts';
+import { LEAD_REVEAL, leadScore } from './lead.ts';
 
 export const DATA_DIR = path.resolve(import.meta.dirname, '../../data/clean');
 export const SPINE_FILE = path.resolve(import.meta.dirname, '../../docs/script/spine.yaml');
@@ -229,6 +230,13 @@ function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[
       s = hit.target.kind === 'element' ? next(s, spine) : show(s, spine[hit.target.index], hit.target.index);
       s = { ...s, lastCue: { phrase: hit.cue, target: hit.target.kind === 'element' ? `${live?.id}: next element` : spine[hit.target.index].id, at: Date.now() } };
       used += hit.end + 1;
+    }
+  }
+  // Live mode, no AI: the next element lands as soon as enough of what it is about has been said (see lead.ts).
+  if (state.autoCue && state.follow === 'live' && state.mode === 'script' && s.index >= 0 && s.live?.id === spine[s.index]?.id && s.reveal < elementCount(s.live) && used === 0) {
+    if (leadScore(buf, spine[s.index], s.reveal - 1, spine) >= LEAD_REVEAL) {
+      s = { ...next(s, spine), lastCue: { phrase: 'heard it', target: `${s.live.id}: next element`, at: Date.now() } };
+      used = buf.length;
     }
   }
   if (final) return { ...s, heard: buf.slice(used).slice(-40).join(' '), consumed: 0 };

@@ -7,7 +7,7 @@ import { words } from './cues.ts';
  */
 const COMMON = new Set('about also anyway around because been being could does doing dont even ever every from going have here into just know like lets look make many more most much only other over really right same should some something start still than that their them then there these they thing things think this those though time very want well were what when where which while will with would year years your'.split(' '));
 const stem = (w: string) => w.slice(0, 6);
-const terms = (t: string) => words(t).filter((w) => (w.length >= 4 || /\d/.test(w)) && !COMMON.has(w)).map(stem);
+export const terms = (t: string) => words(t).filter((w) => (w.length >= 4 || /\d/.test(w)) && !COMMON.has(w)).map(stem);
 
 let cache: { spine: SpineSlide[]; docs: Map<string, Set<string>>; idf: Map<string, number> } | null = null;
 function index(spine: SpineSlide[]) {
@@ -29,3 +29,6 @@ export function evidence(said: string, spine: SpineSlide[]): { id: string; score
   const [a, b] = ranked;
   return a && a.score >= 4.5 && a.score >= 1.25 * (b?.score ?? 0) ? a : null;
 }
+
+/** Rarity of each telling word across the whole script (high = appears on few slides). */
+export const idfOf = (spine: SpineSlide[]): Map<string, number> => index(spine).idf;
