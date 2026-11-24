@@ -36,15 +36,15 @@ test('the DCF bridge adds up at each rate, and matches the sensitivity value', (
 
 test('the one-page DCF summary adds up and matches the other DCF slides', () => {
   const v = (s: string) => at('model_dcf_summary', s, 'value');
-  assert.ok(near(v('PV of FCFs') + v('PV of terminal value'), v('Enterprise value'), 0.02), 'PV of FCFs + PV of TV = EV');
-  assert.ok(near(v('Enterprise value') - v('Net debt'), v('Equity value'), 0.02), 'EV − net debt = equity value');
-  assert.ok(near(v('Equity value') / v('Diluted shares'), v('Implied share price'), 0.01), 'equity ÷ diluted shares = implied price');
+  assert.ok(near(v('PV of FCFs') + v('PV of terminal value'), v('Enterprise value'), 0.0002), 'PV of FCFs + PV of TV = EV (USD tn)');
+  assert.ok(near(v('Enterprise value') - v('Net debt') / 1000, v('Equity value'), 0.0002), 'EV − net debt = equity value');
+  assert.ok(near((v('Equity value') * 1000) / v('Diluted shares'), v('Implied share price'), 0.05), 'equity ÷ diluted shares = implied price');
   assert.equal(v('Diluted shares'), at('model_dcf_inputs', 'Diluted shares', 'value'));
   assert.equal(v('Implied share price'), at('model_three_rates', 'Value per share', RATE_X[0]));
   assert.equal(v('Upside'), at('model_three_rates', 'Above reference price', RATE_X[0]));
   assert.equal(v('Share price'), at('model_dcf_inputs', 'Share price', 'value'));
   assert.ok(near(v('Terminal value share of EV'), (v('PV of terminal value') / v('Enterprise value')) * 100, 0.01), 'TV % of EV');
-  assert.ok(near(v('Enterprise value') / 1000, at('model_dcf_bridge', RATES[0], 'Enterprise value'), 0.0002), 'EV matches the bridge');
+  assert.ok(near(v('Enterprise value'), at('model_dcf_bridge', RATES[0], 'Enterprise value'), 0.0002), 'EV matches the bridge');
   const cagr = ((at('model_revenue_paths', 'Base', 'FY32') / at('model_revenue_paths', 'Base', 'FY27')) ** (1 / 5) - 1) * 100;
   assert.ok(near(v('Revenue CAGR, FY27–32'), cagr, 0.01), `CAGR ${cagr}`);
   assert.equal(v('Revenue CAGR, FY27–32'), at('model_implied_growth', 'Growth per year', 'Base case (consensus, then slowing)'));
@@ -98,7 +98,7 @@ test('the DCF inputs slide uses the three rates and shows every model input', ()
 test('the finance run is in order and the old valuation slide is gone', () => {
   const ids = spine.map((s) => s.id);
   assert.ok(!ids.includes('valuation'));
-  const order = ['peers', 'dcf-inputs', 'fcf', 'dcf-worksheet', 'dcf-bridge', 'three-rates', 'reverse-dcf', 'bear-case', 'ai-ended'];
+  const order = ['peers', 'dcf-inputs', 'dcf-drivers', 'fcf', 'dcf-worksheet', 'dcf-bridge', 'three-rates', 'dcf-summary', 'reverse-dcf', 'bear-case', 'ai-ended'];
   const pos = order.map((id) => ids.indexOf(id));
   assert.ok(pos.every((p, i) => p >= 0 && (i === 0 || p === pos[i - 1] + 1)), `consecutive: ${pos}`);
   assert.equal(spine[pos.at(-1)! + 1].speaker, "Mi'kael");

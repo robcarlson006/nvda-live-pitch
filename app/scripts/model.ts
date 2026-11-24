@@ -211,17 +211,18 @@ function main() {
   });
   // The DCF on one page: the headline outputs the board expects, all at the 10.55% headline rate.
   const hb = results.base;
+  const tnS = (v: number) => Math.round(v * 10) / 1e4; // USD bn → USD tn, 4 decimals (shown as 2)
   const summary: Record<string, { v: number; unit: string; src: string }> = {
     'Forecast period': { v: years.length, unit: 'years', src: 'Team model: FY28 to FY32; FY27, the current year, is not counted' },
     'Revenue CAGR, FY27–32': { v: r2(baseCagr), unit: '%', src: 'Team model: base-case revenue, FY27 consensus to FY32, compound yearly growth' },
     'EBIT margin, FY26': { v: opMargin26, unit: '%', src: 'Bloomberg FA (Profitability), operating margin, FY26' },
     'Free-cash-flow margin': { v: r2(baseMargin * 100), unit: '%', src: `Bloomberg FA: average of ${marginYears.join(', ')}; the margin the DCF uses` },
-    'PV of FCFs': { v: r2(hb.pv.reduce((a, c) => a + c, 0)), unit: 'USD bn', src: `${source}, ${wacc}% WACC` },
-    'PV of terminal value': { v: r2(hb.pvTv), unit: 'USD bn', src: `${source}, ${wacc}% WACC, ${g}% terminal growth` },
+    'PV of FCFs': { v: tnS(hb.pv.reduce((a, c) => a + c, 0)), unit: 'USD tn', src: `${source}, ${wacc}% WACC` },
+    'PV of terminal value': { v: tnS(hb.pvTv), unit: 'USD tn', src: `${source}, ${wacc}% WACC, ${g}% terminal growth` },
     'Terminal value share of EV': { v: r2((hb.pvTv / hb.ev) * 100), unit: '%', src: `${source}: PV of terminal value ÷ enterprise value` },
-    'Enterprise value': { v: r2(hb.ev), unit: 'USD bn', src: `${source}, ${wacc}% WACC` },
+    'Enterprise value': { v: tnS(hb.ev), unit: 'USD tn', src: `${source}, ${wacc}% WACC` },
     'Net debt': { v: r2(-netCash), unit: 'USD bn', src: 'Bloomberg DES, 20 Nov 2026: enterprise value minus market cap (negative = net cash)' },
-    'Equity value': { v: r2(hb.equity), unit: 'USD bn', src: `${source}: enterprise value + net cash` },
+    'Equity value': { v: tnS(hb.equity), unit: 'USD tn', src: `${source}: enterprise value + net cash` },
     'Diluted shares': { v: Math.round(shares * 1000) / 1000, unit: 'bn', src: 'Bloomberg FA quarterly, diluted weighted average shares, Q3 FY27' },
     'Implied share price': { v: r2(hb.perShare), unit: 'USD', src: `${source}: equity value ÷ diluted shares` },
     'Share price': { v: price, unit: 'USD', src: inputs['Share price'].src },

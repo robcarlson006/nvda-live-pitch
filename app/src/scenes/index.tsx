@@ -1,4 +1,7 @@
 import type { ComponentType } from 'react';
+import type { Dataset } from '../../shared/schema.ts';
+import { DcfDrivers } from './DcfDrivers.tsx';
+import { DcfSummary } from './DcfSummary.tsx';
 import { AiIndustries } from './AiIndustries.tsx';
 import { SpaceRace } from './SpaceRace.tsx';
 import { WallStreet } from './WallStreet.tsx';
@@ -22,6 +25,8 @@ export type SceneProps = {
   points?: string[];
   /** How many points the slide has in all. */
   total?: number;
+  /** The clean datasets, so a scene can draw real figures with `lookup` instead of typing them. */
+  datasets?: Record<string, Dataset>;
 };
 
 /**
@@ -42,6 +47,8 @@ const scenes: Record<string, ComponentType<SceneProps>> = {
   close: Close,
   'open-ai': OpenEcosystem,
   'beyond-hyperscalers': Demand,
+  'dcf-drivers': DcfDrivers,
+  'dcf-summary': DcfSummary,
 };
 
 export function sceneFor(id: string): ComponentType<SceneProps> | undefined {

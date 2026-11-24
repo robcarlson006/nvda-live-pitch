@@ -35,7 +35,7 @@ export function SectionCard({ kicker, word, line }: { kicker: string; word: stri
  */
 export const CHAPTERS: { key: string; ids: (string | null)[]; labels: string[] }[] = [
   { key: 'layers', ids: ['chips', 'software', 'connections', 'supply'], labels: ['Chips', 'Software', 'Connections', 'Supply'] },
-  { key: 'dcf', ids: ['dcf-inputs', 'fcf', 'dcf-worksheet', 'dcf-bridge', 'three-rates', 'reverse-dcf'], labels: ['Inputs', 'Cash flow', 'Discounting', 'Value', 'Three rates', 'Priced in'] },
+  { key: 'dcf', ids: ['dcf-inputs', 'dcf-drivers', 'fcf', 'dcf-worksheet', 'dcf-bridge', 'three-rates', 'dcf-summary', 'reverse-dcf'], labels: ['Inputs', 'Drivers', 'Cash flow', 'Discounting', 'Value', 'Three rates', 'Summary', 'Priced in'] },
 ];
 // Overview slides that show a chapter with every step lit, just before its first step.
 const OVERVIEW: Record<string, string> = { 'four-layers': 'layers' };

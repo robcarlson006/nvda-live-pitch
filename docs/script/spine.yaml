@@ -232,22 +232,6 @@
   # DRAFT say (stress-case sentence and bullet cut, spec 1f)
   say: "If the bubble pops, the stock falls. But NVIDIA sells needed hardware and software, while weak AI bets get cut first. It is built to survive."
 
-- id: already-doing
-  speaker: Rob
-  cues: [ai is already, already delivering results, delivering results, results already]
-  layout: statement
-  title: AI is already delivering results.
-  bullets:
-    - text: "2024 Nobel Prize in Chemistry: AI that predicts and designs proteins"
-      cue: chemistry
-    - text: "A lung-disease drug: idea to clinical trials in under {{research_facts | Drug: idea to trials, months | value}} months"
-      cue: lung
-    - text: "Sweden: {{research_facts | Sweden: more cancers found | value}} more breast cancers found, with {{research_facts | Sweden: less reading work | value}} less work for doctors"
-      cue: swedish
-  say: "AI is already **delivering results**. The 2024 Chemistry Nobel went to protein-design AI. A lung-disease drug reached trials in under 30 months. Swedish screening found 20 percent more breast cancers."
-  sources: [Nobel Prize in Chemistry 2024]
-
-
 - id: handoff
   speaker: Rob
   cues: [nvidia has, nvidia has the chips, has the chips software, chips software connections]
@@ -377,6 +361,23 @@
   # DRAFT say
   say: "What is one share worth? From **Bloomberg**: revenue, analyst consensus, cash margin, share count and net cash, and its own discount rate. From **Google Finance**: another rate. From **Damodaran**: the chip-industry rate. Our two choices: three percent long-run growth, fading to it by 2032."
 
+# The base case's drivers, one beat each, drawn by the DcfDrivers scene (years → revenue arc → $1 of sales).
+# Keep three points in this order. Avoid saying "free cash flow" here: it is the next slide's cue.
+- id: dcf-drivers
+  speaker: Panshul
+  cues: [three numbers, base case in three, in three numbers]
+  layout: statement
+  title: Our base case in three numbers.
+  bullets:
+    - text: "The forecast runs from FY28 to FY32"
+      cue: a forecast running
+    - text: "Revenue grows {{model_dcf_summary | Revenue CAGR, FY27–32 | value}} a year, compounded, from FY27 to FY32"
+      cue: compounds at
+    - text: "From each dollar of sales: {{model_dcf_summary | EBIT margin, FY26 | value}} operating profit (EBIT) in FY26, and {{model_dcf_summary | Free-cash-flow margin | value}} kept as cash"
+      cue: each dollar
+  # DRAFT say
+  say: "Our base case in **three numbers**. A forecast running from 2028 to 2032. Revenue compounds at {{model_dcf_summary | Revenue CAGR, FY27–32 | value}} annually. And from each dollar of sales, NVIDIA made {{model_dcf_summary | EBIT margin, FY26 | value}} operating profit last year, and kept {{model_dcf_summary | Free-cash-flow margin | value}} as cash. That cash is what we value."
+
 - id: fcf
   speaker: Panshul
   cues: [free cash flow, cash left over, cash left after]
@@ -419,14 +420,18 @@
   bullets:
     - { zoom: PV of FY28–32 cash flow, cue: next five }
     - { zoom: PV of terminal value, cue: everything }
+    - text: "{{model_dcf_summary | Terminal value share of EV | value}} of the value comes after FY32"
+      cue: three quarters
     - { zoom: Enterprise value, cue: enterprise }
     - { zoom: Equity value, cue: add net }
-    - text: "÷ {{model_dcf_inputs | Diluted shares | value}} diluted shares ={{model_three_rates | Value per share | 10.55% industry (Damodaran)}} a share, against a {{model_dcf_inputs | Share price | value}} reference price"
+    - text: "No net debt: {{model_dcf_inputs | Net cash | value}} more cash than debt, so it is added"
+      cue: more cash than debt
+    - text: "÷ {{model_dcf_inputs | Diluted shares | value}} diluted shares = {{model_three_rates | Value per share | 10.55% industry (Damodaran)}} a share, against a {{model_dcf_inputs | Share price | value}} reference price"
       cue: divide
     - { zoom: all }
   chart: { type: waterfall, datasetKey: model_dcf_bridge, series: ["10.55%"], totals: [Enterprise value, Equity value], highlight: Equity value }
   # DRAFT say
-  say: "Add it up. The next five years' cash, discounted at the industry rate, is worth 2.3 trillion today. Everything after: 7.1 trillion. Enterprise value: 9.4 trillion. Add net cash, divide by the shares, and we get {{model_three_rates | Value per share | 10.55% industry (Damodaran)}} per share."
+  say: "Add it up. The next five years' cash, discounted at the industry rate, is worth {{model_dcf_summary | PV of FCFs | value}} today. Everything after: {{model_dcf_summary | PV of terminal value | value}}, **three quarters** of the value. Enterprise value: {{model_dcf_summary | Enterprise value | value}}. Add net cash: NVIDIA has no net debt, it holds **more cash than debt**. Divide by the diluted shares, and we get {{model_three_rates | Value per share | 10.55% industry (Damodaran)}} per share."
 
 - id: three-rates
   speaker: Panshul
@@ -445,6 +450,25 @@
   chart: { type: bar, display: table, datasetKey: model_three_rates, series: [Value per share, Enterprise value, Above reference price], refLine: { series: Share price today }, highlight: 10.55% industry (Damodaran) }
   # DRAFT say
   say: "We didn't invent a discount rate. At the industry rate, a share is worth **{{model_three_rates | Value per share | 10.55% industry (Damodaran)}}**. At Google Finance's 14.45 percent, {{model_three_rates | Value per share | 14.45% Google Finance}}. At Bloomberg's Q3 rate of 15.4 percent, {{model_three_rates | Value per share | 15.4% Bloomberg}}. All three exceed our reference price."
+
+# Every DCF output on one page, drawn by the DcfSummary scene: one tile per point, in this order. Keep four points.
+# Avoid "price assumes" / "turn it around" here: they are the next slide's cues.
+- id: dcf-summary
+  speaker: Panshul
+  cues: [on one page, the dcf on one, whole dcf]
+  layout: statement
+  title: The DCF on one page.
+  bullets:
+    - text: "The assumptions"
+      cue: assumptions
+    - text: "The cash flows, and what they are worth today"
+      cue: worth today
+    - text: "From enterprise value to one share"
+      cue: one share
+    - text: "The answer: {{model_dcf_summary | Upside | value}} above today's price"
+      cue: the answer
+  say: "Here is the whole DCF **on one page**. The assumptions: a {{model_dcf_inputs | WACC, US semiconductor industry average | value}} discount rate, {{model_dcf_inputs | Terminal growth (our choice) | value}} long-run growth, five years of forecast. The cash flows, and what they are worth today. From enterprise value, with no net debt, to one share. And the answer: {{model_dcf_summary | Implied share price | value}} against {{model_dcf_summary | Share price | value}} today, {{model_dcf_summary | Upside | value}} upside."
+  sources: ["Team valuation model on Bloomberg FA, DES and consensus data; Google Finance; Damodaran (NYU)"]
 
 - id: reverse-dcf
   speaker: Panshul
@@ -521,6 +545,26 @@
   # DRAFT say
   say: "Think of the **space race**. Sputnik launched in 1957, and people reached the Moon in 1969. Earth observation satellites now track climate and forests. AI is a race too. *What will it leave behind?*"
   sources: ["NASA, The Dawn of the Space Age; NASA, Apollo 11; NASA Earth Observatory, Space-based Observations of the Earth"]
+
+# Answers the space race's last line ("what will it leave behind?"). Moved here from Rob's section on 24 Nov.
+# One industry per point, so all four panels of the AiIndustries scene zoom (it matches on keywords, not position).
+# Only Deere and Ecolab claim NVIDIA involvement; keep it that way.
+- id: already-doing
+  speaker: Mi'kael
+  cues: [already delivering, delivering results, already leaving, results already]
+  layout: statement
+  title: AI is already delivering results.
+  bullets:
+    - text: "Science: the 2024 Nobel Prize in Chemistry, for AI that predicts and designs proteins"
+      cue: chemistry
+    - text: "Healthcare: a lung drug in trials within {{research_facts | Drug: idea to trials, months | value}} months; Sweden finds {{research_facts | Sweden: more cancers found | value}} more breast cancers"
+      cue: lung
+    - text: "Farming: John Deere's See & Spray runs on NVIDIA GPUs and sprays only the weeds"
+      cue: weeds
+    - text: "Data centres: Ecolab worked with NVIDIA engineers on coolant and monitoring for liquid cooling"
+      cue: cooling
+  say: "It's already **delivering results**. The 2024 Chemistry Nobel went to protein-design AI. A lung-disease drug reached trials in under 30 months, and Swedish screening found 20 percent more breast cancers. On farms, John Deere's sprayers run on NVIDIA chips and spray only the weeds. And in data centres, Ecolab worked with NVIDIA engineers on liquid cooling."
+  sources: ["Nobel Prize in Chemistry 2024", "NVIDIA Developer blog and TechTarget (John Deere See & Spray)", "Ecolab press releases, 2 Jul and 16 Nov 2026"]
 
 # VERIFY the reinstatement and every date against a major news source on the morning of the pitch.
 - id: governance

@@ -7,12 +7,12 @@
     "Revenue CAGR, FY27–32": "%",
     "EBIT margin, FY26": "%",
     "Free-cash-flow margin": "%",
-    "PV of FCFs": "USD bn",
-    "PV of terminal value": "USD bn",
+    "PV of FCFs": "USD tn",
+    "PV of terminal value": "USD tn",
     "Terminal value share of EV": "%",
-    "Enterprise value": "USD bn",
+    "Enterprise value": "USD tn",
     "Net debt": "USD bn",
-    "Equity value": "USD bn",
+    "Equity value": "USD tn",
     "Diluted shares": "bn",
     "Implied share price": "USD",
     "Share price": "USD",
@@ -54,22 +54,22 @@
       45.25
     ],
     "PV of FCFs": [
-      2290.66
+      2.2907
     ],
     "PV of terminal value": [
-      7082.1
+      7.0821
     ],
     "Terminal value share of EV": [
       75.56
     ],
     "Enterprise value": [
-      9372.76
+      9.3728
     ],
     "Net debt": [
       -59.6
     ],
     "Equity value": [
-      9432.36
+      9.4324
     ],
     "Diluted shares": [
       24.186
