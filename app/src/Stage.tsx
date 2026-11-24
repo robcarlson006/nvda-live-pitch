@@ -54,15 +54,16 @@ export function Stage() {
   return (
     <div className={`stage${motion ? ' motion' : ' no-motion'}${slide?.effect === 'dark' && (state?.reveal ?? 0) > 1 ? ' fx-dark' : ''}`}>
       <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length || !!slide?.groups} effect={slide?.effect === 'dark' || (slide && sceneFor(slide.id)) ? undefined : slide?.effect} reveal={state?.reveal ?? 0} />
-      {/* Slide to slide: the old slide flies past the camera while the new one settles in from just behind it. */}
-      <AnimatePresence initial={false}>
+      {/* Slide to slide: the old slide flies past the camera, then the new one settles in from just behind it.
+          "wait" keeps the two from overlapping (two sets of text on screen at once read as a glitch). */}
+      <AnimatePresence initial={false} mode="wait">
         {slide && (
           <m.div
             key={state!.liveSince}
             className="slide-shell"
             initial={motion ? { opacity: 0, scale: 0.94 } : false}
-            animate={{ opacity: 1, scale: 1, transition: { duration: motion ? 0.9 : 0, ease: [0.16, 1, 0.3, 1], delay: motion ? 0.12 : 0 } }}
-            exit={{ opacity: 0, scale: motion ? 1.08 : 1, transition: { duration: motion ? 0.55 : 0, ease: [0.7, 0, 0.84, 0] } }}
+            animate={{ opacity: 1, scale: 1, transition: { duration: motion ? 0.9 : 0, ease: [0.16, 1, 0.3, 1] } }}
+            exit={{ opacity: 0, scale: motion ? 1.06 : 1, transition: { duration: motion ? 0.38 : 0, ease: [0.7, 0, 0.84, 0] } }}
           >
             <SlideView slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} motion={motion} />
           </m.div>
