@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 import { AiIndustries } from './AiIndustries.tsx';
 import { SpaceRace } from './SpaceRace.tsx';
+import { WallStreet } from './WallStreet.tsx';
 import './scenes.css';
 
 /** `stage` = how many of the slide's points have been said so far, so each scene builds with the speaker. */
@@ -13,6 +14,7 @@ export type SceneProps = { stage: number; motion: boolean };
 const scenes: Record<string, ComponentType<SceneProps>> = {
   'space-race': SpaceRace,
   'already-doing': AiIndustries,
+  'wall-street': WallStreet,
 };
 
 export function sceneFor(id: string): ComponentType<SceneProps> | undefined {

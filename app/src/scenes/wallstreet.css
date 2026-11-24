@@ -1,0 +1,57 @@
+/* ---------- Wall Street: a pixel tower builds from the ground up, then loses its top half ---------- */
+/* The scene shares the right column with the slide's chart: it sits underneath, and steps back once the chart builds. */
+.scene-wall-street .scene { width: 50vw; z-index: 0; }
+.scene-wall-street .chart { position: relative; z-index: 1; }
+.wall-street { width: 100%; height: 100%; display: block; overflow: visible; font-family: 'Archivo Variable', system-ui, sans-serif; transition: opacity 1.4s ease, transform 1.6s cubic-bezier(0.65, 0, 0.35, 1); transform-origin: 50% 90%; }
+.wall-street.receded { opacity: 0.16; transform: scale(0.92); }
+
+.ws-ground { stroke: #3a4134; stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; animation: ws-draw 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+@keyframes ws-draw { to { stroke-dashoffset: 0; } }
+.ws-haze { opacity: 0; animation: ws-fade 2.6s ease 0.6s forwards; }
+@keyframes ws-fade { to { opacity: 1; } }
+
+/* Each block pops in bright green, then cools to the building's colour: the floor is "laid", like a loop-pedal layer. */
+.ws-block { fill: #1f261b; transform-box: fill-box; transform-origin: 50% 100%; animation: ws-lay 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both; }
+@keyframes ws-lay {
+  0% { opacity: 0; transform: translateY(14px) scale(0.4); fill: #c6f25a; }
+  35% { opacity: 1; transform: none; fill: #76b900; }
+  100% { fill: #1f261b; }
+}
+.ws-skyline .ws-block { fill: #161b13; animation-name: ws-lay-dim; }
+@keyframes ws-lay-dim {
+  0% { opacity: 0; transform: translateY(14px) scale(0.4); fill: #4e7a00; }
+  40% { opacity: 1; transform: none; }
+  100% { fill: #161b13; }
+}
+/* Windows: lit ones flicker on just after their floor is built. */
+.ws-block.lit { animation: ws-lay 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both, ws-light 0.9s steps(3, end) calc(var(--d) + 0.8s) forwards; }
+@keyframes ws-light { 0% { fill: #1f261b; } 33% { fill: #a7d64a; } 50% { fill: #1f261b; } 100% { fill: #9cc93f; } }
+.ws-skyline .ws-block.lit { animation: ws-lay-dim 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both, ws-light-dim 0.9s steps(3, end) calc(var(--d) + 1s) forwards; }
+@keyframes ws-light-dim { to { fill: #3d5216; } }
+
+.ws-sign rect { fill: #76b900; }
+.ws-sign text { fill: #000; font-size: 20px; font-weight: 760; letter-spacing: 0.12em; text-anchor: middle; font-stretch: 115%; }
+.ws-sign { opacity: 0; animation: ws-fade 0.8s ease 2.4s forwards; }
+
+/* "The stock more than halved": the top of the tower breaks away and falls; the lights in what is left go out. */
+.ws-block.fall { animation: ws-fall 1.5s cubic-bezier(0.55, 0, 0.9, 0.5) var(--fd) both; }
+@keyframes ws-fall {
+  0% { opacity: 1; transform: none; fill: #e5484d; }
+  12% { opacity: 1; transform: translate(0, -6px); fill: #e5484d; }
+  100% { opacity: 0; transform: translate(var(--fx), var(--fy)) rotate(var(--fr)) scale(0.6); fill: #5a1d1f; }
+}
+.crashed .ws-tower .ws-block:not(.top) { animation: none; }
+.crashed .ws-tower .ws-block.lit:not(.top) { animation: ws-out 0.7s steps(3, end) calc(0.35s + var(--d) * 0.15) both; }
+@keyframes ws-out { 0% { fill: #9cc93f; } 40% { fill: #e5484d; } 100% { fill: #1f261b; } }
+.ws-crash { fill: none; stroke: #e5484d; stroke-width: 5; stroke-linejoin: round; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
+.crashed .ws-crash { opacity: 1; animation: ws-draw 1.3s cubic-bezier(0.55, 0, 0.45, 1) 0.15s forwards; filter: drop-shadow(0 0 10px rgba(229, 72, 77, 0.55)); }
+.crashed .ws-haze { animation: none; opacity: 0.25; transition: opacity 1s ease; }
+
+/* Reduced motion / backup: no animation, just the end state of the current step. */
+.no-motion .wall-street, .no-motion .wall-street * { animation: none !important; transition: none !important; }
+.no-motion .ws-ground { stroke-dashoffset: 0; }
+.no-motion .ws-sign, .no-motion .ws-haze { opacity: 1; }
+.no-motion .ws-block.lit { fill: #9cc93f; }
+.no-motion .crashed .ws-block.lit { fill: #1f261b; }
+.no-motion .ws-block.fall { opacity: 0; }
+.no-motion .crashed .ws-crash { stroke-dashoffset: 0; }
