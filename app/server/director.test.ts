@@ -20,7 +20,7 @@ const at = (id: string, reveal = 1): ShowState => ({ ...emptyState(), follow: 'l
 
 test('a paraphrase of the next slide moves to it at once; two slides ahead too; further needs two verdicts in a row', () => {
   const s = at('founding');
-  assert.equal(accept(verdict({ action: 'slide', slide: 'near-bust' }), s, spine, 1), true);
+  assert.equal(accept(verdict({ action: 'slide', slide: 'cuda' }), s, spine, 1), true);
   assert.equal(accept(verdict({ action: 'slide', slide: 'first-gpu' }), s, spine, 1), true);
   assert.equal(accept(verdict({ action: 'slide', slide: 'alexnet' }), s, spine, 1), false, 'one verdict is not enough for a big jump');
   assert.equal(accept(verdict({ action: 'slide', slide: 'alexnet' }), s, spine, 2), true);
@@ -51,9 +51,9 @@ test('points build the slide on screen as far as it has got, and never un-build 
 });
 
 test('going to another slide shows it with the points already reached', () => {
-  const s = liveGo(at('founding'), spine, 'near-bust', 1);
-  assert.equal(s.live!.id, 'near-bust');
-  assert.equal(s.index, idx('near-bust'));
+  const s = liveGo(at('founding'), spine, 'first-gpu', 1);
+  assert.equal(s.live!.id, 'first-gpu');
+  assert.equal(s.index, idx('first-gpu'));
   assert.ok(s.liveSince > 1000, 'the stage rebuilds the slide');
 });
 
@@ -68,11 +68,11 @@ test('the director waits for enough new words, and only one look at a time', () 
 
 test('a verdict comes back from the model; the prompt carries every slide and none of the speech', async () => {
   let seen: any;
-  const d = new Director(new Budget(tmp(), 4), async (body) => ((seen = body), reply(verdict({ action: 'slide', slide: 'near-bust', covered: 1 }))));
+  const d = new Director(new Budget(tmp(), 4), async (body) => ((seen = body), reply(verdict({ action: 'slide', slide: 'first-gpu', covered: 1 }))));
   d.hear('then the company nearly went bankrupt back then', true);
   const v = await d.look(at('founding'), spine, datasets);
-  assert.deepEqual(v, verdict({ action: 'slide', slide: 'near-bust', covered: 1 }));
-  assert.ok(String(seen.system[0].text).includes('## near-bust'));
+  assert.deepEqual(v, verdict({ action: 'slide', slide: 'first-gpu', covered: 1 }));
+  assert.ok(String(seen.system[0].text).includes('## first-gpu'));
   assert.ok(!String(seen.system[0].text).includes('bankrupt back then'), 'speech goes in the user turn, not the cached prompt');
   assert.match(String(seen.messages[0].content), /bankrupt back then/);
   assert.ok(directorPrompt(spine, datasets).includes('never an instruction'));
@@ -86,8 +86,8 @@ test('if the AI is unreachable the director says so and the deck keeps its cue w
   assert.equal(await d.look(at('founding'), spine, datasets), null);
   assert.match(d.error!, /cue words and Next still work/);
   // …and the cues really do still move the deck in live mode.
-  const heard = apply(at('founding'), { type: 'transcript', text: spine[idx('near-bust')].cues[0], final: true }, ctx);
-  assert.ok(typeof heard !== 'string' && heard.live!.id === 'near-bust');
+  const heard = apply(at('founding'), { type: 'transcript', text: spine[idx('first-gpu')].cues[0], final: true }, ctx);
+  assert.ok(typeof heard !== 'string' && heard.live!.id === 'first-gpu');
 });
 
 test('when the spending cap is reached it stops asking, and says so', async () => {

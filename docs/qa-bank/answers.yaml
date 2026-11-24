@@ -61,15 +61,15 @@
     chart: { type: bar, datasetKey: peers_emissions_intensity, series: [Emissions intensity], highlight: NVIDIA }
 
 - id: governance
-  question: What about governance, now the CEO has resigned?
+  question: What about governance, since the CEO resigned?
   ask: [ceo resigned, jensen resigned, new ceo, interim ceo, governance, who runs nvidia, without jensen, jensen huang leaving]
   slide:
     layout: statement
-    title: Governance is the biggest open risk.
+    title: Governance is the biggest open risk, but the founder is back.
     bullets:
-      - Jensen Huang resigned as CEO on 12 November 2026; Colette Kress is interim CEO
-      - SEC and California investigations have been reported
-      - The board has retained a search firm for a permanent CEO and set up a national security and export-control oversight committee
+      - Jensen Huang resigned as CEO on 12 November 2026, and the board reinstated him days later
+      - The board set up an independent national security and export-control oversight committee
+      - SEC and California investigations have been reported and are not yet closed
       - The stress case shows what we lose if this goes badly
     sources: ["CNBC, 12 Nov 2026; NBC News, Nov 2026; NVIDIA Q3 FY27 earnings call, 17 Nov 2026"]
 
@@ -94,7 +94,7 @@
     bullets:
       - "Price today: {{model_valuation | Value per share | Share price today}}. Realistic bear case: {{model_valuation | Value per share | Bear case}}. If spending stops: {{model_valuation | Value per share | Stress case}}"
       - "Forward P/E is {{peers_pe | Forward P/E | NVIDIA}}; Cisco in 2000 was {{research_facts | Cisco forward P/E, March 2000 | value}}"
-      - "Even the most cautious analyst target is {{research_market | Analyst target, lowest | value}}"
+      - If it pops, the price falls, but NVIDIA owns the hardware and the CUDA software, so it keeps its lead
     chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Stress case }
     sources: ["Team valuation model; Google Finance, 24 Nov 2026"]
 

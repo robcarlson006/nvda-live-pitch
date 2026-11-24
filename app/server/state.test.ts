@@ -20,7 +20,7 @@ const optional = spine.filter((s) => s.optional).map((s) => s.id);
 
 test('the script loads and every chart/number points at real data', () => {
   assert.ok(spine.length >= 25);
-  assert.deepEqual(optional, ['near-bust', 'revenue-long', 'not-one-person', 'different', 'everyday']);
+  assert.deepEqual(optional, ['revenue-long', 'different']);
   assert.deepEqual([...new Set(spine.map((s) => s.speaker))], ['Rob', 'Panshul', "Mi'kael"]);
   assert.equal(spine[sectionLastIndex(spine)].id, 'handoff');
 });
@@ -93,16 +93,16 @@ test('an interim result fires once; its final copy is ignored', () => {
 });
 
 test('optional slides can be switched off: next, back and cues skip them', () => {
-  let s = run(emptyState(), { type: 'goto', index: idx('founding') }, { type: 'skip', id: 'near-bust', on: true });
-  assert.deepEqual(s.skipped, ['near-bust']);
-  s = run(s, { type: 'next' }, { type: 'next' }, { type: 'next' });
-  assert.equal(s.index, idx('first-gpu'));
+  let s = run(emptyState(), { type: 'goto', index: idx('alexnet') }, { type: 'skip', id: 'revenue-long', on: true });
+  assert.deepEqual(s.skipped, ['revenue-long']);
+  for (let n = 0; n < 10 && s.index === idx('alexnet'); n++) s = run(s, { type: 'next' });
+  assert.equal(s.index, idx('four-layers'));
   s = run(s, { type: 'back' });
-  assert.equal(s.index, idx('founding'));
-  s = run(s, say('in 1999 they launched the geforce 256'));
-  assert.equal(s.index, idx('first-gpu'));
+  assert.equal(s.index, idx('alexnet'));
+  s = run(s, say('so why is nvidia the gold standard'));
+  assert.equal(s.index, idx('four-layers'));
   assert.match(apply(s, { type: 'skip', id: 'cuda', on: true }, ctx) as string, /not an optional/);
-  s = run(s, { type: 'skip', id: 'near-bust', on: false });
+  s = run(s, { type: 'skip', id: 'revenue-long', on: false });
   assert.deepEqual(s.skipped, []);
 });
 
@@ -123,8 +123,8 @@ test('a rehearsal run logs each slide, how it got there, and time spent', () => 
 
 test('numbers in passing do not add up to a cue', () => {
   assert.equal(spellOut('In 2006, 249,000 of 1.4, 1993'), 'In two thousand and six, two hundred and forty nine thousand of one point four, nineteen ninety three');
-  const s = run(emptyState(), { type: 'goto', index: idx('near-bust') }, say('of two hundred and fifty thousand made about two hundred and forty nine thousand came back nvidia had less than six months of cash'));
-  assert.equal(spine[s.index].id, 'near-bust');
+  const s = run(emptyState(), { type: 'goto', index: idx('wall-street') }, say('of two hundred and fifty thousand made about two hundred and forty nine thousand came back and it cost half a billion'));
+  assert.equal(spine[s.index].id, 'wall-street');
 });
 
 test('cue scoring', () => {
@@ -211,7 +211,7 @@ for (const [name, order] of orders)
       const base = { ...emptyState(), skipped };
       readAloud(order, 0, order.findIndex((s) => s.id === 'handoff'), mode, base, read);
       // The close, picking up after Mi'kael's last slide.
-      const before = order.findIndex((s) => s.id === 'built-live') - 1;
+      const before = order.findIndex((s) => s.id === 'close') - 1;
       readAloud(order, before + 1, order.length - 1, mode, run(base, { type: 'goto', index: idx(order[before].id) }), read);
     });
 

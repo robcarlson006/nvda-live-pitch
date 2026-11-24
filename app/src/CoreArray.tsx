@@ -26,10 +26,12 @@ type Sim = {
  * Slide effects, drawn in a block of cores on the right of the screen (the text sits on the left).
  * cpu-gpu: a handful of big cores light one after another (a CPU), then every core in the block at once (a GPU).
  * merge72: 72 separate clusters of cores (one per GPU in an NVL72 rack) fill the gaps between them and become one block.
+ * spread: one core lights in the middle and a ripple spreads outward until the whole block is lit (an ecosystem growing), then the
+ *   block locks in: scattered bright nodes twinkle across a steady glow (everyone built on the same thing).
  * Each stage starts when the slide reaches that bullet, so it lands as it is said.
  */
 type Fx = {
-  kind: 'cpu-gpu' | 'merge72';
+  kind: 'cpu-gpu' | 'merge72' | 'spread';
   member: Uint8Array; // 1 = part of the effect's block
   group: Int16Array; // cpu-gpu: which of the 4 CPU cores (or -1); merge72: 1 = cluster cell, 0 = gap
   jitter: Float32Array;
@@ -45,7 +47,15 @@ function makeFx(kind: Fx['kind'], cols: number, rows: number): Fx {
   const y0 = Math.round(rows * 0.16), y1 = Math.round(rows * 0.84);
   const w = x1 - x0, h = y1 - y0;
   for (let i = 0; i < jitter.length; i++) jitter[i] = Math.random();
-  if (kind === 'merge72') {
+  if (kind === 'spread') {
+    const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+    for (let y = y0; y < y1; y++)
+      for (let x = x0; x < x1; x++) {
+        const i = y * cols + x;
+        member[i] = 1;
+        group[i] = Math.round(Math.hypot(x - cx, y - cy)); // distance from the seed, in cells
+      }
+  } else if (kind === 'merge72') {
     const p = Math.floor(Math.min(w / 8, h / 9)); // 8 × 9 = 72 clusters
     const gap = Math.max(1, Math.round(p * 0.3));
     const bx = x0 + Math.floor((w - p * 8 + gap) / 2), by = y0 + Math.floor((h - p * 9 + gap) / 2);
@@ -81,6 +91,23 @@ function fxLevel(f: Fx, i: number, now: number): [number, boolean] {
       return [on ? 1 : 0.14, true];
     }
     return [0, false];
+  }
+  if (f.kind === 'spread') {
+    if (!f.stage1) return [0, false];
+    const d = f.group[i];
+    const dt = now - f.stage1 - d * 40; // the ripple travels outward, 40 ms per core
+    if (dt < 0) return [0, true];
+    let lvl = 0.5 + 0.5 * Math.exp(-dt / 260); // bright front, then a steady glow
+    if (f.stage2) {
+      const t2 = now - f.stage2 - f.jitter[i] * 400;
+      if (t2 >= 0) {
+        const node = f.jitter[i] < 0.14;
+        const flash = Math.exp(-t2 / 900);
+        lvl = node ? Math.min(1, 0.85 + 0.15 * Math.sin(t2 / 350 + f.jitter[i] * 40) + 0.2 * flash) : 0.58 + 0.2 * flash;
+        return [lvl, node || t2 < 3000]; // nodes keep twinkling
+      }
+    }
+    return [lvl, dt < 1500];
   }
   // merge72
   if (!f.stage1) return [0, false];
@@ -189,8 +216,8 @@ export function CoreArray({ buildKey, glyph, compact, effect, reveal = 0 }: Prop
     if (!f) return;
     const r = opts.current.reveal;
     const now = performance.now();
-    const s1 = f.kind === 'merge72' ? 1 : 2;
-    const s2 = f.kind === 'merge72' ? 2 : 3;
+    const s1 = f.kind === 'merge72' ? 1 : 2; // spread: ripple starts at the first bullet…
+    const s2 = f.kind === 'merge72' ? 2 : f.kind === 'spread' ? 4 : 3; // …and locks in at the third
     let changed = false;
     if (r >= s1 && !f.stage1) (f.stage1 = now), (changed = true);
     if (r >= s2 && !f.stage2) (f.stage2 = now), (changed = true);

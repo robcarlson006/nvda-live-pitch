@@ -20,7 +20,7 @@ export const StatSpec = z.object({
 });
 
 // Background effects drawn by the core array. Purely visual: if one fails, the slide still shows.
-export const Effect = z.enum(['cpu-gpu', 'merge72']);
+export const Effect = z.enum(['cpu-gpu', 'merge72', 'spread']);
 
 // statement: one big line · number: a figure rendered by the core array · chart: chart fills the slide · split: text + chart
 export const Slide = z.object({
