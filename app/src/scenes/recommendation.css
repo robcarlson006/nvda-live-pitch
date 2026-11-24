@@ -1,0 +1,47 @@
+/* ---------- Recommendation: a 3% position on a picture of the whole portfolio ---------- */
+.scene-recommendation .scene { width: 50vw; }
+.rec-scene { width: 100%; height: 100%; display: block; overflow: visible; font-family: 'Archivo Variable', system-ui, sans-serif; }
+@keyframes rec-fade { from { opacity: 0; } }
+
+.rec-head { fill: #9aa094; font-size: 24px; font-weight: 650; letter-spacing: 0.08em; text-transform: uppercase; animation: rec-fade 0.8s ease 0.2s both; }
+
+.rec-grid rect { fill: #1b2217; stroke: #2a3324; stroke-width: 1.5; transform-box: fill-box; transform-origin: center; animation: rec-pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both; transition: fill 0.6s ease, stroke 0.6s ease; }
+@keyframes rec-pop { from { opacity: 0; transform: scale(0.4); } }
+
+/* Notes and outlines wait for their step. */
+.rec-limit, .rec-risk, .rec-note, .rec-rates { opacity: 0; transition: opacity 0.7s ease; }
+.rec-note text, .rec-rates text { font-size: 24px; font-weight: 650; }
+
+/* 1 — three percent, inside a limit of ten. */
+.s1 .rec-grid rect.nvda, .s2 .rec-grid rect.nvda, .s3 .rec-grid rect.nvda, .s4 .rec-grid rect.nvda { fill: #76b900; stroke: #b7f04a; animation: rec-pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both, rec-claim 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.1s + var(--k) * 0.18s) both; }
+@keyframes rec-claim { 0% { transform: scale(1); } 40% { transform: scale(1.25); } 100% { transform: scale(1); } }
+.rec-limit { fill: none; stroke: #76b900; stroke-width: 2.5; stroke-dasharray: 10 8; }
+.s1 .rec-limit, .s2 .rec-limit, .s3 .rec-limit, .s4 .rec-limit { opacity: 1; transition-delay: 0.8s; }
+.rec-note.limit text { fill: #9aa094; text-anchor: end; font-style: italic; }
+.rec-note.nvda text { fill: #76b900; font-size: 26px; font-weight: 750; letter-spacing: 0.06em; }
+.s1 .rec-note.limit, .s2 .rec-note.limit, .s3 .rec-note.limit, .s4 .rec-note.limit { opacity: 1; transition-delay: 1.2s; }
+.s1 .rec-note.nvda, .s2 .rec-note.nvda, .s3 .rec-note.nvda, .s4 .rec-note.nvda { opacity: 1; transition-delay: 0.5s; }
+
+/* 2 — above today's price at all three rates. */
+.s2 .rec-rates, .s3 .rec-rates, .s4 .rec-rates { opacity: 1; }
+.rec-price { stroke: #9aa094; stroke-width: 3; stroke-dasharray: 6 6; }
+.rec-price-label { fill: #9aa094; text-anchor: end; font-size: 22px !important; }
+.rec-rates-label { fill: #d6dacf; }
+.rec-rate line, .rec-rate path { stroke: #76b900; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.rec-rate { opacity: 0; }
+.s2 .rec-rate, .s3 .rec-rate, .s4 .rec-rate { animation: rec-rise 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.3s + var(--k) * 0.25s) both; }
+@keyframes rec-rise { from { opacity: 0; transform: translateY(70px); } to { opacity: 1; transform: none; } }
+
+/* 3 — the most at risk is the position itself. */
+.rec-risk { fill: none; stroke: #e5484d; stroke-width: 4; }
+.s3 .rec-risk, .s4 .rec-risk { opacity: 1; transition-delay: 0.2s; }
+.rec-note.risk text { fill: #ff8a8d; paint-order: stroke; stroke: #0b0d0a; stroke-width: 10px; }
+.s3 .rec-note.risk, .s4 .rec-note.risk { opacity: 1; transition-delay: 0.6s; }
+
+/* 4 — room to add, if the signals hold. */
+.s4 .rec-grid rect.room { fill: rgba(118, 185, 0, 0.18); stroke: #4e7a00; transition-delay: calc(var(--k) * 0.08s); }
+.rec-note.add text { fill: #b7f04a; paint-order: stroke; stroke: #0b0d0a; stroke-width: 8px; }
+.s4 .rec-note.add { opacity: 1; transition-delay: 0.9s; }
+
+.no-motion .rec-scene, .no-motion .rec-scene * { animation: none !important; transition: none !important; }
+.no-motion .rec-rate { opacity: 1; }

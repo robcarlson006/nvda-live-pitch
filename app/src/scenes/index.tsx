@@ -6,6 +6,9 @@ import { Napkin } from './Napkin.tsx';
 import { FirstGpu } from './FirstGpu.tsx';
 import { FourLayers, Handoff } from './FourLayers.tsx';
 import { Bubble } from './Bubble.tsx';
+import { Returns } from './Returns.tsx';
+import { Recommendation } from './Recommendation.tsx';
+import { Close } from './Close.tsx';
 import { Demand } from './Demand.tsx';
 import { OpenEcosystem } from './OpenEcosystem.tsx';
 import './scenes.css';
@@ -34,6 +37,9 @@ const scenes: Record<string, ComponentType<SceneProps>> = {
   'four-layers': FourLayers,
   handoff: Handoff,
   'if-it-pops': Bubble,
+  returns: Returns,
+  recommendation: Recommendation,
+  close: Close,
   'open-ai': OpenEcosystem,
   'beyond-hyperscalers': Demand,
 };

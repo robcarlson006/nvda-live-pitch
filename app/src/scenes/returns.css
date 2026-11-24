@@ -1,0 +1,53 @@
+/* ---------- Returns: the cash goes back to shareholders ---------- */
+.scene-returns .scene { width: 50vw; }
+.returns-scene { width: 100%; height: 100%; display: block; overflow: visible; font-family: 'Archivo Variable', system-ui, sans-serif; }
+
+.rt-head { fill: #9aa094; font-size: 24px; font-weight: 650; letter-spacing: 0.1em; text-transform: uppercase; text-anchor: middle; animation: rt-fade 0.8s ease 0.5s both; }
+.rt-head.small { font-size: 20px; }
+@keyframes rt-fade { from { opacity: 0; } }
+
+.rt-vault rect { fill: #2b3d0c; transform-box: fill-box; transform-origin: 50% 100%; animation: rt-lay 0.6s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both; }
+@keyframes rt-lay { 0% { opacity: 0; transform: translateY(10px) scale(0.5); fill: #d7ff7a; } 40% { opacity: 1; transform: none; fill: #76b900; } 100% { fill: #2b3d0c; } }
+
+.rt-shares rect { fill: #1b2217; stroke: #4a5045; stroke-width: 1.5; animation: rt-fade 0.5s ease var(--d) both; transform-box: fill-box; transform-origin: center; }
+/* A share bought back: it flashes green as the coin arrives, then is retired. */
+.rt-shares rect.gone { animation: rt-gone 0.7s ease var(--gone) both; }
+@keyframes rt-gone { 0% { fill: #1b2217; } 30% { fill: #76b900; stroke: #b7f04a; transform: scale(1.15); } 100% { opacity: 0.08; transform: scale(0.4); fill: #76b900; } }
+
+.rt-holders circle, .rt-holders path { fill: #353e2e; }
+.rt-holders g { animation: rt-fade 0.6s ease var(--d) both; }
+.s1 .rt-holders circle, .s1 .rt-holders path, .s2 .rt-holders circle, .s2 .rt-holders path, .s3 .rt-holders circle, .s3 .rt-holders path { fill: #8fbf3a; transition: fill 0.6s ease 2s; }
+
+.rt-tag { fill: #76b900; font-size: 26px; font-weight: 650; text-anchor: middle; font-style: italic; animation: rt-fade 0.8s ease 2.4s both; }
+
+/* Coins: x moves at a steady pace, y rises then falls, so together they fly an arc. */
+.rt-x { animation: rt-x 0.95s linear var(--d) both; }
+@keyframes rt-x { from { transform: translateX(0); } to { transform: translateX(var(--dx)); } }
+.rt-y { animation: rt-y 0.95s var(--d) both; }
+@keyframes rt-y {
+  0% { transform: translateY(0); animation-timing-function: cubic-bezier(0.3, 0.6, 0.5, 1); }
+  50% { transform: translateY(var(--peak)); animation-timing-function: cubic-bezier(0.5, 0, 0.7, 0.4); }
+  100% { transform: translateY(var(--dy)); }
+}
+.rt-coin circle { fill: #b7f04a; stroke: #4e7a00; stroke-width: 2; }
+.rt-coin rect { fill: #4e7a00; }
+.rt-coin { animation: rt-coin-in 0.2s ease var(--d) both; }
+@keyframes rt-coin-in { from { opacity: 0; } }
+/* A buyback coin is spent on its share; a dividend coin stays with its owner. */
+.rt-coin.buyback { animation: rt-coin-spent 1.15s ease var(--d) both; }
+@keyframes rt-coin-spent { 0% { opacity: 0; } 10% { opacity: 1; } 80% { opacity: 1; } 100% { opacity: 0; } }
+
+/* The ongoing stream: the same arc, looping. */
+.rt-x.loop, .rt-y.loop { animation-duration: 1.8s; animation-iteration-count: infinite; }
+.rt-coin.loop { animation: rt-coin-loop 1.8s ease var(--d) infinite both; }
+@keyframes rt-coin-loop { 0% { opacity: 0; } 12% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; } }
+
+.rt-reserve rect { fill: rgba(118, 185, 0, 0.05); stroke: #76b900; stroke-width: 2.5; stroke-dasharray: 10 8; animation: rt-reserve 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; transform-box: fill-box; transform-origin: 50% 0; }
+@keyframes rt-reserve { from { opacity: 0; transform: scaleY(0.2); } }
+.rt-reserve text { fill: #76b900; font-size: 26px; font-weight: 650; text-anchor: middle; font-style: italic; animation: rt-fade 0.8s ease 0.8s both; }
+
+.no-motion .returns-scene, .no-motion .returns-scene * { animation: none !important; transition: none !important; }
+.no-motion .rt-shares rect.gone { opacity: 0.08; }
+.no-motion .rt-x { transform: translateX(var(--dx)); }
+.no-motion .rt-y { transform: translateY(var(--dy)); }
+.no-motion .rt-coin.buyback, .no-motion .rt-coin.loop { opacity: 0; }

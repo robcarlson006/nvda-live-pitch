@@ -1,0 +1,42 @@
+/* ---------- Close: the AI city, standing on NVIDIA's four layers ---------- */
+.scene-close .scene { width: 50vw; }
+.close-scene { width: 100%; height: 100%; display: block; overflow: visible; font-family: 'Archivo Variable', system-ui, sans-serif; }
+@keyframes cl-fade { from { opacity: 0; } }
+
+/* The layers slide in first: the ground. */
+.cl-stratum { animation: cl-ground 0.8s cubic-bezier(0.16, 1, 0.3, 1) calc(0.15s + var(--b) * 0.12s) both; }
+@keyframes cl-ground { from { opacity: 0; transform: translateY(40px); } }
+.cl-stratum rect { fill: #141a10; stroke: #2a3324; stroke-width: 1.5; transition: fill 0.6s ease, stroke 0.6s ease; }
+.cl-stratum text { fill: #5d6358; font-size: 22px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; transition: fill 0.6s ease; }
+
+/* Then the city builds on top of them, block by block, as the Wall Street tower did. */
+.cl-block { fill: #1f261b; transform-box: fill-box; transform-origin: 50% 100%; animation: cl-lay 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both; }
+.cl-block.city { fill: #161b13; animation-name: cl-lay-dim; }
+@keyframes cl-lay { 0% { opacity: 0; transform: translateY(12px) scale(0.4); fill: #c6f25a; } 35% { opacity: 1; transform: none; fill: #76b900; } 100% { fill: #1f261b; } }
+@keyframes cl-lay-dim { 0% { opacity: 0; transform: translateY(12px) scale(0.4); fill: #4e7a00; } 40% { opacity: 1; transform: none; } 100% { fill: #161b13; } }
+.cl-block.lit { animation: cl-lay 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both, cl-light 0.9s steps(3, end) calc(var(--d) + 0.8s) forwards; }
+.cl-block.city.lit { animation: cl-lay-dim 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both, cl-light-dim 0.9s steps(3, end) calc(var(--d) + 1s) forwards; }
+@keyframes cl-light { 0% { fill: #1f261b; } 33% { fill: #a7d64a; } 50% { fill: #1f261b; } 100% { fill: #9cc93f; } }
+@keyframes cl-light-dim { to { fill: #3d5216; } }
+
+/* 1 — the layers light from the bottom up, and the light rises into the city. */
+.s1 .cl-stratum rect, .s2 .cl-stratum rect { fill: #23380a; stroke: #76b900; transition-delay: calc(var(--b) * 0.3s); }
+.s1 .cl-stratum text, .s2 .cl-stratum text { fill: #b7f04a; transition-delay: calc(var(--b) * 0.3s); }
+.cl-rise { opacity: 0; transition: opacity 1.4s ease 1.2s; }
+.s1 .cl-rise, .s2 .cl-rise { opacity: 1; }
+.s1 .cl-block.lit, .s2 .cl-block.lit { animation: none; fill: #b7f04a; transition: fill 0.5s ease calc(1.2s + var(--w)); }
+.s1 .cl-block.city.lit, .s2 .cl-block.city.lit { fill: #6e9e1e; }
+
+/* 2 — "a buy": the crown lights and a beacon pulses. */
+.s2 .cl-block.crown { animation: none; fill: #76b900; transition: fill 0.4s ease calc(0.2s + var(--w) * 0.6); }
+.cl-beacon { opacity: 0; }
+.s2 .cl-beacon { opacity: 1; transition: opacity 0.4s ease 1s; }
+.cl-beacon circle { fill: #d7ff7a; }
+.cl-ring { fill: none !important; stroke: #b7f04a; stroke-width: 3; transform-box: fill-box; transform-origin: center; }
+.s2 .cl-ring { animation: cl-ping 1.8s ease-out 1.2s infinite; }
+@keyframes cl-ping { from { transform: scale(1); opacity: 0.9; } to { transform: scale(7); opacity: 0; } }
+
+.no-motion .close-scene, .no-motion .close-scene * { animation: none !important; transition: none !important; }
+.no-motion .cl-block.lit { fill: #9cc93f; }
+.no-motion .cl-block.city.lit { fill: #3d5216; }
+.no-motion .s2 .cl-ring { display: none; }
