@@ -16,8 +16,17 @@ function statValue(slide: Slide, datasets: Record<string, Dataset>): string | un
   return s ? lookup(datasets, s.datasetKey, s.series, s.x) : undefined;
 }
 
+/** ?motion=off on the stage URL forces motion off on this screen (remembered here until ?motion=on), whatever the operator sets. */
+function urlMotionOff(): boolean {
+  const q = new URLSearchParams(location.search).get('motion');
+  if (q === 'off' || q === 'on') localStorage.setItem('motion', q);
+  return localStorage.getItem('motion') === 'off';
+}
+
 export function Stage() {
   const { state, send } = useShow();
+  const [forcedOff] = useState(urlMotionOff);
+  const motion = !forcedOff && state?.motion !== false;
   const datasets = useDatasets();
   useNavKeys(send, state);
   const slide = state?.live ?? null;
@@ -32,7 +41,7 @@ export function Stage() {
   }, []);
 
   return (
-    <div className="stage">
+    <div className={`stage${motion ? ' motion' : ' no-motion'}`}>
       <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length} effect={slide?.effect} reveal={state?.reveal ?? 0} />
       {slide && <SlideView key={state!.liveSince} slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} />}
     </div>

@@ -40,6 +40,9 @@ export function LivePanel({ state, ai, bank, datasets, send }: Props) {
         <label className="pill toggle">
           <input type="checkbox" checked={state.autoShow} onChange={(e) => send({ type: 'setting', key: 'autoShow', on: e.target.checked })} /> Show without approval
         </label>
+        <label className="pill toggle" title="Camera moves and slide morphs. Off = the plain deck. Key m toggles it; the stage URL ?motion=off forces it off on that screen.">
+          <input type="checkbox" checked={state.motion !== false} onChange={(e) => send({ type: 'setting', key: 'motion', on: e.target.checked })} /> Motion (m)
+        </label>
         <span className={`pill ${!ai.hasKey || ai.spent >= ai.cap * 0.9 ? 'bad' : 'ok'}`}>
           {ai.hasKey ? `AI $${ai.spent.toFixed(2)} of $${ai.cap.toFixed(2)}` : 'No Anthropic key'}
         </span>

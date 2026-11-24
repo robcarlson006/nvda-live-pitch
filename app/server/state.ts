@@ -123,7 +123,7 @@ export function relocate(state: ShowState, spine: SpineSlide[]): Pick<ShowState,
 }
 
 export function emptyState(): ShowState {
-  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false, follow: 'script', seen: [], approveTangents: false };
+  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false, follow: 'script', seen: [], approveTangents: false, motion: true };
 }
 
 export function loadState(): ShowState {

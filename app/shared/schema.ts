@@ -176,6 +176,7 @@ export type ShowState = {
   follow: 'script' | 'live'; // script: cue words move the deck. live: it follows the meaning, and tangents get a slide by themselves
   seen: string[]; // ids of the script slides shown so far
   approveTangents: boolean; // live mode: wait for a tap before a tangent slide goes up
+  motion: boolean; // camera moves and slide morphs. false = the plain pre-v2 behaviour (kill-switch: operator toggle, key m, or ?motion=off on the stage)
 };
 
 /** What the operator panel shows about Claude. Not saved with the show. */
@@ -196,7 +197,7 @@ export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('draft'), action: z.enum(['show', 'reject']), id: z.string() }),
   z.object({ type: z.literal('bank'), id: z.string() }),
   z.object({ type: z.literal('resume') }),
-  z.object({ type: z.literal('setting'), key: z.enum(['riff', 'autoShow', 'approveTangents']), on: z.boolean() }),
+  z.object({ type: z.literal('setting'), key: z.enum(['riff', 'autoShow', 'approveTangents', 'motion']), on: z.boolean() }),
   z.object({ type: z.literal('follow'), mode: z.enum(['script', 'live']) }),
   z.object({ type: z.literal('tangent'), action: z.enum(['show', 'block']) }),
   z.object({ type: z.literal('micCmd'), action: z.enum(['start', 'stop']), engine: z.enum(['deepgram', 'chrome']).optional(), lang: z.enum(['en-GB', 'en-US']).optional() }),
