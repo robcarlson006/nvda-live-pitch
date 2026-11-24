@@ -60,6 +60,19 @@
       - NVIDIA's manufacturing emissions sit in Scope 3, not in this chart
     chart: { type: bar, datasetKey: peers_emissions_intensity, series: [Emissions intensity], highlight: NVIDIA }
 
+- id: social-score
+  question: Bloomberg gives NVIDIA a weak social score. Why?
+  ask: [social score, social rating, social pillar, bloomberg social, social side, the s in esg]
+  slide:
+    layout: split
+    title: The social score fell as NVIDIA reported less social data
+    bullets:
+      - "Bloomberg's social disclosure score fell from {{nvda_esg_scores | Social disclosure score | FY22}} to {{nvda_esg_scores | Social disclosure score | FY25}}, out of a hundred"
+      - "What NVIDIA does report is strong: staff turnover of {{research_people | Staff turnover, FY26 | value}} and no workplace deaths"
+      - Our ask as shareholders is simple. Publish the social data again
+    chart: { type: line, datasetKey: nvda_esg_scores, series: [Social, Environmental, Governance], highlight: FY25 }
+    sources: ["Bloomberg FA (ESG Social, Health & Safety), NVDA annual, 20 Nov 2026"]
+
 - id: governance
   question: What about governance, since the CEO resigned?
   ask: [ceo resigned, jensen resigned, new ceo, interim ceo, governance, who runs nvidia, without jensen, jensen huang leaving]

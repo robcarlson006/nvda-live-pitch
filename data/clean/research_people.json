@@ -1,0 +1,69 @@
+{
+  "key": "research_people",
+  "title": "NVIDIA as an employer: outside rankings and Bloomberg people data",
+  "unit": "",
+  "units": {
+    "Glassdoor Best Places to Work 2026, US rank": "",
+    "Fortune 100 Best Companies to Work For 2026, rank": "",
+    "Fortune 100 Best, lowest rank 2022–2026": "",
+    "TIME Sustainable Growth 2026, world rank": "",
+    "Corporate Knights Global 100 2026, rank": "",
+    "Staff turnover, FY26": "%",
+    "Employees, FY26": "",
+    "Employees, FY22": "",
+    "Employee fatalities, FY26": "",
+    "Women in the workforce, FY26": "%"
+  },
+  "source": "Award publishers and Bloomberg FA (ESG), as listed per figure",
+  "seriesSources": {
+    "Glassdoor Best Places to Work 2026, US rank": "Glassdoor, Best Places to Work 2026 (US); also #1 on its Tech & AI list",
+    "Fortune 100 Best Companies to Work For 2026, rank": "Great Place To Work and Fortune, 100 Best Companies to Work For 2026 (NVIDIA ranks: #5 2022, #6 2023, #3 2024, #5 2025, #6 2026)",
+    "Fortune 100 Best, lowest rank 2022–2026": "Great Place To Work and Fortune, 100 Best Companies to Work For 2022–2026",
+    "TIME Sustainable Growth 2026, world rank": "TIME and Statista, World's Best Companies in Sustainable Growth 2026 (12 Nov 2025)",
+    "Corporate Knights Global 100 2026, rank": "Corporate Knights, 2026 Global 100 most sustainable companies (19 Feb 2026); first year on the list",
+    "Staff turnover, FY26": "Bloomberg FA (ESG Social, Human Capital), NVDA annual, 20 Nov 2026",
+    "Employees, FY26": "Bloomberg FA (ESG Social, Human Capital), NVDA annual, 20 Nov 2026",
+    "Employees, FY22": "Bloomberg FA (ESG Social, Human Capital), NVDA annual, 20 Nov 2026",
+    "Employee fatalities, FY26": "Bloomberg FA (ESG Social, Health & Safety), NVDA annual, 20 Nov 2026",
+    "Women in the workforce, FY26": "Bloomberg FA (ESG Social, Diversity), NVDA annual, 20 Nov 2026"
+  },
+  "asOf": "2026-11-24",
+  "placeholder": false,
+  "curated": true,
+  "verified": true,
+  "x": [
+    "value"
+  ],
+  "series": {
+    "Glassdoor Best Places to Work 2026, US rank": [
+      3
+    ],
+    "Fortune 100 Best Companies to Work For 2026, rank": [
+      6
+    ],
+    "Fortune 100 Best, lowest rank 2022–2026": [
+      6
+    ],
+    "TIME Sustainable Growth 2026, world rank": [
+      6
+    ],
+    "Corporate Knights Global 100 2026, rank": [
+      53
+    ],
+    "Staff turnover, FY26": [
+      3.7
+    ],
+    "Employees, FY26": [
+      42000
+    ],
+    "Employees, FY22": [
+      22473
+    ],
+    "Employee fatalities, FY26": [
+      0
+    ],
+    "Women in the workforce, FY26": [
+      21.6
+    ]
+  }
+}

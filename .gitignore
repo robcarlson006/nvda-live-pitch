@@ -7,3 +7,6 @@ app/state.json
 app/ai-spend.json*
 app/eval-cache/
 ~$*
+
+# Third-party video clips (e.g. WSJ): kept on this laptop only, never pushed to the public repo
+app/public/media/

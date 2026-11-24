@@ -50,7 +50,7 @@ for (const s of spine) {
 }
 const audio = Buffer.concat(pcm);
 const total = audio.length / 2 / SR;
-const mmss = (t: number) => `${Math.floor(t / 60)}:${String(Math.round(t % 60)).padStart(2, '0')}`;
+const mmss = (t: number) => { const s = Math.round(t); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 console.log(`Audio: ${spine.length} slides, ${mmss(total)} at ${RATE} words a minute (voice ${VOICE}), in ${OUT}`);
 const bySpeaker = new Map<string, number>();
 for (const s of starts) bySpeaker.set(s.speaker, (bySpeaker.get(s.speaker) ?? 0) + s.secs + GAP_S);

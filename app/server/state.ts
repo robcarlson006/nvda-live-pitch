@@ -29,7 +29,8 @@ export const stripAllowed = (t: string) =>
     .replace(/\b(19|20)\d\d\b/g, '')
     .replace(/\bper \$1m\b/g, '') // the emissions-intensity unit
     .replace(/\bFY\d\d\b|\bQ[1-4]\b|\bScopes? [123](?:(?:, | ?(?:\+|\/|&|and|or|to) ?(?:Scope )?)[123])*\b/g, '')
-    .replace(/\b(NV1|RIVA 128|GeForce 256|DGX-1|NVL72|3D|A100|H100|H200|H20|B200|MI355X)\b/g, ''); // product names
+    .replace(/\b(NV1|RIVA 128|GeForce 256|DGX-1|NVL72|3D|A100|H100|H200|H20|B200|MI355X)\b/g, '')
+    .replace(/\b(Fortune 100|Global 100|TIME100|AI21)\b/g, ''); // product names, then award and company names
 
 /** null if the slide can be shown; otherwise what is wrong with it. */
 export function checkSlide(slide: Slide, datasets: Map<string, Dataset>): string | null {

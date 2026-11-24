@@ -165,6 +165,37 @@ const out: Dataset[] = [
     x: ['FY26 Q4', 'FY27 Q1', 'FY27 Q2', 'FY27 Q3', 'FY27 Q4 (guide)'],
     series: { Revenue: [...qRev.series.Revenue.slice(lastQ - 3, lastQ + 1) as number[], 130] },
   }, '2026-11-17'),
+
+  // ---- Added 24 Nov 2026 (evening): the "S" in ESG ----
+  // Awards checked on each publisher's own page (Glassdoor's announcement blocked automated reading; its listing page
+  // and NVIDIA's blog agree). People figures typed from the Bloomberg FA annual export (ESG pages, "Human Capital"),
+  // because pdftotext is not installed on this laptop for build-data.ts.
+  facts('research_people', 'NVIDIA as an employer: outside rankings and Bloomberg people data', true, {
+    'Glassdoor Best Places to Work 2026, US rank': { value: 3, unit: '', source: 'Glassdoor, Best Places to Work 2026 (US); also #1 on its Tech & AI list' },
+    'Fortune 100 Best Companies to Work For 2026, rank': { value: 6, unit: '', source: 'Great Place To Work and Fortune, 100 Best Companies to Work For 2026 (NVIDIA ranks: #5 2022, #6 2023, #3 2024, #5 2025, #6 2026)' },
+    'Fortune 100 Best, lowest rank 2022–2026': { value: 6, unit: '', source: 'Great Place To Work and Fortune, 100 Best Companies to Work For 2022–2026' },
+    'TIME Sustainable Growth 2026, world rank': { value: 6, unit: '', source: "TIME and Statista, World's Best Companies in Sustainable Growth 2026 (12 Nov 2025)" },
+    'Corporate Knights Global 100 2026, rank': { value: 53, unit: '', source: 'Corporate Knights, 2026 Global 100 most sustainable companies (19 Feb 2026); first year on the list' },
+    'Staff turnover, FY26': { value: 3.7, unit: '%', source: 'Bloomberg FA (ESG Social, Human Capital), NVDA annual, 20 Nov 2026' },
+    'Employees, FY26': { value: 42000, unit: '', source: 'Bloomberg FA (ESG Social, Human Capital), NVDA annual, 20 Nov 2026' },
+    'Employees, FY22': { value: 22473, unit: '', source: 'Bloomberg FA (ESG Social, Human Capital), NVDA annual, 20 Nov 2026' },
+    'Employee fatalities, FY26': { value: 0, unit: '', source: 'Bloomberg FA (ESG Social, Health & Safety), NVDA annual, 20 Nov 2026' },
+    'Women in the workforce, FY26': { value: 21.6, unit: '%', source: 'Bloomberg FA (ESG Social, Diversity), NVDA annual, 20 Nov 2026' },
+  }, { source: 'Award publishers and Bloomberg FA (ESG), as listed per figure', asOf: '2026-11-24' }),
+  own({
+    // Years matched by the Environmental pillar row, which the export prints in full on its FY20–FY26 page (FY25 = 7.48).
+    key: 'nvda_esg_scores', title: 'Bloomberg ESG pillar scores, out of 10', unit: '', verified: true,
+    source: 'Bloomberg FA (ESG Financial Materiality and Disclosure Scores), NVDA annual, 20 Nov 2026. Latest score year is FY25',
+    units: { 'Social disclosure score': '' },
+    x: ['FY22', 'FY23', 'FY24', 'FY25'],
+    series: {
+      Social: [6.29, 5.39, 5.51, 3.63],
+      Environmental: [6.36, 6.86, 7.06, 7.48],
+      Governance: [6.64, 6.53, 6.65, 7.1],
+      'Overall ESG score': [6.42, 6.3, 6.46, 6.1],
+      'Social disclosure score': [51.62, 41.59, 28.31, 5.37], // out of 100: how much social data NVIDIA publishes
+    },
+  }, '2026-11-20'),
 ];
 
 for (const d of out) fs.writeFileSync(path.join(CLEAN, `${d.key}.json`), JSON.stringify(d, null, 2) + '\n');

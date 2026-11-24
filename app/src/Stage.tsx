@@ -55,6 +55,15 @@ function Reveal({ at, children, className, as: Tag = 'div' }: { at: number; chil
   );
 }
 
+/** Muted, looping, no controls. If the file is missing (a laptop without app/public/media), the clip and its credit hide. */
+function SlideVideo({ file }: { file: string }) {
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    if (failed) document.querySelector('.slide-video')?.classList.add('missing');
+  }, [failed]);
+  return failed ? null : <video src={`/media/${encodeURIComponent(file)}`} autoPlay muted loop playsInline preload="auto" onError={() => setFailed(true)} />;
+}
+
 function Delayed({ at, children }: { at: number; children: ReactNode }) {
   const [ready, setReady] = useState(at <= 0);
   useEffect(() => {
@@ -119,7 +128,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
           <Delayed at={at(chartIdx)}>
             <figcaption>
               {dataset.title}
-              {UNIT_IN_VALUES.has(dataset.unit) ? '' : `, ${dataset.unit}`}
+              {!dataset.unit || UNIT_IN_VALUES.has(dataset.unit) ? '' : `, ${dataset.unit}`}
               {dataset.placeholder && <span className="placeholder">Placeholder data</span>}
             </figcaption>
             <div className="chart-body">
@@ -132,8 +141,15 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
     </figure>
   );
 
+  const video = slide.video && (
+    <Reveal className="slide-video" at={TITLE_AT + 0.4}>
+      <SlideVideo file={slide.video.file} />
+      <p className="video-credit">Video: {slide.video.credit}</p>
+    </Reveal>
+  );
+
   return (
-    <main className={`slide layout-${slide.layout}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}`}>
+    <main className={`slide layout-${slide.layout}${slide.video ? ' has-video' : ''}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}`}>
       {slide.layout === 'statement' && (
         <>
           {title}
@@ -170,6 +186,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
           {chart}
         </>
       )}
+      {video}
       {sources.length > 0 && (
         <Reveal className="sources" at={2.2}>
           Source: {sources.join('; ')}

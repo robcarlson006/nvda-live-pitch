@@ -38,6 +38,8 @@ export const Slide = z.object({
   effect: Effect.optional(),
   icons: z.array(z.enum(ICON_NAMES)).max(3).optional(), // drawn by the cores on the right: one big, or 2–3 in a chain
   steps: z.array(Step).max(12).optional(), // build order after the title; absent = the bullets in order, then the chart
+  // A muted, looping clip beside the text: a file in app/public/media (kept out of git), credited on screen. Hidden if missing.
+  video: z.object({ file: z.string().regex(/^[\w.-]+\.(mp4|webm|mov)$/i), credit: z.string().min(1).max(120) }).optional(),
   sources: z.array(z.string()).default([]),
 });
 export type Slide = z.infer<typeof Slide>;

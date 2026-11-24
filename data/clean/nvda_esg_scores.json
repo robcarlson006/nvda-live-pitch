@@ -1,0 +1,51 @@
+{
+  "key": "nvda_esg_scores",
+  "title": "Bloomberg ESG pillar scores, out of 10",
+  "unit": "",
+  "units": {
+    "Social disclosure score": ""
+  },
+  "source": "Bloomberg FA (ESG Financial Materiality and Disclosure Scores), NVDA annual, 20 Nov 2026. Latest score year is FY25",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "curated": true,
+  "verified": true,
+  "x": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25"
+  ],
+  "series": {
+    "Social": [
+      6.29,
+      5.39,
+      5.51,
+      3.63
+    ],
+    "Environmental": [
+      6.36,
+      6.86,
+      7.06,
+      7.48
+    ],
+    "Governance": [
+      6.64,
+      6.53,
+      6.65,
+      7.1
+    ],
+    "Overall ESG score": [
+      6.42,
+      6.3,
+      6.46,
+      6.1
+    ],
+    "Social disclosure score": [
+      51.62,
+      41.59,
+      28.31,
+      5.37
+    ]
+  }
+}

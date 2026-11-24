@@ -56,7 +56,7 @@
       cue: company of the year
     - text: A successful gaming company. They could have stopped there.
       cue: stopped there
-  say: "In 1999 they launched the GeForce 256 and called it the GPU. Microsoft picked NVIDIA for the first Xbox, and by 2007 Forbes named it company of the year. A successful gaming company. They could have stopped there."
+  say: "In 1999 they launched the GeForce 256 and called it the GPU. Microsoft picked NVIDIA for the first Xbox, and by 2007 Forbes named it company of the year. They could have stopped there."
   sources: [GeForce 256 launch, 1999; Forbes, 3 January 2008]
 
 # The cores: a handful light one by one, then thousands at once
@@ -146,7 +146,7 @@
       cue: every dollar
   chart: { type: bar, datasetKey: peers_datacenter_revenue, series: [Data centre revenue], highlight: NVIDIA }
   chartCue: billion against
-  say: "One: chips. Since 2017, Tensor Cores have done exactly the maths AI needs, and a new generation comes every year. On paper, AMD's latest chip has more memory, 288 gigabytes against 192. But NVIDIA sells the whole system, and for every dollar AMD makes from data centres, NVIDIA makes twelve: 194 billion against 17."
+  say: "One: chips. Tensor Cores do exactly the maths AI needs, with a new generation every year. On paper, AMD's latest chip has more memory, 288 gigabytes against 192. But for every dollar AMD makes from data centres, NVIDIA makes twelve: 194 billion against 17."
 
 # The cores: one core lights, a ripple spreads across the block, then it locks in
 - id: software
@@ -164,7 +164,7 @@
       cue: to switch
     - text: "AMD's answer, ROCm, arrived in 2016: nine years behind"
       cue: years behind
-  say: "Two: software. Think iPhone versus Android. Six million developers write code for CUDA, using over a thousand free libraries. To switch, a company must rewrite its code and retrain its engineers, and AMD's answer arrived nine years behind. A rival can copy a chip, not twenty years of other people's work."
+  say: "Two: software. Think iPhone versus Android. Six million developers write code for CUDA, with over a thousand free libraries. To switch, a company must rewrite its code and retrain its engineers, and AMD's answer arrived nine years behind. A rival can copy a chip, not twenty years of work."
 
 # The cores: clusters merge into one block
 - id: connections
@@ -180,7 +180,7 @@
       cue: agreed to buy
     - text: "Last year that networking business made {{research_facts_unverified | Networking revenue FY26 | value}}. In one year."
       cue: networking business
-  say: "Three: connections. NVLink wires 72 chips in a single rack into one giant chip. In 2019 NVIDIA agreed to buy Mellanox for about seven billion dollars, and last year that networking business made more than 31 billion."
+  say: "Three: connections. NVLink wires 72 chips in a single rack into one giant chip. In 2019 NVIDIA agreed to buy Mellanox for about seven billion dollars, and that networking business now makes over 31 billion a year."
 
 - id: supply
   speaker: Rob
@@ -217,7 +217,7 @@
     - { zoom: "AI 2025–32", cue: projected at }
   chart: { type: bar, datasetKey: research_infra_gdp, series: [Average yearly spend], highlight: "AI 2025–32" }
   chartCue: interstate highways
-  say: "Is this the dot-com bubble again? The interstate highways took about 1.1 percent of US GDP a year. The fibre boom, about the same. The railroads, 2.2. The AI build-out is projected at 3.6 percent: the biggest in American history."
+  say: "Is this the dot-com bubble again? The interstate highways took about 1.1 percent of US GDP a year, the fibre boom about the same, the railroads 2.2. The AI build-out is projected at 3.6 percent: the biggest in American history."
 
 - id: if-it-pops
   speaker: Rob
@@ -233,7 +233,7 @@
       cue: cut first
     - text: "The share price would still fall. Our stress case, where AI spending stops, is {{model_valuation | Value per share | Stress case}}"
       cue: stress case
-  say: "And if the bubble pops? The share price would fall. But the dot-com crash wiped out companies built on ideas, not ones selling what people needed. NVIDIA owns both halves of AI, the hardware and the software, and when money gets tight the weakest bets are cut first. Our stress case, where AI spending stops, is 64 dollars: a big fall, not a disappearance."
+  say: "And if the bubble pops? The share price would fall. But the dot-com crash wiped out companies built on ideas, not ones selling what people needed. NVIDIA owns both halves of AI, the hardware and the software, and when money gets tight the weakest bets are cut first. Our stress case, where AI spending stops, is 64 dollars a share."
 
 - id: already-doing
   speaker: Rob
@@ -247,21 +247,9 @@
       cue: lung disease
     - text: "Sweden: {{research_facts | Sweden: more cancers found | value}} more breast cancers found, with {{research_facts | Sweden: less reading work | value}} less work for doctors"
       cue: breast cancers
-  say: "And AI isn't a fad. The 2024 Nobel Prize in Chemistry went to AI that designs proteins. A lung disease drug went from idea to clinical trials in under 30 months. In Sweden, AI screening found 20 percent more breast cancers."
+  say: "And AI isn't a fad. The 2024 Nobel Prize in Chemistry went to AI that designs proteins. A lung disease drug reached clinical trials in under 30 months, and in Sweden, AI screening found 20 percent more breast cancers."
   sources: [Nobel Prize in Chemistry 2024]
 
-- id: superpowers
-  speaker: Rob
-  cues: [national security, also national security, two superpowers, 2 superpowers]
-  layout: statement
-  title: Neither superpower is going to stop.
-  bullets:
-    - text: "China's official plan: lead the world in AI by 2030"
-      cue: official plan
-    - text: The US restricts which AI chips can be sold to China
-      cue: restricts
-  say: "It's also national security. China's official plan is to lead the world in AI by 2030, and the US restricts which AI chips China can buy. Neither superpower is going to stop."
-  sources: [China State Council, New Generation AI Development Plan, 2017; US BIS export controls]
 
 - id: handoff
   speaker: Rob
@@ -273,7 +261,7 @@
       cue: biggest governments
     - text: The only way to stop NVIDIA is to stop innovation.
       cue: stop innovation
-  say: "So NVIDIA has the best chips, software, connections and supply. The world's biggest companies and two biggest governments are building AI. The only way to stop NVIDIA is to stop innovation. Panshul will show you the numbers."
+  say: "So NVIDIA has the best chips, software, connections and supply, and the world's biggest companies and two biggest governments are building AI. The only way to stop NVIDIA is to stop innovation. Panshul?"
 
 # ---------------- Panshul: financials ----------------
 
@@ -300,7 +288,7 @@
     - text: "Earnings per share in the October quarter: {{nvda_eps_quarterly | EPS | FY27 Q3}}, against {{nvda_eps_quarterly | Consensus | FY27 Q3}} expected"
       cue: earnings per share
   chart: { type: line, datasetKey: nvda_revenue_quarterly, series: [Revenue, Consensus], highlight: FY27 Q3 }
-  say: "And it isn't luck. Thirteen quarters in a row, revenue has beaten what analysts expected. The grey line is what analysts expected. The green line is what NVIDIA delivered. And look at this quarter: another beat. Earnings per share beat too, 2 dollars 68 against 2 47."
+  say: "And it isn't luck. Revenue has beaten what analysts expected thirteen quarters in a row. The grey line is what analysts expected; the green line, what NVIDIA delivered. Look at this quarter: another beat, and earnings per share beat too, 2 dollars 68 against 2 47."
   sources: [Bloomberg FA, 20 Nov 2026]
 
 # From the Q3 FY27 earnings call (17 Nov). Figures are in data/clean/research_q3_call.json, unverified until checked against the 10-Q.
@@ -320,7 +308,7 @@
     - text: "The new Vera Rubin chips earned nearly {{research_q3_call | Vera Rubin revenue, first quarter of shipments | value}} in their first quarter of shipping"
       cue: vera rubin
   chart: { type: bar, datasetKey: nvda_revenue_guidance, series: [Revenue], highlight: FY27 Q4 (guide) }
-  say: "And next quarter is bigger again. NVIDIA has told investors to expect 130 billion dollars, give or take three percent. It raised its outlook for next year's revenue growth to about 75 percent, from 70. And the new Vera Rubin chips earned nearly 20 billion dollars in their first quarter of shipping."
+  say: "And next quarter is bigger again: 130 billion dollars, give or take three percent. NVIDIA raised next year's growth outlook to about 75 percent, from 70, and the new Vera Rubin chips earned nearly 20 billion dollars in their first quarter."
   sources: [NVIDIA Q3 FY27 earnings call, 17 Nov 2026; Bloomberg FA, 20 Nov 2026]
 
 - id: returns
@@ -335,7 +323,7 @@
       cue: authorization
     - text: NVIDIA plans to return all excess free cash flow, after strategic uses, to shareholders
       cue: excess
-  say: "A business this profitable hands the cash back. In the October quarter NVIDIA returned 28 billion dollars through buybacks and dividends. It still has 227 billion dollars of buyback authorization to use, and it plans to return all excess cash flow to shareholders."
+  say: "A business this profitable hands the cash back: 28 billion dollars in the October quarter, through buybacks and dividends. It still has 227 billion dollars of buyback authorization, and it plans to return all excess cash to shareholders."
   sources: [NVIDIA Q3 FY27 earnings call, 17 Nov 2026]
 
 - id: peers
@@ -371,7 +359,7 @@
     - text: "Bear case {{model_valuation | Value per share | Bear case}}. If AI spending stops: {{model_valuation | Value per share | Stress case}}"
       cue: bear case
   chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Base case }
-  say: "So what is it worth? We built a five-year cash-flow model. Our discount rate is ten and a half percent, the US chip-industry average, because NVIDIA holds more cash than debt. On that, our base case is about 391 dollars, against a price of 165. At Google Finance's higher rate it's 249, and at Bloomberg's about 167, roughly today's price. Our bear case, with rivals taking share and one soft year, is 102. If AI spending stops, 64."
+  say: "So what is it worth? Our five-year cash-flow model uses a discount rate of ten and a half percent, the US chip-industry average, because NVIDIA holds more cash than debt. Our base case is about 391 dollars, against a price of 165. At Google Finance's higher rate it's 249; at Bloomberg's, about 167, roughly today's price. Our bear case, with rivals taking share and one soft year, is 102. If AI spending stops, 64."
   sources: [Team valuation model on Bloomberg and consensus data; Google Finance, 24 Nov 2026; Bloomberg WACC, 20 Nov 2026]
 
 # ---------------- Mi'kael: ESG and the recommendation ----------------
@@ -389,8 +377,44 @@
       cue: committee
     - text: SEC and California investigations have been reported, and are not yet closed
       cue: investigations
-  say: "Let's start with the hard one: governance. This month Jensen Huang resigned as CEO, and the board reinstated him days later. It also created a committee of independent directors for national security and export control. The investigations reported by the SEC and California are still open, and we won't pretend that risk has gone."
+  say: "Let's start with the hard one: governance. Jensen Huang resigned as CEO this month, and the board reinstated him days later, with a new independent committee for national security and export control. The SEC and California investigations are still open, and we won't pretend that risk has gone."
+  video: { file: jensen-reinstated.mp4, credit: The Wall Street Journal } # muted and looping; the file lives in app/public/media (not in git)
   sources: [CNBC, 12 Nov 2026; NBC News, Nov 2026]
+
+# Competition (added 24 Nov 2026, evening), from docs/research/nvidia-open-ai-ecosystem-report.md. Names only: no figures.
+# Hugging Face: agreed 3 Sep 2026, still needs regulatory approval, so never say "bought".
+- id: open-ai
+  speaker: Mi'kael
+  cues: [funding competition, competition to the ai giants, more open ai market]
+  layout: statement
+  title: NVIDIA is funding competition to the AI giants.
+  bullets:
+    - text: "Sharing open models: Hugging Face, which NVIDIA agreed to buy in September 2026, pending approval"
+      cue: hugging face
+    - text: "Building them: Mistral, Black Forest Labs and AI21 Labs"
+      cue: mistral
+    - text: "Running them: Fireworks AI, Together AI and Replicate"
+      cue: fireworks
+    - text: More choice keeps the giants' prices and lock-in in check, and whichever model wins still needs chips
+      cue: more choice
+  say: "NVIDIA is also funding competition to the AI giants. It has agreed to buy Hugging Face, home of open models, and backs Mistral, Black Forest Labs and AI21, which build them, and Fireworks, Together and Replicate, which run them. More choice keeps the giants' prices in check, and every model still needs chips. The catch: some of these firms buy NVIDIA chips, so we watch for money going round in a circle."
+  sources: ["NVIDIA blog, 3 Sep 2026 (Hugging Face, pending approval); funding announcements: Mistral 2024, AI21 Labs 2023, Black Forest Labs 2025, Fireworks AI 2024, Replicate 2023, Together AI (Reuters) 2024; NVIDIA Form 10-K FY26"]
+
+# The "S" in ESG (added 24 Nov 2026, evening). Rankings checked on each publisher's page; people figures from Bloomberg.
+- id: people
+  speaker: Mi'kael
+  cues: [people want to work, want to work there, staff left]
+  layout: number
+  title: People want to work here, and they stay.
+  stat: { datasetKey: research_people, series: "Staff turnover, FY26", x: value, label: "of staff left in the last year (Bloomberg)" }
+  bullets:
+    - text: "Glassdoor Best Places to Work 2026: #{{research_people | Glassdoor Best Places to Work 2026, US rank | value}} in the US"
+      cue: glassdoor
+    - text: "Fortune 100 Best Companies to Work For: top {{research_people | Fortune 100 Best, lowest rank 2022–2026 | value}} every year since 2022"
+      cue: fortune
+    - text: "TIME World's Best Companies in Sustainable Growth 2026: #{{research_people | TIME Sustainable Growth 2026, world rank | value}}"
+      cue: sustainable growth
+  say: "And people want to work there. Only 3.7 percent of staff left last year. Glassdoor ranks NVIDIA the third best place to work in America, Fortune has it in the top six every year since 2022, and TIME ranks it sixth in the world for sustainable growth. The weak spot: NVIDIA now publishes less social data, and as shareholders we would push for more."
 
 - id: renewables
   speaker: Mi'kael
@@ -416,7 +440,7 @@
     - text: TSMC makes NVIDIA's chips, so the factory emissions count in TSMC's number, not NVIDIA's
       cue: factory emissions
   chart: { type: bar, datasetKey: peers_emissions_intensity, series: [Emissions intensity], highlight: NVIDIA }
-  say: "Now compare that with other chip companies. This is the carbon from each company's own buildings and the electricity they buy, for every million dollars of sales. NVIDIA emits about 48 kilograms. Intel, 25 tonnes. TSMC, a hundred and nine tonnes. To be fair, TSMC makes NVIDIA's chips, so those factory emissions count in TSMC's number, not NVIDIA's."
+  say: "Now compare other chip companies: the carbon from each one's own buildings and electricity, for every million dollars of sales. NVIDIA emits about 48 kilograms. Intel, 25 tonnes. TSMC, a hundred and nine tonnes. To be fair, TSMC makes NVIDIA's chips, so those factory emissions count in TSMC's number."
 
 # Sizes are the team's own choice, written in words on purpose.
 - id: recommendation
@@ -433,7 +457,7 @@
       cue: bear case
     - text: We would add only if cloud spending plans rise again and the CEO investigation closes, and sell if they are cut
       cue: we would add
-  say: "Our recommendation is to buy. We would start with three percent of the portfolio, held for three to five years, well inside our ten percent limit. Our base case is about 391 dollars at the industry rate, and 249 even at Google Finance's higher one. At that size, our realistic bear case costs the portfolio about one percent, and the stress case under two. We would add only if cloud spending plans rise and the CEO investigation closes, and sell if those plans are cut."
+  say: "Our recommendation is to buy: three percent of the portfolio, for three to five years. Our base case is 391 dollars, and 249 even at Google Finance's higher rate. Our bear case would cost the portfolio about one percent. We would add if cloud spending plans rise and the CEO investigation closes, and sell if those plans are cut."
 
 # ---------------- Rob: the close ----------------
 
