@@ -4,9 +4,10 @@ import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { test, type TestContext } from 'node:test';
 import { WebSocket, WebSocketServer } from 'ws';
-import { deepgramUrl, KEYTERMS, relay } from './deepgram.ts';
+import { deepgramUrl, KEYTERMS, parseDeepgram, relay } from './deepgram.ts';
 
-const results = (transcript: string, is_final: boolean) => JSON.stringify({ type: 'Results', is_final, channel: { alternatives: [{ transcript }] } });
+const turn = (event: string, transcript: string) => JSON.stringify({ type: 'TurnInfo', event, turn_index: 0, transcript, audio_window_end: 1.5 });
+const results =(transcript: string, is_final: boolean) => JSON.stringify({ type: 'Results', is_final, channel: { alternatives: [{ transcript }] } });
 const until = async (ok: () => boolean, what: string) => {
   for (let i = 0; i < 300; i++) {
     if (ok()) return;
@@ -60,7 +61,7 @@ test('the relay sends the key and settings, passes audio up and text back', asyn
   const { req, ws, audio } = conns[0];
   assert.equal(req.headers.authorization, 'Token test-key');
   const q = new URL(req.url!, 'http://x').searchParams;
-  assert.deepEqual([q.get('model'), q.get('language'), q.get('encoding'), q.get('sample_rate'), q.get('interim_results')], ['nova-3', 'en-GB', 'linear16', '16000', 'true']);
+  assert.deepEqual([q.get('model'), q.get('encoding'), q.get('sample_rate')], ['flux-general-en', 'linear16', '16000']);
   assert.ok(q.getAll('keyterm').includes('CUDA'));
   await until(() => audio.length === 1, 'held audio');
   ws.send(results('', false)); // silence: nothing to pass on
@@ -68,6 +69,29 @@ test('the relay sends the key and settings, passes audio up and text back', asyn
   ws.send(results('wall street hated it', true));
   await until(() => got.filter((m) => m.type === 'transcript').length === 2, 'transcripts');
   assert.deepEqual(got.filter((m) => m.type === 'transcript').map((m) => [m.text, m.final]), [['wall street', false], ['wall street hated it', true]]);
+});
+
+test('Flux is the default model; nova-3 stays available', () => {
+  const flux = new URL(deepgramUrl('en-GB', undefined, 'flux'));
+  assert.equal(flux.pathname, '/v2/listen');
+  assert.equal(flux.searchParams.get('model'), 'flux-general-en');
+  assert.equal(flux.searchParams.get('language'), null); // Flux takes no language
+  const nova = new URL(deepgramUrl('en-GB', undefined, 'nova-3'));
+  assert.deepEqual([nova.pathname, nova.searchParams.get('model'), nova.searchParams.get('interim_results')], ['/v1/listen', 'nova-3', 'true']);
+  assert.deepEqual(parseDeepgram(JSON.parse(turn('Update', 'Microsoft chose NVIDIA for Xbox'))), { text: 'Microsoft chose NVIDIA for Xbox', final: false, endsAt: 1.5 });
+  assert.equal(parseDeepgram(JSON.parse(turn('EndOfTurn', 'x')))?.final, true);
+  assert.equal(parseDeepgram({ type: 'Connected' }), null);
+});
+
+test('Flux turns reach the browser as interims and a final, each change once', async (t) => {
+  const { conns, got, states } = await setup(t);
+  await until(() => states().includes('listening'), 'listening');
+  const ws = conns[0].ws;
+  for (const [e, text] of [['Update', ''], ['StartOfTurn', 'company'], ['Update', 'company of the year'], ['Update', 'company of the year'], ['EndOfTurn', 'company of the year.'], ['Update', '']])
+    ws.send(turn(e, text));
+  await until(() => got.some((m) => m.final), 'final');
+  await new Promise((r) => setTimeout(r, 50));
+  assert.deepEqual(got.filter((m) => m.type === 'transcript').map((m) => [m.text, m.final]), [['company', false], ['company of the year', false], ['company of the year.', true]]);
 });
 
 test('an empty final still closes an interim', async (t) => {

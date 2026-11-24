@@ -5,7 +5,7 @@
  *
  * 1. Reads every slide's `say` text aloud with the Mac's built-in voice at --rate words a minute (macOS `say`),
  *    so the audio length is the script's spoken length at that pace.
- * 2. Streams the audio to Deepgram with the app's own settings (deepgramUrl: nova-3, keyterms, interim results),
+ * 2. Streams the audio to Deepgram with the app's own settings (deepgramUrl: Flux or nova-3, keyterms, interim results),
  *    at --speed times real time.
  * 3. Feeds every transcript into the show exactly as the server does (apply → 'transcript'), with cue words on,
  *    and checks that each slide went live in order and finished building on its own.
@@ -16,7 +16,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { WebSocket } from 'ws';
-import { deepgramKey, deepgramUrl } from '../server/deepgram.ts';
+import { deepgramKey, deepgramModel, deepgramUrl, parseDeepgram } from '../server/deepgram.ts';
 import { apply, emptyState, loadDatasets, loadSpine, type Ctx } from '../server/state.ts';
 import { elementCount, type ShowState } from '../shared/schema.ts';
 
@@ -79,13 +79,11 @@ await new Promise<void>((resolve, reject) => {
   dg.on('unexpected-response', (_q, res) => reject(new Error(`Deepgram refused: HTTP ${res.statusCode}`)));
   dg.on('error', reject);
   dg.on('message', (data) => {
-    const m = JSON.parse(String(data));
-    if (m.type !== 'Results') return;
-    const text = String(m.channel?.alternatives?.[0]?.transcript ?? '').trim();
-    if (!text && !m.is_final) return;
-    if (m.is_final) finals++;
-    heardAt = Number(m.start ?? 0) + Number(m.duration ?? 0);
-    step({ type: 'transcript', text, final: m.is_final === true });
+    const r = parseDeepgram(JSON.parse(String(data)));
+    if (!r || (!r.text && !r.final)) return;
+    if (r.final) finals++;
+    heardAt = r.endsAt ?? heardAt;
+    step({ type: 'transcript', text: r.text, final: r.final });
   });
   dg.on('close', () => resolve());
   dg.on('open', async () => {
@@ -94,7 +92,7 @@ await new Promise<void>((resolve, reject) => {
       dg.send(audio.subarray(i, i + chunk));
       await new Promise((r) => setTimeout(r, 100 / SPEED));
     }
-    dg.send(JSON.stringify({ type: 'Finalize' }));
+    dg.send(JSON.stringify({ type: deepgramModel() === 'flux' ? 'ForceEndTurn' : 'Finalize' }));
     setTimeout(() => dg.send(JSON.stringify({ type: 'CloseStream' })), 1500);
   });
 });
