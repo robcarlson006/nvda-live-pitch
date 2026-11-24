@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { elementCount, formatValue, isUnverified, stepsOf, zoomAt, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { cueScore, findCue, words } from './cues.ts';
-import { apply, checkSlide, emptyState, loadDatasets, loadSpine, relocate, runReport, sectionLastIndex, type Ctx } from './state.ts';
+import { addDraft, apply, checkSlide, emptyState, isIgnoringUtterance, loadDatasets, loadSpine, relocate, runReport, sectionLastIndex, type Ctx } from './state.ts';
 
 const datasets = loadDatasets();
 const spine = loadSpine(datasets); // also proves docs/script/spine.yaml is valid against the real data
@@ -70,6 +70,18 @@ test('push validates charts against the data', () => {
   assert.match(apply(emptyState(), { type: 'push', slide: { id: 'x' } }, ctx) as string, /Invalid/);
 });
 
+test('answer slides can only go live through their current approval queue entry', () => {
+  const start = run(emptyState(), { type: 'goto', index: idx('cuda') });
+  const answer = { id: 'qa-evidence', answer: true, layout: 'statement', title: 'Evidence', bullets: [], sources: [] } as const;
+  assert.match(apply(start, { type: 'push', slide: answer }, ctx) as string, /approval queue/);
+  assert.match(apply(start, { type: 'push', slide: { ...answer, answer: undefined } }, ctx) as string, /approval queue/);
+  assert.match(apply(start, { type: 'push', slide: { ...answer, id: 'gen-answer', answer: undefined } }, ctx) as string, /approval queue/);
+  const queued = addDraft(start, { id: 'current', kind: 'answer', heard: 'Question?', from: 'prepared', at: 0, slide: { ...answer, bullets: [], sources: [] } });
+  assert.equal(queued.live, start.live);
+  assert.match(apply(queued, { type: 'draft', action: 'show', id: 'stale' }, ctx) as string, /no longer in the queue/);
+  assert.equal(run(queued, { type: 'draft', action: 'show', id: 'current' }).live?.id, answer.id);
+});
+
 test('slide text may not contain hand-typed numbers; {{tokens}} must resolve', () => {
   const base = { id: 't', layout: 'statement' as const, bullets: [], sources: [] };
   assert.match(checkSlide({ ...base, title: 'Revenue hit $194bn' }, datasets)!, /Hand-typed number/);
@@ -131,6 +143,51 @@ test('an interim result fires once; its final copy is ignored', () => {
   assert.equal(s.heard, '');
 });
 
+test('an early cue survives a long initial transcript result', () => {
+  const start = run(emptyState(), { type: 'goto', index: idx('first-gpu') });
+  const text = `they announced cuda ${'then came more talk '.repeat(9)}`;
+  assert.equal(run(start, say(text)).index, idx('cuda'));
+  assert.equal(run(start, interim(text)).index, idx('cuda'));
+});
+
+test('Q&A suppresses cues and its unfinished utterance through resume', () => {
+  const start = run(emptyState(), { type: 'goto', index: idx('first-gpu') });
+  const held = apply(start, interim('announced'), { ...ctx, pauseCues: true });
+  assert.ok(typeof held !== 'string' && isIgnoringUtterance(held));
+  const final = run(held, say('announced CUDA'));
+  assert.equal(final.index, start.index);
+  assert.equal(final.stray, '');
+  assert.equal(isIgnoringUtterance(final), false);
+  assert.equal(run(final, say('announced CUDA')).index, idx('cuda'));
+
+  const queued = addDraft(start, {
+    id: 'draft', kind: 'answer', heard: 'Question?', from: 'prepared', at: 0,
+    slide: { id: 'qa-evidence', answer: true, layout: 'statement', title: 'Evidence', bullets: [], sources: [] },
+  });
+  const onStage = run(queued, interim('they announced CUDA'), { type: 'draft', action: 'show', id: 'draft' }, say('they announced CUDA'));
+  assert.equal(onStage.live?.id, 'qa-evidence');
+  assert.equal(onStage.lastCue, start.lastCue);
+  const resumed = run(onStage, { type: 'resume' }, say('they announced CUDA'));
+  assert.equal(resumed.index, idx('cuda'));
+});
+
+test('cue logs measure transcript receipt to cue dispatch, excluding invalid timestamps', () => {
+  const runStart = run(emptyState(), { type: 'goto', index: idx('first-gpu') }, { type: 'rehearsal', action: 'start' });
+  const text = interim('they announced CUDA');
+  const receivedAt = Date.now() - 50;
+  const timed = run(runStart, { ...text, receivedAt });
+  const cue = timed.lastCue!;
+  assert.equal(cue.receivedAt, receivedAt);
+  const report = runReport(timed.rehearsal!, Date.now(), spine);
+  assert.equal(report.medianCueDispatchMs, cue.at - receivedAt);
+  assert.ok(report.medianCueDispatchMs! >= 50);
+  for (const invalid of [Date.now() - 60_000, Date.now() + 60_000]) {
+    const untimed = run(runStart, { ...text, receivedAt: invalid });
+    assert.equal(untimed.lastCue?.receivedAt, undefined);
+    assert.equal(runReport(untimed.rehearsal!, Date.now(), spine).medianCueDispatchMs, null);
+  }
+});
+
 test('optional slides can be switched off: next, back and cues skip them', () => {
   let s = run(emptyState(), { type: 'goto', index: idx('alexnet') }, { type: 'skip', id: 'revenue-long', on: true });
   assert.deepEqual(s.skipped, ['revenue-long']);
@@ -172,6 +229,10 @@ test('cue scoring', () => {
   assert.equal(cueScore('built live', words('we built this')), 0.5);
   assert.equal(findCue('nothing relevant here', [{ cue: 'released cuda', target: 1 }]), null);
   assert.equal(findCue('so they released cuda and then', [{ cue: 'released cuda', target: 1 }])!.end, 3);
+  assert.equal(findCue('they cuda released', [{ cue: 'released cuda', target: 1 }]), null);
+  assert.equal(findCue('hello', [{ cue: 'hello hello', target: 1 }]), null);
+  assert.equal(findCue('released cuda last year new words', [{ cue: 'released cuda', target: 1 }], 0.75, 4), null);
+  assert.equal(findCue('they released cuda', [{ cue: 'released cuda', target: 1 }], 0.75, 2)?.end, 2);
 });
 
 // ---------- The deck can't skip ahead ----------

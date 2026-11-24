@@ -71,14 +71,16 @@ function MicMeter({ level }: { level: () => number }) {
 }
 
 export function Operator() {
-  const { state, spine, spineError, connected, clients, error, notice, send, ai, bank } = useShow();
+  const { state, spine, spineError, connected, clients, error, notice, send, ai, bank, answers } = useShow();
   const datasets = useDatasets();
   const [said, setSaid] = useState('');
   const mic = useSpeech((text, final) => send({ type: 'transcript', text, final, receivedAt: Date.now() }));
-  useNavKeys(send, state);
+  useNavKeys(send, state, true);
   useEffect(() => {
     const backupKey = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === 'b' && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) {
+      const target = e.target instanceof Element ? e.target : null;
+      if (e.key.toLowerCase() === 'b' && !e.repeat && !e.defaultPrevented && !e.metaKey && !e.ctrlKey && !e.altKey
+        && !target?.closest('input, textarea, select, [contenteditable]:not([contenteditable=false])')) {
         e.preventDefault();
         send({ type: 'backup', on: !state?.backup });
       }
@@ -89,7 +91,8 @@ export function Operator() {
 
   const cur = state && state.index >= 0 ? spine[state.index] : undefined;
   const total = state?.live ? elementCount(state.live) : 0;
-  const waitingFor = cur && state && state.reveal < total ? cur.elementCues[state.reveal - 1] : null;
+  const onScript = cur && state?.live?.id === cur.id;
+  const waitingFor = onScript && state && state.reveal < total ? cur.elementCues[state.reveal - 1] : null;
   const skipped = state?.skipped ?? [];
   const upNext = state ? spine.slice(state.index + 1).find((s) => !skipped.includes(s.id)) : undefined;
   const text = (t: string) => resolveText(t, datasets);
@@ -124,9 +127,9 @@ export function Operator() {
       <section className="op-now">
         <div className="op-now-main">
           <div className="label">
-            {cur ? `Slide ${state!.index + 1} of ${spine.length}, ${cur.speaker}` : state?.live ? 'Extra slide' : 'Standby'}
-            {cur && unverified(cur) && <span className="tag-unverified">unverified</span>}
-            {cur?.optional && <span className="tag-optional">✂ optional</span>}
+            {onScript ? `Slide ${state!.index + 1} of ${spine.length}, ${cur.speaker}` : state?.live ? 'Extra slide' : 'Standby'}
+            {onScript && unverified(cur) && <span className="tag-unverified">unverified</span>}
+            {onScript && cur.optional && <span className="tag-optional">✂ optional</span>}
           </div>
           <div className="live-title">{state?.live ? text(state.live.title) : 'Stage shows the NVIDIA standby screen'}</div>
           {state?.live && (
@@ -148,7 +151,7 @@ export function Operator() {
         </div>
       </section>
 
-      <LivePanel state={state} ai={ai} bank={bank} datasets={datasets} send={send} />
+      <LivePanel state={state} ai={ai} connected={connected} bank={bank} answers={answers} datasets={datasets} send={send} />
 
       <Timer state={state} spine={spine} send={send} />
 
@@ -189,15 +192,16 @@ export function Operator() {
         </div>
         {state?.lastCue && (
           <div className="op-meta">
-            Last cue: “{state.lastCue.phrase}” → {state.lastCue.target}
+            Last cue · “{state.lastCue.phrase}” → {state.lastCue.target}
+            {state.lastCue.receivedAt !== undefined && <> · {state.lastCue.at - state.lastCue.receivedAt} ms from transcript receipt</>}
           </div>
         )}
-        {upNext && <div className="op-meta">Next slide listens for: {upNext.cues.map((c) => `“${c}”`).join(', ')}</div>}
+        {!qaPaused && upNext && <div className="op-meta">Next slide listens for: {upNext.cues.map((c) => `“${c}”`).join(', ')}</div>}
         <form
           className="op-sim"
           onSubmit={(e) => {
             e.preventDefault();
-            if (said.trim()) send({ type: 'transcript', text: said, final: true });
+            if (said.trim()) send({ type: 'transcript', text: said, final: true, receivedAt: Date.now() });
             setSaid('');
           }}
         >

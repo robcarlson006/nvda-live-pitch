@@ -20,14 +20,23 @@ export function loadBank(datasets: Map<string, Dataset>, file = BANK_FILE): Bank
   });
 }
 
-/** The prepared answer whose phrases best match the question, or null. Every word of a phrase must be heard, close together. */
+const QUESTION_BREAK = /[?!]\s*(?=\S)|(?:[,;]\s*|\b(?:and|also|plus|but)\s+)(?=(?:what|why|how|where|when|who|which|can|could|does|do|is|are|has|have|will|would)\b)/i;
+
+export const questionPartCount = (question: string) => question.trim().split(QUESTION_BREAK).length;
+
+/** Route ambiguous questions to evidence lookup rather than reusing a partial answer. */
 export function findAnswer(bank: BankEntry[], question: string): BankEntry | null {
   const heard = words(question);
-  let best: { e: BankEntry; len: number } | null = null;
-  for (const e of bank)
-    for (const p of e.ask) {
-      const len = words(p).length;
-      if (cueScore(p, heard) === 1 && len > (best?.len ?? 0)) best = { e, len };
-    }
-  return best?.e ?? null;
+  if (!heard.length) return null;
+  const exact = bank.find((entry) => words(entry.question).join(' ') === heard.join(' '));
+  if (exact) return exact;
+  if (questionPartCount(question) > 1) return null;
+
+  const matches = bank.filter((entry) => entry.ask.some((phrase) => {
+    const terms = words(phrase);
+    // A lone topic word is an alias, but it is too broad to answer a longer question.
+    if (terms.length === 1) return heard.length <= 3 && heard.includes(terms[0]);
+    return cueScore(phrase, heard) === 1;
+  }));
+  return matches.length === 1 ? matches[0] : null;
 }

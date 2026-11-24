@@ -9,7 +9,7 @@ export const DATA_DIR = path.resolve(import.meta.dirname, '../../data/clean');
 export const SPINE_FILE = path.resolve(import.meta.dirname, '../../docs/script/spine.yaml');
 const STATE_FILE = path.resolve(import.meta.dirname, '../state.json');
 
-export type Ctx = { datasets: Map<string, Dataset>; spine: SpineSlide[] };
+export type Ctx = { datasets: Map<string, Dataset>; spine: SpineSlide[]; pauseCues?: boolean };
 
 export function loadDatasets(dir = DATA_DIR): Map<string, Dataset> {
   const out = new Map<string, Dataset>();
@@ -152,7 +152,7 @@ export function emptyState(): ShowState {
 
 export function loadState(): ShowState {
   try {
-    return { ...emptyState(), ...JSON.parse(fs.readFileSync(STATE_FILE, 'utf8')), mode: 'script', question: '', questionTail: '', stray: '', drafts: [] };
+    return { ...emptyState(), ...JSON.parse(fs.readFileSync(STATE_FILE, 'utf8')), mode: 'script', question: '', questionTail: '', heard: '', consumed: 0, stray: '', drafts: [] };
   } catch {
     return emptyState();
   }
@@ -166,6 +166,11 @@ export function saveState(s: ShowState) {
 
 /** A live-built (or prepared answer) slide is covering the script. */
 export const isCovered = (s: ShowState) => !!s.live && /^(gen|qa)-/.test(s.live.id);
+
+const IGNORE_UTTERANCE = -1;
+export const isIgnoringUtterance = (s: ShowState) => s.consumed === IGNORE_UTTERANCE;
+export const answerOnDeck = (s: ShowState) =>
+  !!s.live?.answer || !!s.live?.id.startsWith('qa-') || s.drafts.some((draft) => draft.kind === 'answer');
 
 /** Put a live-built slide on stage without losing the place in the script. */
 export function cover(state: ShowState, slide: Slide): ShowState {
@@ -181,10 +186,13 @@ function resume(state: ShowState, spine: SpineSlide[]): ShowState {
   return { ...show(state, s, state.index), reveal: Math.max(1, Math.min(state.under, elementCount(s))) };
 }
 
-/** A finished live-built slide arrives: on stage at once if auto-show is on, otherwise into the queue. */
+/** Hold the finished slide in the approval queue. */
 export function addDraft(state: ShowState, d: Draft): ShowState {
-  // A web answer always waits for a person, even with auto-show on: it is not from our own data.
-  return { ...state, drafts: [...state.drafts, d].slice(-5) };
+  return {
+    ...state,
+    ...(d.kind === 'answer' ? { heard: '', stray: '' } : {}),
+    drafts: [...state.drafts, d].slice(-5),
+  };
 }
 
 const COMMON = new Set('that this with from have they them then than there their what when which would could should about because just like really very also been were will your some more into over know think going thing things here well actually right okay yeah people want make made much many only even every where nvidia company'.split(' '));
@@ -271,18 +279,25 @@ function candidates(state: ShowState, spine: SpineSlide[], final: boolean): Cand
  * remembers how much of the current utterance a cue has already used, so its final copy can't fire twice.
  * After a cue fires, the words after it carry on, so a bullet said in the same breath as its slide still lands.
  */
-function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[], receivedAt?: number): ShowState {
-  if (state.backup || state.live?.answer || state.live?.id.startsWith('qa-')) return state;
+function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[], paused: boolean, receivedAt?: number): ShowState {
+  if (paused || state.backup || answerOnDeck(state) || isIgnoringUtterance(state)) {
+    // The final may arrive after Q&A closes. Keep the whole utterance out of the script follower.
+    const consumed = final ? 0 : IGNORE_UTTERANCE;
+    if (state.consumed === consumed && !state.heard && !state.stray) return state;
+    return { ...state, heard: '', stray: '', consumed };
+  }
   const prior = state.heard ? state.heard.split(' ') : [];
   const fresh = words(text).slice(state.consumed);
   const buf = [...prior, ...fresh];
-  let s = final ? { ...state, stray: `${state.stray} ${text}`.trim().slice(-1200) } : state;
+  const newText = state.consumed === 0 ? text : fresh.join(' ');
+  let s = final ? { ...state, stray: `${state.stray} ${newText}`.trim().slice(-1200) } : state;
   let used = 0;
   if (state.autoCue) {
     for (let k = 0; k < 4; k++) {
       const eligible = candidates(s, spine, final);
       const remaining = buf.slice(used);
-      const hit = final ? findCue(remaining, eligible) : findInterimCue(remaining, eligible, Math.max(0, prior.length - used));
+      const newFrom = Math.max(0, prior.length - used);
+      const hit = final ? findCue(remaining, eligible, 0.75, newFrom) : findInterimCue(remaining, eligible, newFrom);
       if (!hit) break;
       const before = s;
       const live = s.index >= 0 ? spine[s.index] : undefined;
@@ -320,13 +335,14 @@ export function logMove(state: ShowState, out: ShowState, via: RunEntry['via'], 
   return { ...out, rehearsal: { ...out.rehearsal, entries: [...out.rehearsal.entries, entry] } };
 }
 
-function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, spine }: Ctx): ShowState | string {
+function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, spine, pauseCues = false }: Ctx): ShowState | string {
   switch (msg.type) {
     case 'backup':
-      return { ...state, backup: msg.on, heard: '', consumed: 0 };
+      return { ...state, backup: msg.on, heard: '', stray: '' };
     case 'clear':
       return { ...state, seen: [], index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
     case 'push': {
+      if (msg.slide.answer || /^(gen|qa)-/.test(msg.slide.id)) return 'Use the approval queue to show a live answer';
       const problem = checkSlide(msg.slide, datasets);
       if (problem) return problem;
       return { ...show(state, msg.slide, -1), reveal: elementCount(msg.slide) }; // ad-hoc slides build all at once
@@ -343,7 +359,7 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
       if (msg.index < 0 || msg.index >= spine.length) return `No slide ${msg.index + 1}`;
       return state.backup ? { ...show(state, spine[msg.index], msg.index), reveal: elementCount(spine[msg.index]) } : show(state, spine[msg.index], msg.index); // explicit jumps may land on a skipped slide
     case 'autoCue':
-      return { ...state, autoCue: msg.on, heard: '', consumed: 0 };
+      return { ...state, autoCue: msg.on, heard: '', stray: '' };
     case 'skip': {
       const slide = spine.find((s) => s.id === msg.id);
       if (!slide?.optional) return `"${msg.id}" is not an optional slide`;
@@ -359,7 +375,7 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
     case 'question':
       if (msg.action === 'start') return { ...state, mode: 'question', question: '', questionTail: '', heard: '', consumed: 0, stray: '' };
       // The rest of an utterance still in progress belongs to the question: ignore it until its final result.
-      return { ...state, mode: 'script', question: '', questionTail: '', consumed: state.questionTail ? 9999 : 0 };
+      return { ...state, mode: 'script', question: '', questionTail: '', consumed: state.questionTail ? IGNORE_UTTERANCE : 0 };
     case 'draft': {
       const d = state.drafts.find((x) => x.id === msg.id);
       if (!d) return 'That slide is no longer in the queue';
@@ -371,7 +387,7 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
     case 'setting':
       return { ...state, [msg.key]: msg.on };
     case 'follow':
-      return { ...state, follow: msg.mode, heard: '', consumed: 0, stray: '' };
+      return { ...state, follow: msg.mode, heard: '', stray: '' };
     case 'tangent':
     case 'micCmd':
     case 'micStatus':
@@ -381,7 +397,7 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
     case 'transcript':
       if (state.mode === 'question')
         return msg.final ? { ...state, question: `${state.question} ${msg.text}`.trim().slice(-1500), questionTail: '' } : { ...state, questionTail: msg.text };
-      return hear(state, msg.text, msg.final, spine, msg.receivedAt);
+      return hear(state, msg.text, msg.final, spine, pauseCues, msg.receivedAt);
   }
 }
 

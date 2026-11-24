@@ -7,7 +7,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import type { ShowState, Slide } from '../shared/schema.ts';
 import { Ai, toSlide, usable, type Reply } from './ai.ts';
 import { findAnswer, loadBank } from './bank.ts';
-import { checkLine, figures, onPage, shorten, toWebSlide } from './research.ts';
+import { pageText, researchUrl, toWebSlide } from './research.ts';
 import { Budget } from './budget.ts';
 import { addDraft, apply, emptyState, isCovered, loadDatasets, loadSpine, offScript, relocate } from './state.ts';
 
@@ -40,9 +40,12 @@ test('Claude cannot put its own numbers on a slide, in digits or words', () => {
   assert.ok(!usable(datasets).some((d) => d.key === 'research_facts_unverified'));
 });
 
-test('if a correction still breaks the rules, only the bad bullet is lost', async () => {
-  const r = await go(new Ai(new Budget(tmp(), 4), async () => message(reply({ bullets: ['Up 55%', 'Chip making is in Scope 3'] })), () => true));
-  assert.deepEqual('slide' in r && r.slide.bullets, ['Chip making is in Scope 3']);
+test('a rejected board claim needs research; a riff can keep its valid bullet', async () => {
+  const ai = new Ai(new Budget(tmp(), 4), async () => message(reply({ bullets: ['Up 55%', 'Chip making is in Scope 3'] })), () => true);
+  const r = await go(ai);
+  assert.ok('slide' in r && !r.answered);
+  const riff = await go(ai, { ...job, kind: 'riff' });
+  assert.deepEqual('slide' in riff && riff.slide.bullets, ['Chip making is in Scope 3']);
   assert.ok('error' in (await go(new Ai(new Budget(tmp(), 4), async () => message(reply({ title: 'Up 55%' })), () => true))), 'a bad title is never shown');
 });
 
@@ -132,43 +135,169 @@ test('prepared answers are valid and matched by their question, and never by unr
   for (const q of ['what is your favourite product', 'how fast is revenue growing', 'why is amd cheaper', 'what has the eu said about the energy use of data centers', 'how much water do data centers use globally', 'what is the carbon footprint of training chatgpt']) assert.equal(findAnswer(bank, q), null, q);
 });
 
+test('prepared matches do not answer only one part of a compound question', () => {
+  const bank = loadBank(datasets);
+  assert.ok(findAnswer(bank, 'Could you talk about supply chain emissions?'));
+  for (const question of [
+    'What about Scope 3? What is your forecast for battery storage?',
+    'What about Scope 3 and how much power do data centres use globally?',
+    'What about customer concentration and export controls?',
+    'Which governance policies apply to a private company in Brazil?',
+  ]) assert.equal(findAnswer(bank, question), null, question);
+});
+
+test('a sourced local reply with one evidence line cannot pass as a complete compound answer', async () => {
+  const ai = new Ai(new Budget(tmp(), 4), async () => message(reply()), () => true);
+  const result = await go(ai, { ...job, heard: 'What about Scope 3? What is the forecast for battery storage?' });
+  assert.ok('slide' in result && !result.answered);
+  assert.match(result.slide.title, /need to check/);
+});
+
+const visualInput: Slide = {
+  id: 'qa-example', layout: 'statement', title: 'Supply chain emissions', bullets: ['Chipmaking drives emissions.', 'Operational emissions are smaller.'],
+  sources: ['NVIDIA sustainability disclosures'],
+};
+
+test('a visual uses verified series or exact answer phrases', async () => {
+  const signal = new AbortController().signal;
+  const chart = { type: 'line', datasetKey: 'nvda_emissions', series: ['Scope 3'] };
+  const diagram = { kind: 'comparison', nodes: ['Supply chain emissions', 'Operational emissions'] };
+  const pick = (reply: unknown) => new Ai(new Budget(tmp(), 4), async () => message(reply), () => true).visual(visualInput, datasets, signal);
+  assert.deepEqual(await pick({ chart, diagram: null }), { chart });
+  assert.deepEqual(await pick({ chart: { ...chart, datasetKey: 'research_facts_unverified' }, diagram }), { diagram });
+  assert.equal(await pick({ chart: { ...chart, series: ['Invented series'] }, diagram: null }), undefined);
+  assert.equal(await pick({ chart: null, diagram: { ...diagram, nodes: ['Supply chain emissions', 'Operational emissions rise'] } }), undefined);
+});
+
+test('late AI responses are ignored after cancellation and unavailable visuals leave the answer usable', async () => {
+  const stop = new AbortController();
+  let release: (result: Anthropic.Message) => void = () => assert.fail('missing response handler');
+  const ai = new Ai(new Budget(tmp(), 4), (_, signal) => {
+    assert.equal(signal.aborted, false);
+    return new Promise((resolve) => { release = resolve; });
+  }, () => true);
+  const pending = ai.visual(visualInput, datasets, stop.signal);
+  stop.abort();
+  release(message({ chart: null, diagram: { kind: 'comparison', nodes: ['Supply chain emissions', 'Operational emissions'] } }));
+  assert.equal(await pending, undefined);
+  assert.deepEqual(visualInput.bullets, ['Chipmaking drives emissions.', 'Operational emissions are smaller.']);
+
+  const offline = new Ai(new Budget(tmp(), 4), async () => assert.fail('offline must not call the provider'), () => false);
+  assert.match(((await go(offline)) as { error: string }).error, /No Anthropic key/);
+  assert.equal(await offline.visual(visualInput, datasets, new AbortController().signal), undefined);
+});
+
+test('a provider visual timeout leaves the draft text and budget usable', async () => {
+  const ai = new Ai(new Budget(tmp(), 4), async () => {
+    throw new Anthropic.APIConnectionTimeoutError();
+  }, () => true);
+  assert.equal(await ai.visual(visualInput, datasets, new AbortController().signal), undefined);
+  assert.ok(ai.budget.spent > 0 && ai.budget.spent < ai.budget.cap);
+});
+
 // ---------- Web research ----------
 
 const cite = (cited_text: string, url = 'https://www.iea.org/x') => ({ type: 'web_search_result_location', cited_text, url, title: 'IEA', encrypted_index: '' }) as any;
-const found = { type: 'web_search_tool_result', tool_use_id: 't', content: [{ type: 'web_search_result', url: 'https://www.iea.org/x', title: 'IEA' }] };
+const result = (url: string) => ({ type: 'web_search_result', url, title: 'Energy and AI', page_age: 'April 10, 2025' });
+const found = { type: 'web_search_tool_result', tool_use_id: 't', content: [result('https://www.iea.org/x')] };
 const cited = (text: string, ...cites: any[]) => ({ type: 'text', text, citations: cites });
 const plain = (text: string) => ({ type: 'text', text, citations: null });
-const web = (blocks: unknown[], read = async () => '') => toWebSlide(blocks as any, '22 November 2026', read);
+const web = (blocks: unknown[], read = async (_url: string, _signal?: AbortSignal): Promise<{ text: string; date?: string }> => ({ text: '' }), signal?: AbortSignal) =>
+  toWebSlide(blocks as any, '22 November 2026', read, signal);
 
-test('a researched figure must match its source, including its unit', () => {
-  assert.deepEqual(figures('$1,200 million, 20 per cent, 3% and 1.5bn; CO2 and 415 TWh'), ['1200m', '20%', '3%', '1.5b', '415']);
-  const ok = (text: string, src: string) => checkLine({ text, cites: [cite(src)] });
-  assert.equal(ok('Used 415 TWh in 2024', 'Data centres used about 415 TWh'), null);
-  assert.equal(ok('Costs 5 billion', 'It cost $5bn'), null);
-  assert.match(ok('Costs 5 billion', 'It cost $5 million')!, /5b/);
-  assert.match(ok('Used 450 TWh', 'used 415 TWh')!, /450/);
-  assert.match(ok('Use has doubled', 'Use has risen')!, /doubled/);
-  assert.match(checkLine({ text: 'No figures, no source', cites: [] })!, /no source/);
+test('a researched fact must match a sentence in its cited source, including figures, units and periods', async () => {
+  const source = 'Data centres used about 415 TWh in 2024.';
+  const check = (claim: string, excerpt = source) => web([found, cited(claim, cite(excerpt))]);
+  assert.equal(typeof await check(source), 'object');
+  for (const incorrect of [
+    'Data centres used about 415 TWh in 2025.',
+    'Data centres used about 415 GWh in 2024.',
+    'Data centres used about 415 tWh in 2024.',
+    'Data centres used about 450 TWh in 2024.',
+    'Data centres used 415 TWh in 2024.',
+    'Households used about 415 TWh in 2024.',
+    'Electricity consumption will double.',
+  ]) assert.match(await check(incorrect) as string, /No claim/, incorrect);
+  assert.match(await check('The bill took effect.', 'A witness denied that The bill took effect.') as string, /No claim/);
+  assert.match(await web([found, cited(source, cite(source, 'https://www.iea.org/absent'))]) as string, /No claim/);
 });
 
-test('if the excerpt is too short, the page itself is checked, close together', () => {
-  const page = 'Electricity demand. Data centres accounted for around 1.5% of the world’s electricity consumption in 2024, or 415 terawatt-hours. ' + 'filler '.repeat(400) + ' 9% of something else';
-  assert.ok(onPage('Data centres took 1.5% of electricity consumption, 415 terawatt-hours, in 2024', page));
-  assert.ok(!onPage('Data centres took 9% of electricity consumption, 415 terawatt-hours', page), 'figures from different passages');
-  assert.ok(!onPage('Cement plants emitted 415 somethings worldwide yesterday', page), 'same figure, different subject');
+test('approved hosts use HTTPS and dot-boundary matching', () => {
+  assert.equal(researchUrl('https://www.IEA.org/report')?.publisher, 'International Energy Agency');
+  assert.equal(researchUrl('https://research.investor.nvidia.com/report')?.publisher, 'NVIDIA Investor Relations');
+  for (const url of ['http://iea.org', 'https://badiea.org', 'https://iea.org.evil.com', 'https://iea.org:8443', 'https://name:secret@iea.org', 'https://iea.org@evil.com', 'https://127.0.0.1', 'not a link']) {
+    assert.equal(researchUrl(url), null, url);
+  }
 });
 
-test('a web slide keeps checked facts, drops the rest, and says where they came from', async () => {
-  const r = await web([plain('I will search.'), found, plain('TITLE: Data centre electricity\n-\n'), cited('Data centres used 415 TWh in 2024', cite('used 415 TWh')), plain('. That is a lot.\n-\n'), cited('It will reach 999 TWh', cite('will grow', 'https://b.com/y')), plain('\n- Made up and uncited 7%')]);
+test('unapproved citations cannot supply a claim or trigger a fetch even when returned by search', async () => {
+  const bad = 'https://iea.org.evil.com/result';
+  const claim = 'Data centres used 415 TWh in 2024.';
+  const search = { ...found, content: [...found.content, result(bad)] };
+  const noFetch = async () => assert.fail('must never fetch an unapproved URL');
+  assert.match(await web([search, cited(claim, cite(claim, bad))], noFetch) as string, /No claim/);
+  assert.match(await web([search, cited(claim, cite('Short excerpt.', bad))], noFetch) as string, /No claim/);
+  const kept = await web([search, cited(claim, cite('Short excerpt.', bad), cite(claim))], noFetch);
+  assert.ok(typeof kept !== 'string');
+  assert.deepEqual(kept.links.map((link) => link.url), ['https://www.iea.org/x']);
+});
+
+test('fallback checks only the cited page and keeps its date and claim with the source', async () => {
+  const claim = 'Data centres used 415 TWh in 2024.';
+  const signal = new AbortController().signal;
+  const r = await web([plain('Searching.'), found, plain('- '), cited(claim, cite('Data centres used 415'))], async (url, received) => {
+    assert.equal(url, 'https://www.iea.org/x');
+    assert.equal(received, signal);
+    return { text: `Electricity demand. ${claim} Other news.`, date: '2025-04-10' };
+  }, signal);
   assert.ok(typeof r !== 'string');
-  assert.deepEqual(r.slide.bullets, ['Data centres used 415 TWh in 2024.']);
-  assert.equal(r.slide.title, 'Data centre electricity');
-  assert.deepEqual(r.slide.sources, ['Live web research, 22 November 2026, not our own data: iea.org']);
-  assert.equal(r.dropped.length, 1);
-  assert.match((await web([found, plain('NOT FOUND')])) as string, /No reliable/);
-  assert.match((await web([found, plain('TITLE: x\n- nothing cited 5%')])) as string, /no fact/);
-  const t = await web([found, plain('TITLE: Use doubled to 9%\n'), cited('It grew', cite('It grew'))]);
-  assert.equal(typeof t !== 'string' && t.slide.title, 'What published sources say');
+  assert.deepEqual(r.slide.bullets, [claim]);
+  assert.deepEqual(r.slide.sources, ['Live web research · 22 November 2026 · International Energy Agency']);
+  assert.deepEqual(r.links, [{
+    title: 'Energy and AI', url: 'https://www.iea.org/x', publisher: 'International Energy Agency',
+    date: '2025-04-10', updated: 'April 10, 2025', claims: [claim],
+  }]);
+});
+
+test('fallback page requests are bounded and cancelled with the job', async () => {
+  const urls = Array.from({ length: 5 }, (_, i) => `https://www.iea.org/${i}`);
+  const claim = 'Data centres used 415 TWh in 2024.';
+  const search = { ...found, content: urls.map(result) };
+  const blocks = [search, cited(claim, ...urls.map((url) => cite('Short excerpt.', url)))];
+  const fetched: string[] = [];
+  assert.match(await web(blocks, async (url) => {
+    fetched.push(url);
+    return { text: '' };
+  }) as string, /No claim/);
+  assert.deepEqual(fetched, urls.slice(0, 3));
+  const abort = new AbortController();
+  const cancelled = await web(blocks, async () => {
+    abort.abort();
+    return { text: claim };
+  }, abort.signal);
+  assert.match(cancelled as string, /cancelled/);
+});
+
+test('fallback page fetches check the URL again and disable redirects', async (t) => {
+  const fetch = t.mock.method(globalThis, 'fetch', async (_url: URL, options?: RequestInit) => {
+    assert.equal(options?.redirect, 'error');
+    assert.ok(options?.signal instanceof AbortSignal);
+    return new Response('<meta content="2025-04-10T09:30:00Z" property="article:published_time"><h1>Electricity</h1><p>Data centres used 415 TWh in 2024.</p>', { headers: { 'content-type': 'text/html' } });
+  });
+  assert.equal((await pageText('https://iea.org.evil.com/x')).text, '');
+  assert.equal(fetch.mock.callCount(), 0);
+  const page = await pageText('https://iea.org/x');
+  assert.equal(fetch.mock.callCount(), 1);
+  assert.equal(page.date, '2025-04-10');
+  assert.match(page.text, /Data centres used 415 TWh in 2024/);
+});
+
+test('research fails closed when an answer is unsupported or partially unverified', async () => {
+  const claim = 'Data centres used 415 TWh in 2024.';
+  assert.match(await web([found, plain('NOT FOUND')]) as string, /No reliable/);
+  assert.match(await web([found, plain('- Uncited claim')]) as string, /No claim/);
+  assert.match(await web([found, cited(`- ${claim}`, cite(claim)), plain('\n- A bill became law.')]) as string, /Part of the web answer/);
+  assert.match(await web([found, cited(claim, cite(claim)), plain(' That is a lot.')]) as string, /No claim/);
 });
 
 test('a question our data cannot answer is flagged for research; a web slide always waits for approval', async () => {
@@ -181,7 +310,7 @@ test('a question our data cannot answer is flagged for research; a web slide alw
 
 test('research spends within the cap and counts searches', async () => {
   const file = tmp();
-  const ai = new Ai(new Budget(file, 4), async () => ({ stop_reason: 'end_turn', content: [found, cited('Data centres used 415 TWh', cite('used 415 TWh'))], usage: { input_tokens: 10_000, output_tokens: 100, server_tool_use: { web_search_requests: 2 } } }) as any, () => true);
+  const ai = new Ai(new Budget(file, 4), async () => ({ stop_reason: 'end_turn', content: [found, cited('Data centres used 415 TWh in 2024.', cite('Data centres used 415 TWh in 2024.'))], usage: { input_tokens: 10_000, output_tokens: 100, server_tool_use: { web_search_requests: 2 } } }) as any, () => true);
   const r = await ai.research('how much power', new AbortController().signal);
   assert.ok('slide' in r && r.links?.length === 1);
   assert.ok(Math.abs(ai.budget.spent - 0.041) < 1e-9);
@@ -189,11 +318,40 @@ test('research spends within the cap and counts searches', async () => {
   assert.match(((await broke.research('q', new AbortController().signal)) as any).error, /cap reached/);
 });
 
-test('private lives and gossip are never shown; long facts keep their first sentence', async () => {
+test('a verified web sentence cannot stand in for multiple explicit questions', async () => {
+  const ai = new Ai(new Budget(tmp(), 4), async () => ({
+    stop_reason: 'end_turn',
+    content: [found, cited('Data centres used 415 TWh', cite('Data centres used 415 TWh'))],
+    usage: { input_tokens: 1000, output_tokens: 20 },
+  }) as unknown as Anthropic.Message, () => true);
+  const result = await ai.research('How much power did data centres use? What is their water use?', new AbortController().signal);
+  assert.ok('error' in result);
+  assert.match(result.error, /every part/);
+});
+
+test('web search receives the scoped registry and carries a total search limit through continuation', async () => {
+  const calls: Anthropic.MessageCreateParamsNonStreaming[] = [];
+  const ai = new Ai(new Budget(tmp(), 4), async (body) => {
+    calls.push(body);
+    return {
+      stop_reason: calls.length === 1 ? 'pause_turn' : 'end_turn', content: [],
+      usage: { input_tokens: 2000, output_tokens: 40, server_tool_use: { web_search_requests: 2 } },
+    } as unknown as Anthropic.Message;
+  }, () => true);
+  await ai.research('Question', new AbortController().signal, 'Previous sourced answer');
+  assert.deepEqual(calls.map((body) => body.tools?.map((tool) => 'max_uses' in tool && tool.max_uses)), [[3], [1]]);
+  const search = calls[0].tools?.[0];
+  assert.ok(search && 'allowed_domains' in search);
+  assert.ok(search.allowed_domains?.includes('sec.gov'));
+  assert.ok(search.allowed_domains?.includes('iea.org'));
+  assert.ok(!search.allowed_domains?.includes('reuters.com'));
+  assert.match(JSON.stringify(calls[0].messages), /Previous sourced answer/);
+});
+
+test('private lives and gossip are never shown', async () => {
   const line = (s: string) => cited(s, cite(s));
   for (const s of ['He admitted being unfaithful', 'Reports of relationships with two women', 'She is allegedly a spy', 'Scrutiny over his personal relationships'])
-    assert.equal(typeof (await web([found, plain('TITLE: x\n'), line(s)])), 'string', s);
-  assert.notEqual(typeof (await web([found, plain('TITLE: x\n'), line("NVIDIA's relationship with TSMC is long-standing")])), 'string');
-  const long = 'The board announced that the chief executive resigned, effective immediately. ' + 'And then it carried on at great length about the process. '.repeat(4);
-  assert.equal(shorten(long), 'The board announced that the chief executive resigned, effective immediately.');
+    assert.equal(typeof (await web([found, line(s)])), 'string', s);
+  assert.notEqual(typeof (await web([found, line("NVIDIA's relationship with TSMC is long-standing")])), 'string');
+
 });

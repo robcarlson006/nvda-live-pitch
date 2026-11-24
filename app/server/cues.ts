@@ -34,15 +34,25 @@ const SLACK = 3; // extra words (ums, fillers) allowed in among a cue's words
  * Best match of the cue in the heard words: the share of its meaningful words found close together, and where that match ends.
  * Close together matters: spoken numbers are full of common words, so "two … thousand … six" scattered over a paragraph isn't a cue.
  */
-function match(cue: string, heard: string[]): { score: number; end: number } {
+function match(cue: string, heard: string[], newFrom = 0): { score: number; end: number } {
   const need = needed(cue);
   const span = words(cue).length + SLACK;
   let best = { score: 0, end: -1 };
   if (!need.length) return best;
-  for (let i = 0; i < Math.max(1, heard.length - span + 1); i++) {
-    const win = heard.slice(i, i + span);
-    const at = need.map((t) => find(t, win)).filter((k) => k >= 0);
-    if (at.length / need.length > best.score) best = { score: at.length / need.length, end: i + Math.max(...at) };
+  for (let i = Math.max(0, newFrom - span + 1); i < heard.length; i++) {
+    const end = Math.min(heard.length, i + span);
+    let cursor = i;
+    let matched = 0;
+    for (const word of need) {
+      const at = find(word, heard.slice(cursor, end));
+      if (at < 0) continue;
+      matched++;
+      cursor += at + 1;
+    }
+    if (cursor > newFrom && matched / need.length > best.score) {
+      best = { score: matched / need.length, end: cursor - 1 };
+    }
+    if (best.score === 1) break;
   }
   return best;
 }
@@ -64,18 +74,19 @@ function find(t: string, heard: string[]): number {
 export type Candidate<T> = { cue: string; target: T };
 export type Hit<T> = Candidate<T> & { end: number }; // index in the heard words of the last word the match used
 
-const WINDOW = 30; // only recent speech counts
+const WINDOW = 30; // keep only a short overlap with preceding speech
 
 /**
  * First candidate (in priority order) whose cue is matched. Order matters: it stops a later slide winning over the next one.
  * `end` says where the match finished, so the words after it can carry on towards the next cue.
+ * When newFrom is provided, match through the incoming utterance and require a new word at the end of the cue.
  */
-export function findCue<T>(heard: string | string[], candidates: Candidate<T>[], threshold = 0.75): Hit<T> | null {
+export function findCue<T>(heard: string | string[], candidates: Candidate<T>[], threshold = 0.75, newFrom?: number): Hit<T> | null {
   const all = typeof heard === 'string' ? words(heard) : heard;
-  const offset = Math.max(0, all.length - WINDOW);
+  const offset = Math.max(0, (newFrom ?? all.length) - WINDOW);
   const recent = all.slice(offset);
   for (const c of candidates) {
-    const m = match(c.cue, recent);
+    const m = match(c.cue, recent, Math.max(0, (newFrom ?? offset) - offset));
     if (m.score >= threshold) return { ...c, end: offset + m.end };
   }
   return null;
@@ -83,7 +94,7 @@ export function findCue<T>(heard: string | string[], candidates: Candidate<T>[],
 
 /** The speech engine may revise a partial. Only use an exact, ordered cue that ends in new speech. */
 export function findInterimCue<T>(heard: string[], candidates: Candidate<T>[], newFrom: number): Hit<T> | null {
-  const start = Math.max(0, heard.length - WINDOW);
+  const start = Math.max(0, newFrom - WINDOW);
   for (const candidate of candidates) {
     const phrase = words(candidate.cue);
     if (!phrase.length || (phrase.length === 1 && phrase[0].length < 4)) continue;

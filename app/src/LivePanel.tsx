@@ -1,124 +1,251 @@
-import { useState } from 'react';
-import { resolveText, type AiInfo, type ClientMsg, type Dataset, type ShowState } from '../shared/schema.ts';
+import { useRef, useState } from 'react';
+import { resolveText, slideSources, type AiInfo, type ClientMsg, type Dataset, type Draft, type ServerMsg, type ShowState } from '../shared/schema.ts';
+import './live-panel.css';
 
-type Props = { state: ShowState | null; ai: AiInfo | null; bank: { id: string; question: string }[]; datasets: Record<string, Dataset>; send: (m: ClientMsg) => void };
+type BankIndex = Extract<ServerMsg, { type: 'state' }>['bank'];
 
-/** Questions from the board, off-script reactions, and the queue of slides waiting for approval. */
-export function LivePanel({ state, ai, bank, datasets, send }: Props) {
-  const [typed, setTyped] = useState('');
-  if (!state || !ai) return null;
-  const asking = state.mode === 'question';
-  const text = (t: string) => resolveText(t, datasets);
-  const covered = !!state.live && /^(gen|qa)-/.test(state.live.id);
+type Props = {
+  state: ShowState | null;
+  ai: AiInfo | null;
+  connected: boolean;
+  bank: BankIndex;
+  answers: Draft[];
+  datasets: Record<string, Dataset>;
+  send: (m: ClientMsg) => void;
+};
+
+const route = { prepared: 'Prepared answer', web: 'Scoped web research', claude: 'Local evidence check' };
+const answerStatus = (draft: Draft) => draft.evidenceGap ? 'Evidence gap' : route[draft.from];
+const threadId = (draft: Draft) => draft.threadId ?? draft.id;
+
+function AnswerBody({ draft, ai, datasets }: { draft: Draft; ai: AiInfo | null; datasets: Props['datasets'] }) {
+  const { slide, links } = draft;
+  const { stat, chart, diagram } = slide;
+  const text = (value: string) => resolveText(value, datasets);
+  const sources = slideSources(slide, datasets);
+  const building = ai?.activeDraftId === draft.id && ai.busy === 'visual';
+  const researching = ai?.activeDraftId === draft.id && ai.busy === 'research';
 
   return (
-    <section className={`op-live ${asking ? 'asking' : ''}`}>
-      <div className="op-mic">
-        {asking ? (
-          <>
-            <button className="primary" onClick={() => send({ type: 'question', action: 'answer' })}>
-              Answer it (Q)
-            </button>
-            <button onClick={() => send({ type: 'question', action: 'cancel' })}>Cancel</button>
-          </>
-        ) : (
-          <button className="primary" onClick={() => send({ type: 'question', action: 'start' })}>
-            Board question (Q)
-          </button>
-        )}
-        {covered && <button onClick={() => send({ type: 'resume' })}>Back to script (R)</button>}
-        <label className="pill toggle" title="Live: the deck follows what is meant, in any words. Cue words still work as the backup.">
-          Follow by
-          <select value={state.follow} onChange={(e) => send({ type: 'follow', mode: e.target.value as 'script' | 'live' })}>
-            <option value="script">cue words</option>
-            <option value="live">meaning (AI)</option>
-          </select>
-        </label>
-        <label className="pill toggle">
-          <input type="checkbox" checked={state.riff} onChange={(e) => send({ type: 'setting', key: 'riff', on: e.target.checked })} /> React off script
-        </label>
-        <label className="pill toggle">
-          <input type="checkbox" checked={state.autoShow} onChange={(e) => send({ type: 'setting', key: 'autoShow', on: e.target.checked })} /> Show without approval
-        </label>
-        <label className="pill toggle" title="Camera moves and slide morphs. Off = the plain deck. Key m toggles it; the stage URL ?motion=off forces it off on that screen.">
-          <input type="checkbox" checked={state.motion !== false} onChange={(e) => send({ type: 'setting', key: 'motion', on: e.target.checked })} /> Motion (m)
-        </label>
-        <span className={`pill ${!ai.hasKey || ai.spent >= ai.cap * 0.9 ? 'bad' : 'ok'}`}>
-          {ai.hasKey ? `AI $${ai.spent.toFixed(2)} of $${ai.cap.toFixed(2)}` : 'No Anthropic key'}
-        </span>
-        {ai.busy && <span className="pill ok">{ai.busy === 'research' ? 'Not in our data: searching the web…' : ai.busy === 'answer' ? 'Building answer…' : 'Building reaction…'}</span>}
-      </div>
-      {asking && <div className="op-heard">{`${state.question} ${state.questionTail}`.trim() || 'Listening to the question…'}</div>}
-      {state.follow === 'live' && (
-        <div className="op-meta">
-          Following meaning{ai.follow.ms ? ` · ${ai.follow.ms} ms` : ''}: {ai.follow.text ? `…${ai.follow.text}` : 'waiting for speech'}
+    <>
+      <div className="live-title">{text(slide.title)}</div>
+      {stat && <p className="op-answer-figure">{text(`{{${stat.datasetKey} | ${stat.series} | ${stat.x}}}`)} {text(stat.label)}</p>}
+      {slide.bullets.length > 0 && (
+        <ul className="op-answer-list">
+          {slide.bullets.map((bullet, index) => <li key={index}>{text(bullet)}</li>)}
+        </ul>
+      )}
+      {chart && (
+        <p className="op-meta">
+          {chart.display === 'table' ? 'Table' : 'Chart'} ready · {datasets[chart.datasetKey]?.title ?? chart.datasetKey} · {chart.series.join(', ')}
+          {chart.range && <> · {chart.range.join(' – ')}</>}
+          {chart.highlight && <> · Highlight {chart.highlight}</>}
+        </p>
+      )}
+      {diagram && <p className="op-meta">Diagram ready · {diagram.kind} · {diagram.nodes.map(text).join(', ')}</p>}
+      {stat && !chart && <p className="op-meta">Headline figure ready</p>}
+      {draft.kind === 'answer' && !stat && !chart && !diagram && (
+        <p className="op-meta" role="status">{building ? 'Building a visual… Text ready for review.' : 'Text answer ready'}</p>
+      )}
+      {researching && <p className="op-meta" role="status">Checking approved sources for this question…</p>}
+      {(sources.length > 0 || !!links?.length) && (
+        <div className="op-answer-sources">
+          <div className="label">Sources</div>
+          {!!links?.length && (
+            <ul className="op-answer-list">
+              {links.map((link) => (
+                <li key={link.url}>
+                  <a href={link.url} target="_blank" rel="noreferrer">{link.title}</a>
+                  {link.publisher && <> · {link.publisher}</>}
+                  {link.date && <> · {link.date}</>}
+                  {link.updated && link.updated !== link.date && <> · Updated {link.updated}</>}
+                  {!!link.claims?.length && (
+                    <ul className="op-answer-list op-meta">
+                      {link.claims.map((claim, index) => <li key={index}>{claim}</li>)}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+          {sources.length > 0 && (
+            <ul className="op-answer-list op-meta">
+              {sources.map((source) => <li key={source}>{source}</li>)}
+            </ul>
+          )}
         </div>
       )}
-      {state.follow === 'live' && ai.follow.error && <div className="op-error">{ai.follow.error}</div>}
-      {ai.note && <div className="op-error">{ai.note}</div>}
-      {ai.bankError && <div className="op-error">Prepared answers not loaded: {ai.bankError}</div>}
+    </>
+  );
+}
 
-      {state.drafts.map((d, i) => (
-        <div key={d.id} className="op-draft">
-          <div className="label">
-            {d.kind === 'answer' ? 'Answer' : 'Off-script reaction'} · {d.from === 'prepared' ? 'prepared' : d.from === 'web' ? 'web research' : 'Claude'} · heard “{d.heard.slice(-140)}”
-          </div>
-          <div className="live-title">{text(d.slide.title)}</div>
-          {d.slide.stat && <div className="op-meta">Figure: {text(`{{${d.slide.stat.datasetKey} | ${d.slide.stat.series} | ${d.slide.stat.x}}}`)} {text(d.slide.stat.label)}</div>}
-          {d.slide.bullets.map((b) => (
-            <div key={b} className="op-meta">• {text(b)}</div>
-          ))}
-          {d.links?.map((l) => (
-            <div key={l.url} className="op-meta">
-              Source:{' '}
-              <a href={l.url} target="_blank" rel="noreferrer">
-                {l.title}
-              </a>
-            </div>
-          ))}
-          {d.slide.chart && <div className="op-meta">Chart: {datasets[d.slide.chart.datasetKey]?.title} ({d.slide.chart.series.join(', ')})</div>}
-          <div className="op-mic">
-            <button className="primary" onClick={() => send({ type: 'draft', action: 'show', id: d.id })}>
-              Show{i === 0 ? ' (A)' : ''}
-            </button>
-            <button onClick={() => send({ type: 'draft', action: 'reject', id: d.id })}>Reject{i === 0 ? ' (X)' : ''}</button>
-            {d.kind === 'answer' && d.from !== 'web' && (
-              <button onClick={() => send({ type: 'ask', text: d.heard, web: true })}>Search the web</button>
-            )}
-            {d.from === 'prepared' && (
-              <button
-                onClick={() => {
-                  send({ type: 'draft', action: 'reject', id: d.id });
-                  send({ type: 'ask', text: d.heard, fresh: true });
-                }}
-              >
-                Ask Claude instead
+function PreparedBank({ bank, connected, send }: Pick<Props, 'bank' | 'connected' | 'send'>) {
+  const [query, setQuery] = useState('');
+  const words = (text: string) => text.normalize('NFKD').replace(/\p{M}/gu, '').toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? [];
+  const terms = words(query);
+  const matches = bank.filter((entry) => {
+    const searchable = words([entry.question, ...(entry.ask ?? [])].join(' '));
+    return terms.every((term) => searchable.some((word) => word.startsWith(term)));
+  });
+
+  return (
+    <details className="op-bank">
+      <summary>Prepared answers ({bank.length})</summary>
+      <label className="op-sim op-bank-search">
+        <span className="label">Search questions or topics</span>
+        <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} />
+      </label>
+      <div className="op-meta" role="status">
+        {bank.length === 0 ? 'Prepared questions are unavailable until the local server loads the bank.'
+          : !connected ? 'Search is available. Reconnect to open an answer for review.'
+          : `${matches.length} of ${bank.length} questions · Available without internet`}
+      </div>
+      <div className="op-bank-results">
+        {matches.map((entry) => (
+          <button key={entry.id} disabled={!connected} onClick={() => send({ type: 'bank', id: entry.id })}>{entry.question}</button>
+        ))}
+      </div>
+    </details>
+  );
+}
+
+/** Board questions, operator-only conversation and slides awaiting stage approval. */
+export function LivePanel({ state, ai, connected, bank, answers, datasets, send }: Props) {
+  const [typed, setTyped] = useState('');
+  const [followupId, setFollowupId] = useState<string>();
+  const composer = useRef<HTMLInputElement>(null);
+  const asking = state?.mode === 'question';
+  const busy = ai?.busy;
+  const connectedToState = connected && !!state;
+  const drafts = state?.drafts ?? [];
+  const exchanges = new Map(answers.map((answer) => [threadId(answer), answer]));
+  for (const draft of drafts) if (draft.kind === 'answer') exchanges.set(threadId(draft), draft);
+  const followup = followupId ? exchanges.get(followupId) : undefined;
+  const pendingIds = new Set(drafts.map((draft) => draft.id));
+  const past = answers.filter((answer) => !pendingIds.has(answer.id)).reverse();
+  const covered = Boolean(state?.live && (state.live.answer || /^(gen|qa)-/.test(state.live.id)));
+
+  function selectFollowup(answer: Draft) {
+    setFollowupId(threadId(answer));
+    composer.current?.focus();
+  }
+
+  return (
+    <section className={`op-live ${asking ? 'asking' : ''}`} aria-labelledby="op-live-title">
+      <h3 id="op-live-title" className="op-live-title">Live Q&amp;A</h3>
+      {state && (
+        <div className="op-mic">
+          {asking ? (
+            <>
+              <button className="primary" disabled={!connected} onClick={() => send({ type: 'question', action: 'answer' })}>
+                Answer it (Q)
               </button>
-            )}
-          </div>
+              <button disabled={!connected} onClick={() => send({ type: 'question', action: 'cancel' })}>Cancel capture</button>
+            </>
+          ) : (
+            <button className="primary" disabled={!connected} onClick={() => send({ type: 'question', action: 'start' })}>
+              Board question (Q)
+            </button>
+          )}
+          {covered && <button disabled={!connected} onClick={() => send({ type: 'resume' })}>Back to script (R)</button>}
+          {ai && (
+            <span className={`pill ${!ai.hasKey || ai.spent >= ai.cap * 0.9 ? 'bad' : 'ok'}`}>
+              {ai.hasKey ? `AI $${ai.spent.toFixed(2)} of $${ai.cap.toFixed(2)}` : bank.length ? 'Live AI unavailable · Prepared answers ready' : 'Live AI unavailable'}
+            </span>
+          )}
         </div>
+      )}
+      {asking && <div className="op-heard">{`${state.question} ${state.questionTail}`.trim() || 'Listening to the question…'}</div>}
+      {busy && (
+        <div className="op-meta" role="status">
+          {busy === 'research' ? 'Searching approved sources…' : busy === 'answer' ? 'Checking local evidence…' : busy === 'visual' ? 'Building an answer visual…' : 'Building an off-script reaction…'}
+          {ai.activeQuestion && <p className="op-answer-question">{ai.activeQuestion}</p>}
+        </div>
+      )}
+      {ai?.note && <div className="op-error" role="status">{ai.note}</div>}
+      {ai?.bankError && <div className="op-error">Prepared answers unavailable · {ai.bankError}</div>}
+
+      {drafts.map((draft, index) => (
+        <article key={draft.id} className="op-draft">
+          <div className="label">Awaiting approval · {draft.kind === 'answer' ? answerStatus(draft) : 'Off-script reaction'}</div>
+          <p className="op-answer-question">{draft.heard}</p>
+          <AnswerBody draft={draft} ai={ai} datasets={datasets} />
+          <div className="op-mic op-answer-actions">
+            <button className="primary" disabled={!connected} onClick={() => send({ type: 'draft', action: 'show', id: draft.id })}>
+              Approve and show{index === 0 ? ' (A)' : ''}
+            </button>
+            <button disabled={!connected} onClick={() => send({ type: 'draft', action: 'reject', id: draft.id })}>Reject{index === 0 ? ' (X)' : ''}</button>
+            {draft.kind === 'answer' && <button disabled={!connected || asking} onClick={() => selectFollowup(draft)}>Ask a follow-up</button>}
+          </div>
+        </article>
       ))}
 
       <form
-        className="op-sim"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (typed.trim()) send({ type: 'ask', text: typed.trim() });
+        className="op-sim op-chat"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const question = typed.trim();
+          if (!connectedToState || asking || !question || (followupId && !followup)) return;
+          send({ type: 'ask', text: question, followup: followupId });
           setTyped('');
+          setFollowupId(undefined);
         }}
       >
-        <input value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Or type a question, then Enter" />
-      </form>
-      <details>
-        <summary className="label">Prepared answers ({bank.length}): free, instant, work offline</summary>
-        <div className="op-slides">
-          {bank.map((b) => (
-            <button key={b.id} onClick={() => send({ type: 'bank', id: b.id })}>
-              {b.question}
-            </button>
-          ))}
+        <label htmlFor="op-question" className="label">{followupId ? 'Follow-up question' : 'Type a board question'}</label>
+        {followupId && (
+          <div className="op-followup">
+            <span>{followup ? `Replying to “${followup.heard}”` : 'The previous answer is no longer available'}</span>
+            <button type="button" onClick={() => { setFollowupId(undefined); composer.current?.focus(); }}>Start a new question</button>
+          </div>
+        )}
+        <div className="op-chat-input">
+          <input ref={composer} id="op-question" value={typed} maxLength={1500} onChange={(event) => setTyped(event.target.value)} />
+          <button type="submit" disabled={!connectedToState || asking || !typed.trim() || Boolean(followupId && !followup)}>Ask</button>
         </div>
-      </details>
+      </form>
+
+      {past.length > 0 && (
+        <details className="op-chat-history">
+          <summary>Earlier exchanges ({past.length})</summary>
+          {past.map((answer) => (
+            <article key={answer.id} className="op-answer-history">
+              <div className="label">{answerStatus(answer)}</div>
+              <p className="op-answer-question">{answer.heard}</p>
+              <AnswerBody draft={answer} ai={ai} datasets={datasets} />
+              <button disabled={!connected || asking} onClick={() => selectFollowup(answer)}>Ask a follow-up</button>
+            </article>
+          ))}
+        </details>
+      )}
+
+      <PreparedBank bank={bank} connected={connectedToState} send={send} />
+
+      {state && (
+        <details className="op-live-settings">
+          <summary>Speech and stage settings</summary>
+          <div className="op-mic">
+            <label className="pill toggle">
+              Follow by
+              <select disabled={!connected} value={state.follow} onChange={(event) => send({ type: 'follow', mode: event.target.value as 'script' | 'live' })}>
+                <option value="script">cue words</option>
+                <option value="live">meaning (AI)</option>
+              </select>
+            </label>
+            <label className="pill toggle">
+              <input type="checkbox" disabled={!connected} checked={state.riff} onChange={(event) => send({ type: 'setting', key: 'riff', on: event.target.checked })} /> React off script
+            </label>
+            <label className="pill toggle">
+              <input type="checkbox" disabled={!connected} checked={state.motion !== false} onChange={(event) => send({ type: 'setting', key: 'motion', on: event.target.checked })} /> Motion (M)
+            </label>
+          </div>
+          {state.follow === 'live' && ai && (
+            <div className="op-meta">
+              Following meaning{ai.follow.ms ? ` · ${ai.follow.ms} ms` : ''} · {ai.follow.text || 'Waiting for speech'}
+            </div>
+          )}
+          {state.follow === 'live' && ai?.follow.error && <div className="op-error">{ai.follow.error}</div>}
+        </details>
+      )}
     </section>
   );
 }

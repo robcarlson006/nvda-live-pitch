@@ -1,0 +1,20 @@
+.op-live-title { margin: 0 0 14px; font-size: 18px; }
+.op-answer-question { margin: 0 0 8px; color: var(--detail); overflow-wrap: anywhere; }
+.op-answer-figure { margin: 0 0 6px; font-weight: 650; }
+.op-answer-list { margin: 0; padding-left: 18px; line-height: 1.5; overflow-wrap: anywhere; }
+.op-answer-sources { margin-top: 12px; }
+.op-answer-sources .label { margin-bottom: 3px; }
+.op-answer-actions { margin: 12px 0 0; }
+.op-answer-history { margin: 8px 0; padding: 12px 0; border-bottom: 1px solid #333840; }
+.op-answer-history button { margin-top: 12px; }
+.op-chat { margin-top: 16px; }
+.op-chat-input { display: flex; gap: 8px; margin-top: 4px; }
+.op-chat .op-chat-input input { margin: 0; min-width: 0; }
+.op-followup { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; color: var(--detail); overflow-wrap: anywhere; }
+.op-bank, .op-chat-history, .op-live-settings { margin-top: 14px; }
+.op-bank summary, .op-chat-history summary, .op-live-settings summary { cursor: pointer; }
+.op-bank-search { display: block; margin-top: 8px; }
+.op-bank .op-bank-search input { margin-top: 4px; }
+.op-bank-results { display: grid; gap: 6px; margin-top: 8px; max-height: 260px; overflow-y: auto; }
+.op-bank-results button { text-align: left; }
+.op-live-settings .op-mic { margin: 8px 0 0; }

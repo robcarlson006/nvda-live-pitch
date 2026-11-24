@@ -2,6 +2,8 @@
 
 Pitch: **Wednesday 25 Nov 2026**, 8–9 min. Rob (why) → Panshul (financials) → Mi'kael (ESG) → Rob (close).
 
+The live Q&A and operator lane passed Node 24, browser and provider checks on 24 November. Stage mounting, the combined fallback export and venue rehearsal are tracked in the [live lane handoff](handoff/LIVE-LANE.md).
+
 ## How to run
 **On the day:** `./start.sh` in the repo folder (checks keys, builds, opens both screens in Chrome). Works without npm or git access once installed.
 
