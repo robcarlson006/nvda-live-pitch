@@ -1,0 +1,144 @@
+{
+  "key": "research_q3_call",
+  "title": "Q3 FY27 earnings call: results, outlook, capital and commitments",
+  "unit": "",
+  "units": {
+    "Q4 FY27 revenue guide": "USD bn",
+    "Q4 FY27 revenue guide, range plus or minus": "%",
+    "FY28 revenue growth outlook": "%",
+    "FY28 revenue growth outlook, previous": "%",
+    "Vera Rubin revenue, first quarter of shipments": "USD bn",
+    "Data Center revenue growth, year on year, Q3 FY27": "%",
+    "Hyperscale revenue, Q3 FY27": "USD bn",
+    "Networking revenue, Q3 FY27": "USD bn",
+    "Gross margin, Q3 FY27": "%",
+    "Gross margin guide, Q4 FY27, low": "%",
+    "Gross margin guide, Q4 FY27, high": "%",
+    "Gross margin outlook, FY28, low": "%",
+    "Gross margin outlook, FY28, high": "%",
+    "Share buybacks, Q3 FY27": "USD bn",
+    "Dividends, Q3 FY27": "USD bn",
+    "Cash returned to shareholders, Q3 FY27": "USD bn",
+    "Share of free cash flow returned, year to date": "%",
+    "Buyback authorization added": "USD bn",
+    "Buyback authorization remaining": "USD bn",
+    "Purchase commitments": "USD bn",
+    "Guarantees": "USD bn",
+    "Neocloud commitments": "USD bn",
+    "Cloud industry backlog": "USD tn",
+    "Frontier labs share of Data Center revenue, FY27": "%",
+    "Licensed Hopper sales to China, Q3 FY27": "USD bn"
+  },
+  "source": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+  "seriesSources": {
+    "Q4 FY27 revenue guide": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Q4 FY27 revenue guide, range plus or minus": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "FY28 revenue growth outlook": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "FY28 revenue growth outlook, previous": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Vera Rubin revenue, first quarter of shipments": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Data Center revenue growth, year on year, Q3 FY27": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Hyperscale revenue, Q3 FY27": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Networking revenue, Q3 FY27": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Gross margin, Q3 FY27": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Gross margin guide, Q4 FY27, low": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Gross margin guide, Q4 FY27, high": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Gross margin outlook, FY28, low": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Gross margin outlook, FY28, high": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Share buybacks, Q3 FY27": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Dividends, Q3 FY27": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Cash returned to shareholders, Q3 FY27": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Share of free cash flow returned, year to date": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Buyback authorization added": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Buyback authorization remaining": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Purchase commitments": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Guarantees": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Neocloud commitments": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Cloud industry backlog": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Frontier labs share of Data Center revenue, FY27": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)",
+    "Licensed Hopper sales to China, Q3 FY27": "NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)"
+  },
+  "asOf": "2026-11-17",
+  "placeholder": false,
+  "curated": true,
+  "verified": false,
+  "x": [
+    "value"
+  ],
+  "series": {
+    "Q4 FY27 revenue guide": [
+      130
+    ],
+    "Q4 FY27 revenue guide, range plus or minus": [
+      3
+    ],
+    "FY28 revenue growth outlook": [
+      75
+    ],
+    "FY28 revenue growth outlook, previous": [
+      70
+    ],
+    "Vera Rubin revenue, first quarter of shipments": [
+      20
+    ],
+    "Data Center revenue growth, year on year, Q3 FY27": [
+      110
+    ],
+    "Hyperscale revenue, Q3 FY27": [
+      60
+    ],
+    "Networking revenue, Q3 FY27": [
+      21
+    ],
+    "Gross margin, Q3 FY27": [
+      74.8
+    ],
+    "Gross margin guide, Q4 FY27, low": [
+      71
+    ],
+    "Gross margin guide, Q4 FY27, high": [
+      72
+    ],
+    "Gross margin outlook, FY28, low": [
+      72
+    ],
+    "Gross margin outlook, FY28, high": [
+      73
+    ],
+    "Share buybacks, Q3 FY27": [
+      22
+    ],
+    "Dividends, Q3 FY27": [
+      6
+    ],
+    "Cash returned to shareholders, Q3 FY27": [
+      28
+    ],
+    "Share of free cash flow returned, year to date": [
+      65
+    ],
+    "Buyback authorization added": [
+      150
+    ],
+    "Buyback authorization remaining": [
+      227
+    ],
+    "Purchase commitments": [
+      390
+    ],
+    "Guarantees": [
+      118
+    ],
+    "Neocloud commitments": [
+      32
+    ],
+    "Cloud industry backlog": [
+      2.5
+    ],
+    "Frontier labs share of Data Center revenue, FY27": [
+      15
+    ],
+    "Licensed Hopper sales to China, Q3 FY27": [
+      2.4
+    ]
+  }
+}

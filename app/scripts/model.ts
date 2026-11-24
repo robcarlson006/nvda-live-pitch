@@ -83,6 +83,10 @@ function main() {
   const g: number = A.terminalGrowth.value;
 
   const scenarioPath = (s: { fy28: string; growth?: number[] }) => {
+    if (s.fy28 === 'custom') {
+      if (s.growth?.length !== 5) throw new Error('A custom scenario needs five yearly growth rates (FY28–FY32).');
+      return grow(rev27, s.growth);
+    }
     if (s.fy28 === 'flat') return grow(rev27, [0, ...s.growth!]);
     const g28 = (rev28 / rev27 - 1) * 100;
     return grow(rev27, [g28, ...[1, 2, 3, 4].map((k) => g28 + ((g - g28) * k) / 4)]);
@@ -90,12 +94,14 @@ function main() {
   const results = Object.fromEntries(
     Object.entries(A.scenarios).map(([name, s]: [string, any]) => {
       const p = scenarioPath(s);
-      const margin = baseMargin + s.marginShift / 100;
+      // marginOverride = an absolute free-cash-flow margin in % (must be sourced in `why`); otherwise a shift on the base margin
+      const margin = s.marginOverride != null ? s.marginOverride / 100 : baseMargin + s.marginShift / 100;
       return [name, { label: s.label, path: p, margin, ...dcf({ path: p, margin, wacc, g, netCash, shares, t }) }];
     }),
   ) as Record<string, { label: string; path: number[]; margin: number } & ReturnType<typeof dcf>>;
 
-  const waccs = [10, 12, 14, 16, bbgWacc];
+  // Range of independent estimates for NVIDIA: Damodaran sector 10.55%, team 12%, headline (Google Finance 14.45%), Stock Analysis 16.42%, Bloomberg 19.3%
+  const waccs = [...new Set([10, 10.55, 12, 14.45, 16.42, bbgWacc, wacc])].sort((a, b) => a - b);
   const gs = [2, 3, 4];
   const sens = gs.map((gg) => waccs.map((w) => r2(dcf({ path: results.base.path, margin: baseMargin, wacc: w, g: gg, netCash, shares, t }).perShare)));
   const implied = impliedGrowth({ rev27, margin: baseMargin, wacc, g, netCash, shares, t }, price);
@@ -106,21 +112,45 @@ function main() {
   const peerMedian = (peerFwd[1] + peerFwd[2]) / 2;
   const peerValue = peerMedian * eps27;
 
+  // NVIDIA's forward P/E moves with the share price, but the Bloomberg export is from 20 Nov. When the team sets a newer price,
+  // re-price NVIDIA's forward P/E (price ÷ consensus FY27 EPS) so the peers slide matches the valuation slide. The other
+  // companies stay at Bloomberg's 20 Nov prices. build-data.ts rewrites this file from Bloomberg first, so this is repeatable.
+  if (A.priceOverride.value != null) {
+    const i = peerPe.x.indexOf('NVIDIA');
+    const repriced: Dataset = {
+      ...peerPe,
+      series: { ...peerPe.series, 'Forward P/E': peerPe.series['Forward P/E'].map((v, k) => (k === i ? r2(price / eps27) : v)) },
+      source: `${peerPe.source.replace(/\. NVIDIA forward P\/E re-priced.*$/, '')}. NVIDIA forward P/E re-priced at $${price} (${A.priceOverride.why.split('.')[0]}) over consensus FY27 EPS $${eps27}; the other companies stay at Bloomberg's 20 Nov prices`,
+    };
+    fs.writeFileSync(path.join(CLEAN, 'peers_pe.json'), JSON.stringify(Dataset.parse(repriced), null, 2) + '\n');
+  }
+
   // ---------- datasets for slides ----------
   const source = 'Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data';
-  const write = (d: Omit<Dataset, 'placeholder' | 'asOf'>) => fs.writeFileSync(path.join(CLEAN, `${d.key}.json`), JSON.stringify(Dataset.parse({ ...d, asOf: valuationDate, placeholder: false }), null, 2) + '\n');
+  // The datasets are dated with the share price they use (the override date, else the Bloomberg snapshot).
+  const asOf: string = A.priceOverride.value != null ? (A.priceOverride.asOf ?? valuationDate) : valuationDate;
+  const write = (d: Omit<Dataset, 'placeholder' | 'asOf'>) => fs.writeFileSync(path.join(CLEAN, `${d.key}.json`), JSON.stringify(Dataset.parse({ ...d, asOf, placeholder: false }), null, 2) + '\n');
   write({
-    key: 'model_valuation', title: 'What one NVIDIA share is worth', unit: 'USD', source: `${source}. WACC ${wacc}%, terminal growth ${g}%`,
-    x: ['Share price today', 'Bear case', 'Base case', 'Bull case', 'Peer P/E check'],
-    series: { 'Value per share': [price, results.bear.perShare, results.base.perShare, results.bull.perShare, peerValue].map(r2) },
+    key: 'model_valuation', title: 'What one NVIDIA share is worth', unit: 'USD', source: `${source}. WACC ${wacc}%, terminal growth ${g}%. Share price $${price}`,
+    x: ['Share price today', 'Stress case', 'Bear case', 'Base case', 'Bull case', 'Peer P/E check'],
+    series: { 'Value per share': [price, results.stress.perShare, results.bear.perShare, results.base.perShare, results.bull.perShare, peerValue].map(r2) },
   });
   write({
     key: 'model_revenue_paths', title: 'Revenue paths in the model', unit: 'USD bn', source: `${source}. FY27 = consensus`,
     x: ['FY26', 'FY27', ...years],
-    series: Object.fromEntries(['bear', 'base', 'bull'].map((n) => [results[n].label.split(':')[0], [revA.series.Revenue.at(-1)!, rev27, ...results[n].path].map(r2)])),
+    series: Object.fromEntries(['stress', 'bear', 'base', 'bull'].map((n) => [results[n].label.split(':')[0], [revA.series.Revenue.at(-1)!, rev27, ...results[n].path].map(r2)])),
+  });
+  // Our values against the sell-side targets (Google Finance, 24 Nov 2026). Targets come from research_market; our values from the model above.
+  const mkt = read('research_market');
+  const fact = (k: string) => mkt.series[k][0]!;
+  write({
+    key: 'model_vs_analysts', title: 'Our values against analysts’ 12-month price targets', unit: 'USD',
+    source: `${source}. Analyst targets: ${mkt.seriesSources?.['Analyst target, average'] ?? mkt.source}. Share price $${price}`,
+    x: ['Our bear case', 'Lowest target', 'Price today', 'Average target', 'Our base case', 'Highest target'],
+    series: { 'Value per share': [results.bear.perShare, fact('Analyst target, lowest'), price, fact('Analyst target, average'), results.base.perShare, fact('Analyst target, highest')].map(r2) },
   });
   write({
-    key: 'model_sensitivity', title: 'Base-case value per share by discount rate', unit: 'USD', source: `${source}. ${bbgWacc}% = Bloomberg WACC`,
+    key: 'model_sensitivity', title: 'Base-case value per share by discount rate', unit: 'USD', source: `${source}. ${bbgWacc}% = Bloomberg WACC; headline rate ${wacc}%; 14.45% = Google Finance`,
     x: waccs.map((w) => `${w}%`),
     series: Object.fromEntries(gs.map((gg, i) => [`Terminal growth ${gg}%`, sens[i]])),
   });
@@ -135,14 +165,14 @@ function main() {
   L.push(['NVIDIA valuation model', `valuation date ${valuationDate}`]);
   L.push([]);
   L.push(['INPUT', 'VALUE', 'SOURCE']);
-  L.push(['Share price (USD)', price, A.priceOverride.value ? 'Team override (assumptions.json)' : 'Bloomberg DES 20 Nov 2026']);
+  L.push(['Share price (USD)', price, A.priceOverride.value ? `Team override (assumptions.json): ${A.priceOverride.why.split('.')[0]}` : 'Bloomberg DES 20 Nov 2026']);
   L.push(['Shares outstanding (bn)', shares, 'Bloomberg DES']);
   L.push(['Net cash (USD bn)', r2(netCash), 'Bloomberg DES: market cap minus enterprise value']);
   L.push(['FY26 revenue (USD bn)', revA.series.Revenue.at(-1)!, 'Bloomberg FA']);
   L.push(['FY27 revenue consensus (USD bn)', rev27, 'Bloomberg FA consensus']);
   L.push(['FY28 revenue consensus (USD bn)', rev28, 'Bloomberg FA consensus']);
   L.push(['Base FCF margin (%)', r2(baseMargin * 100), `Average of ${marginYears.join(', ')} (Bloomberg FA)`]);
-  L.push(['WACC (%)', wacc, A.wacc.value === 'bloomberg' ? 'Bloomberg WACC screen, 20 Nov 2026' : `Team assumption. Bloomberg WACC = ${bbgWacc}%`]);
+  L.push(['WACC (%)', wacc, A.wacc.value === 'bloomberg' ? 'Bloomberg WACC screen, 20 Nov 2026' : `Headline rate: ${A.wacc.why.split('. ')[0]}. Bloomberg WACC = ${bbgWacc}%`]);
   L.push(['Terminal growth (%)', g, 'Team assumption']);
   L.push(['FY27 EPS consensus (USD)', eps27, 'Bloomberg DES']);
   for (const [n, r] of Object.entries(results)) {

@@ -2,36 +2,40 @@
   "key": "model_sensitivity",
   "title": "Base-case value per share by discount rate",
   "unit": "USD",
-  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. 19.3% = Bloomberg WACC",
-  "asOf": "2026-11-20",
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. 19.3% = Bloomberg WACC; headline rate 10.55%; 14.45% = Google Finance",
+  "asOf": "2026-11-24",
   "placeholder": false,
   "x": [
     "10%",
+    "10.55%",
     "12%",
-    "14%",
-    "16%",
+    "14.45%",
+    "16.42%",
     "19.3%"
   ],
   "series": {
     "Terminal growth 2%": [
       381.03,
+      354.49,
       298.67,
-      244.08,
-      205.33,
+      234.25,
+      198.58,
       161.37
     ],
     "Terminal growth 3%": [
       424.45,
+      391.38,
       323.72,
-      259.94,
-      216.02,
+      248.69,
+      208.49,
       167.5
     ],
     "Terminal growth 4%": [
       482.35,
+      439.54,
       355.04,
-      278.96,
-      228.49,
+      265.9,
+      219.99,
       174.44
     ]
   }

@@ -11,7 +11,7 @@ v1–v3 are beside this file. Written 23 Nov 2026.
 3. **Mi'kael opens on the $31.** "As Panshul said, if AI spending stops, a share is worth thirty-one dollars." The bear-case bar comes back on screen. Then two reasons it won't stop.
 4. **Reason one: what AI is discovering.** Maths first (Olympiad gold, AlphaEvolve, a conjecture disproved), then medicine, then the weather.
 5. **Reason two: the AI race.** Neither the US nor China can afford to stop. See the flag below on the exact quotes.
-6. **A clearer ending.** "Every visual you saw was built live as we spoke" is its own beat, before the energy line and the close.
+6. **A clearer ending.** "Built live by software that follows our voices, from our own script and data" is its own beat, before the energy line and the close.
 7. **Trims to make room:** the Alphabet capex clause, the GDP chart, the peers P/E and profit-growth lines, the lung-drug and weather sentences, "if you doubted it".
 
 ---
@@ -118,9 +118,13 @@ NVIDIA's own operations emitted about ten thousand tonnes of carbon dioxide last
 
 Then governance. Earlier this month the founder resigned. On Monday the board reinstated him, unanimously. It created a committee of independent directors for national security and export control, started a search for a chief compliance officer, and kept its investigation going. Ten of eleven directors are independent [VERIFY].
 
-▸ *Screen clears. Pause. Then, large, one line:* **Every visual you saw was generated live, as we spoke.** *(Hold it on screen while the last paragraph is spoken.)*
+▸ *Statement builds:* **Our recommendation: Buy.** · 3% of the portfolio to start (limit 10% in any one stock) · price about fair at Bloomberg's rate, worth far more at the industry rate · bear case costs the portfolio about 2.5% · add only if cloud spending plans rise and the CEO investigation closes · sell if cloud companies cut spending plans.
 
-Every visual you saw was generated live, as we spoke. That's how powerful AI has become. And none of it happens without NVIDIA. Thank you.
+Our recommendation is to buy. We would start with a three percent position for three to five years, well inside our ten percent limit on any single stock. On Bloomberg's rate the price is about fair; on an industry rate it is worth far more, and that choice is the whole debate. At three percent, our bear case of thirty-one dollars costs the portfolio about two and a half percent. We would add, up to our limit, only if cloud spending plans rise again and the investigation into the CEO closes. We would sell if the cloud companies cut their spending plans.
+
+▸ *Screen clears. Pause. Then, large, one line:* **Built live by software that follows our voices, from our own script and data.** *(Hold it on screen while the last paragraph is spoken.)*
+
+Everything you just saw was built live by software that follows our voices, from our own script and data. That's how far AI has come. And none of it happens without NVIDIA's industry. Thank you.
 
 ▸ *Black screen. NVIDIA logo fades in.*
 

@@ -1,3 +1,5 @@
+> **SUPERSEDED (24 Nov 2026):** the headline discount rate is now **10.55%** (US semiconductor average) at a **$165.05** price; Google Finance has 14.45% (beta 2.21). Base $391.38 (+137%), realistic bear $101.56 (−38%; margin 38.8%, growth +10/−5/+10/+7/+4%), stress case $64.41 (−61%; the old "AI pause" bear, $31.40 at 19.3%). At Bloomberg's 19.3% the base is $167.50, about the price. At 10.55% the break-even chance of the realistic bear over base is about 79%, and the price needs 13.4% yearly growth v our 35.5%. See `QA_PREP.md` Part 5. Everything below is at 19.3%.
+>
 > **STALE FIGURES (23 Nov 2026):** the numbers below were written at the 20 Nov Bloomberg price ($135.46). At today's $163.66 base is +2% (not +24%), the price already needs 38.1% yearly growth (not 32.1%), and the bear case is 81% below. Value-per-share answers are unchanged. Re-read before quoting; the spreadsheet is current.
 
 # Numbers audit (PV-M1), 22 Nov 2026

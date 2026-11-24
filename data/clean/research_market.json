@@ -1,0 +1,109 @@
+{
+  "key": "research_market",
+  "title": "Share price, valuation and analyst figures (Google Finance)",
+  "unit": "",
+  "units": {
+    "Share price": "USD",
+    "P/E ratio, trailing": "x",
+    "EPS, trailing": "USD",
+    "Beta": "",
+    "52-week high": "USD",
+    "52-week low": "USD",
+    "WACC, Google Finance": "%",
+    "Cost of equity, Google Finance": "%",
+    "Discount rate, lowest estimate (US semiconductor average)": "%",
+    "Discount rate, Stock Analysis": "%",
+    "Discount rate, highest estimate (Bloomberg)": "%",
+    "Analysts rating NVDA": "",
+    "Analysts: buy": "",
+    "Analysts: hold": "",
+    "Analysts: sell": "",
+    "Analyst target, average": "USD",
+    "Analyst target, highest": "USD",
+    "Analyst target, lowest": "USD"
+  },
+  "source": "Google Finance, NVDA page, 24 Nov 2026",
+  "seriesSources": {
+    "Share price": "Google Finance, NVDA page, 24 Nov 2026",
+    "P/E ratio, trailing": "Google Finance, NVDA page, 24 Nov 2026",
+    "EPS, trailing": "Google Finance, NVDA page, 24 Nov 2026",
+    "Beta": "Google Finance, NVDA page, 24 Nov 2026",
+    "52-week high": "Google Finance, NVDA page, 24 Nov 2026",
+    "52-week low": "Google Finance, NVDA page, 24 Nov 2026",
+    "WACC, Google Finance": "Google Finance, NVDA page, 24 Nov 2026",
+    "Cost of equity, Google Finance": "Google Finance, NVDA page, 24 Nov 2026",
+    "Discount rate, lowest estimate (US semiconductor average)": "Damodaran, US semiconductor industry average cost of capital, January 2026",
+    "Discount rate, Stock Analysis": "Stock Analysis, NVDA statistics page, 23 Nov 2026",
+    "Discount rate, highest estimate (Bloomberg)": "Bloomberg WACC screen, NVDA US Equity, 20 Nov 2026",
+    "Analysts rating NVDA": "Google Finance, NVDA page, 24 Nov 2026",
+    "Analysts: buy": "Google Finance, NVDA page, 24 Nov 2026",
+    "Analysts: hold": "Google Finance, NVDA page, 24 Nov 2026",
+    "Analysts: sell": "Google Finance, NVDA page, 24 Nov 2026",
+    "Analyst target, average": "Google Finance, NVDA page, 24 Nov 2026",
+    "Analyst target, highest": "Google Finance, NVDA page, 24 Nov 2026",
+    "Analyst target, lowest": "Google Finance, NVDA page, 24 Nov 2026"
+  },
+  "asOf": "2026-11-24",
+  "placeholder": false,
+  "curated": true,
+  "verified": false,
+  "x": [
+    "value"
+  ],
+  "series": {
+    "Share price": [
+      165.05
+    ],
+    "P/E ratio, trailing": [
+      17.73
+    ],
+    "EPS, trailing": [
+      9.31
+    ],
+    "Beta": [
+      2.21
+    ],
+    "52-week high": [
+      243.37
+    ],
+    "52-week low": [
+      145.71
+    ],
+    "WACC, Google Finance": [
+      14.45
+    ],
+    "Cost of equity, Google Finance": [
+      15
+    ],
+    "Discount rate, lowest estimate (US semiconductor average)": [
+      10.55
+    ],
+    "Discount rate, Stock Analysis": [
+      16.42
+    ],
+    "Discount rate, highest estimate (Bloomberg)": [
+      19.3
+    ],
+    "Analysts rating NVDA": [
+      44
+    ],
+    "Analysts: buy": [
+      34
+    ],
+    "Analysts: hold": [
+      9
+    ],
+    "Analysts: sell": [
+      1
+    ],
+    "Analyst target, average": [
+      233.36
+    ],
+    "Analyst target, highest": [
+      350
+    ],
+    "Analyst target, lowest": [
+      130
+    ]
+  }
+}

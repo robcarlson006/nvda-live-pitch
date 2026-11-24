@@ -1,3 +1,5 @@
+> **SUPERSEDED (24 Nov 2026):** the headline discount rate is now **10.55%** (Damodaran US semiconductor average) at a **$165.05** price; Google Finance has 14.45% (beta 2.21) and Bloomberg 19.3%. Base $391.38, realistic bear $101.56, stress $64.41 (the old "AI pause" bear). The "Why 19.3%?" answer is now "Why not 19.3%?": see `docs/qa-bank/QA_PREP.md` Part 5 and the prepared answer `discount-rate`. Everything below is at 19.3%.
+>
 > **STALE FIGURES (23 Nov 2026):** the numbers below were written at the 20 Nov Bloomberg price ($135.46). At today's $163.66 base is +2% (not +24%), the price already needs 38.1% yearly growth (not 32.1%), and the bear case is 81% below. Value-per-share answers are unchanged. Re-read before quoting; the spreadsheet is current.
 
 # Defend the valuation (Panshul, Mi'kael)

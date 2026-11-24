@@ -19,7 +19,10 @@ test('parsed values match the Bloomberg exports', () => {
   assert.equal(val('nvda_revenue_quarterly', 'Revenue', 'FY27 Q3'), 115.844); // FA Earnings
   assert.equal(val('nvda_revenue_quarterly', 'Consensus', 'FY24 Q3'), 16.09);
   assert.equal(val('nvda_revenue_forecast', 'Consensus estimate', 'FY27'), 422.222); // DES FY27: 422.22B
-  assert.equal(val('peers_pe', 'Forward P/E', 'NVIDIA'), 14.07); // DES Est P/E 14.06
+  // NVIDIA's forward P/E is re-priced in model.ts when assumptions.json sets a newer share price: price ÷ DES consensus EPS $9.64
+  // (Bloomberg's own 20 Nov value was 14.07, DES Est P/E 14.06 at $135.46).
+  const A = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, '../../data/model/assumptions.json'), 'utf8'));
+  assert.equal(val('peers_pe', 'Forward P/E', 'NVIDIA'), A.priceOverride.value != null ? Math.round((A.priceOverride.value / 9.64) * 100) / 100 : 14.07);
   assert.equal(val('peers_pe', 'Current P/E', 'AMD'), 100.08); // FA Multiples, "Current" column
   assert.equal(val('peers_pe', 'Forward P/E', 'AMD'), 53.35); // FA Multiples, Estimate 2026
   assert.equal(val('nvda_emissions', 'Scope 1', 'FY14'), 2.74);
@@ -43,6 +46,42 @@ test('reverse DCF growth reproduces the price', () => {
   const gImp = impliedGrowth(base, 135);
   const v = dcf({ ...base, path: grow(base.rev27, Array(5).fill(gImp)) }).perShare;
   assert.ok(Math.abs(v - 135) < 0.01, `got ${v}`);
+});
+
+test('valuation cases are ordered, and the headline rate is in the sensitivity table', () => {
+  const A = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, '../../data/model/assumptions.json'), 'utf8'));
+  const [price, stress, bear, base, bull] = ds('model_valuation').series['Value per share'];
+  assert.deepEqual(ds('model_valuation').x.slice(0, 5), ['Share price today', 'Stress case', 'Bear case', 'Base case', 'Bull case']);
+  assert.ok(stress < bear && bear < base && base < bull, 'stress < bear < base < bull');
+  assert.equal(price, A.priceOverride.value ?? price);
+  if (typeof A.wacc.value === 'number') assert.ok(ds('model_sensitivity').x.includes(`${A.wacc.value}%`), 'headline WACC column');
+  assert.ok(ds('model_sensitivity').x.includes('10.55%') && ds('model_sensitivity').x.includes('19.3%'), 'range ends');
+});
+
+test('realistic bear case: custom growth path and margin override reach the revenue paths', () => {
+  const A = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, '../../data/model/assumptions.json'), 'utf8'));
+  const g: number[] = A.scenarios.bear.growth;
+  assert.equal(A.scenarios.bear.fy28, 'custom');
+  assert.equal(g.length, 5);
+  const bear: number[] = ds('model_revenue_paths').series.Bear; // FY26, FY27, FY28..FY32
+  g.forEach((r, k) => assert.ok(Math.abs(bear[k + 2] / bear[k + 1] - (1 + r / 100)) < 1e-3, `FY${28 + k} growth`));
+  assert.ok(A.scenarios.bear.marginOverride > 0 && /AUDIT|Bloomberg|FY27/.test(A.scenarios.bear.why), 'margin override is sourced');
+});
+
+test('Google Finance and earnings-call facts are dated, sourced and flagged unverified', () => {
+  for (const k of ['research_market', 'research_q3_call']) {
+    const d = ds(k);
+    assert.equal(d.verified, false, `${k} unverified`);
+    for (const s of Object.keys(d.series)) assert.ok(d.seriesSources[s].length > 5, `${k}/${s} source`);
+  }
+  assert.equal(val('research_market', 'Analysts rating NVDA', 'value'), val('research_market', 'Analysts: buy', 'value') + val('research_market', 'Analysts: hold', 'value') + val('research_market', 'Analysts: sell', 'value'));
+  assert.deepEqual(ds('nvda_analyst_ratings').series.Analysts, [34, 9, 1]);
+  // the guide is appended to Bloomberg's own quarters, never typed over them
+  assert.equal(val('nvda_revenue_guidance', 'Revenue', 'FY27 Q3'), val('nvda_revenue_quarterly', 'Revenue', 'FY27 Q3'));
+  assert.equal(val('nvda_revenue_guidance', 'Revenue', 'FY27 Q4 (guide)'), val('research_q3_call', 'Q4 FY27 revenue guide', 'value'));
+  // our values sit on the same chart as the targets, read from the model rather than typed
+  assert.equal(val('model_vs_analysts', 'Value per share', 'Our base case'), val('model_valuation', 'Value per share', 'Base case'));
+  assert.equal(val('model_vs_analysts', 'Value per share', 'Average target'), val('research_market', 'Analyst target, average', 'value'));
 });
 
 test('AMD data centre revenue comes from the Bloomberg export', () => {

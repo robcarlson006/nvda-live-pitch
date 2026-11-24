@@ -71,7 +71,7 @@ Build each as a component driven by data keys and a list of beats. For each, wir
 19. "Reason two: the AI race." A clean, serious slide (US, China, and the White House AI Action Plan line, attributed). Keep it restrained.
 20. "Is AI an environmental disaster?" Own-emissions bar chart, built one bar at a time, LOG scale with a label on every bar: NVIDIA 0.05 · AMD 1.2 · Broadcom 2.8 · Intel 25 · TSMC 109 tonnes CO2 per $1m of sales. The tiny NVIDIA bar is the story; design the log axis so it reads instantly. Own operations only: no suppliers, no Scope 3.
 21. "Governance" slide: founder reinstated, independent national-security committee, compliance-officer search.
-22. The finale: the screen clears, a pause, then one large line: **"Every visual you saw was generated live, as we spoke."** Hold it while the last words are spoken, then the NVIDIA logo fades in on black after "Thank you." This is the payoff of the whole pitch, so make the clear-down, pause and reveal land with real weight.
+22. The finale: the screen clears, a pause, then one large line: **"Built live by software that follows our voices, from our own script and data."** Hold it while the last words are spoken, then the NVIDIA logo fades in on black after "Thank you." This is the payoff of the whole pitch, so make the clear-down, pause and reveal land with real weight.
 
 Also build the **Q&A answer slide** template (title → chart → text, element by element, with a visible "source" line) and the **backup deck** (static, instant, no animation dependencies).
 

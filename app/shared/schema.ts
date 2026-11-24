@@ -58,8 +58,10 @@ const whole = (v: number) => Number.isInteger(v);
 /** "USD bn" → "$115.8bn"; anything else keeps its unit. Whole numbers drop the ".0". */
 export function formatValue(v: number, unit: string): string {
   if (unit === 'USD bn') return whole(v) ? `$${v}bn` : `$${v.toFixed(1)}bn`;
+  if (unit === 'USD tn') return `$${v}tn`;
   if (unit === 'USD m') return `$${v.toLocaleString('en-GB')}m`;
-  if (unit === '%') return whole(v) ? `${v}%` : `${v.toFixed(1)}%`;
+  // Up to two decimals, so a 14.45% discount rate or a 10.55% sector rate is never shown as 14.4% / 10.6%.
+  if (unit === '%') return `${whole(v) ? v : Number(v.toFixed(2))}%`;
   if (unit === 'USD') return `$${v.toFixed(2)}`;
   if (unit === 'x') return whole(v) ? `${v}x` : `${v.toFixed(1)}x`;
   if (unit === 'm') return `${v}m`;

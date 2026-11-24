@@ -2,7 +2,7 @@
   "key": "peers_pe",
   "title": "Price/earnings: today and on this year’s expected earnings",
   "unit": "x",
-  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD). Forward = fiscal year ending around Dec 2026/Jan 2027",
+  "source": "Bloomberg FA (Multiples, Earnings, Profitability) for NVDA, AMD, INTC, AVGO, 2330 TT (USD). Forward = fiscal year ending around Dec 2026/Jan 2027. NVIDIA forward P/E re-priced at $165.05 (Google Finance, NVDA, 24 Nov 2026 (price shown on the page)) over consensus FY27 EPS $9.64; the other companies stay at Bloomberg's 20 Nov prices",
   "asOf": "2026-11-20",
   "placeholder": false,
   "x": [
@@ -21,7 +21,7 @@
       20.35
     ],
     "Forward P/E": [
-      14.07,
+      17.12,
       53.35,
       35.41,
       26.31,

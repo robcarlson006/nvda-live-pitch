@@ -1,0 +1,22 @@
+{
+  "key": "nvda_analyst_ratings",
+  "title": "What 44 Wall Street analysts rate NVIDIA",
+  "unit": "",
+  "source": "Google Finance, NVDA page, 24 Nov 2026: ratings given in the past 3 months",
+  "asOf": "2026-11-24",
+  "placeholder": false,
+  "curated": true,
+  "verified": false,
+  "x": [
+    "Buy",
+    "Hold",
+    "Sell"
+  ],
+  "series": {
+    "Analysts": [
+      34,
+      9,
+      1
+    ]
+  }
+}

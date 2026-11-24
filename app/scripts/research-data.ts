@@ -13,13 +13,28 @@ const AS_OF = '2026-11-21';
 const VIA = 'via NotebookLM research, 21 Nov 2026';
 
 type Fact = { value: number; unit: string; source: string };
-function facts(key: string, title: string, verified: boolean, f: Record<string, Fact>): Dataset {
+/** `meta` overrides the dataset-level source and date for facts that do not come from the NotebookLM research notes. */
+function facts(key: string, title: string, verified: boolean, f: Record<string, Fact>, meta?: { source: string; asOf: string }): Dataset {
   return Dataset.parse({
     key, title, unit: '', units: Object.fromEntries(Object.entries(f).map(([k, v]) => [k, v.unit])),
-    source: `Research notes (${VIA})`, seriesSources: Object.fromEntries(Object.entries(f).map(([k, v]) => [k, v.source])),
-    asOf: AS_OF, placeholder: false, curated: true, verified, x: ['value'],
+    source: meta?.source ?? `Research notes (${VIA})`, seriesSources: Object.fromEntries(Object.entries(f).map(([k, v]) => [k, v.source])),
+    asOf: meta?.asOf ?? AS_OF, placeholder: false, curated: true, verified, x: ['value'],
     series: Object.fromEntries(Object.entries(f).map(([k, v]) => [k, [v.value]])),
   });
+}
+
+// ---- Added 24 Nov 2026: Google Finance page for NVDA and the Q3 FY27 earnings call ----
+// Both were pasted in by the team (secondary sources). verified=false until checked against the press release / 10-Q /
+// the Google Finance page itself: the operator panel shows them amber.
+const GF = 'Google Finance, NVDA page, 24 Nov 2026';
+const CALL = 'NVIDIA Q3 FY27 earnings call, 17 Nov 2026 (transcript via Google Finance)';
+const gf = (value: number, unit: string): Fact => ({ value, unit, source: GF });
+const call = (value: number, unit: string): Fact => ({ value, unit, source: CALL });
+const qRev = JSON.parse(fs.readFileSync(path.join(CLEAN, 'nvda_revenue_quarterly.json'), 'utf8')) as Dataset;
+const lastQ = qRev.x.length - 1; // Bloomberg quarterly revenue; the latest point is FY27 Q3 (asserted in data.test.ts)
+/** A table whose source is not the NotebookLM notes. */
+function own(d: Omit<Dataset, 'placeholder' | 'curated' | 'asOf'>, asOf: string): Dataset {
+  return Dataset.parse({ ...d, asOf, placeholder: false, curated: true });
 }
 function table(d: Omit<Dataset, 'placeholder' | 'curated' | 'asOf'>): Dataset {
   return Dataset.parse({ ...d, source: `${d.source} (${VIA})`, asOf: AS_OF, placeholder: false, curated: true });
@@ -76,6 +91,80 @@ const out: Dataset[] = [
     'Share of AI chip spending': { value: 80, unit: '%', source: 'IDC (81%), Mercury/SemiAnalysis (~75%), 2026' },
     'Humans in the loop': { value: 0, unit: '', source: 'Google Threat Intelligence Group, 16–17 November 2026' },
   }),
+  // Added 24 Nov 2026 for Q&A prep (policy, customers, power). Web-sourced, NOT yet checked against primary
+  // documents: verified=false so they show amber on the operator panel. Check the 10-K figures before use.
+  facts('research_policy', 'Policy, customer and power figures for Q&A', false, {
+    'Largest direct customer, share of FY26 revenue': { value: 22, unit: '%', source: 'NVIDIA Form 10-K, year to 25 Jan 2026 (SEC filing); direct customers, not named' },
+    'Second direct customer, share of FY26 revenue': { value: 14, unit: '%', source: 'NVIDIA Form 10-K, year to 25 Jan 2026 (SEC filing); direct customers, not named' },
+    'Revenue from customers outside the US, FY26': { value: 31, unit: '%', source: 'NVIDIA Form 10-K, year to 25 Jan 2026 (SEC filing); by customer headquarters' },
+    'China share of FY26 revenue': { value: 9.1, unit: '%', source: 'NVIDIA Form 10-K FY26, as reported in research notes; by customer headquarters' },
+    'US data-centre projects blocked or delayed, Q1 2026': { value: 75, unit: '', source: 'Data Center Watch, as reported by Network World, 2026' },
+    'Value of those projects': { value: 130, unit: 'USD bn', source: 'Data Center Watch, as reported by Network World, 2026' },
+    'Hyperscaler capex, 2026 guidance': { value: 725, unit: 'USD bn', source: 'Company guidance, as reported by Yahoo Finance, 2026 (Amazon, Alphabet, Microsoft, Meta)' },
+    'GPU economic life, low': { value: 3, unit: 'years', source: 'Brookings Papers on Economic Activity, Fall 2026, as reported in research notes' },
+    'GPU economic life, high': { value: 6, unit: 'years', source: 'Brookings Papers on Economic Activity, Fall 2026, as reported in research notes' },
+    'NVIDIA share of GPU power in announced post-2026 frontier deals': { value: 28, unit: '%', source: 'JPMorgan (Cembalest), as reported in research notes' },
+  }),
+  facts('research_market', 'Share price, valuation and analyst figures (Google Finance)', false, {
+    'Share price': gf(165.05, 'USD'),
+    'P/E ratio, trailing': gf(17.73, 'x'),
+    'EPS, trailing': gf(9.31, 'USD'),
+    'Beta': gf(2.21, ''),
+    '52-week high': gf(243.37, 'USD'),
+    '52-week low': gf(145.71, 'USD'),
+    'WACC, Google Finance': gf(14.45, '%'),
+    'Cost of equity, Google Finance': gf(15, '%'),
+    // The range of independent discount-rate estimates for NVIDIA (the headline rate is in assumptions.json)
+    'Discount rate, lowest estimate (US semiconductor average)': { value: 10.55, unit: '%', source: 'Damodaran, US semiconductor industry average cost of capital, January 2026' },
+    'Discount rate, Stock Analysis': { value: 16.42, unit: '%', source: 'Stock Analysis, NVDA statistics page, 23 Nov 2026' },
+    'Discount rate, highest estimate (Bloomberg)': { value: 19.3, unit: '%', source: 'Bloomberg WACC screen, NVDA US Equity, 20 Nov 2026' },
+    'Analysts rating NVDA': gf(44, ''),
+    'Analysts: buy': gf(34, ''),
+    'Analysts: hold': gf(9, ''),
+    'Analysts: sell': gf(1, ''),
+    'Analyst target, average': gf(233.36, 'USD'),
+    'Analyst target, highest': gf(350, 'USD'),
+    'Analyst target, lowest': gf(130, 'USD'),
+  }, { source: GF, asOf: '2026-11-24' }),
+  facts('research_q3_call', 'Q3 FY27 earnings call: results, outlook, capital and commitments', false, {
+    'Q4 FY27 revenue guide': call(130, 'USD bn'),
+    'Q4 FY27 revenue guide, range plus or minus': call(3, '%'),
+    'FY28 revenue growth outlook': call(75, '%'),
+    'FY28 revenue growth outlook, previous': call(70, '%'),
+    'Vera Rubin revenue, first quarter of shipments': call(20, 'USD bn'), // "nearly $20 billion"
+    'Data Center revenue growth, year on year, Q3 FY27': call(110, '%'),
+    'Hyperscale revenue, Q3 FY27': call(60, 'USD bn'),
+    'Networking revenue, Q3 FY27': call(21, 'USD bn'), // "exceeding $21 billion"
+    'Gross margin, Q3 FY27': call(74.8, '%'),
+    'Gross margin guide, Q4 FY27, low': call(71, '%'),
+    'Gross margin guide, Q4 FY27, high': call(72, '%'),
+    'Gross margin outlook, FY28, low': call(72, '%'),
+    'Gross margin outlook, FY28, high': call(73, '%'),
+    'Share buybacks, Q3 FY27': call(22, 'USD bn'),
+    'Dividends, Q3 FY27': call(6, 'USD bn'),
+    'Cash returned to shareholders, Q3 FY27': call(28, 'USD bn'),
+    'Share of free cash flow returned, year to date': call(65, '%'),
+    'Buyback authorization added': call(150, 'USD bn'),
+    'Buyback authorization remaining': call(227, 'USD bn'),
+    'Purchase commitments': call(390, 'USD bn'),
+    'Guarantees': call(118, 'USD bn'),
+    'Neocloud commitments': call(32, 'USD bn'),
+    'Cloud industry backlog': call(2.5, 'USD tn'),
+    'Frontier labs share of Data Center revenue, FY27': call(15, '%'), // "approximately 15%"
+    'Licensed Hopper sales to China, Q3 FY27': call(2.4, 'USD bn'),
+  }, { source: CALL, asOf: '2026-11-17' }),
+  own({
+    key: 'nvda_analyst_ratings', title: 'What 44 Wall Street analysts rate NVIDIA', unit: '', verified: false,
+    source: `${GF}: ratings given in the past 3 months`,
+    x: ['Buy', 'Hold', 'Sell'],
+    series: { Analysts: [34, 9, 1] },
+  }, '2026-11-24'),
+  own({
+    key: 'nvda_revenue_guidance', title: 'Revenue by quarter, with NVIDIA’s own guide for the next one', unit: 'USD bn', verified: false,
+    source: `Bloomberg FA (Earnings) for the quarters; ${CALL} for the Q4 FY27 guide ($130bn, plus or minus 3%)`,
+    x: ['FY26 Q4', 'FY27 Q1', 'FY27 Q2', 'FY27 Q3', 'FY27 Q4 (guide)'],
+    series: { Revenue: [...qRev.series.Revenue.slice(lastQ - 3, lastQ + 1) as number[], 130] },
+  }, '2026-11-17'),
 ];
 
 for (const d of out) fs.writeFileSync(path.join(CLEAN, `${d.key}.json`), JSON.stringify(d, null, 2) + '\n');

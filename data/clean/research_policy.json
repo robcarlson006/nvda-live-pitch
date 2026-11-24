@@ -1,0 +1,69 @@
+{
+  "key": "research_policy",
+  "title": "Policy, customer and power figures for Q&A",
+  "unit": "",
+  "units": {
+    "Largest direct customer, share of FY26 revenue": "%",
+    "Second direct customer, share of FY26 revenue": "%",
+    "Revenue from customers outside the US, FY26": "%",
+    "China share of FY26 revenue": "%",
+    "US data-centre projects blocked or delayed, Q1 2026": "",
+    "Value of those projects": "USD bn",
+    "Hyperscaler capex, 2026 guidance": "USD bn",
+    "GPU economic life, low": "years",
+    "GPU economic life, high": "years",
+    "NVIDIA share of GPU power in announced post-2026 frontier deals": "%"
+  },
+  "source": "Research notes (via NotebookLM research, 21 Nov 2026)",
+  "seriesSources": {
+    "Largest direct customer, share of FY26 revenue": "NVIDIA Form 10-K, year to 25 Jan 2026 (SEC filing); direct customers, not named",
+    "Second direct customer, share of FY26 revenue": "NVIDIA Form 10-K, year to 25 Jan 2026 (SEC filing); direct customers, not named",
+    "Revenue from customers outside the US, FY26": "NVIDIA Form 10-K, year to 25 Jan 2026 (SEC filing); by customer headquarters",
+    "China share of FY26 revenue": "NVIDIA Form 10-K FY26, as reported in research notes; by customer headquarters",
+    "US data-centre projects blocked or delayed, Q1 2026": "Data Center Watch, as reported by Network World, 2026",
+    "Value of those projects": "Data Center Watch, as reported by Network World, 2026",
+    "Hyperscaler capex, 2026 guidance": "Company guidance, as reported by Yahoo Finance, 2026 (Amazon, Alphabet, Microsoft, Meta)",
+    "GPU economic life, low": "Brookings Papers on Economic Activity, Fall 2026, as reported in research notes",
+    "GPU economic life, high": "Brookings Papers on Economic Activity, Fall 2026, as reported in research notes",
+    "NVIDIA share of GPU power in announced post-2026 frontier deals": "JPMorgan (Cembalest), as reported in research notes"
+  },
+  "asOf": "2026-11-21",
+  "placeholder": false,
+  "curated": true,
+  "verified": false,
+  "x": [
+    "value"
+  ],
+  "series": {
+    "Largest direct customer, share of FY26 revenue": [
+      22
+    ],
+    "Second direct customer, share of FY26 revenue": [
+      14
+    ],
+    "Revenue from customers outside the US, FY26": [
+      31
+    ],
+    "China share of FY26 revenue": [
+      9.1
+    ],
+    "US data-centre projects blocked or delayed, Q1 2026": [
+      75
+    ],
+    "Value of those projects": [
+      130
+    ],
+    "Hyperscaler capex, 2026 guidance": [
+      725
+    ],
+    "GPU economic life, low": [
+      3
+    ],
+    "GPU economic life, high": [
+      6
+    ],
+    "NVIDIA share of GPU power in announced post-2026 frontier deals": [
+      28
+    ]
+  }
+}

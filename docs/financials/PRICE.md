@@ -1,5 +1,7 @@
 # Changing the share price right before the pitch
 
+> **24 Nov 2026:** the override is now **$165.05** (Google Finance) and `npm run price` / `npm run xlsx` are not in `app/package.json`. Edit `priceOverride.value` in `data/model/assumptions.json` by hand, then run `npm run data` in `app/`. The slide text that is spoken in words (position loss "under two percent / two and a quarter", `say` lines with dollar values) does NOT update itself: re-read the `valuation`, `analysts` and `recommendation` slides after a price change. NVIDIA's forward P/E on the peers slide re-prices automatically.
+
 One number drives everything: the share price. It lives in `data/model/assumptions.json` (`priceOverride.value`). The slides, the charts behind them and the spreadsheet all read it from there.
 
 ## The two-minute routine (from the `app/` folder)
