@@ -10,3 +10,7 @@ app/eval-cache/
 
 # Third-party video clips (e.g. WSJ): kept on this laptop only, never pushed to the public repo
 app/public/media/
+
+# Local-only handoff material
+NVDA readiness handoff/
+*.zip
