@@ -31,7 +31,7 @@ test('zoom steps: the chart builds where it is told, zooms follow cues, and bad 
   assert.equal(elementCount(e), 4);
   let s = run(emptyState(), { type: 'goto', index: idx('emissions-peers') });
   assert.equal(s.reveal, 2, 'chartFirst: the chart builds with the title');
-  s = run(s, say('for every million dollars of sales'));
+  s = run(s, say('own buildings and electricity for every million dollars of sales'));
   assert.equal(zoomAt(e, s.reveal), null);
   s = run(s, say('NVIDIA emits about forty eight kilograms'));
   assert.equal(zoomAt(e, s.reveal), 'NVIDIA');
@@ -124,7 +124,7 @@ test('speech fires the next slide cue, tolerating filler words and small slips',
   let s = run(emptyState(), { type: 'goto', index: idx('first-gpu') });
   s = run(s, say('instead in november'), say('they announced CUDA which was huge'));
   assert.equal(s.index, idx('cuda'));
-  s = run(s, say('a handful of workers doing one job after anuther'));
+  s = run(s, say('a normall processor, a handful of workers'));
   assert.equal(s.reveal, 2, 'element cue fired despite the typo');
 });
 
@@ -236,6 +236,9 @@ test('cue scoring', () => {
   assert.deepEqual(words('Data Centre, 2006!'), ['data', 'center', '2006']);
   assert.equal(cueScore('the CEO', words('so the ceo resigned')), 1);
   assert.equal(cueScore('built live', words('we built this')), 0.5);
+  // Deepgram writes US spellings even in en-GB mode.
+  assert.equal(cueScore('highways and fibre', words('highways and fiber each took')), 1);
+  assert.equal(cueScore('twenty five tonnes', words('intel twenty five tons')), 1);
   assert.equal(findCue('nothing relevant here', [{ cue: 'released cuda', target: 1 }]), null);
   assert.equal(findCue('so they released cuda and then', [{ cue: 'released cuda', target: 1 }])!.end, 3);
   assert.equal(findCue('they cuda released', [{ cue: 'released cuda', target: 1 }]), null);

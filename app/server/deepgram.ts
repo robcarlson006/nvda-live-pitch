@@ -24,21 +24,66 @@ export function deepgramKey(): string {
   }
 }
 
-// Words speech-to-text tends to get wrong. Deepgram's limit is 500 tokens; its advice is 20–50 terms.
-const KEYTERMS = [
-  'NVIDIA', 'CUDA', 'GeForce 256', 'RIVA 128', 'NV1', 'Sega', "Denny's", 'Jensen Huang', 'Chris Malachowsky', 'Curtis Priem',
-  'Ian Buck', 'Andrew Ng', 'Alex Krizhevsky', 'AlexNet', 'ImageNet', 'AMD', 'ROCm', 'NVLink', 'Mellanox', 'TSMC',
-  'Blackwell', 'hyperscaler', 'EBITDA', 'P/E', 'discounted cash flow', 'Scope 1', 'Scope 2', 'Scope 3', 'Colette Kress',
-  'Panshul', "Mi'kael", 'OpenAI', 'Anthropic', 'GPU',
+// Words speech-to-text tends to get wrong, taken from what the spine says and the Q&A bank asks.
+// Deepgram's limit is 500 tokens; its advice is 20–50 terms, so names no longer in the script are dropped.
+export const KEYTERMS = [
+  // The story and the products
+  'NVIDIA', 'CUDA', 'GeForce 256', 'RIVA 128', "Denny's", 'Jensen Huang', 'Ian Buck', 'Andrew Ng', 'AlexNet', 'ImageNet',
+  'Xbox', 'Tensor Cores', 'NVLink', 'Mellanox', 'Blackwell', 'Vera Rubin', 'Sputnik', 'GPU',
+  // Competitors, customers, the open-model ecosystem
+  'AMD', 'ROCm', 'TSMC', 'Broadcom', 'Huawei', 'H20', 'Nscale', 'Hugging Face', 'Mistral', 'OpenAI', 'Anthropic', 'hyperscaler',
+  // Finance and valuation
+  'EBITDA', 'P/E', 'WACC', 'discounted cash flow', 'Damodaran',
+  // ESG and governance
+  'Scope 1', 'Scope 2', 'Scope 3', 'export controls', 'Glassdoor', 'Colette Kress',
+  // The team
+  'Panshul', "Mi'kael",
 ];
 
-export function deepgramUrl(lang: string, base = 'wss://api.deepgram.com/v1/listen'): string {
-  const u = new URL(base);
+/**
+ * Which Deepgram model listens. Flux (the default) sends a running transcript about every 0.25 s; nova-3 only
+ * about once a second, so cues fired up to a second after the word. Measured on a rehearsal clip, the gap from
+ * the cue's last word to the app knowing fell from 0.6–0.9 s (nova-3) to 0.3–0.45 s (Flux).
+ * Set DEEPGRAM_MODEL=nova-3 in app/.env to go back; read on every mic start, so no restart is needed.
+ */
+export type DgModel = 'flux' | 'nova-3';
+export function deepgramModel(): DgModel {
+  let v = process.env.DEEPGRAM_MODEL;
+  if (v == null) {
+    try {
+      v = parseEnv(fs.readFileSync(ENV_FILE, 'utf8')).DEEPGRAM_MODEL;
+    } catch {
+      /* no .env */
+    }
+  }
+  return v?.trim() === 'nova-3' ? 'nova-3' : 'flux';
+}
+
+export function deepgramUrl(lang: string, base?: string, model: DgModel = deepgramModel()): string {
+  const u = new URL(base ?? `wss://api.deepgram.com/${model === 'flux' ? 'v2' : 'v1'}/listen`);
   // No numerals/smart_format: they rewrite words between interim and final results, which breaks cue de-duplication.
-  const q = { model: 'nova-3', language: lang === 'en-US' ? 'en-US' : 'en-GB', encoding: 'linear16', sample_rate: '16000', channels: '1', interim_results: 'true', endpointing: '300' };
+  // Flux is English-only and takes no language; it handles UK and US accents in one model.
+  const q: Record<string, string> = model === 'flux'
+    ? { model: 'flux-general-en', encoding: 'linear16', sample_rate: '16000' }
+    : { model: 'nova-3', language: lang === 'en-US' ? 'en-US' : 'en-GB', encoding: 'linear16', sample_rate: '16000', channels: '1', interim_results: 'true', endpointing: '300' };
   for (const [k, v] of Object.entries(q)) u.searchParams.set(k, v);
   for (const t of KEYTERMS) u.searchParams.append('keyterm', t);
   return u.href;
+}
+
+/**
+ * One Deepgram message as text for the show, or null if it carries none.
+ * nova-3: `Results` with `is_final`. Flux: `TurnInfo`, where every event but `EndOfTurn` is a running (interim)
+ * transcript of the turn so far, and `EndOfTurn` is its final.
+ */
+export function parseDeepgram(m: any): { text: string; final: boolean; endsAt?: number } | null {
+  if (m?.type === 'Results') {
+    return { text: String(m.channel?.alternatives?.[0]?.transcript ?? '').trim(), final: m.is_final === true, endsAt: Number(m.start ?? 0) + Number(m.duration ?? 0) };
+  }
+  if (m?.type === 'TurnInfo') {
+    return { text: String(m.transcript ?? '').trim(), final: m.event === 'EndOfTurn', endsAt: Number(m.audio_window_end ?? 0) };
+  }
+  return null;
 }
 
 const MAX_HELD = 16000 * 2 * 5; // 5 seconds of audio
@@ -60,7 +105,9 @@ export function relay(client: WebSocket, { key, url, giveUpMs = 6000, stallMs = 
   let lastSign = 0; // last time Deepgram showed it was alive
   let lastAudio = 0;
   let interimOpen = false;
+  let lastInterim = '';
   let done = false;
+  const flux = new URL(url).pathname.startsWith('/v2/'); // Flux has no KeepAlive message
   let retry: NodeJS.Timeout | undefined;
 
   const tell = (msg: AudioMsg) => client.readyState === WebSocket.OPEN && client.send(JSON.stringify(msg));
@@ -106,10 +153,14 @@ export function relay(client: WebSocket, { key, url, giveUpMs = 6000, stallMs = 
         return;
       }
       if (m.type === 'Error') console.warn(`[deepgram] ${m.description ?? m.message ?? 'error'}`);
-      if (m.type !== 'Results') return;
+      const r = parseDeepgram(m);
+      if (!r) return;
       downSince = 0;
-      const text = String(m.channel?.alternatives?.[0]?.transcript ?? '').trim().slice(0, 2000);
-      const final = m.is_final === true;
+      const text = r.text.slice(0, 2000);
+      const { final } = r;
+      // Flux repeats an unchanged transcript several times a second: pass each change on once.
+      if (!final && text === lastInterim) return;
+      lastInterim = final ? '' : text;
       // An empty final still matters after an interim: it closes that utterance.
       if (text || (final && interimOpen)) tell({ type: 'transcript', text, final });
       interimOpen = !final && (interimOpen || !!text);
@@ -131,6 +182,7 @@ export function relay(client: WebSocket, { key, url, giveUpMs = 6000, stallMs = 
     dg = null;
     old?.terminate();
     interimOpen = false;
+    lastInterim = '';
     downSince ||= Date.now();
     if (Date.now() - downSince > giveUpMs) return fail('Deepgram is unreachable');
     tell({ type: 'status', state: 'reconnecting' });
@@ -143,7 +195,7 @@ export function relay(client: WebSocket, { key, url, giveUpMs = 6000, stallMs = 
     if (dg?.readyState !== WebSocket.OPEN) return;
     if (Date.now() - lastSign > stallMs) return lost();
     dg.ping();
-    if (Date.now() - lastAudio > 3000) dg.send('{"type":"KeepAlive"}');
+    if (!flux && Date.now() - lastAudio > 3000) dg.send('{"type":"KeepAlive"}');
   }, Math.min(2500, stallMs / 2));
 
   client.on('message', (data, isBinary) => {
