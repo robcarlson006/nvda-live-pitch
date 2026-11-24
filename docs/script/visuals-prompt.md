@@ -36,7 +36,7 @@ If the project in front of you lacks the data tooling, the other copy is `~/Docu
 
 - Dark, cinematic, projector-friendly. NVIDIA green (`#76B900`) as the accent, used sparingly. Big type, generous space, high contrast: it must read from the back of a lecture hall on a poor projector.
 - Use the `design-taste-frontend` skill to set the visual language BEFORE building slides: type scale, colour tokens, spacing, easing curves, motion principles. Also use `frontend-design` and `dataviz` where they help, and `ui-ux-pro-max` for chart choices. Write the result down as a short design-system file (`app/src/stage/design.md` plus CSS variables / tokens in code) so every slide stays consistent.
-- Motion: Framer Motion for element builds, ECharts (or Recharts) with animated draw-in for charts. Build in "beats": each ▸ cue is one beat that eases in, with 300–700 ms of motion, then holds. Use staggered builds, number count-ups, line draws, bars that grow one at a time, masked text reveals, soft glows, subtle parallax or particle fields in the background, and smooth cross-slide transitions (shared elements that morph between slides where the data connects, e.g. the revenue line continuing from FY16 to FY26, the $31 bear bar returning large and alone).
+- Motion: Framer Motion for element builds, ECharts (or Recharts) with animated draw-in for charts. Build in "beats": each ▸ cue is one beat that eases in, with 300–700 ms of motion, then holds. Use staggered builds, number count-ups, line draws, bars that grow one at a time, masked text reveals, soft glows, subtle parallax or particle fields in the background, and smooth cross-slide transitions (shared elements that morph between slides where the data connects, e.g. the revenue line continuing from FY16 to FY26, the $64 stress-case bar returning large and alone).
 - One persistent small element: the live NVDA ticker in a corner ("Market closed, last close" when US markets are shut). Optional; it must fail silently.
 - Nothing may jitter, reflow or flash. Fix sizes, preload fonts and data, respect `prefers-reduced-motion` only on the operator view, never on stage. Hit 60 fps on a mid-range laptop: profile it.
 - Accessibility basics: sufficient contrast, no information carried by colour alone.
@@ -59,14 +59,14 @@ Build each as a component driven by data keys and a list of beats. For each, wir
 **Panshul: the numbers**
 10. Revenue FY22 $26.9bn → FY26 $215.9bn, Data Center shaded, drawn slowly.
 11. Operating margin bars (NVIDIA 60%, AMD 29% consensus, Intel 15% consensus) and a big number $96.7bn free cash flow.
-12. Consensus revenue FY26 $216bn → FY27 $422bn (+96%) → FY28 $729bn (+73%), with a small beat panel: Q3 FY27 revenue $115.8bn v $109.3bn expected, profit per share $2.68 v $2.47.
-13. "What is one share worth?" with TWO discount rates appearing: Bloomberg 19.3% and US semiconductor average 10.55%.
-14. Valuation bars build one at a time: Bear $31 · Base $167.50 · **Base at 10.55%: $391** · Bull $186 · Today $164.39. (Read the price and values from the data; the team can change the price with `npm run price -- <price>`, so nothing here may be hard-coded.)
-15. Reverse DCF number: at Bloomberg's rate the price assumes 38% a year growth, about $2 trillion of sales by 2032.
-16. Bear bars held on screen: $31 (−81%) at 19.3% · $64 (−61%) at 10.55%.
+12. Consensus revenue FY26 $216bn → FY27 $422bn (+96%) → FY28 $729bn (+73%), with a small beat panel: Q3 FY27 revenue $115.8bn v $108.7bn expected, profit per share $2.68 v $2.47. Add a **guidance** slide: Q4 guide $130bn ±3%, FY28 growth outlook ~75% (up from 70%), Vera Rubin nearly $20bn in its first quarter; and a **returns** slide: $28bn handed back in the quarter ($22bn buybacks, $6bn dividends), $227bn buyback authorization left.
+13. "What is one share worth?" with the headline discount rate 10.55% (US semiconductor average, Damodaran) and the other estimates beside it: Google Finance 14.45%, Bloomberg 19.3%. Never imply 10.55% is NVIDIA-specific.
+14. Valuation bars build one at a time: Stress $64 · Bear $102 · Base $391 · Bull $434 · Peer P/E check $297 · Today $165.05. Read every value from the data (model_valuation); the price comes from priceOverride in data/model/assumptions.json then npm run data, so nothing here may be hard-coded.
+15. Reverse DCF number: at 10.55% the price already assumes about 13% a year sales growth to FY32 (our base case: 35.5%); at Google Finance's rate, about 26%.
+16. **Analysts** slide: ratings bar (34 buy / 9 hold / 1 sell of 44) and a chart of targets (lowest $130, average $233, highest $350) against price today, our bear case and our base case. The base case sits above every target; the slide says why (the discount rate). Then the bear and stress bars held on screen: Bear $102 (−38%) · Stress $64 (−61%) at 10.55%.
 
 **Mi'kael: why spending won't stop, ESG, the close**
-17. The $31 bear bar returns alone, large (a callback to slide 16: animate it from where it was).
+17. The $64 stress-case bar returns alone, large (a callback to slide 16: animate it from where it was).
 18. "Reason one: it is discovering things." Then items build one at a time (the last one holds): AI at Olympiad gold level in maths; AlphaEvolve on 50 open problems; 170,000 → 200 million protein structures (2024 Nobel); new antibiotic in 3 days; +20% cancers found and −44% reading work in Swedish screening. Make this beautiful: it is the emotional centre.
 19. "Reason two: the AI race." A clean, serious slide (US, China, and the White House AI Action Plan line, attributed). Keep it restrained.
 20. "Is AI an environmental disaster?" Own-emissions bar chart, built one bar at a time, LOG scale with a label on every bar: NVIDIA 0.05 · AMD 1.2 · Broadcom 2.8 · Intel 25 · TSMC 109 tonnes CO2 per $1m of sales. The tiny NVIDIA bar is the story; design the log axis so it reads instantly. Own operations only: no suppliers, no Scope 3.
