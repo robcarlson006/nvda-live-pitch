@@ -1,5 +1,10 @@
 # The pitch script, draft 8 (generated from the slides)
 
+> **FIGURES OUT OF DATE (24 Nov 2026, late):** this draft quotes a $165.05 price and 24.1bn basic shares. The current
+> model uses **$152.85** and **24.186bn diluted shares**: base **$389.99** at 10.55% (Damodaran), **$247.81** at 14.45%
+> (Google Finance), **$226.87** at 15.4% (Bloomberg Q3 2026); bear **$101.20**; if AI ended **$64.19**. `spine.yaml`
+> (the teleprompter) is current. Regenerate this draft from it before printing.
+
 Written 24 Nov 2026 from the `say` lines in `docs/script/spine.yaml`, so it matches the slides exactly. Lines starting with ▸ build on screen and are never spoken; 🔍 marks a zoom into the chart; 🎬 a muted video. Slides marked (optional) can be switched off from the operator panel.
 
 **Length:** 1221 words. Read aloud at 150 words a minute with a short pause between slides it runs 9:11 (Rob 4:50, Panshul 2:01, Mi'kael 2:20), about 9:04 with the optional slide off. Measured with `app/scripts/deepgram-run.ts`, which also confirmed every slide moves on speech alone.

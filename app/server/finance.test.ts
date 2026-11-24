@@ -20,7 +20,7 @@ const near = (a: number, b: number, tol: number) => Math.abs(a - b) <= tol;
 const boardSlides: { id: string; slide: Slide; say?: string }[] = [...spine.map((s) => ({ id: s.id, slide: s as Slide, say: s.say })), ...bank.map((b) => ({ id: `qa:${b.id}`, slide: b.slide }))];
 
 test('the DCF bridge adds up at each rate, and matches the sensitivity value', () => {
-  const shares = at('model_dcf_inputs', 'Shares outstanding', 'value');
+  const shares = at('model_dcf_inputs', 'Diluted shares', 'value');
   const netCash = at('model_dcf_inputs', 'Net cash', 'value') / 1000; // bn → tn
   for (const [k, r] of RATES.entries()) {
     const step = (x: string) => at('model_dcf_bridge', r, x);
@@ -32,6 +32,23 @@ test('the DCF bridge adds up at each rate, and matches the sensitivity value', (
     assert.equal(at('model_three_rates', 'Value per share', RATE_X[k]), at('model_sensitivity', 'Terminal growth 3%', r), `${r}: three-rates chart = sensitivity`);
     assert.ok(near(at('model_three_rates', 'Enterprise value', RATE_X[k]), step('Enterprise value'), 0.006), `${r}: EV on the three-rates slide`);
   }
+});
+
+test('the one-page DCF summary adds up and matches the other DCF slides', () => {
+  const v = (s: string) => at('model_dcf_summary', s, 'value');
+  assert.ok(near(v('PV of FCFs') + v('PV of terminal value'), v('Enterprise value'), 0.02), 'PV of FCFs + PV of TV = EV');
+  assert.ok(near(v('Enterprise value') - v('Net debt'), v('Equity value'), 0.02), 'EV − net debt = equity value');
+  assert.ok(near(v('Equity value') / v('Diluted shares'), v('Implied share price'), 0.01), 'equity ÷ diluted shares = implied price');
+  assert.equal(v('Diluted shares'), at('model_dcf_inputs', 'Diluted shares', 'value'));
+  assert.equal(v('Implied share price'), at('model_three_rates', 'Value per share', RATE_X[0]));
+  assert.equal(v('Upside'), at('model_three_rates', 'Above reference price', RATE_X[0]));
+  assert.equal(v('Share price'), at('model_dcf_inputs', 'Share price', 'value'));
+  assert.ok(near(v('Terminal value share of EV'), (v('PV of terminal value') / v('Enterprise value')) * 100, 0.01), 'TV % of EV');
+  assert.ok(near(v('Enterprise value') / 1000, at('model_dcf_bridge', RATES[0], 'Enterprise value'), 0.0002), 'EV matches the bridge');
+  const cagr = ((at('model_revenue_paths', 'Base', 'FY32') / at('model_revenue_paths', 'Base', 'FY27')) ** (1 / 5) - 1) * 100;
+  assert.ok(near(v('Revenue CAGR, FY27–32'), cagr, 0.01), `CAGR ${cagr}`);
+  assert.equal(v('Revenue CAGR, FY27–32'), at('model_implied_growth', 'Growth per year', 'Base case (consensus, then slowing)'));
+  assert.equal(v('EBIT margin, FY26'), at('nvda_margins_annual', 'Operating margin', 'FY26'));
 });
 
 test('the annual DCF figures reconcile to the base case bridge', () => {

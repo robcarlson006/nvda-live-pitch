@@ -2,7 +2,8 @@ NVIDIA valuation model,valuation date 2026-11-20
 
 INPUT,VALUE,SOURCE
 Share price (USD),152.85,"Team override (assumptions.json): Team input, 24 Nov 2026; confirm and update on pitch morning"
-Shares outstanding (bn),24.1,Bloomberg DES
+Diluted shares (bn),24.186,"Bloomberg FA quarterly, diluted weighted average, Q3 FY27"
+"Basic shares outstanding (bn, reference only)",24.1,Bloomberg DES
 Net cash (USD bn),59.6,Bloomberg DES: market cap minus enterprise value
 FY26 revenue (USD bn),215.938,Bloomberg FA
 FY27 revenue consensus (USD bn),422.222,Bloomberg FA consensus
@@ -27,7 +28,7 @@ Terminal value at FY32 (USD bn),11926.48
 PV of terminal value (USD bn),7082.1
 Enterprise value (USD bn),9372.76
 + Net cash = equity value (USD bn),9432.36
-Value per share (USD) [base],391.38
+Value per share (USD) [base],389.99
 
 "SCENARIO: Bull: consensus, with fatter margins"
 ,FY28,FY29,FY30,FY31,FY32
@@ -41,7 +42,7 @@ Terminal value at FY32 (USD bn),13244.27
 PV of terminal value (USD bn),7864.62
 Enterprise value (USD bn),10408.38
 + Net cash = equity value (USD bn),10467.98
-Value per share (USD) [bull],434.36
+Value per share (USD) [bull],432.81
 
 SCENARIO: Bear: rivals take share and spending pauses for a year
 ,FY28,FY29,FY30,FY31,FY32
@@ -55,7 +56,7 @@ Terminal value at FY32 (USD bn),2858.83
 PV of terminal value (USD bn),1697.61
 Enterprise value (USD bn),2388.1
 + Net cash = equity value (USD bn),2447.7
-Value per share (USD) [bear],101.56
+Value per share (USD) [bear],101.2
 
 "SCENARIO: If AI ended for good: revenue flat, then down 20%, then no real growth"
 ,FY28,FY29,FY30,FY31,FY32
@@ -69,14 +70,14 @@ Terminal value at FY32 (USD bn),1723.36
 PV of terminal value (USD bn),1023.36
 Enterprise value (USD bn),1492.8
 + Net cash = equity value (USD bn),1552.4
-Value per share (USD) [stress],64.41
+Value per share (USD) [stress],64.19
 
 SENSITIVITY: base value per share,WACC 10.55%,WACC 14.45%,WACC 15.4%
-Terminal growth 2%,354.49,234.25,215.71
-Terminal growth 3%,391.38,248.69,227.68
-Terminal growth 4%,439.54,265.9,241.75
+Terminal growth 2%,353.23,233.42,214.94
+Terminal growth 3%,389.99,247.81,226.87
+Terminal growth 4%,437.97,264.95,240.89
 
-REVERSE DCF,Growth per year FY28-FY32 priced in at today’s price (%),11.47
+REVERSE DCF,Growth per year FY28-FY32 priced in at today’s price (%),11.56
 ,Base case growth per year FY28-FY32 (%),35.55
 
 PEER CHECK,Median peer forward P/E,30.86,x FY27 EPS,9.64,= USD,297.49

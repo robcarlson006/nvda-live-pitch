@@ -62,7 +62,20 @@ function main() {
   const valuationDate = '2026-11-20';
   const desPrice = num(des, /Last Px\s+USD\/([\d.]+)/);
   const price: number = A.priceOverride.value ?? desPrice;
-  const shares = num(des, /Curr Shares Out\s+([\d.]+)B/); // bn
+  const basicShares = num(des, /Curr Shares Out\s+([\d.]+)B/); // bn, basic (reference only)
+  // Diluted shares: basic shares plus the employee options and stock awards that will become shares. Bloomberg FA
+  // quarterly, "Diluted Weighted Avg Shares", fiscal Q3 FY27 (quarter to 25 Oct 2026). The value per share uses this.
+  const faQ = pdfText(path.join(ROOT, 'data/bloomberg-raw/nvda_fa_quarterly_FY24Q3-FY27Q3.pdf'), { plain: true });
+  // Each "Diluted Weighted Avg" row belongs to the nearest column header above it; use the page whose header has Q3 FY27.
+  let shares = NaN;
+  for (const m of faQ.matchAll(/Diluted Weighted Avg\s+((?:[\d,]+\.\d+[ \t]+)*[\d,]+\.\d+)/g)) {
+    const headAt = faQ.lastIndexOf('Original:', m.index);
+    const head = faQ.slice(faQ.lastIndexOf('\n', headAt) + 1, faQ.indexOf('\n', headAt));
+    const col = (head.match(/(Original|Restated|Preliminary):\d{4} Q\d/g) ?? []).indexOf('Preliminary:2027 Q3');
+    if (col >= 0) { shares = Number(m[1].trim().split(/\s+/)[col].replace(/,/g, '')) / 1000; break; } // millions → bn; first = income statement
+  }
+  if (!Number.isFinite(shares)) throw new Error('Diluted shares not found in the Bloomberg FA quarterly export');
+  if (shares < basicShares || shares > basicShares * 1.03) throw new Error(`Diluted shares ${shares}bn look wrong against basic ${basicShares}bn`);
   const mktCap = num(des, /~ Mkt Cap\s+([\d,.]+)B/);
   const ev = num(des, /Curr EV\s+([\d,.]+)B/);
   const netCash = mktCap - ev; // USD bn; DES EV = market cap + debt − cash
@@ -172,12 +185,14 @@ function main() {
     throw new Error('research_market discount rates do not match assumptions.json');
   if (Math.abs(fact('Share price') - price) > 1e-9) throw new Error(`research_market share price ${fact('Share price')} ≠ assumptions.json price ${price}`);
   const BBG = 'Bloomberg FA and DES, NVDA US Equity, 20 Nov 2026';
+  const marg = read('nvda_margins_annual');
+  const opMargin26 = marg.series['Operating margin'][marg.x.indexOf('FY26')]!;
   const inputs: Record<string, { v: number; unit: string; src: string }> = {
     'FY26 revenue': { v: revA.series.Revenue.at(-1)!, unit: 'USD bn', src: 'Bloomberg FA, NVDA annual, 20 Nov 2026' },
     'FY27 revenue, analyst consensus': { v: rev27, unit: 'USD bn', src: 'Bloomberg consensus (FA/DES), 20 Nov 2026' },
     'FY28 revenue, analyst consensus': { v: rev28, unit: 'USD bn', src: 'Bloomberg consensus (FA/DES), 20 Nov 2026' },
     'Free-cash-flow margin, FY24–26 average': { v: r2(baseMargin * 100), unit: '%', src: `Bloomberg FA: free cash flow ÷ revenue, average of ${marginYears.join(', ')}` },
-    'Shares outstanding': { v: shares, unit: 'bn', src: 'Bloomberg DES, 20 Nov 2026' },
+    'Diluted shares': { v: Math.round(shares * 1000) / 1000, unit: 'bn', src: 'Bloomberg FA quarterly, diluted weighted average shares, Q3 FY27 (quarter to 25 Oct 2026); DES shows 24.1bn basic' },
     'Net cash': { v: r2(netCash), unit: 'USD bn', src: 'Bloomberg DES, 20 Nov 2026: market cap minus enterprise value' },
     'WACC, Bloomberg': { v: bbgWacc, unit: '%', src: 'Bloomberg WACC, Q3 2026' },
     'Share price': { v: price, unit: 'USD', src: mkt.seriesSources?.['Share price'] ?? 'Google Finance, 24 Nov 2026' },
@@ -193,6 +208,32 @@ function main() {
     seriesSources: Object.fromEntries(Object.entries(inputs).map(([k, v]) => [k, v.src])),
     x: ['value'],
     series: Object.fromEntries(Object.entries(inputs).map(([k, v]) => [k, [v.v]])),
+  });
+  // The DCF on one page: the headline outputs the board expects, all at the 10.55% headline rate.
+  const hb = results.base;
+  const summary: Record<string, { v: number; unit: string; src: string }> = {
+    'Forecast period': { v: years.length, unit: 'years', src: 'Team model: FY28 to FY32; FY27, the current year, is not counted' },
+    'Revenue CAGR, FY27–32': { v: r2(baseCagr), unit: '%', src: 'Team model: base-case revenue, FY27 consensus to FY32, compound yearly growth' },
+    'EBIT margin, FY26': { v: opMargin26, unit: '%', src: 'Bloomberg FA (Profitability), operating margin, FY26' },
+    'Free-cash-flow margin': { v: r2(baseMargin * 100), unit: '%', src: `Bloomberg FA: average of ${marginYears.join(', ')}; the margin the DCF uses` },
+    'PV of FCFs': { v: r2(hb.pv.reduce((a, c) => a + c, 0)), unit: 'USD bn', src: `${source}, ${wacc}% WACC` },
+    'PV of terminal value': { v: r2(hb.pvTv), unit: 'USD bn', src: `${source}, ${wacc}% WACC, ${g}% terminal growth` },
+    'Terminal value share of EV': { v: r2((hb.pvTv / hb.ev) * 100), unit: '%', src: `${source}: PV of terminal value ÷ enterprise value` },
+    'Enterprise value': { v: r2(hb.ev), unit: 'USD bn', src: `${source}, ${wacc}% WACC` },
+    'Net debt': { v: r2(-netCash), unit: 'USD bn', src: 'Bloomberg DES, 20 Nov 2026: enterprise value minus market cap (negative = net cash)' },
+    'Equity value': { v: r2(hb.equity), unit: 'USD bn', src: `${source}: enterprise value + net cash` },
+    'Diluted shares': { v: Math.round(shares * 1000) / 1000, unit: 'bn', src: 'Bloomberg FA quarterly, diluted weighted average shares, Q3 FY27' },
+    'Implied share price': { v: r2(hb.perShare), unit: 'USD', src: `${source}: equity value ÷ diluted shares` },
+    'Share price': { v: price, unit: 'USD', src: inputs['Share price'].src },
+    'Upside': { v: r2((hb.perShare / price - 1) * 100), unit: '%', src: `${source}: implied price ÷ share price − 1` },
+  };
+  write({
+    key: 'model_dcf_summary', title: 'The DCF on one page (base case, 10.55% WACC)', unit: '',
+    units: Object.fromEntries(Object.entries(summary).map(([k, v]) => [k, v.unit])),
+    source: `${source}. Base case at ${wacc}% WACC, ${g}% terminal growth; share price $${price}`,
+    seriesSources: Object.fromEntries(Object.entries(summary).map(([k, v]) => [k, v.src])),
+    x: ['value'],
+    series: Object.fromEntries(Object.entries(summary).map(([k, v]) => [k, [v.v]])),
   });
   const histYears = fcfA.x.filter((y) => Number(y.slice(2)) >= 20);
   write({
@@ -220,7 +261,7 @@ function main() {
   write({
     key: 'model_dcf_bridge', title: 'From cash flow to value per share (base case)', unit: 'USD tn',
     units: { 'Value per share': 'USD' },
-    source: `${source}. Base case; terminal growth ${g}%; net cash $${r2(netCash)}bn; ${shares}bn shares. Rates: ${waccs.map(rateName).join(', ')}`,
+    source: `${source}. Base case; terminal growth ${g}%; net cash $${r2(netCash)}bn; ${Math.round(shares * 1000) / 1000}bn diluted shares. Rates: ${waccs.map(rateName).join(', ')}`,
     x: ['PV of FY28–32 cash flow', 'PV of terminal value', 'Enterprise value', 'Net cash', 'Equity value'],
     series: Object.fromEntries(waccs.map((w, k) => {
       const b = bridgeAt[k];
@@ -229,7 +270,7 @@ function main() {
   });
   write({
     key: 'model_three_rates', title: 'Base-case value per share at three discount rates', unit: 'USD',
-    units: { 'Enterprise value': 'USD tn', 'Above reference price': '%' },
+    units: { 'Enterprise value': 'USD tn', 'Above reference price': '%', 'Terminal value share of EV': '%' },
     source: `${source}. ${wacc}%: Damodaran US semiconductor average (Jan 2026); ${gfWacc}%: Google Finance (24 Nov 2026); ${bbgWacc}%: Bloomberg WACC (Q3 2026). Share price $${price}`,
     seriesSources: { 'Value per share': `${source}. Share price $${price}` },
     x: [`${damo}% industry (Damodaran)`, `${gfWacc}% Google Finance`, `${bbgWacc}% Bloomberg`],
@@ -239,6 +280,8 @@ function main() {
       'Share price today': [price, price, price],
       // Per cent above the dated reference price (a %, not dollars: the old name 'Upside to today' was formatted as USD).
       'Above reference price': [damo, gfWacc, bbgWacc].map((w) => r2((bridgeAt[waccs.indexOf(w)].perShare / price - 1) * 100)),
+      // How much of enterprise value comes from the years after FY32 (the terminal value).
+      'Terminal value share of EV': [damo, gfWacc, bbgWacc].map((w) => r2((bridgeAt[waccs.indexOf(w)].pvTv / bridgeAt[waccs.indexOf(w)].ev) * 100)),
     },
   });
   // Bridge from the round-one target (team-reported, not in this repo) to today's base case, in two steps:
@@ -288,7 +331,8 @@ function main() {
   L.push([]);
   L.push(['INPUT', 'VALUE', 'SOURCE']);
   L.push(['Share price (USD)', price, A.priceOverride.value ? `Team override (assumptions.json): ${A.priceOverride.why.split('.')[0]}` : 'Bloomberg DES 20 Nov 2026']);
-  L.push(['Shares outstanding (bn)', shares, 'Bloomberg DES']);
+  L.push(['Diluted shares (bn)', Math.round(shares * 1000) / 1000, 'Bloomberg FA quarterly, diluted weighted average, Q3 FY27']);
+  L.push(['Basic shares outstanding (bn, reference only)', basicShares, 'Bloomberg DES']);
   L.push(['Net cash (USD bn)', r2(netCash), 'Bloomberg DES: market cap minus enterprise value']);
   L.push(['FY26 revenue (USD bn)', revA.series.Revenue.at(-1)!, 'Bloomberg FA']);
   L.push(['FY27 revenue consensus (USD bn)', rev27, 'Bloomberg FA consensus']);

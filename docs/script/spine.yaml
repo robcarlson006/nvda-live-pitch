@@ -355,7 +355,7 @@
           cue: analyst
         - text: "Free-cash-flow margin: {{model_dcf_inputs | Free-cash-flow margin, FY24–26 average | value}}, the FY24 to FY26 average"
           cue: cash margin
-        - text: "Shares: {{model_dcf_inputs | Shares outstanding | value}}. Net cash: {{model_dcf_inputs | Net cash | value}}"
+        - text: "Diluted shares: {{model_dcf_inputs | Diluted shares | value}}. Net cash: {{model_dcf_inputs | Net cash | value}}"
           cue: share
         - text: "WACC, Q3 2026: {{model_dcf_inputs | WACC, Bloomberg | value}}"
           cue: its own
@@ -421,7 +421,7 @@
     - { zoom: PV of terminal value, cue: everything }
     - { zoom: Enterprise value, cue: enterprise }
     - { zoom: Equity value, cue: add net }
-    - text: "÷ {{model_dcf_inputs | Shares outstanding | value}} shares = {{model_three_rates | Value per share | 10.55% industry (Damodaran)}} a share, against a {{model_dcf_inputs | Share price | value}} reference price"
+    - text: "÷ {{model_dcf_inputs | Diluted shares | value}} diluted shares ={{model_three_rates | Value per share | 10.55% industry (Damodaran)}} a share, against a {{model_dcf_inputs | Share price | value}} reference price"
       cue: divide
     - { zoom: all }
   chart: { type: waterfall, datasetKey: model_dcf_bridge, series: ["10.55%"], totals: [Enterprise value, Equity value], highlight: Equity value }
@@ -444,7 +444,7 @@
   # The DCF summary table: rate, value per share, enterprise value, % above the reference price, and the dated price as a footer.
   chart: { type: bar, display: table, datasetKey: model_three_rates, series: [Value per share, Enterprise value, Above reference price], refLine: { series: Share price today }, highlight: 10.55% industry (Damodaran) }
   # DRAFT say
-  say: "We didn't invent a discount rate. At the industry rate, a share is worth **391 dollars**. At Google Finance, 249. At Bloomberg, 228. All three exceed our reference price."
+  say: "We didn't invent a discount rate. At the industry rate, a share is worth **{{model_three_rates | Value per share | 10.55% industry (Damodaran)}}**. At Google Finance's 14.45 percent, {{model_three_rates | Value per share | 14.45% Google Finance}}. At Bloomberg's Q3 rate of 15.4 percent, {{model_three_rates | Value per share | 15.4% Bloomberg}}. All three exceed our reference price."
 
 - id: reverse-dcf
   speaker: Panshul

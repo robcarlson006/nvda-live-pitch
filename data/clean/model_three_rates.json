@@ -4,7 +4,8 @@
   "unit": "USD",
   "units": {
     "Enterprise value": "USD tn",
-    "Above reference price": "%"
+    "Above reference price": "%",
+    "Terminal value share of EV": "%"
   },
   "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. 10.55%: Damodaran US semiconductor average (Jan 2026); 14.45%: Google Finance (24 Nov 2026); 15.4%: Bloomberg WACC (Q3 2026). Share price $152.85",
   "seriesSources": {
@@ -19,9 +20,9 @@
   ],
   "series": {
     "Value per share": [
-      391.38,
-      248.69,
-      227.68
+      389.99,
+      247.81,
+      226.87
     ],
     "Enterprise value": [
       9.37,
@@ -34,9 +35,14 @@
       152.85
     ],
     "Above reference price": [
-      156.06,
-      62.7,
-      48.96
+      155.15,
+      62.13,
+      48.43
+    ],
+    "Terminal value share of EV": [
+      75.56,
+      65.72,
+      63.56
     ]
   }
 }

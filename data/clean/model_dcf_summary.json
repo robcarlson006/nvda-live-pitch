@@ -1,0 +1,87 @@
+{
+  "key": "model_dcf_summary",
+  "title": "The DCF on one page (base case, 10.55% WACC)",
+  "unit": "",
+  "units": {
+    "Forecast period": "years",
+    "Revenue CAGR, FY27–32": "%",
+    "EBIT margin, FY26": "%",
+    "Free-cash-flow margin": "%",
+    "PV of FCFs": "USD bn",
+    "PV of terminal value": "USD bn",
+    "Terminal value share of EV": "%",
+    "Enterprise value": "USD bn",
+    "Net debt": "USD bn",
+    "Equity value": "USD bn",
+    "Diluted shares": "bn",
+    "Implied share price": "USD",
+    "Share price": "USD",
+    "Upside": "%"
+  },
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Base case at 10.55% WACC, 3% terminal growth; share price $152.85",
+  "seriesSources": {
+    "Forecast period": "Team model: FY28 to FY32; FY27, the current year, is not counted",
+    "Revenue CAGR, FY27–32": "Team model: base-case revenue, FY27 consensus to FY32, compound yearly growth",
+    "EBIT margin, FY26": "Bloomberg FA (Profitability), operating margin, FY26",
+    "Free-cash-flow margin": "Bloomberg FA: average of FY24, FY25, FY26; the margin the DCF uses",
+    "PV of FCFs": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data, 10.55% WACC",
+    "PV of terminal value": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data, 10.55% WACC, 3% terminal growth",
+    "Terminal value share of EV": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data: PV of terminal value ÷ enterprise value",
+    "Enterprise value": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data, 10.55% WACC",
+    "Net debt": "Bloomberg DES, 20 Nov 2026: enterprise value minus market cap (negative = net cash)",
+    "Equity value": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data: enterprise value + net cash",
+    "Diluted shares": "Bloomberg FA quarterly, diluted weighted average shares, Q3 FY27",
+    "Implied share price": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data: equity value ÷ diluted shares",
+    "Share price": "Google Finance, NVDA, 24 Nov 2026 (team input; confirm on pitch morning)",
+    "Upside": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data: implied price ÷ share price − 1"
+  },
+  "asOf": "2026-11-24",
+  "placeholder": false,
+  "x": [
+    "value"
+  ],
+  "series": {
+    "Forecast period": [
+      5
+    ],
+    "Revenue CAGR, FY27–32": [
+      35.55
+    ],
+    "EBIT margin, FY26": [
+      60.38
+    ],
+    "Free-cash-flow margin": [
+      45.25
+    ],
+    "PV of FCFs": [
+      2290.66
+    ],
+    "PV of terminal value": [
+      7082.1
+    ],
+    "Terminal value share of EV": [
+      75.56
+    ],
+    "Enterprise value": [
+      9372.76
+    ],
+    "Net debt": [
+      -59.6
+    ],
+    "Equity value": [
+      9432.36
+    ],
+    "Diluted shares": [
+      24.186
+    ],
+    "Implied share price": [
+      389.99
+    ],
+    "Share price": [
+      152.85
+    ],
+    "Upside": [
+      155.15
+    ]
+  }
+}

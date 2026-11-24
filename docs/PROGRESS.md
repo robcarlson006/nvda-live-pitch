@@ -207,3 +207,12 @@ cd app && npm install && npm run dev
 - Tightened the `say` script to 1,182 words. See `docs/script/TIMING.md`. All speech-cue tests pass with digits and spoken numbers.
 - Built `fallback/spine.pdf` and 36 bundled static slide images. Operator **B** switches to them; Next/Back advance full pages. The switch, navigation and return to live were observed in the browser.
 - Updated governance wording to the board investigation and ongoing government inquiries, supported by NVIDIA's 12 and 23 Nov releases and Form 8-K. The pitch-morning price, real microphone, room timing, projector dimensions and motion/performance checks still need a live rehearsal. Full camera/morph authoring in the v2 spec remains open.
+
+## 24 Nov late: app and spreadsheet agree (diluted shares, three WACCs)
+
+- Value per share now divides by **diluted shares, 24.186bn** (Bloomberg FA quarterly, diluted weighted average, Q3 FY27), not the 24.1bn basic count from DES. `app/scripts/model.ts` reads it from the PDF. Base moves $391.38 → **$389.99**.
+- Three rates everywhere: **10.55%** Damodaran (headline), **14.45%** Google Finance, **15.4%** Bloomberg Q3 2026. The 19.3% screen is reference only.
+- `NVDA_DCF_final.xlsx`: price $152.85, diluted shares, Bloomberg 15.4%, Google Finance 14.45% added (Inputs row 23), switch B7 = 1/2/3, Sensitivity columns at the three rates, Checks re-pointed. Recalculated in LibreOffice: every check passes and it matches the app to the cent.
+- New dataset `model_dcf_summary` (forecast period, CAGR, EBIT margin, PV of FCFs, PV of TV, TV % of EV, EV, net debt, equity, diluted shares, implied price, price, upside) for the new DCF slides. New test checks it adds up.
+- The three-rates `say` line now uses lookups instead of typed numbers.
+- Next: the DCF slides in `docs/handoff/DCF-SLIDES-PLAN.md`.

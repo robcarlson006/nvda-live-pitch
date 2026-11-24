@@ -5,7 +5,7 @@
   "units": {
     "Value per share": "USD"
   },
-  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Base case; terminal growth 3%; net cash $59.6bn; 24.1bn shares. Rates: 10.55%, 14.45%, 15.4%",
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Base case; terminal growth 3%; net cash $59.6bn; 24.186bn diluted shares. Rates: 10.55%, 14.45%, 15.4%",
   "asOf": "2026-11-24",
   "placeholder": false,
   "x": [

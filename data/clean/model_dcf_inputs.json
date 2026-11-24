@@ -7,7 +7,7 @@
     "FY27 revenue, analyst consensus": "USD bn",
     "FY28 revenue, analyst consensus": "USD bn",
     "Free-cash-flow margin, FY24–26 average": "%",
-    "Shares outstanding": "bn",
+    "Diluted shares": "bn",
     "Net cash": "USD bn",
     "WACC, Bloomberg": "%",
     "Share price": "USD",
@@ -22,7 +22,7 @@
     "FY27 revenue, analyst consensus": "Bloomberg consensus (FA/DES), 20 Nov 2026",
     "FY28 revenue, analyst consensus": "Bloomberg consensus (FA/DES), 20 Nov 2026",
     "Free-cash-flow margin, FY24–26 average": "Bloomberg FA: free cash flow ÷ revenue, average of FY24, FY25, FY26",
-    "Shares outstanding": "Bloomberg DES, 20 Nov 2026",
+    "Diluted shares": "Bloomberg FA quarterly, diluted weighted average shares, Q3 FY27 (quarter to 25 Oct 2026); DES shows 24.1bn basic",
     "Net cash": "Bloomberg DES, 20 Nov 2026: market cap minus enterprise value",
     "WACC, Bloomberg": "Bloomberg WACC, Q3 2026",
     "Share price": "Google Finance, NVDA, 24 Nov 2026 (team input; confirm on pitch morning)",
@@ -49,8 +49,8 @@
     "Free-cash-flow margin, FY24–26 average": [
       45.25
     ],
-    "Shares outstanding": [
-      24.1
+    "Diluted shares": [
+      24.186
     ],
     "Net cash": [
       59.6
