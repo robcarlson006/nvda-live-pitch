@@ -1,0 +1,69 @@
+/* ---------- If it pops: the bubble bursts; the bets fall; NVIDIA lands whole ---------- */
+.scene-if-it-pops .scene { width: 50vw; }
+.bubble-scene { width: 100%; height: 100%; display: block; overflow: visible; font-family: 'Archivo Variable', system-ui, sans-serif; }
+
+.bb-floor { stroke: #3a4134; stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; animation: bb-draw 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+@keyframes bb-draw { to { stroke-dashoffset: 0; } }
+
+/* The bubble inflates, then wobbles: alive, but thin-skinned. */
+.bb-bubble { transform-box: view-box; transform-origin: 400px 440px; animation: bb-inflate 1.4s cubic-bezier(0.34, 1.3, 0.64, 1) 0.2s both, bb-wobble 3.2s ease-in-out 1.6s infinite alternate; }
+@keyframes bb-inflate { from { transform: scale(0.2); opacity: 0; } }
+@keyframes bb-wobble { 0% { transform: scale(1, 1); } 50% { transform: scale(1.025, 0.985); } 100% { transform: scale(0.985, 1.02); } }
+.bb-skin { stroke: #b7f04a; stroke-width: 2; stroke-opacity: 0.45; }
+.bb-sheen { fill: none; stroke: #fff; stroke-width: 10; stroke-linecap: round; opacity: 0.18; }
+
+/* Pop: the skin flashes and is gone; droplets fly out and fall. */
+.popped .bb-bubble { animation: bb-pop 0.32s cubic-bezier(0.2, 0, 0.6, 1) forwards; }
+@keyframes bb-pop { 0% { transform: scale(1); opacity: 1; } 40% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1.18); opacity: 0; } }
+.bb-burst circle { fill: #b7f04a; opacity: 0; animation: bb-drop 0.9s cubic-bezier(0.3, 0.5, 0.6, 1) 0.12s both; }
+@keyframes bb-drop { 0% { opacity: 0.9; transform: none; } 100% { opacity: 0; transform: translate(var(--bx), var(--by)); } }
+
+/* Floating in the bubble. The float sits inside the fall, so the two never fight over one transform. */
+.bb-float { animation: bb-float 3s ease-in-out var(--fl) infinite alternate; }
+@keyframes bb-float { from { transform: translateY(-9px); } to { transform: translateY(9px); } }
+.popped .bb-float { animation: none; }
+
+.bb-bet { fill: #262b22; stroke: #5d6358; stroke-width: 2; }
+.bb-crack { fill: none; stroke: #0a0c09; stroke-width: 3; opacity: 0; }
+
+/* Falling to the floor: gravity-like, with a little spin for the bets. */
+.bb-fall { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 0.8s cubic-bezier(0.55, 0, 0.95, 0.45) var(--fd), opacity 0.5s ease; }
+.popped .bb-fall { transform: translateY(var(--drop)) rotate(var(--rot)); }
+.popped .bb-crack { opacity: 1; transition: opacity 0.1s linear calc(var(--fd) + 0.8s); }
+.popped .bb-bet { fill: #1d211a; transition: fill 0.4s ease calc(var(--fd) + 0.8s); }
+/* The core lands whole: a bounce, not a crack. */
+.popped .bb-fall.core { transition: none; animation: bb-land 1.1s var(--fd) both; }
+@keyframes bb-land {
+  0% { transform: none; animation-timing-function: cubic-bezier(0.55, 0, 0.95, 0.45); }
+  62% { transform: translateY(var(--drop)); animation-timing-function: cubic-bezier(0.2, 0.6, 0.4, 1); }
+  78% { transform: translateY(calc(var(--drop) - 28px)); animation-timing-function: cubic-bezier(0.55, 0, 0.95, 0.45); }
+  100% { transform: translateY(var(--drop)); }
+}
+
+.bb-half rect:first-child { fill: #1d3305; stroke: #76b900; stroke-width: 2.5; }
+.bb-chip { fill: #76b900; }
+.bb-code { stroke: #b7f04a; stroke-width: 4; stroke-linecap: round; }
+.bb-tag { fill: #76b900; font-size: 28px; font-weight: 700; opacity: 0; paint-order: stroke; stroke: #0b0d0a; stroke-width: 8px; }
+.bb-tag.left { text-anchor: end; }
+.bb-tag.right { text-anchor: start; }
+
+/* Two halves: they pull apart to show what they are, then lock back together. */
+.halves .bb-half { animation: bb-split 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.1s both; }
+.halves .bb-half.left { --dx: -26px; }
+.halves .bb-half.right { --dx: 26px; }
+@keyframes bb-split { 0% { transform: none; } 35%, 65% { transform: translateX(var(--dx)); } 100% { transform: none; } }
+.halves .bb-tag { animation: bb-tag 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards; }
+@keyframes bb-tag { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.halves .core { filter: drop-shadow(0 0 24px rgba(118, 185, 0, 0.5)); transition: filter 0.8s ease 1.4s; }
+
+/* Cut first: the weakest bets go, one by one. */
+.cut .bb-fall:not(.core) { opacity: 0; transform: translateY(calc(var(--drop) + 30px)) rotate(var(--rot)) scale(0.6); transition: transform 0.5s cubic-bezier(0.55, 0, 1, 0.45) var(--cut), opacity 0.4s ease var(--cut); }
+.cut .core { animation: none; transform: translateY(var(--drop)); filter: drop-shadow(0 0 34px rgba(118, 185, 0, 0.75)); }
+.cut .bb-tag { opacity: 1; animation: none; }
+
+.no-motion .bubble-scene, .no-motion .bubble-scene * { animation: none !important; transition: none !important; }
+.no-motion .bb-floor { stroke-dashoffset: 0; }
+.no-motion .popped .bb-bubble { opacity: 0; }
+.no-motion .popped .bb-burst { display: none; }
+.no-motion .popped .core { transform: translateY(var(--drop)); }
+.no-motion .halves .bb-tag { opacity: 1; }
