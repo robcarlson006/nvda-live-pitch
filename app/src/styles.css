@@ -53,7 +53,14 @@ body.is-stage { overflow: hidden; cursor: none; }
 @keyframes rail-in { from { opacity: 0; clip-path: inset(0 0 100% 0); } to { opacity: 1; clip-path: inset(0); } }
 .point.current { color: var(--white); }
 /* Figures count up to their value as the point lands (Figures.tsx). The final text holds the width, so nothing reflows. */
-.fig { display: inline-grid; font-weight: 620; color: var(--white); font-variant-numeric: tabular-nums; }
+/* Key figures stand out: a touch larger and bolder, then a soft green highlighter sweeps under them once they have
+   counted up. On a point that has been said, the mark fades so the newest figure is the one that glows. */
+.fig { display: inline-grid; position: relative; isolation: isolate; font-size: 1.12em; line-height: 1; font-weight: 680; font-stretch: 106%; color: var(--white); font-variant-numeric: tabular-nums; }
+.fig::before { content: ''; position: absolute; z-index: -1; left: -0.14em; right: -0.14em; bottom: 0.02em; height: 0.46em; border-radius: 0.08em; background: rgba(118, 185, 0, 0.38); transform-origin: left; transition: opacity 0.6s ease; animation: fig-mark 0.7s cubic-bezier(0.65, 0, 0.35, 1) var(--mark-at, 0s) both; }
+@keyframes fig-mark { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.point.past .fig::before { opacity: 0.25; }
+.no-motion .fig::before { animation: none; }
+@media (prefers-reduced-motion: reduce) { .fig::before { animation: none; } }
 .fig > span { grid-area: 1 / 1; }
 .fig-final { visibility: hidden; }
 @keyframes wipe { from { clip-path: inset(-10% 100% -10% 0); } to { clip-path: inset(-10% -12% -10% 0); } }

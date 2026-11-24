@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 
 /**
  * Figures in a point ("$441.2bn", "-33.55%", "1.01%", "3.7x") count up to their value as the point lands, and settle on
@@ -58,7 +58,8 @@ function CountUp({ text, figure, at, motion }: { text: string; figure: NonNullab
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     // The final text sits invisibly underneath, so the line keeps its width while the digits run and nothing reflows.
-    <span className="fig">
+    // --mark-at: the highlighter sweeps under the figure once it has finished counting.
+    <span className="fig" style={{ '--mark-at': `${at + 1.15}s` } as CSSProperties}>
       <span className="fig-final" aria-hidden="true">{text}</span>
       <span className="fig-live">{shown}</span>
     </span>

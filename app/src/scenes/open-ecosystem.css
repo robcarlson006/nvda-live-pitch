@@ -1,0 +1,30 @@
+/* ---------- open-ai: NVIDIA at the centre of the open-model companies it backs ---------- */
+.scene-open-ai .scene { width: 54vw; }
+.oe { width: 100%; height: 100%; display: block; overflow: visible; font-family: 'Archivo Variable', system-ui, sans-serif; }
+
+.oe-hub { animation: oe-fade 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both; }
+.oe-hub-box { fill: #0c1208; stroke: var(--green); stroke-width: 2.5; }
+.oe-hub-glow { fill: rgba(118, 185, 0, 0.35); animation: oe-breathe 3s ease-in-out infinite alternate; }
+@keyframes oe-breathe { from { opacity: 0.35; } to { opacity: 0.85; } }
+.oe-pin { stroke: #4a6a12; stroke-width: 3; }
+.oe-hub-text { fill: var(--white); font-size: 30px; font-weight: 800; font-stretch: 118%; letter-spacing: 0.02em; }
+
+.oe-link { fill: none; stroke: #3d5a0b; stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; animation: oe-draw 0.9s cubic-bezier(0.65, 0, 0.35, 1) calc(0.15s + var(--k) * 0.14s) forwards; }
+@keyframes oe-draw { to { stroke-dashoffset: 0; } }
+/* Once the ring closes, light pulses run out along every link: the ecosystem is active. */
+.oe-flow { fill: none; stroke: var(--green); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 3 40; opacity: 0; transition: opacity 0.8s ease 0.4s; }
+.closed .oe-flow { opacity: 0.9; animation: oe-run 1.6s linear infinite; }
+@keyframes oe-run { to { stroke-dashoffset: -43; } }
+
+.oe-node-in { animation: oe-pop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) calc(0.6s + var(--k) * 0.14s) both; }
+@keyframes oe-pop { from { opacity: 0; transform: scale(0.6); } }
+.oe-node rect { fill: #10140b; stroke: #8fbf3a; stroke-width: 1.5; }
+.oe-node text { fill: var(--white); font-size: 22px; font-weight: 560; }
+.oe-label { fill: var(--green); font-size: 20px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; animation: oe-fade 0.8s ease 0.3s both; }
+@keyframes oe-fade { from { opacity: 0; } }
+
+.oe-ring { fill: none; stroke: #5d6358; stroke-width: 1.5; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; transition: opacity 0.4s; }
+.closed .oe-ring { opacity: 1; stroke: #8fbf3a; animation: oe-draw 1.8s cubic-bezier(0.65, 0, 0.35, 1) forwards; }
+
+.no-motion .oe *, .no-motion .oe { animation: none !important; transition: none !important; }
+.no-motion .oe-link, .no-motion .closed .oe-ring { stroke-dashoffset: 0; }

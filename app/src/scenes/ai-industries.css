@@ -1,0 +1,78 @@
+/* ---------- AI across four industries: a 2 × 2 board that zooms into the panel being talked about ---------- */
+.scene-already-doing .scene { width: 49vw; right: calc(var(--margin) * 0.6); display: flex; align-items: center; }
+.ai4-frame { width: 100%; height: calc(76 * var(--u)); overflow: hidden; border-radius: calc(0.8 * var(--u)); }
+.ai4-board {
+  width: 100%; height: 100%; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: calc(1.4 * var(--u));
+  transition: transform 1.1s cubic-bezier(0.65, 0, 0.35, 1);
+}
+/* Each panel is half the board, so zooming by about 2 from the panel's own corner fills the frame with it. */
+.ai4-board.zoomed { transform: scale(1.97); }
+
+.ai4-panel {
+  position: relative; overflow: hidden; display: flex; flex-direction: column; gap: calc(0.8 * var(--u));
+  padding: calc(2 * var(--u)) calc(2.2 * var(--u)) calc(1.6 * var(--u));
+  background: rgba(10, 12, 9, 0.86); border: 1px solid #262a23; border-radius: calc(0.6 * var(--u));
+  transition: border-color 0.8s ease, background 0.8s ease, opacity 0.8s ease, box-shadow 0.8s ease;
+  animation: ai4-boot 0.9s cubic-bezier(0.16, 1, 0.3, 1) calc(0.35s + var(--i) * 0.12s) both;
+}
+@keyframes ai4-boot { from { opacity: 0; transform: translateY(calc(2 * var(--u))) scale(0.97); } }
+.ai4-panel header { display: flex; justify-content: space-between; align-items: center; gap: 1ch; }
+.ai4-industry { margin: 0; font-size: calc(1.8 * var(--u)); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 680; color: #8d9388; transition: color 0.8s ease; }
+.ai4-nv { margin: 0; font-size: calc(1.4 * var(--u)); font-weight: 700; letter-spacing: 0.04em; color: #000; background: var(--green); padding: 0.2em 0.6em; border-radius: 2px; }
+.ai4-art { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.ai4-art .art { width: 100%; max-height: 100%; }
+.ai4-head { margin: 0; font-size: calc(2.7 * var(--u)); line-height: 1.15; font-weight: 700; font-stretch: 108%; color: #d6dacf; transition: color 0.8s ease; }
+.ai4-lines { margin: 0; padding: 0; list-style: none; display: grid; gap: calc(0.4 * var(--u)); }
+.ai4-lines li { font-size: calc(1.9 * var(--u)); line-height: 1.3; color: #7a8174; transition: color 0.8s ease; padding-left: 1.1em; position: relative; }
+.ai4-lines li::before { content: ''; position: absolute; left: 0; top: 0.5em; width: 0.45em; height: 0.45em; background: #3a4033; transition: background 0.8s ease; }
+.ai4-lines li.on { color: var(--white); }
+.ai4-lines li.on::before { background: var(--green); }
+.ai4-source { margin: 0; font-size: calc(1.25 * var(--u)); color: #5d6358; }
+
+/* Not said yet: present, quieter. */
+.ai4-panel.idle { opacity: 0.6; }
+/* Being said: lit green. */
+.ai4-panel.now { border-color: var(--green); background: rgba(14, 24, 5, 0.94); box-shadow: inset 0 0 0 1px var(--green), 0 0 calc(3 * var(--u)) rgba(118, 185, 0, 0.25); }
+.ai4-panel.now .ai4-industry { color: var(--green); }
+.ai4-panel.now .ai4-head, .ai4-panel.said .ai4-head, .ai4-panel.lit .ai4-head { color: var(--white); }
+.ai4-panel.said { border-color: #3d5a0b; }
+.ai4-panel.said .ai4-industry { color: #8fbf3a; }
+.ai4-panel.lit.nvidia { border-color: #3d5a0b; }
+/* The script's last point is said: the whole board settles, fully lit. */
+.ai4-board.done .ai4-panel { opacity: 1; }
+
+/* ---- The drawings ---- */
+.art { overflow: visible; }
+.art path, .art line, .art ellipse, .art rect { vector-effect: non-scaling-stroke; }
+.art-draw { fill: none; stroke: var(--green); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: art-draw 2.4s cubic-bezier(0.65, 0, 0.35, 1) 0.8s forwards; }
+.art-echo { stroke: #4a6a12; animation-delay: 1.1s; }
+@keyframes art-draw { to { stroke-dashoffset: 0; } }
+.art-node { fill: #f4f6f1; opacity: 0; animation: art-pop 0.5s ease calc(1.4s + var(--k) * 0.3s) forwards, art-glow 2.4s ease-in-out calc(3s + var(--k) * 0.3s) infinite alternate; }
+@keyframes art-pop { to { opacity: 1; } }
+@keyframes art-glow { to { fill: var(--green); } }
+
+.art-outline { fill: none; stroke: #3a4033; stroke-width: 1.5; }
+.art-dot { fill: #5d6358; }
+.art-flag { fill: #5d6358; animation: art-flag 4.2s linear 0.8s infinite; }
+@keyframes art-flag { 0%, 50% { fill: #5d6358; r: 6; } 56%, 100% { fill: #ff4b3e; r: 7; } }
+.art-sweep { fill: var(--green); opacity: 0.8; animation: art-sweep 4.2s cubic-bezier(0.45, 0, 0.55, 1) 0.8s infinite; filter: drop-shadow(0 0 6px rgba(118, 185, 0, 0.8)); }
+@keyframes art-sweep { 0% { transform: translateX(0); opacity: 0; } 8% { opacity: 0.9; } 92% { opacity: 0.9; } 100% { transform: translateX(188px); opacity: 0; } }
+
+.art-crop { fill: #4a6a12; stroke: none; }
+.art-weed { fill: none; stroke: #e8b04a; stroke-width: 2; stroke-linecap: round; }
+.art-boom rect { fill: #b4b9ae; }
+.art-boom { animation: art-boom 5s cubic-bezier(0.45, 0, 0.55, 1) 0.8s infinite alternate; }
+@keyframes art-boom { from { transform: translateX(20px); } to { transform: translateX(200px); } }
+/* The mist shows only while the boom passes over a weed (at about 64 and 156 on the 20–200 run). */
+.art-mist { fill: rgba(118, 185, 0, 0.55); opacity: 0; animation: art-mist 5s linear 0.8s infinite alternate; }
+@keyframes art-mist { 0%, 18% { opacity: 0; } 22%, 30% { opacity: 1; } 34%, 66% { opacity: 0; } 70%, 78% { opacity: 1; } 82%, 100% { opacity: 0; } }
+
+.art-chip { fill: #10140b; stroke: #5d6358; stroke-width: 1.5; }
+.art-pin { stroke: #5d6358; stroke-width: 2; }
+.art-pipe { fill: none; stroke: #1f2c18; stroke-width: 10; stroke-linejoin: round; }
+.art-flow { fill: none; stroke: #5fd3c6; stroke-width: 3.5; stroke-linejoin: round; stroke-dasharray: 10 14; animation: art-flow 1.4s linear infinite; opacity: 0.9; }
+@keyframes art-flow { to { stroke-dashoffset: -24; } }
+
+.no-motion .ai4-panel, .no-motion .ai4-board, .no-motion .art * { animation: none !important; transition: none !important; }
+.no-motion .art-draw { stroke-dashoffset: 0; }
+.no-motion .art-node { opacity: 1; }

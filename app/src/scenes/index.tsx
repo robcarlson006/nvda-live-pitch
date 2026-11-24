@@ -6,10 +6,20 @@ import { Napkin } from './Napkin.tsx';
 import { FirstGpu } from './FirstGpu.tsx';
 import { FourLayers, Handoff } from './FourLayers.tsx';
 import { Bubble } from './Bubble.tsx';
+import { Demand } from './Demand.tsx';
+import { OpenEcosystem } from './OpenEcosystem.tsx';
 import './scenes.css';
 
 /** `stage` = how many of the slide's points have been said so far, so each scene builds with the speaker. */
-export type SceneProps = { stage: number; motion: boolean };
+export type SceneProps = {
+  stage: number;
+  motion: boolean;
+  /** The text of the points said so far, in the order they were said (figures already looked up). Lets a scene follow
+   *  the script as it changes: match on what the point says, not on its position. */
+  points?: string[];
+  /** How many points the slide has in all. */
+  total?: number;
+};
 
 /**
  * Bespoke animated scenes, keyed by spine slide id. They sit on the right of the slide while its own title and
@@ -24,6 +34,8 @@ const scenes: Record<string, ComponentType<SceneProps>> = {
   'four-layers': FourLayers,
   handoff: Handoff,
   'if-it-pops': Bubble,
+  'open-ai': OpenEcosystem,
+  'beyond-hyperscalers': Demand,
 };
 
 export function sceneFor(id: string): ComponentType<SceneProps> | undefined {

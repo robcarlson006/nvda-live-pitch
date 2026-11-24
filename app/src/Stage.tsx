@@ -227,7 +227,7 @@ function SlideView({ slide, reveal, datasets, figure, motion }: { slide: Slide; 
   const Scene = sceneFor(slide.id);
   const scene = Scene && (
     <div className="scene" aria-hidden="true">
-      <Scene stage={shownBullets.length} motion={motion} />
+      <Scene stage={shownBullets.length} motion={motion} points={[...shownBullets].sort((x, y) => bulletIdx(x) - bulletIdx(y)).map((i) => slide.bullets[i])} total={slide.bullets.length} />
     </div>
   );
 
