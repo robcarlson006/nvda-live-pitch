@@ -33,7 +33,9 @@ export const KEYTERMS = [
   // Competitors, customers, the open-model ecosystem
   'AMD', 'ROCm', 'TSMC', 'Broadcom', 'Huawei', 'H20', 'Nscale', 'Hugging Face', 'Mistral', 'OpenAI', 'Anthropic', 'hyperscaler',
   // Finance and valuation
-  'EBITDA', 'P/E', 'WACC', 'discounted cash flow', 'Damodaran',
+  'EBITDA', 'EBIT', 'CAGR', 'P/E', 'WACC', 'discounted cash flow', 'Damodaran',
+  // Industries using AI (already-doing)
+  'John Deere', 'Ecolab',
   // ESG and governance
   'Scope 1', 'Scope 2', 'Scope 3', 'export controls', 'Glassdoor', 'Colette Kress',
   // The team

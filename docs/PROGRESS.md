@@ -216,3 +216,12 @@ cd app && npm install && npm run dev
 - New dataset `model_dcf_summary` (forecast period, CAGR, EBIT margin, PV of FCFs, PV of TV, TV % of EV, EV, net debt, equity, diluted shares, implied price, price, upside) for the new DCF slides. New test checks it adds up.
 - The three-rates `say` line now uses lookups instead of typed numbers.
 - Next: the DCF slides in `docs/handoff/DCF-SLIDES-PLAN.md`.
+
+## 24 Nov late night: every DCF output on stage (branch `rob/dcf-slides`)
+
+- New `dcf-drivers` (forecast period, revenue CAGR, EBIT vs FCF margin) and `dcf-summary` (the DCF on one page) slides, each with an animated scene that reads figures from `data/clean`.
+- `dcf-bridge` now says the terminal value's share of EV (76%) and "no net debt".
+- `already-doing` moved after `space-race` (Mi'kael), four industries.
+- Backup deck rebuilt (40 pages); the summary page has the full number grid. Keyterms add John Deere, Ecolab, EBIT, CAGR.
+- Speech is about 8.9 min + ~20 s transitions. See TIMING.md for cuts. Notes for Panshul in `docs/script/GRAPHICS-NOTES.md`.
+- Checked on `/stage` at 1600×900: drivers, bridge, summary, already-doing. Not yet checked on the projector.

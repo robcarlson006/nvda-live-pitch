@@ -461,13 +461,14 @@
   bullets:
     - text: "The assumptions"
       cue: assumptions
-    - text: "The cash flows, and what they are worth today"
+    - text: "The cash flows, in today's money"
       cue: worth today
     - text: "From enterprise value to one share"
       cue: one share
     - text: "The answer: {{model_dcf_summary | Upside | value}} above today's price"
       cue: the answer
-  say: "Here is the whole DCF **on one page**. The assumptions: a {{model_dcf_inputs | WACC, US semiconductor industry average | value}} discount rate, {{model_dcf_inputs | Terminal growth (our choice) | value}} long-run growth, five years of forecast. The cash flows, and what they are worth today. From enterprise value, with no net debt, to one share. And the answer: {{model_dcf_summary | Implied share price | value}} against {{model_dcf_summary | Share price | value}} today, {{model_dcf_summary | Upside | value}} upside."
+  # Short on purpose: the dashboard carries the numbers, and the bridge has just said most of them.
+  say: "So the DCF **on one page**: the assumptions, the cash flows worth today, and one share. The answer: {{model_dcf_summary | Implied share price | value}} against {{model_dcf_summary | Share price | value}}, {{model_dcf_summary | Upside | value}} upside."
   sources: ["Team valuation model on Bloomberg FA, DES and consensus data; Google Finance; Damodaran (NYU)"]
 
 - id: reverse-dcf

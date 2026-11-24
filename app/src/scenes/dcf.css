@@ -48,30 +48,35 @@
 .no-motion .dd-bracket, .no-motion .dd-arc { stroke-dashoffset: 0; }
 
 /* ===== dcf-summary ===== */
-.scene-dcf-summary .scene { width: 62vw; right: calc(var(--margin) * 0.5); }
-main.slide.scene-dcf-summary h1, main.slide.scene-dcf-summary h1.statement { max-width: 28vw !important; font-size: calc(6 * var(--u)) !important; }
-main.slide.scene-dcf-summary .points, main.slide.scene-dcf-summary .point { max-width: 27vw !important; }
-main.slide.scene-dcf-summary .sources { right: 64vw; }
+.scene-dcf-summary .scene { width: 55vw; right: calc(var(--margin) * 0.5); }
+main.slide.has-scene.scene-dcf-summary h1, main.slide.has-scene.scene-dcf-summary h1.statement { max-width: 27vw !important; font-size: calc(6 * var(--u)) !important; }
+main.slide.has-scene.scene-dcf-summary .points, main.slide.has-scene.scene-dcf-summary .point { max-width: 25vw !important; font-size: calc(2.8 * var(--u)) !important; }
+main.slide.has-scene.scene-dcf-summary .sources { right: 60vw; }
 
-.ds { position: absolute; inset: calc(9 * var(--u)) 0 calc(9 * var(--u)) 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: calc(1.6 * var(--u)); align-content: center; font-family: 'Archivo Variable', system-ui, sans-serif; }
-.ds-tile { position: relative; padding: calc(1.8 * var(--u)) calc(2.2 * var(--u)); border: 1px solid #2a3125; border-top: 3px solid var(--green); border-radius: calc(0.6 * var(--u)); background: linear-gradient(180deg, rgba(118, 185, 0, 0.06), rgba(10, 12, 9, 0.92) 40%); animation: ds-tile 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; overflow: hidden; }
+/* Assumptions and value stacked on the left, cash flows tall on the right, the answer along the bottom. */
+.ds { position: absolute; inset: calc(7.5 * var(--u)) 0 calc(4 * var(--u)) 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-areas: 'a b' 'c b' 'd d'; grid-template-rows: auto 1fr auto; gap: calc(1.3 * var(--u)); align-content: center; font-family: 'Archivo Variable', system-ui, sans-serif; }
+.ds .t1 { grid-area: a; }
+.ds .t2 { grid-area: b; display: flex; flex-direction: column; }
+.ds .t3 { grid-area: c; align-self: start; }
+.ds .ds-answer { grid-area: d; }
+.ds-tile { position: relative; padding: calc(1.2 * var(--u)) calc(1.8 * var(--u)); border: 1px solid #2a3125; border-top: 3px solid var(--green); border-radius: calc(0.6 * var(--u)); background: linear-gradient(180deg, rgba(118, 185, 0, 0.06), rgba(10, 12, 9, 0.92) 40%); animation: ds-tile 0.9s cubic-bezier(0.16, 1, 0.3, 1) both; overflow: hidden; }
 @keyframes ds-tile { 0% { opacity: 0; transform: translateY(calc(3 * var(--u))) scale(0.97); border-top-color: #d7ff7a; } 60% { opacity: 1; } }
 /* GPU-die texture: a faint grid of green squares behind each tile, like the core array. */
 .ds-tile::before { content: ''; position: absolute; inset: 0; z-index: -1; opacity: 0.18; background-image: linear-gradient(#0a0c09 2px, transparent 2px), linear-gradient(90deg, #0a0c09 2px, transparent 2px); background-size: calc(1.6 * var(--u)) calc(1.6 * var(--u)); background-color: #1c2a07; mask-image: linear-gradient(180deg, #000, transparent 70%); }
-.ds-tile-head { margin: 0 0 calc(1.2 * var(--u)); display: flex; align-items: center; gap: calc(1 * var(--u)); font-size: calc(1.9 * var(--u)); letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: #b4b9ae; }
+.ds-tile-head { margin: 0 0 calc(0.6 * var(--u)); display: flex; align-items: center; gap: calc(1 * var(--u)); font-size: calc(1.9 * var(--u)); letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: #b4b9ae; }
 .ds-n { display: inline-grid; place-items: center; width: calc(2.8 * var(--u)); height: calc(2.8 * var(--u)); border-radius: 50%; background: var(--green); color: #0a0c09; font-size: calc(1.7 * var(--u)); letter-spacing: 0; }
 /* The tile just added is lit; the ones already said step back slightly. */
 .s2 .ds-tile:not(:nth-child(2)), .s3 .ds-tile:not(:nth-child(3)), .s4 .ds-tile:not(:nth-child(4)) { border-top-color: #3d5a0b; }
 .s2 .ds-tile:nth-child(1), .s3 .ds-tile:nth-child(-n + 2), .s4 .ds-tile:nth-child(-n + 3) { opacity: 0.72; transition: opacity 0.8s ease, border-color 0.8s ease; }
 
-.ds-row { display: grid; grid-template-columns: 1fr auto; align-items: baseline; column-gap: calc(1.2 * var(--u)); padding: calc(0.55 * var(--u)) 0; border-bottom: 1px solid #1f241c; animation: dcf-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both; }
+.ds-row { display: grid; grid-template-columns: 1fr auto; align-items: baseline; column-gap: calc(1.2 * var(--u)); padding: calc(0.3 * var(--u)) 0; border-bottom: 1px solid #1f241c; animation: dcf-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both; }
 .ds-row:last-of-type { border-bottom: 0; }
-.ds-label { font-size: calc(2.1 * var(--u)); color: #d6dacf; }
-.ds-value { font-size: calc(2.8 * var(--u)); font-weight: 750; font-stretch: 108%; color: var(--white); text-align: right; font-variant-numeric: tabular-nums; }
-.ds-note { grid-column: 1 / -1; font-size: calc(1.55 * var(--u)); color: #7a8174; margin-top: calc(0.1 * var(--u)); }
+.ds-label { font-size: calc(1.9 * var(--u)); color: #d6dacf; white-space: nowrap; }
+.ds-value { font-size: calc(2.5 * var(--u)); font-weight: 750; font-stretch: 108%; color: var(--white); text-align: right; font-variant-numeric: tabular-nums; }
+.ds-note { margin-left: calc(0.8 * var(--u)); font-size: calc(1.4 * var(--u)); color: #7a8174; }
 
 /* Cash flows: outline = the cash in that year; solid = what it is worth today. The gap is the discounting. */
-.ds-flows { display: flex; align-items: flex-end; gap: calc(1.2 * var(--u)); height: calc(9 * var(--u)); padding-bottom: calc(2.4 * var(--u)); position: relative; }
+.ds-flows { display: flex; align-items: flex-end; gap: calc(1.2 * var(--u)); flex: 1; min-height: calc(9 * var(--u)); max-height: calc(16 * var(--u)); padding-bottom: calc(2.4 * var(--u)); position: relative; }
 .ds-flow { position: relative; flex: 1; height: 100%; display: flex; align-items: flex-end; justify-content: center; }
 .ds-fcf, .ds-pv { position: absolute; bottom: 0; left: 0; right: 0; border-radius: 2px 2px 0 0; transform-origin: 50% 100%; }
 .ds-fcf { border: 2px dashed #76b900; background: rgba(118, 185, 0, 0.06); animation: dcf-grow-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both; }
@@ -97,14 +102,14 @@ main.slide.scene-dcf-summary .sources { right: 64vw; }
 .ds-answer { grid-column: 1 / -1; border-top-width: 4px; }
 .ds-answer-top { display: flex; align-items: flex-end; gap: calc(4 * var(--u)); }
 .ds-big, .ds-vs, .ds-up { display: flex; flex-direction: column; animation: dcf-rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--d) both; }
-.ds-big-num { font-size: calc(8 * var(--u)); font-weight: 850; font-stretch: 115%; line-height: 0.95; color: var(--green); }
+.ds-big-num { font-size: calc(6.6 * var(--u)); font-weight: 850; font-stretch: 115%; line-height: 0.95; color: var(--green); }
 .ds-big-num .fig { color: var(--green); font-size: 1em; }
 .ds-big-cap, .ds-vs-cap, .ds-up-cap { font-size: calc(1.8 * var(--u)); color: #b4b9ae; margin-top: calc(0.4 * var(--u)); }
 .ds-vs-num { font-size: calc(4.2 * var(--u)); font-weight: 750; color: var(--white); line-height: 1; }
 .ds-up { margin-left: auto; text-align: right; }
-.ds-up-num { font-size: calc(6 * var(--u)); font-weight: 850; font-stretch: 112%; line-height: 0.95; color: var(--white); }
+.ds-up-num { font-size: calc(5.4 * var(--u)); font-weight: 850; font-stretch: 112%; line-height: 0.95; color: var(--white); }
 
-.ds-meter { position: relative; height: calc(10 * var(--u)); margin-top: calc(2 * var(--u)); }
+.ds-meter { position: relative; height: calc(10 * var(--u)); margin: calc(3.2 * var(--u)) calc(3 * var(--u)) 0; }
 .ds-track { position: absolute; left: 0; right: 0; top: calc(4 * var(--u)); height: calc(1 * var(--u)); border-radius: 99px; background: #1f241c; animation: dcf-fade 0.6s ease 1.6s both; }
 .ds-fill { position: absolute; top: calc(4 * var(--u)); height: calc(1 * var(--u)); border-radius: 99px; background: linear-gradient(90deg, #3d5a0b, var(--green)); transform-origin: 0 50%; animation: dcf-grow-right 1.6s cubic-bezier(0.65, 0, 0.35, 1) 1.9s both; }
 .ds-tick { position: absolute; top: 0; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; font-size: calc(1.5 * var(--u)); color: #9aa094; white-space: nowrap; animation: dcf-fade 0.5s ease var(--d, 1.7s) both; }

@@ -15,9 +15,9 @@ const YEARS = ['FY27', 'FY28', 'FY29', 'FY30', 'FY31', 'FY32'];
 const X0 = 70;
 const STEP = 116;
 const W = 78;
-const BASE = 560; // revenue baseline
-const H = 360; // tallest bar
-const MONEY = { x: 70, y: 800, w: 660, h: 64 };
+const BASE = 590; // revenue baseline
+const H = 290; // tallest bar (leaves room above for the CAGR label, clear of the chapter rail)
+const MONEY = { x: 70, y: 830, w: 660, h: 64 };
 
 const raw = (ds: Dataset | undefined, series: string, x: string) => ds?.series[series]?.[ds.x.indexOf(x)] ?? null;
 

@@ -21,9 +21,8 @@ const raw = (ds: Dataset | undefined, series: string, x: string) => ds?.series[s
 function Row({ label, value, at, motion, note }: { label: string; value?: string; at: number; motion: boolean; note?: string }) {
   return (
     <div className="ds-row" style={{ '--d': `${at}s` } as CSSProperties}>
-      <span className="ds-label">{label}</span>
+      <span className="ds-label">{label}{note && <small className="ds-note">{note}</small>}</span>
       <span className="ds-value">{value ? <Figures text={value} at={at} motion={motion} /> : '…'}</span>
-      {note && <span className="ds-note">{note}</span>}
     </div>
   );
 }
@@ -63,17 +62,17 @@ export function DcfSummary({ stage, motion, datasets = {} }: SceneProps) {
   return (
     <div className={`ds s${Math.min(stage, 4)}`}>
       {stage >= 1 && (
-        <Tile n={1} title="Assumptions">
-          <Row label="WACC (discount rate)" value={I('WACC, US semiconductor industry average')} at={0.3} motion={motion} note="US chip-industry average" />
-          <Row label="Terminal growth" value={I('Terminal growth (our choice)')} at={0.5} motion={motion} note="a year, after FY32" />
+        <Tile n={1} title="Assumptions" className="t1">
+          <Row label="WACC" value={I('WACC, US semiconductor industry average')} at={0.3} motion={motion} note="industry average" />
+          <Row label="Terminal growth" value={I('Terminal growth (our choice)')} at={0.5} motion={motion} note="after FY32" />
           <Row label="Forecast period" value={S('Forecast period')} at={0.7} motion={motion} note="FY28 to FY32" />
-          <Row label="Revenue growth (CAGR)" value={S('Revenue CAGR, FY27–32')} at={0.9} motion={motion} note="a year, FY27 to FY32" />
-          <Row label="EBIT margin" value={S('EBIT margin, FY26')} at={1.1} motion={motion} note="operating profit, FY26" />
+          <Row label="Revenue growth (CAGR)" value={S('Revenue CAGR, FY27–32')} at={0.9} motion={motion} note="FY27 to FY32" />
+          <Row label="EBIT margin" value={S('EBIT margin, FY26')} at={1.1} motion={motion} note="FY26" />
         </Tile>
       )}
 
       {stage >= 2 && (
-        <Tile n={2} title="Cash flows">
+        <Tile n={2} title="Cash flows" className="t2">
           <div className="ds-flows">
             {FC_YEARS.map((y, i) => (
               <div key={y} className="ds-flow" style={{ '--d': `${0.3 + i * 0.12}s` } as CSSProperties}>
@@ -102,11 +101,11 @@ export function DcfSummary({ stage, motion, datasets = {} }: SceneProps) {
       )}
 
       {stage >= 3 && (
-        <Tile n={3} title="From value to one share">
+        <Tile n={3} title="From value to one share" className="t3">
           <Row label="Enterprise value" value={S('Enterprise value')} at={0.3} motion={motion} />
-          <Row label="− Net debt" value={I('Net cash')} at={0.6} motion={motion} note="none: this is net cash, so it is added" />
+          <Row label="+ Net cash" value={I('Net cash')} at={0.6} motion={motion} note="no net debt" />
           <Row label="= Equity value" value={S('Equity value')} at={0.9} motion={motion} />
-          <Row label="÷ Diluted shares" value={S('Diluted shares')} at={1.2} motion={motion} note="incl. staff options and awards" />
+          <Row label="÷ Diluted shares" value={S('Diluted shares')} at={1.2} motion={motion} note="incl. staff awards" />
         </Tile>
       )}
 

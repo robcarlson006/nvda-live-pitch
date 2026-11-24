@@ -296,6 +296,45 @@ def chart(c: canvas.Canvas, slide: dict, box: tuple[float, float, float, float])
             c.setFillColor(colors[si%len(colors)]); c.drawString(xx+si*ww/max(1,len(series)), yy-28, name)
 
 
+def dcf_summary_grid(c: canvas.Canvas, box: tuple[float, float, float, float]) -> None:
+    """The stage draws dcf-summary as an animated dashboard; on paper it is every DCF output as label / value rows."""
+    xx, yy, ww, hh = box
+    S = lambda s: value("model_dcf_summary", s, "value")
+    I = lambda s: value("model_dcf_inputs", s, "value")
+    rows = [
+        ("Assumptions", None),
+        ("WACC (US chip-industry average)", I("WACC, US semiconductor industry average")),
+        ("Terminal growth, after FY32", I("Terminal growth (our choice)")),
+        ("Forecast period, FY28 to FY32", S("Forecast period")),
+        ("Revenue growth (CAGR), FY27 to FY32", S("Revenue CAGR, FY27–32")),
+        ("EBIT margin, FY26", S("EBIT margin, FY26")),
+        ("Cash flows", None),
+        ("PV of FCFs, FY28 to FY32", S("PV of FCFs")),
+        ("PV of terminal value", S("PV of terminal value")),
+        ("Terminal value as % of EV", S("Terminal value share of EV")),
+        ("Value", None),
+        ("Enterprise value", S("Enterprise value")),
+        ("+ Net cash (no net debt)", I("Net cash")),
+        ("= Equity value", S("Equity value")),
+        ("÷ Diluted shares", S("Diluted shares")),
+        ("Answer", None),
+        ("Implied value per share", S("Implied share price")),
+        (f"Share price, {json.loads((DATA / 'model_dcf_inputs.json').read_text())['asOf']}", S("Share price")),
+        ("Upside", S("Upside")),
+    ]
+    row_h = hh / len(rows)
+    y = yy + hh - row_h * 0.7
+    for label, val in rows:
+        if val is None:
+            c.setFont("PitchBold", 10); c.setFillColor(GREEN); c.drawString(xx, y, label.upper())
+        else:
+            c.setFont("Pitch", 12); c.setFillColor(DETAIL); c.drawString(xx + 10, y, label)
+            big = label.startswith("Implied") or label == "Upside"
+            c.setFont("PitchBold", 15 if big else 13); c.setFillColor(GREEN if big else WHITE); c.drawRightString(xx + ww, y, val)
+            c.setStrokeColor(HexColor("#30362b")); c.setLineWidth(.5); c.line(xx + 10, y - 5, xx + ww, y - 5)
+        y -= row_h
+
+
 def page(c: canvas.Canvas, slide: dict, index: int, header: str | None = None) -> None:
     c.setFillColor(HexColor("#000000")); c.rect(0,0,W,H,fill=1,stroke=0)
     c.setFont("Pitch", 8); c.setFillColor(FAINT); c.drawString(52,H-30,header or f"{index:02d}  /  {slide.get('speaker','')}  /  STATIC BACKUP")
@@ -304,7 +343,9 @@ def page(c: canvas.Canvas, slide: dict, index: int, header: str | None = None) -
     full_width_table=layout == "chart" and slide.get("chart", {}).get("display") == "table"
     has_diagram=bool(slide.get("diagram")) and not has_chart and not slide.get("stat")
     title=resolve(slide["title"])
-    title_width=390 if (has_chart and layout == "split") or has_diagram else 840
+    is_summary = slide.get("id") == "dcf-summary"
+    title_width=390 if (has_chart and layout == "split") or has_diagram or is_summary else 840
+    if is_summary: dcf_summary_grid(c, (480, 70, 420, 400))
     title_size=30 if len(title)>45 else 39
     y=draw_lines(c,title,52,H-100,title_width,title_size,4,title_size*1.12,bold=True)
     if slide.get("stat"):
