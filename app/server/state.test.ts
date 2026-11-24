@@ -38,10 +38,10 @@ test('zoom steps: the chart builds where it is told, zooms follow cues, and bad 
   s = run(s, say('TSMC, a hundred and nine tonnes'));
   assert.equal(zoomAt(e, s.reveal), 'TSMC');
   // A zoom without a cue lands together with the point before it; "all" zooms back out.
-  const v = spine[idx('valuation')];
-  let t = run(emptyState(), { type: 'goto', index: idx('valuation') }, say('the discount rate'), say('our base case'));
-  assert.equal(zoomAt(v, t.reveal), 'Base case');
-  t = run(t, say('at google finance'));
+  const v = spine[idx('dcf-bridge')];
+  let t = run(emptyState(), { type: 'goto', index: idx('dcf-bridge') }, say('the cash of the next five years'), say('everything after that'), say('an enterprise value of'), say('add sixty billion of net cash'));
+  assert.equal(zoomAt(v, t.reveal), 'Equity value');
+  t = run(t, say('divide by twenty four billion shares'));
   assert.equal(zoomAt(v, t.reveal), null);
   const base = { id: 't', layout: 'split' as const, title: 'T', bullets: ['a'], sources: [], chart: { type: 'bar' as const, datasetKey: 'peers_pe', series: ['Forward P/E'] } };
   assert.match(checkSlide({ ...base, steps: [{ bullet: 0 }, { zoom: 'NVIDIA' }, { chart: true }] }, datasets)!, /before the chart/);

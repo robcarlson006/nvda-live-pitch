@@ -115,7 +115,31 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
       if (spec.type === 'stackedBar') {
         // ECharts can't stack pictorial bars, so stacked charts use plain bars in the same colours.
         const color = i === 0 ? GREEN : ['#4a5045', '#6b7166', '#8d9388', '#b4b9ae'][(i - 1) % 4];
-        return { name, type: 'bar', stack: 'total', data: values, barCategoryGap: '28%', itemStyle: { color }, animationDuration: 1600, animationDelay: (j: number) => j * stagger };
+        // A bar that holds only this one series (e.g. actual, then forecast) gets its value on top.
+        // Truly stacked bars get none: the top segment's value would read as the total.
+        const alone = (j: number) => values[j] != null && spec.series.every((o) => o === name || dataset.series[o]?.[j] == null);
+        return {
+          name,
+          type: 'bar',
+          stack: 'total',
+          data: values.map((v, j) => ({
+            value: v,
+            label: {
+              show: alone(j) && (n <= 12 || j === hiIdx),
+              position: 'top',
+              distance: vh,
+              formatter: () => (v == null ? '' : fmt(v, name)),
+              color: j === hiIdx ? '#f4f6f1' : '#9aa094',
+              fontSize: j === hiIdx ? vh * 3.4 : vh * 2.4,
+              fontWeight: 500,
+              fontFamily: FONT,
+            },
+          })),
+          barCategoryGap: '28%',
+          itemStyle: { color },
+          animationDuration: 1600,
+          animationDelay: (j: number) => j * stagger,
+        };
       }
       if (isBar) {
         // Bars are stacks of cores, matching the stage background.

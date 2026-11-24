@@ -231,9 +231,8 @@
       cue: both halves
     - text: When money gets tight, the weakest bets are cut first. The best platform is the last to lose customers.
       cue: cut first
-    - text: "The share price would still fall. Our stress case, where AI spending stops, is {{model_valuation | Value per share | If AI ended for good}}"
-      cue: stress case
-  say: "And if the bubble pops? The share price would fall. But the dot-com crash wiped out companies built on ideas, not ones selling what people needed. NVIDIA owns both halves of AI, the hardware and the software, and when money gets tight the weakest bets are cut first. Our stress case, where AI spending stops, is 64 dollars a share."
+  # DRAFT say (stress-case sentence and bullet cut, spec 1f)
+  say: "And if the bubble pops? The share price would fall. But the dot-com crash wiped out companies built on ideas, not ones selling what people needed. NVIDIA owns both halves of AI, the hardware and the software, and when money gets tight the weakest bets are cut first."
 
 - id: already-doing
   speaker: Rob
@@ -338,29 +337,155 @@
     - text: "On earnings already reported over the last year it is {{research_market | P/E ratio, trailing | value}}"
       cue: already reported
   chart: { type: bar, datasetKey: peers_pe, series: [Forward P/E], highlight: NVIDIA }
-  say: "You might think it's expensive. On this year's expected earnings, it's the cheapest of the five big chip companies. On earnings already reported, it trades at about seventeen and three quarters times."
-  sources: [Bloomberg, 20 Nov 2026 for the peers; NVIDIA re-priced at Google Finance's 24 Nov 2026 share price]
+  # DRAFT say
+  say: "You might think it's expensive. On this year's expected earnings, it's the cheapest of the five big chip companies. On earnings already reported, it trades at about sixteen and a half times."
+  sources: [Bloomberg, 20 Nov 2026 for the peers; NVIDIA re-priced at the 24 Nov 2026 share price]
 
-- id: valuation
+# ---- The DCF, one step at a time (v2, 24 Nov 2026). Every figure is from data/clean/model_*.json. ----
+# The credibility moment: every input, grouped by where it comes from. Each input lights green as it is said.
+- id: dcf-inputs
   speaker: Panshul
-  cues: [what is it worth, our valuation, discounted cash flow, cash flow model, built a five year]
-  layout: split
-  title: Our base case is worth far more than today's price
+  cues: [what is it worth, none of these numbers, numbers are ours, where our numbers come from]
+  layout: inputs
+  title: None of these numbers are ours.
+  groups:
+    - tag: Bloomberg
+      items:
+        - text: "FY26 revenue: {{model_dcf_inputs | FY26 revenue | value}}"
+          cue: from bloomberg
+        - text: "Analyst consensus: {{model_dcf_inputs | FY27 revenue, analyst consensus | value}} in FY27, {{model_dcf_inputs | FY28 revenue, analyst consensus | value}} in FY28"
+          cue: analyst consensus
+        - text: "Free-cash-flow margin: {{model_dcf_inputs | Free-cash-flow margin, FY24–26 average | value}}, the FY24 to FY26 average"
+          cue: cash margin
+        - text: "Shares: {{model_dcf_inputs | Shares outstanding | value}}. Net cash: {{model_dcf_inputs | Net cash | value}}"
+          cue: share count
+        - text: "WACC, Q3 2026: {{model_dcf_inputs | WACC, Bloomberg | value}}"
+          cue: own discount rate
+    - tag: Google Finance
+      items:
+        - text: "Share price: {{model_dcf_inputs | Share price | value}}"
+          cue: from google finance
+        - text: "WACC: {{model_dcf_inputs | WACC, Google Finance | value}}"
+    - tag: Damodaran (NYU)
+      items:
+        - text: "US chip-industry average WACC, January 2026: {{model_dcf_inputs | WACC, US semiconductor industry average | value}}"
+          cue: from damodaran
+    - tag: Our two choices
+      items:
+        - text: "Long-run growth after FY32: {{model_dcf_inputs | Terminal growth (our choice) | value}} a year"
+          cue: two choices
+        - text: "Growth fades in a straight line to {{model_dcf_inputs | Terminal growth (our choice) | value}} by FY32"
+          cue: fading to
+  # DRAFT say
+  say: "So what is it worth? None of these numbers are ours. They come from Bloomberg, Google Finance and NVIDIA's own filings, and every figure on screen shows its source. From Bloomberg: last year's revenue, 216 billion dollars; analyst consensus for the next two years; NVIDIA's actual three-year average cash margin, 45 percent; the share count and net cash; and Bloomberg's own discount rate, 15.4 percent. From Google Finance: the share price, 152.85, and its rate, 14.45. From Damodaran at NYU: the US chip-industry average, 10.55. Only two choices are ours: long-run growth of 3 percent, and growth fading to that by 2032."
+
+- id: fcf
+  speaker: Panshul
+  cues: [free cash flow, cash left over, cash left after]
+  layout: chart
+  title: "Free cash flow: what NVIDIA made, then our base case"
   chartFirst: true
   bullets:
-    - text: "Discount rate {{research_market | WACC, US semiconductor industry average (Damodaran) | value}}: the US chip-industry average (Damodaran)"
-      cue: discount rate
-    - text: "Base case {{model_valuation | Value per share | Base case}}, against a price of {{model_valuation | Value per share | Share price today}}"
-      cue: base case
-    - { zoom: Base case }
-    - text: "At Google Finance's higher rate: {{model_sensitivity | Terminal growth 3% | 14.45%}}. At Bloomberg's: {{model_sensitivity | Terminal growth 3% | 15.4%}}"
-      cue: google finance
+    - { zoom: FY26, cue: last year }
+    - { zoom: FY32, cue: base case reaches }
+    - text: "Revenue: analyst consensus. Margin: NVIDIA's own FY24 to FY26 average"
+      cue: same three year margin
     - { zoom: all }
-    - text: "Bear case {{model_valuation | Value per share | Bear case}}. If AI spending stops: {{model_valuation | Value per share | If AI ended for good}}"
-      cue: bear case
-  chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Base case }
-  say: "So what is it worth? Our five-year cash-flow model uses a discount rate of ten and a half percent, the US chip-industry average, because NVIDIA holds more cash than debt. Our base case is about 391 dollars, against a price of 165. At Google Finance's higher rate it's 249; at Bloomberg's, about 167, roughly today's price. Our bear case, with rivals taking share and one soft year, is 102. If AI spending stops, 64."
-  sources: [Team valuation model on Bloomberg and consensus data; Google Finance, 24 Nov 2026; Bloomberg WACC, 20 Nov 2026]
+  chart: { type: stackedBar, datasetKey: model_fcf_forecast, series: [Actual, Base-case forecast], range: [FY22, FY32], highlight: FY26 }
+  # DRAFT say
+  say: "This is free cash flow: the cash left after running the business. Last year, 97 billion dollars. Our base case reaches 874 billion by 2032, on consensus revenue and that same three-year margin."
+
+# Waterfall at the industry rate: PV of five years → PV of everything after → enterprise value → + net cash → equity value.
+- id: dcf-bridge
+  speaker: Panshul
+  cues: [add it up, we add it up, then we add]
+  layout: split
+  title: "From cash flow to value per share, at {{model_dcf_inputs | WACC, US semiconductor industry average | value}}"
+  chartFirst: true
+  bullets:
+    - { zoom: PV of FY28–32 cash flow, cue: next five years }
+    - { zoom: PV of terminal value, cue: everything after }
+    - { zoom: Enterprise value, cue: enterprise value }
+    - { zoom: Equity value, cue: net cash }
+    - text: "÷ {{model_dcf_inputs | Shares outstanding | value}} shares = {{model_three_rates | Value per share | 10.55% industry (Damodaran)}} a share, against {{model_dcf_inputs | Share price | value}} today"
+      cue: divide by
+    - { zoom: all }
+  chart: { type: waterfall, datasetKey: model_dcf_bridge, series: ["10.55%"], totals: [Enterprise value, Equity value], highlight: Equity value }
+  # DRAFT say
+  say: "Then we add it up. The cash of the next five years, discounted at the industry rate, is worth 2.3 trillion dollars today. Everything after that, 7.1 trillion. Together, an enterprise value of 9.4 trillion. Add 60 billion of net cash, divide by 24 billion shares, and one share is worth 391 dollars, against 153 today."
+
+- id: three-rates
+  speaker: Panshul
+  cues: [didnt invent a discount rate, invent a discount rate, we didnt invent]
+  layout: split
+  title: Above today's price at all three discount rates
+  chartFirst: true
+  bullets:
+    - { zoom: 10.55% industry (Damodaran), cue: at the industry rate }
+    - { zoom: 14.45% Google Finance, cue: at google finance }
+    - { zoom: 15.4% Bloomberg, cue: at bloomberg }
+    - text: "Enterprise value: {{model_three_rates | Enterprise value | 10.55% industry (Damodaran)}}, {{model_three_rates | Enterprise value | 14.45% Google Finance}} and {{model_three_rates | Enterprise value | 15.4% Bloomberg}}"
+      cue: enterprise value of
+    - { zoom: all }
+  chart: { type: bar, datasetKey: model_three_rates, series: [Value per share], refLine: { series: Share price today }, highlight: 10.55% industry (Damodaran) }
+  # DRAFT say
+  say: "We didn't invent a discount rate. We used the US chip-industry average, and checked it against Google Finance's and Bloomberg's own rates for NVIDIA. At the industry rate, 391 dollars. At Google Finance's 14.45, 249. At Bloomberg's 15.4, 228. That is an enterprise value of 5.4 to 9.4 trillion dollars, and above today's price at all three rates."
+
+- id: reverse-dcf
+  speaker: Panshul
+  cues: [price assumes, what the price assumes, turn it around]
+  layout: split
+  title: "Today's price assumes {{model_implied_growth | Growth per year | Priced in today}} growth a year"
+  chartFirst: true
+  bullets:
+    - { zoom: Priced in today, cue: eleven and a half }
+    - { zoom: "Base case (consensus, then slowing)", cue: consensus slowing }
+    - text: The market is pricing in far less growth than analysts expect
+      cue: far less
+    - { zoom: all }
+  chart: { type: bar, datasetKey: model_implied_growth, series: [Growth per year], highlight: Priced in today }
+  # DRAFT say
+  say: "Now turn it around: what does today's price assume? Revenue growth of about eleven and a half percent a year. Consensus slowing to 3 percent gives thirty-five and a half. The market is pricing in far less than analysts expect."
+
+# Two downside cases: two slides, two names, never merged. Always say "our bear case, where rivals take share" and "if AI ended for good".
+- id: bear-case
+  speaker: Panshul
+  cues: [rivals take share, where rivals take, two downside cases]
+  layout: split
+  title: "Our bear case: rivals take share and spending pauses for a year"
+  chartFirst: true
+  bullets:
+    - text: Revenue grows a little in FY28, falls in FY29, then recovers
+      cue: then recovers
+    - { zoom: FY29 }
+    - text: "One share is worth {{model_downside | Value per share | Bear case}}, {{model_downside | Change from today | Bear case}} from today"
+      cue: below today
+    - text: "With a {{model_downside | Position size | Bear case}} position, it costs the portfolio {{model_downside | Cost to the portfolio | Bear case}}"
+      cue: about one percent
+  chart: { type: line, datasetKey: model_path_bear, series: [Bear case, Base case], highlight: FY29 }
+  # DRAFT say
+  say: "Now two downside cases, kept apart. First, our bear case, where rivals take share and spending pauses for a year. Revenue grows a little, falls in 2029, then recovers. One share is worth 102 dollars, a third below today. With our 3 percent position, that costs the portfolio about one percent."
+
+# The cores go dark. Muted grey line: visibly not the bear case.
+- id: ai-ended
+  speaker: Panshul
+  effect: dark
+  cues: [if ai ended for good, ai ended for good, ended for good]
+  layout: split
+  title: If AI ended for good
+  chartFirst: true
+  bullets:
+    - text: Revenue flat, then down a fifth, then no real growth ever again. Margins ten points lower
+      cue: down a fifth
+    - text: Harsher than anything in NVIDIA's history
+      cue: harsher than
+    - text: "Even then, one share is still worth {{model_downside | Value per share | If AI ended for good}}, not zero"
+      cue: not zero
+    - text: "With a {{model_downside | Position size | If AI ended for good}} position, it costs the portfolio {{model_downside | Cost to the portfolio | If AI ended for good}}"
+      cue: under two percent
+  chart: { type: line, datasetKey: model_path_ai_ended, series: [If AI ended for good, Base case], muted: true, highlight: FY29 }
+  # DRAFT say
+  say: "Second, the harshest case we could build: if AI ended for good. Revenue flat, then down a fifth, then no real growth ever again, with margins ten points lower. That is harsher than anything in NVIDIA's history. Even then, one share is still worth 64 dollars, not zero, and at 3 percent of the portfolio it costs us under two percent. So could AI really end for good? Mi'kael."
 
 # ---------------- Mi'kael: ESG and the recommendation ----------------
 
@@ -451,13 +576,14 @@
   bullets:
     - text: Start with three percent of the portfolio, well inside our ten percent limit on any one stock, for three to five years
       cue: three percent
-    - text: "Base case {{model_valuation | Value per share | Base case}} at the industry rate, and {{model_sensitivity | Terminal growth 3% | 14.45%}} even at Google Finance's higher one"
-      cue: even at google
-    - text: Sized so that our realistic bear case costs the portfolio about one percent, and the stress case under two percent
+    - text: "Base case above today's price at all three rates: {{model_sensitivity | Terminal growth 3% | 10.55%}}, {{model_sensitivity | Terminal growth 3% | 14.45%}} and {{model_sensitivity | Terminal growth 3% | 15.4%}}"
+      cue: all three rates
+    - text: "Our bear case, where rivals take share, costs the portfolio {{model_downside | Cost to the portfolio | Bear case}}; if AI ended for good, {{model_downside | Cost to the portfolio | If AI ended for good}}"
       cue: bear case
     - text: We would add only if cloud spending plans rise again and the CEO investigation closes, and sell if they are cut
       cue: we would add
-  say: "Our recommendation is to buy: three percent of the portfolio, for three to five years. Our base case is 391 dollars, and 249 even at Google Finance's higher rate. Our bear case would cost the portfolio about one percent. We would add if cloud spending plans rise and the CEO investigation closes, and sell if those plans are cut."
+  # DRAFT say
+  say: "Our recommendation is to buy: three percent of the portfolio, for three to five years. Our base case is above today's price at all three rates. Our bear case, where rivals take share, would cost the portfolio about one percent; if AI ended for good, under two. We would add if cloud spending plans rise and the CEO investigation closes, and sell if those plans are cut."
 
 # ---------------- Rob: the close ----------------
 

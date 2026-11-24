@@ -38,7 +38,7 @@ export const Step = z.union([
 export type Step = z.infer<typeof Step>;
 
 // A block of inputs from one source on an `inputs` slide: a small text tag (no logo) and its figures.
-export const Group = z.object({ tag: z.string().min(1).max(60), items: z.array(z.string().max(160)).min(1).max(6) });
+export const Group = z.object({ tag: z.string().min(1).max(60), items: z.array(z.string().max(260)).min(1).max(6) });
 
 // statement: one big line · number: a figure rendered by the core array · chart: chart fills the slide · split: text + chart
 // inputs: blocks of figures grouped by source (the DCF inputs slide)

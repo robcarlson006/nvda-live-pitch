@@ -37,8 +37,35 @@ const Reply = z.object({
 });
 export type Reply = z.infer<typeof Reply>;
 
-/** Datasets Claude may use: anything not flagged unverified. */
-export const usable = (datasets: Map<string, Dataset>) => [...datasets.values()].filter((d) => d.verified !== false && !d.placeholder);
+/** The highest discount rate the board may see or hear (Bloomberg WACC, Q3 2026). */
+export const MAX_RATE = 15.4;
+const RATE_NAME = /\b(wacc|discount rate|cost of capital)\b/i;
+const rateIn = (label: string) => {
+  const m = label.match(/^\s*(\d+(?:\.\d+)?)%/);
+  return m ? Number(m[1]) : null;
+};
+
+/**
+ * Drops any discount rate above MAX_RATE from a dataset: a rate series (e.g. "WACC, …" with a value above it),
+ * a series named by a rate ("19.3%"), or an x column named by a rate in a rate table (e.g. a sensitivity column).
+ */
+export function capRates(d: Dataset): Dataset {
+  const rateTable = RATE_NAME.test(`${d.title} ${d.source}`) || /sensitivity|bridge|three_rates/.test(d.key);
+  const tooHigh = (label: string) => {
+    const r = rateIn(label);
+    return r != null && r > MAX_RATE;
+  };
+  const keepX = d.x.map((x) => !(rateTable && tooHigh(x)));
+  const series = Object.fromEntries(
+    Object.entries(d.series)
+      .filter(([name, vals]) => !tooHigh(name) && !(RATE_NAME.test(name) && (d.units?.[name] ?? d.unit) === '%' && vals.some((v) => v != null && v > MAX_RATE)))
+      .map(([name, vals]) => [name, vals.filter((_, i) => keepX[i])]),
+  );
+  return { ...d, x: d.x.filter((_, i) => keepX[i]), series };
+}
+
+/** Datasets Claude may use: anything not flagged unverified, with no discount rate above MAX_RATE. */
+export const usable = (datasets: Map<string, Dataset>) => [...datasets.values()].filter((d) => d.verified !== false && !d.placeholder).map(capRates);
 
 export function systemPrompt(datasets: Map<string, Dataset>, spine: SpineSlide[]): string {
   const data = usable(datasets).map((d) => JSON.stringify({ key: d.key, title: d.title, unit: d.units ?? d.unit, asOf: d.asOf, x: d.x, series: d.series })).join('\n');

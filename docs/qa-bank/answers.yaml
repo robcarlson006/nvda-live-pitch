@@ -83,7 +83,7 @@
       - Jensen Huang resigned as CEO on 12 November 2026, and the board reinstated him days later
       - The board set up an independent national security and export-control oversight committee
       - SEC and California investigations have been reported and are not yet closed
-      - The stress case shows what we lose if this goes badly
+      - This risk is still open, which is one reason we size the position at three percent
     sources: ["CNBC, 12 Nov 2026; NBC News, Nov 2026; NVIDIA Q3 FY27 earnings call, 17 Nov 2026"]
 
 - id: taiwan
@@ -103,9 +103,9 @@
   ask: [ai bubble, a bubble, dot com, overvalued, too expensive, bubble burst]
   slide:
     layout: split
-    title: If spending stops, the stress case is severe; a realistic bear case is milder
+    title: Even if AI ended for good, a share is still worth something
     bullets:
-      - "Price today: {{model_valuation | Value per share | Share price today}}. Realistic bear case: {{model_valuation | Value per share | Bear case}}. If spending stops: {{model_valuation | Value per share | If AI ended for good}}"
+      - "Price today: {{model_valuation | Value per share | Share price today}}. Our bear case, where rivals take share: {{model_valuation | Value per share | Bear case}}. If AI ended for good: {{model_valuation | Value per share | If AI ended for good}}"
       - "Forward P/E is {{peers_pe | Forward P/E | NVIDIA}}; Cisco in 2000 was {{research_facts | Cisco forward P/E, March 2000 | value}}"
       - If it pops, the price falls, but NVIDIA owns the hardware and the CUDA software, so it keeps its lead
     chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
@@ -113,17 +113,16 @@
 
 - id: discount-rate
   question: Why that discount rate? Why not Bloomberg's?
-  ask: [discount rate, your wacc, cost of capital, why not nineteen, bloomberg wacc, bloomberg rate, nineteen percent, why not google finance, fourteen percent]
+  ask: [discount rate, your wacc, cost of capital, bloomberg wacc, bloomberg rate, why not google finance, fourteen percent, fifteen percent, ten and a half percent, why that rate]
   slide:
     layout: split
-    title: The answer depends on the discount rate, so we show the whole range
+    title: We didn't invent a discount rate, and we show all three
     bullets:
-      - "Our rate is {{research_market | WACC, US semiconductor industry average (Damodaran) | value}}, the average for US semiconductor companies. Google Finance has {{research_market | WACC, Google Finance | value}} for NVIDIA itself"
-      - "Estimates run up to {{research_market | WACC, Bloomberg Q3 2026 | value}} (Bloomberg)"
-      - "Base case at the three: {{model_sensitivity | Terminal growth 3% | 10.55%}}, {{model_sensitivity | Terminal growth 3% | 14.45%}} and {{model_sensitivity | Terminal growth 3% | 15.4%}} a share"
-      - "At Bloomberg's rate the price is about fair, which is why we show it"
-    chart: { type: bar, datasetKey: model_sensitivity, series: ["Terminal growth 3%"], highlight: "10.55%" }
-    sources: ["Google Finance, NVDA, 24 Nov 2026; Damodaran, Jan 2026; Stock Analysis, 23 Nov 2026; Bloomberg WACC, 20 Nov 2026"]
+      - "Ours is {{model_dcf_inputs | WACC, US semiconductor industry average | value}}, the US chip-industry average (Damodaran, NYU, January 2026)"
+      - "Checked against NVIDIA's own rates: {{model_dcf_inputs | WACC, Google Finance | value}} at Google Finance, {{model_dcf_inputs | WACC, Bloomberg | value}} at Bloomberg"
+      - "Base case at the three: {{model_sensitivity | Terminal growth 3% | 10.55%}}, {{model_sensitivity | Terminal growth 3% | 14.45%}} and {{model_sensitivity | Terminal growth 3% | 15.4%}}, all above today's {{model_dcf_inputs | Share price | value}}"
+    chart: { type: waterfall, datasetKey: model_dcf_bridge, series: ["10.55%"], totals: [Enterprise value, Equity value], highlight: Equity value }
+    sources: ["Damodaran (NYU), January 2026; Google Finance, NVDA, 24 Nov 2026; Bloomberg WACC, Q3 2026"]
 
 - id: concentration
   question: Isn't it too dependent on data centres?
@@ -148,7 +147,7 @@
       - Federal law needs the President's signature, and he has said he would veto. The pressure is local and about electricity bills.
       - "Blocked or delayed in Q1 2026: {{research_policy | US data-centre projects blocked or delayed, Q1 2026 | value}} US projects, worth {{research_policy | Value of those projects | value}} billion dollars"
       - "{{research_policy | Revenue from customers outside the US, FY26 | value}} of NVIDIA's FY26 revenue came from customers outside the US"
-      - "If spending stops, our stress case is {{model_valuation | Value per share | If AI ended for good}} a share; our realistic bear case is {{model_valuation | Value per share | Bear case}}"
+      - "Our bear case, where rivals take share: {{model_valuation | Value per share | Bear case}} a share. If AI ended for good: {{model_valuation | Value per share | If AI ended for good}}"
     chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
     sources: ["Data Center Watch via Network World, 2026; NVIDIA Form 10-K FY26; NVIDIA Q3 FY27 earnings call, 17 Nov 2026"]
 
@@ -174,7 +173,7 @@
       - "Two direct customers were {{research_policy | Largest direct customer, share of FY26 revenue | value}} and {{research_policy | Second direct customer, share of FY26 revenue | value}} of FY26 revenue"
       - They are usually the contract manufacturers and distributors, not the end users, so this understates the cloud giants
       - "Hyperscaler spending plans for 2026 add up to {{research_policy | Hyperscaler capex, 2026 guidance | value}} billion dollars"
-      - A pause by two or three of them is our stress case
+      - A pause by two or three of them is close to our bear case, where spending pauses for a year
     chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
     sources: ["NVIDIA Form 10-K FY26; company guidance via Yahoo Finance, 2026"]
 
@@ -200,7 +199,7 @@
     bullets:
       - "Economic life of an AI chip: {{research_policy | GPU economic life, low | value}} to {{research_policy | GPU economic life, high | value}} years, against decades for fibre"
       - "That cuts both ways: an overbuild cannot sit and wait, and customers must keep buying newer chips"
-      - Our stress case is exactly this, where spending stalls and falls
+      - "If AI ended for good, our harshest case, is exactly this: spending stalls and falls"
     chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
 
 - id: competition
@@ -224,8 +223,8 @@
     title: "Our recommendation: Buy."
     bullets:
       - Start with three percent of the portfolio for three to five years, well inside our ten percent limit on any one stock
-      - "At the industry rate the base case is {{model_valuation | Value per share | Base case}} against {{model_valuation | Value per share | Share price today}} today. At Bloomberg's higher rate the price is about fair"
-      - Sized so our realistic bear case costs the portfolio about one percent, and the stress case under two percent
+      - "Base case above today's {{model_dcf_inputs | Share price | value}} at all three rates: {{model_sensitivity | Terminal growth 3% | 10.55%}}, {{model_sensitivity | Terminal growth 3% | 14.45%}} and {{model_sensitivity | Terminal growth 3% | 15.4%}}"
+      - "Our bear case, where rivals take share, costs the portfolio {{model_downside | Cost to the portfolio | Bear case}}; if AI ended for good, {{model_downside | Cost to the portfolio | If AI ended for good}}"
       - We would add only if cloud spending plans rise again and the CEO investigation closes, and sell if they are cut
 
 # ---- Added 24 Nov 2026 from the Q3 FY27 earnings call (17 Nov) and Google Finance. Unverified until checked against the 10-Q. ----
@@ -240,7 +239,7 @@
       - "Gross margin was {{research_q3_call | Gross margin, Q3 FY27 | value}} in the October quarter"
       - "Guided to bottom at {{research_q3_call | Gross margin guide, Q4 FY27, low | value}} to {{research_q3_call | Gross margin guide, Q4 FY27, high | value}} next quarter"
       - "Then {{research_q3_call | Gross margin outlook, FY28, low | value}} to {{research_q3_call | Gross margin outlook, FY28, high | value}} the year after. It was {{nvda_margins_annual | Gross margin | FY23}} in FY23, when demand paused"
-      - Our realistic bear case already cuts the cash margin below NVIDIA's own recent level
+      - Our bear case, where rivals take share, already cuts the cash margin below NVIDIA's own recent level
     chart: { type: line, datasetKey: nvda_margins_annual, series: [Gross margin], highlight: FY26 }
     sources: ["Bloomberg FA, 20 Nov 2026; NVIDIA Q3 FY27 earnings call, 17 Nov 2026"]
 
@@ -267,7 +266,7 @@
       - "Average analyst target {{research_market | Analyst target, average | value}}, highest {{research_market | Analyst target, highest | value}}; our base case {{model_valuation | Value per share | Base case}}"
       - "The gap is our rate. At Google Finance's {{research_market | WACC, Google Finance | value}} the base case is {{model_sensitivity | Terminal growth 3% | 14.45%}}, close to the average"
       - "{{research_market | Analysts: buy | value}} of {{research_market | Analysts rating NVDA | value}} analysts rate it a buy; {{research_market | Analysts: sell | value}} rates it a sell"
-      - "Our realistic bear case, {{model_valuation | Value per share | Bear case}}, is below the lowest target, {{research_market | Analyst target, lowest | value}}"
+      - "Our bear case, where rivals take share, {{model_valuation | Value per share | Bear case}}, is below the lowest target, {{research_market | Analyst target, lowest | value}}"
     chart: { type: bar, datasetKey: model_vs_analysts, series: [Value per share], highlight: Our base case }
     sources: ["Google Finance, NVDA, 24 Nov 2026 (44 analysts, past 3 months); team valuation model"]
 
