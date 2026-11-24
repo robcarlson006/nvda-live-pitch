@@ -144,6 +144,14 @@ cd app && npm install && npm run dev
   - 12 tests in `server/director.test.ts` (fake model): moves, jump rules, never un-building, unreachable AI, spending cap, garbled replies.
   - Also fixed: `tsc` was failing (`ServerMsg` required `mic`/`pending` that nothing sends; now optional).
 
+- **Nine-minute script, chart zooms, fuller slides** (24 Nov, evening; draft 7, `docs/script/pitch-script-v7.md`)
+  - **Script cut from ~2,200 to 1,205 words.** Read aloud at 150 words a minute with a short pause between slides it runs 9:05 (Rob 5:18, Panshul 2:08, Mi'kael 1:39). Removed `different` (Cisco) and `security` (its "zero humans" figure was unverified); national security is one line on `superpowers`. The bubble slide now says the fibre boom was "about the same" as the highways (fixes the 1.4 vs 1.1 risk below).
+  - **Emissions slide in plain English:** "48 kg" against "109 tonnes" for every $1m of sales (unit `tonnes CO2`), no bold labels, and a line saying TSMC makes NVIDIA's chips, so the factory emissions are in TSMC's number.
+  - **Zoom steps:** an item `{ zoom: <x value>, cue }` in a slide's `bullets` zooms the chart onto that bar or point as the cue is said (`{ zoom: all }` zooms out); `chartFirst: true` builds the chart with the title. Used on bubble, beats, guidance, peers, valuation and emissions. The chart is drawn at a higher resolution so a zoom stays sharp. Wrong zooms (unknown x value, before the chart) are refused when the spine loads.
+  - **Stage:** bigger text everywhere (points about 25% larger, charts taller, axis labels larger and wrapping), a slow push-in on every slide, and earlier points fade back when a new one lands, so the eye follows the speaker. Statements with three or four points use a smaller title so everything fits at 16:9.
+  - **Deepgram run-through:** `cd app && npx tsx scripts/deepgram-run.ts` reads the whole script with the Mac's British voice, streams it to Deepgram with the app's settings and feeds the transcript to the cue matcher. Last run: 28/28 slides went live in order and fully built by speech alone, each 1.6–4.4 s into its lines. About 5 cents of Deepgram credit per run. A synthetic voice is cleaner than a real room, so still rehearse with the real mic.
+  - 70 tests (new: zoom steps and the plain-English emissions units).
+
 ## Data received
 - NVDA FA, annual FY1998–FY2026 and quarterly FY24 Q3–FY27 Q3, both including ESG.
 - Peer FA: AMD, INTC, AVGO, TSMC (TSMC in both TWD and USD).
@@ -158,8 +166,8 @@ cd app && npm install && npm run dev
 - When the Excel exports arrive (HP, ANR, SPLC): add parsers to `build-data.ts`, then rerun `npm run data`.
 
 ## Risks / open
-- **Unverified figures on Rob's slides** (amber on the operator panel): CUDA spend ~$0.5bn/yr (beat 5), networking revenue $31bn (beat 11), supply commitments $279bn (beat 12), ~90% of AI training and ~80% of AI chip spend (beat 13), and "zero humans" (beat 19). Find primary sources or cut them before Wednesday.
-- **Beat 15 says "fibre boom at its peak: 1.4 percent",** but the chart shows each build-out's *average* (fibre 1.1%), so it is like-for-like with the AI 3.6% average. Say "1.1 percent a year on average", or the board hears one number and sees another.
+- **Unverified figures on Rob's slides** (amber on the operator panel): CUDA spend ~$0.5bn/yr (beat 5), networking revenue $31bn (beat 11) and ~80% of AI chip spend (beat 13). Supply commitments and "zero humans" were cut in draft 7. Find primary sources or cut them before Wednesday.
+- ~~**Beat 15 says "fibre boom at its peak: 1.4 percent",**~~ Fixed 24 Nov (draft 7 says "about the same"). but the chart shows each build-out's *average* (fibre 1.1%), so it is like-for-like with the AI 3.6% average. Say "1.1 percent a year on average", or the board hears one number and sees another.
 - **Beat 16:** the research quotes NVIDIA at ~22.7x forward earnings; Bloomberg (on the slide) says 14.1x. Both are "a fraction of 140x", but Panshul's numbers must match.
 - **Both speech engines need internet** (audio goes to Deepgram, or to Google if on the Chrome backup). If the venue Wi-Fi fails, use the clicker/Next.
 - **The model's WACC (12%) and the scenario choices are team assumptions.** Mi'kael must own them and be able to defend them (see assumptions.json).

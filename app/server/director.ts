@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { z } from 'zod';
-import { elementCount, resolveText, type Dataset, type ShowState, type SpineSlide } from '../shared/schema.ts';
+import { elementCount, resolveText, stepsOf, type Dataset, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { env } from './ai.ts';
 import { Budget, costOf, PRICES } from './budget.ts';
 import { isCovered } from './state.ts';
@@ -21,11 +21,11 @@ const Verdict = z.object({
 });
 export type Verdict = z.infer<typeof Verdict>;
 
-/** The things said on a slide, in build order: its bullets, then its chart. */
-export const points = (s: SpineSlide, datasets: Map<string, Dataset>) => [
-  ...s.bullets.map((b) => resolveText(b, datasets)),
-  ...(s.chart ? [`(chart) ${datasets.get(s.chart.datasetKey)?.title ?? 'chart'}`] : []),
-];
+/** The things said on a slide, in build order: its bullets, its chart and any zooms into the chart. */
+export const points = (s: SpineSlide, datasets: Map<string, Dataset>) =>
+  stepsOf(s).map((st) =>
+    'bullet' in st ? resolveText(s.bullets[st.bullet], datasets) : 'chart' in st ? `(chart) ${datasets.get(s.chart!.datasetKey)?.title ?? 'chart'}` : st.zoom === 'all' ? '(chart zooms back out)' : `(chart zooms in on ${st.zoom})`,
+  );
 
 export function directorPrompt(spine: SpineSlide[], datasets: Map<string, Dataset>): string {
   const deck = spine

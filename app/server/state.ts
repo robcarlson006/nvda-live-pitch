@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
-import { ClientMsg, Dataset, elementCount, lookup, resolveText, SpineSlide, tokenRefs, type Draft, type Rehearsal, type RunEntry, type ShowState, type Slide } from '../shared/schema.ts';
+import { ClientMsg, Dataset, elementCount, lookup, resolveText, SpineSlide, tokenRefs, type Draft, type Rehearsal, type RunEntry, type ShowState, type Slide, type Step } from '../shared/schema.ts';
 import { findCue, words, type Candidate } from './cues.ts';
 
 export const DATA_DIR = path.resolve(import.meta.dirname, '../../data/clean');
@@ -49,6 +49,18 @@ export function checkSlide(slide: Slide, datasets: Map<string, Dataset>): string
     for (const x of [...(chart.range ?? []), ...(chart.highlight ? [chart.highlight] : [])])
       if (!ds.x.includes(x)) return `Dataset "${ds.key}" has no x value "${x}"`;
   }
+  if (slide.steps) {
+    const order = slide.steps;
+    const bulletsSeen = order.flatMap((s) => ('bullet' in s ? [s.bullet] : []));
+    if (bulletsSeen.length !== slide.bullets.length || slide.bullets.some((_, i) => !bulletsSeen.includes(i))) return 'Steps must build every bullet exactly once';
+    const chartAt = order.findIndex((s) => 'chart' in s);
+    if (!!chart !== chartAt >= 0 || order.filter((s) => 'chart' in s).length > 1) return 'Steps must build the chart exactly once';
+    for (const [k, s] of order.entries()) {
+      if (!('zoom' in s)) continue;
+      if (chartAt < 0 || k < chartAt) return `Zoom "${s.zoom}" comes before the chart is built`;
+      if (s.zoom !== 'all' && !datasets.get(chart!.datasetKey)?.x.includes(s.zoom)) return `Zoom "${s.zoom}" is not an x value of "${chart!.datasetKey}"`;
+    }
+  }
   // Figures in the text ({{key | series | x}}) must exist, and digits outside them are refused:
   // every quantity on screen comes from data/. Dates and names are allowed: 1993, 12 November, FY18, Q3, Scope 3.
   for (const text of [slide.title, ...slide.bullets, stat?.label ?? '']) {
@@ -61,18 +73,36 @@ export function checkSlide(slide: Slide, datasets: Map<string, Dataset>): string
   return null;
 }
 
-/** Reads docs/script/spine.yaml. Bullets may be plain strings or { text, cue }; the chart may have chartCue. Throws with a readable message. */
+/**
+ * Build order from the YAML. Items in `bullets` are text ({ text, cue } or a plain string) or chart zooms ({ zoom, cue }).
+ * The chart builds straight after the title with `chartFirst: true`, otherwise right after the last text bullet.
+ */
+function spineSteps(r: any): { bullets: string[]; steps: Step[] | undefined; cues: (string | null)[] } {
+  const items: any[] = (r.bullets ?? []).map((b: any) => (typeof b === 'string' ? { text: b } : b));
+  const isZoom = (b: any) => b && 'zoom' in b;
+  const lastText = items.map((b) => !isZoom(b)).lastIndexOf(true);
+  const steps: Step[] = [];
+  const cues: (string | null)[] = [];
+  const chart = () => (steps.push({ chart: true }), cues.push(r.chartCue ?? null));
+  if (r.chart && (r.chartFirst || lastText < 0)) chart();
+  let n = 0;
+  items.forEach((b, k) => {
+    steps.push(isZoom(b) ? { zoom: String(b.zoom) } : { bullet: n++ });
+    cues.push(b.cue == null ? null : String(b.cue));
+    if (r.chart && !r.chartFirst && k === lastText) chart();
+  });
+  const plain = !r.chartFirst && !items.some(isZoom); // the default order: no need to spell it out
+  return { bullets: items.filter((b) => !isZoom(b)).map((b) => b.text), steps: plain ? undefined : steps, cues };
+}
+
+/** Reads docs/script/spine.yaml. Bullets may be plain strings, { text, cue } or { zoom, cue }; the chart may have chartCue. Throws with a readable message. */
 export function loadSpine(datasets: Map<string, Dataset>, file = SPINE_FILE): SpineSlide[] {
   const raw = parseYaml(fs.readFileSync(file, 'utf8'));
   if (!Array.isArray(raw)) throw new Error('spine.yaml must be a list of slides');
   const ids = new Set<string>();
   return raw.map((r: any, i: number) => {
-    const bullets = (r.bullets ?? []).map((b: any) => (typeof b === 'string' ? { text: b } : b));
-    const parsed = SpineSlide.safeParse({
-      ...r,
-      bullets: bullets.map((b: any) => b.text),
-      elementCues: [...bullets.map((b: any) => b.cue ?? null), ...(r.chart ? [r.chartCue ?? null] : [])],
-    });
+    const { bullets, steps, cues } = spineSteps(r ?? {});
+    const parsed = SpineSlide.safeParse({ ...r, bullets, steps, elementCues: cues });
     const where = `Slide ${i + 1} (${r?.id ?? 'no id'})`;
     if (!parsed.success) throw new Error(`${where}: ${parsed.error.issues[0].path.join('.')} ${parsed.error.issues[0].message}`);
     if (ids.has(parsed.data.id)) throw new Error(`${where}: duplicate id`);

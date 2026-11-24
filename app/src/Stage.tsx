@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { lookup, resolveText, slideSources, type Dataset, type Slide } from '../shared/schema.ts';
+import { lookup, resolveText, slideSources, stepsOf, zoomAt, type Dataset, type Slide } from '../shared/schema.ts';
 import { Chart } from './Chart.tsx';
 import { CoreArray } from './CoreArray.tsx';
 import { useDatasets, useNavKeys, useShow } from './useShow.ts';
+
+// Units every formatted value already carries ("48 kg", "10.7m t CO2e"), so the chart caption needn't repeat them.
+const UNIT_IN_VALUES = new Set(['tonnes CO2', "'000 t CO2e", "'000 MWh"]);
 
 // Elements revealed together come in one after another, this far apart (seconds).
 const GAP = 0.7;
@@ -62,7 +65,7 @@ function Delayed({ at, children }: { at: number; children: ReactNode }) {
 }
 
 function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: number; datasets: Record<string, Dataset>; figure?: string }) {
-  // Elements: 0 = title, 1..n = bullets, n+1 = chart. Those revealed in the same step are staggered.
+  // Elements: 0 = title, then one per step (by default the bullets, then the chart). Those revealed together are staggered.
   const prev = useRef(0);
   const batchStart = prev.current;
   useEffect(() => {
@@ -72,7 +75,13 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   const shown = (k: number) => k < reveal;
 
   const dataset = slide.chart ? datasets[slide.chart.datasetKey] : undefined;
-  const chartIdx = 1 + slide.bullets.length;
+  const steps = stepsOf(slide);
+  const chartIdx = 1 + steps.findIndex((st) => 'chart' in st);
+  const bulletIdx = (i: number) => 1 + steps.findIndex((st) => 'bullet' in st && st.bullet === i);
+  const shownBullets = slide.bullets.map((_, i) => i).filter((i) => shown(bulletIdx(i)));
+  // The point just said is in focus; earlier ones step back, so the eye follows the speaker.
+  const newest = shownBullets.length > 1 ? shownBullets.reduce((a, b) => (bulletIdx(b) > bulletIdx(a) ? b : a)) : -1;
+  const zoom = zoomAt(slide, reveal);
   const sources = slide.sources; // already includes every dataset the slide uses (withFigures)
 
   const title = slide.layout === 'statement' ? (
@@ -94,8 +103,8 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   const points = (
     <div className="points">
       {slide.bullets.map((b, i) =>
-        shown(i + 1) ? (
-          <Reveal key={i} as="p" className="point" at={at(i + 1)}>
+        shown(bulletIdx(i)) ? (
+          <Reveal key={i} as="p" className={`point${newest >= 0 && i !== newest ? ' past' : ''}`} at={at(bulletIdx(i))}>
             {b}
           </Reveal>
         ) : null,
@@ -104,16 +113,17 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   );
 
   const chart = slide.chart && (
-    <figure className="chart">
+    <figure className={`chart${zoom ? ' zoomed' : ''}`}>
       {shown(chartIdx) &&
         (dataset ? (
           <Delayed at={at(chartIdx)}>
             <figcaption>
-              {dataset.title}, {dataset.unit}
+              {dataset.title}
+              {UNIT_IN_VALUES.has(dataset.unit) ? '' : `, ${dataset.unit}`}
               {dataset.placeholder && <span className="placeholder">Placeholder data</span>}
             </figcaption>
             <div className="chart-body">
-              <Chart spec={slide.chart} dataset={dataset} />
+              <Chart spec={slide.chart} dataset={dataset} zoom={zoom} />
             </div>
           </Delayed>
         ) : (
@@ -123,7 +133,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   );
 
   return (
-    <main className={`slide layout-${slide.layout}${slide.bullets.length ? ' has-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}`}>
+    <main className={`slide layout-${slide.layout}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}`}>
       {slide.layout === 'statement' && (
         <>
           {title}

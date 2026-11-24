@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { elementCount, isUnverified, type ShowState, type SpineSlide } from '../shared/schema.ts';
+import { elementCount, formatValue, isUnverified, stepsOf, zoomAt, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { cueScore, findCue, words } from './cues.ts';
 import { apply, checkSlide, emptyState, loadDatasets, loadSpine, relocate, runReport, sectionLastIndex, type Ctx } from './state.ts';
 
@@ -20,9 +20,38 @@ const optional = spine.filter((s) => s.optional).map((s) => s.id);
 
 test('the script loads and every chart/number points at real data', () => {
   assert.ok(spine.length >= 25);
-  assert.deepEqual(optional, ['revenue-long', 'different']);
+  assert.deepEqual(optional, ['revenue-long']);
   assert.deepEqual([...new Set(spine.map((s) => s.speaker))], ['Rob', 'Panshul', "Mi'kael"]);
   assert.equal(spine[sectionLastIndex(spine)].id, 'handoff');
+});
+
+test('zoom steps: the chart builds where it is told, zooms follow cues, and bad zooms are refused', () => {
+  const e = spine[idx('emissions-peers')];
+  assert.deepEqual(stepsOf(e), [{ chart: true }, { bullet: 0 }, { zoom: 'NVIDIA' }, { zoom: 'TSMC' }, { bullet: 1 }]);
+  assert.equal(elementCount(e), 6);
+  let s = run(emptyState(), { type: 'goto', index: idx('emissions-peers') });
+  assert.equal(s.reveal, 2, 'chartFirst: the chart builds with the title');
+  s = run(s, say('for every million dollars of sales'));
+  assert.equal(zoomAt(e, s.reveal), null);
+  s = run(s, say('NVIDIA emits about forty eight kilograms'));
+  assert.equal(zoomAt(e, s.reveal), 'NVIDIA');
+  s = run(s, say('TSMC, a hundred and nine tonnes'));
+  assert.equal(zoomAt(e, s.reveal), 'TSMC');
+  // A zoom without a cue lands together with the point before it; "all" zooms back out.
+  const v = spine[idx('valuation')];
+  let t = run(emptyState(), { type: 'goto', index: idx('valuation') }, say('the discount rate'), say('our base case'));
+  assert.equal(zoomAt(v, t.reveal), 'Base case');
+  t = run(t, say('at google finance'));
+  assert.equal(zoomAt(v, t.reveal), null);
+  const base = { id: 't', layout: 'split' as const, title: 'T', bullets: ['a'], sources: [], chart: { type: 'bar' as const, datasetKey: 'peers_pe', series: ['Forward P/E'] } };
+  assert.match(checkSlide({ ...base, steps: [{ bullet: 0 }, { zoom: 'NVIDIA' }, { chart: true }] }, datasets)!, /before the chart/);
+  assert.match(checkSlide({ ...base, steps: [{ chart: true }, { bullet: 0 }, { zoom: 'Nvidia Corp' }] }, datasets)!, /not an x value/);
+  assert.match(checkSlide({ ...base, steps: [{ chart: true }] }, datasets)!, /every bullet/);
+  assert.equal(checkSlide({ ...base, steps: [{ chart: true }, { zoom: 'NVIDIA' }, { bullet: 0 }, { zoom: 'all' }] }, datasets), null);
+});
+
+test('emissions figures read as plain English', () => {
+  assert.deepEqual([0.048, 1.241, 2.82, 25.032, 108.743].map((v) => formatValue(v, 'tonnes CO2')), ['48 kg', '1.2 tonnes', '2.8 tonnes', '25 tonnes', '109 tonnes']);
 });
 
 test('push validates charts against the data', () => {

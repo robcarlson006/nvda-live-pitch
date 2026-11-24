@@ -1,7 +1,7 @@
 {
   "key": "peers_emissions_intensity",
-  "title": "Own emissions per $1m of revenue, tonnes of CO2e (Scope 1 + 2, market-based)",
-  "unit": "t",
+  "title": "Carbon per $1m of sales, from each company's own buildings and power (Scope 1 + 2)",
+  "unit": "tonnes CO2",
   "source": "Bloomberg FA (ESG Environmental, Adj Highlights), latest fiscal year: NVIDIA FY26, others FY25",
   "asOf": "2026-11-20",
   "placeholder": false,

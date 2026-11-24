@@ -130,7 +130,7 @@ export const companies: [string, Loaded, string][] = [['NVIDIA', nvdaA, 'FY27'],
     const y = r === nvdaA ? 'FY26' : 'FY25';
     return s1[y] != null && s2[y] != null && rev[y] ? round(((s1[y] + s2[y]) * 1000) / (rev[y] / 1000)) : null; // tonnes per $1bn... see unit
   });
-  add({ key: 'peers_emissions_intensity', title: 'Own emissions per $1m of revenue, tonnes of CO2e (Scope 1 + 2, market-based)', unit: 't', source: 'Bloomberg FA (ESG Environmental, Adj Highlights), latest fiscal year: NVIDIA FY26, others FY25', asOf: nvdaA.asOf, x, series: { 'Emissions intensity': ghg.map((v) => (v == null ? null : round(v / 1000))) } });
+  add({ key: 'peers_emissions_intensity', title: "Carbon per $1m of sales, from each company's own buildings and power (Scope 1 + 2)", unit: 'tonnes CO2', source: 'Bloomberg FA (ESG Environmental, Adj Highlights), latest fiscal year: NVIDIA FY26, others FY25', asOf: nvdaA.asOf, x, series: { 'Emissions intensity': ghg.map((v) => (v == null ? null : round(v / 1000))) } });
 }
 
 // ---------- Data centre: NVIDIA vs AMD (beat 9) ----------

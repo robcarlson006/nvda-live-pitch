@@ -22,6 +22,10 @@ export const StatSpec = z.object({
 // Background effects drawn by the core array. Purely visual: if one fails, the slide still shows.
 export const Effect = z.enum(['cpu-gpu', 'merge72', 'spread']);
 
+// One build step after the title: a bullet (by index), the chart, or a zoom into one x value of the chart ("all" zooms back out).
+export const Step = z.union([z.object({ bullet: z.number().int().min(0) }), z.object({ chart: z.literal(true) }), z.object({ zoom: z.string().min(1) })]);
+export type Step = z.infer<typeof Step>;
+
 // statement: one big line · number: a figure rendered by the core array · chart: chart fills the slide · split: text + chart
 export const Slide = z.object({
   id: z.string().min(1),
@@ -33,9 +37,22 @@ export const Slide = z.object({
   stat: StatSpec.optional(),
   effect: Effect.optional(),
   icons: z.array(z.enum(ICON_NAMES)).max(3).optional(), // drawn by the cores on the right: one big, or 2–3 in a chain
+  steps: z.array(Step).max(12).optional(), // build order after the title; absent = the bullets in order, then the chart
   sources: z.array(z.string()).default([]),
 });
 export type Slide = z.infer<typeof Slide>;
+
+/** The build order after the title. Slides without explicit steps build their bullets, then their chart. */
+export const stepsOf = (s: Slide): Step[] => s.steps ?? [...s.bullets.map((_, i) => ({ bullet: i })), ...(s.chart ? [{ chart: true as const }] : [])];
+
+/** Which chart x value the slide is zoomed into once `reveal` elements are built, if any. */
+export function zoomAt(s: Slide, reveal: number): string | null {
+  let on: string | null = null;
+  stepsOf(s).forEach((st, k) => {
+    if ('zoom' in st && k + 1 < reveal) on = st.zoom === 'all' ? null : st.zoom;
+  });
+  return on;
+}
 
 export const Dataset = z.object({
   key: z.string(),
@@ -67,6 +84,8 @@ export function formatValue(v: number, unit: string): string {
   if (unit === 'm') return `${v}m`;
   if (unit === '') return v.toLocaleString('en-GB');
   if (unit === "'000 t CO2e") return v >= 1000 ? `${(v / 1000).toFixed(1)}m t CO2e` : `${Math.round(v)}k t CO2e`;
+  // Plain English for small amounts of carbon: 0.048 → "48 kg", 1.241 → "1.2 tonnes", 108.743 → "109 tonnes".
+  if (unit === 'tonnes CO2') return v < 1 ? `${Math.round(v * 1000)} kg` : v < 10 ? `${Number(v.toFixed(1))} tonnes` : `${Math.round(v)} tonnes`;
   if (unit === "'000 MWh") return `${Math.round(v).toLocaleString('en-GB')} GWh`;
   return `${v.toLocaleString('en-GB')} ${unit}`;
 }
@@ -118,13 +137,13 @@ export const SpineSlide = Slide.extend({
   cues: z.array(z.coerce.string().min(1)).min(1),
   say: z.string().optional(),
   optional: z.boolean().default(false), // can be skipped from the operator panel
-  // One per element after the title (bullets in order, then the chart). null = builds straight after the previous one.
+  // One per element after the title, in build order (see stepsOf). null = builds straight after the previous one.
   elementCues: z.array(z.string().nullable()).default([]),
 });
 export type SpineSlide = z.infer<typeof SpineSlide>;
 
-/** Elements build in this order: title (with the figure, for number slides), each bullet, then the chart. */
-export const elementCount = (s: Slide) => 1 + s.bullets.length + (s.chart ? 1 : 0);
+/** Elements build in this order: title (with the figure, for number slides), then each step (by default each bullet, then the chart). */
+export const elementCount = (s: Slide) => 1 + stepsOf(s).length;
 
 export type RunEntry = { id: string; index: number; at: number; via: 'cue' | 'next' | 'back' | 'goto' | 'live'; cue?: string };
 export type Rehearsal = { startedAt: number; entries: RunEntry[] };
