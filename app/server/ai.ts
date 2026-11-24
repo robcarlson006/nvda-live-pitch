@@ -199,6 +199,12 @@ function chartCatalogue(datasets: Map<string, Dataset>) {
 
 export type Caller = (body: Anthropic.MessageCreateParamsNonStreaming, signal: AbortSignal) => Promise<Anthropic.Message>;
 
+const RESEARCH_CACHE_MS = 2 * 60 * 60 * 1000; // one pitch day's session
+const RESEARCH_CACHE_SIZE = 30;
+/** Same words, same context → same question, whatever the punctuation or capitals the speech engine gave. */
+export const researchKey = (heard: string, previous?: string) =>
+  [heard, previous ?? ''].map((s) => s.toLowerCase().replace(/[^a-z0-9%$£ ]+/g, ' ').replace(/\s+/g, ' ').trim()).join('|');
+
 const discussion = (heard: string, previous?: string) => {
   const clean = (s: string) => s.slice(-1500).replace(/[<>]/g, '');
   return `${previous ? `<previous>${clean(previous)}</previous>\n` : ''}<heard>${clean(heard)}</heard>`;
@@ -279,9 +285,31 @@ export class Ai {
     }
   }
 
+  /** Verified web answers by question, so a repeated question (or a re-run after a reject) is instant and free. */
+  private researched = new Map<string, { at: number; slide: Slide; links?: Link[] }>();
+  private reused = 0;
+
   /** Search the web for something our data doesn't hold. */
   async research(heard: string, stop: AbortSignal, previous?: string): Promise<Result> {
     if (!this.hasKey()) return { error: 'No Anthropic key in app/.env' };
+    const key = researchKey(heard, previous);
+    const hit = this.researched.get(key);
+    if (hit && Date.now() - hit.at < RESEARCH_CACHE_MS) {
+      console.log('[research] answered from this session\'s earlier search');
+      return { slide: { ...hit.slide, id: `gen-web-${Date.now()}-${++this.reused}` }, links: hit.links, answered: true };
+    }
+    const started = Date.now();
+    const r = await this.searchWeb(heard, stop, previous);
+    if (!('skip' in r)) console.log(`[research] ${((Date.now() - started) / 1000).toFixed(1)}s → ${'slide' in r ? `${r.slide.bullets.length} verified line(s)` : r.error}`);
+    if ('slide' in r) {
+      this.researched.delete(key);
+      this.researched.set(key, { at: Date.now(), slide: r.slide, links: r.links });
+      if (this.researched.size > RESEARCH_CACHE_SIZE) this.researched.delete(this.researched.keys().next().value!);
+    }
+    return r;
+  }
+
+  private async searchWeb(heard: string, stop: AbortSignal, previous?: string): Promise<Result> {
     const signal = AbortSignal.any([stop, AbortSignal.timeout(25_000)]);
     const today = ukDate();
     const messages: Anthropic.MessageParam[] = [{ role: 'user', content: discussion(heard, previous) }];

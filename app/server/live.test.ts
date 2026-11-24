@@ -318,6 +318,22 @@ test('research spends within the cap and counts searches', async () => {
   assert.match(((await broke.research('q', new AbortController().signal)) as any).error, /cap reached/);
 });
 
+test('a repeated research question is answered from the session cache without a second search', async () => {
+  let calls = 0;
+  const ai = new Ai(new Budget(tmp(), 4), async () => {
+    calls++;
+    return { stop_reason: 'end_turn', content: [found, cited('Data centres used 415 TWh in 2024.', cite('Data centres used 415 TWh in 2024.'))], usage: { input_tokens: 1000, output_tokens: 20 } } as any;
+  }, () => true);
+  const first = await ai.research('How much power do data centres use?', new AbortController().signal);
+  const again = await ai.research('how much power do data centres use', new AbortController().signal);
+  assert.equal(calls, 1);
+  assert.ok('slide' in first && 'slide' in again);
+  assert.deepEqual(again.slide.bullets, first.slide.bullets);
+  assert.notEqual(again.slide.id, first.slide.id);
+  await ai.research('How much power do data centres use?', new AbortController().signal, 'Different context');
+  assert.equal(calls, 2, 'different context is a different question');
+});
+
 test('a verified web sentence cannot stand in for multiple explicit questions', async () => {
   const ai = new Ai(new Budget(tmp(), 4), async () => ({
     stop_reason: 'end_turn',
