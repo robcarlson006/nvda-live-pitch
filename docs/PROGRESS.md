@@ -4,6 +4,10 @@ Pitch: **Wednesday 25 Nov 2026**, 8–9 min. Rob (why) → Panshul (financials) 
 
 The live Q&A and operator lane passed Node 24, browser and provider checks on 24 November. Stage mounting, the combined fallback export and venue rehearsal are tracked in the [live lane handoff](handoff/LIVE-LANE.md).
 
+## Projector DCF (24 Nov)
+
+- Added the animated five-year DCF worksheet between the free-cash-flow forecast and the valuation waterfall. The worksheet uses the same base-case model as the bridge and three-rate comparison. The static fallback includes the worksheet.
+
 ## Combined rehearsal build (24 Nov)
 
 - Combined the live lane at `e1b6bee` and the deck lane at `f9263bc` on `codex/pitch-integration`. The stage uses the shared answer visual, and the operator opens both fallback PDFs.

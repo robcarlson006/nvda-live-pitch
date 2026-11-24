@@ -393,6 +393,22 @@
   # DRAFT say
   say: "Free cash flow is cash left after running the business. Last year: 97 billion dollars. On consensus revenue and that three-year margin, our base case reaches 874 billion by 2032."
 
+- id: dcf-worksheet
+  speaker: Panshul
+  cues: [five year dcf, annual model, worksheet]
+  layout: chart
+  title: The five-year DCF
+  chartFirst: true
+  bullets:
+    - text: "Base case at {{model_dcf_inputs | WACC, US semiconductor industry average | value}} WACC and {{model_dcf_inputs | Terminal growth (our choice) | value}} terminal growth"
+  chart:
+    type: bar
+    display: table
+    datasetKey: model_dcf_detail
+    series: [FY28, FY29, FY30, FY31, FY32]
+    highlight: Present value of cash flow
+  say: "Here's the five-year DCF. We forecast free cash flow, then apply a discount factor to each year. The bottom row shows what those cash flows are worth today."
+
 # Waterfall at the industry rate: PV of five years → PV of everything after → enterprise value → + net cash → equity value.
 - id: dcf-bridge
   speaker: Panshul

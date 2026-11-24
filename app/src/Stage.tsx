@@ -100,6 +100,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   const at = (k: number) => (batchStart === 0 ? (k === 0 ? TITLE_AT : 0.5 + k * GAP) : 0.1 + (k - batchStart) * GAP);
   const shown = (k: number) => k < reveal;
 
+  const isDcfWorksheet = slide.chart?.datasetKey === 'model_dcf_detail';
   const dataset = slide.chart ? datasets[slide.chart.datasetKey] : undefined;
   const steps = stepsOf(slide);
   const chartIdx = 1 + steps.findIndex((st) => 'chart' in st);
@@ -152,7 +153,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   );
 
   const chart = slide.chart && (
-    <figure className={`chart${zoom ? ' zoomed' : ''}`}>
+    <figure className={`chart${zoom ? ' zoomed' : ''}${isDcfWorksheet ? ' dcf-worksheet' : ''}`}>
       {shown(chartIdx) &&
         (dataset ? (
           <Delayed at={at(chartIdx)}>
@@ -188,7 +189,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   );
 
   return (
-    <main className={`slide layout-${slide.layout}${slide.video ? ' has-video' : ''}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}${hasDiagram ? ' has-diagram' : ''}${slide.answer ? ' is-answer' : ''}`}>
+    <main className={`slide layout-${slide.layout}${isDcfWorksheet ? ' has-dcf-worksheet' : ''}${slide.video ? ' has-video' : ''}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}${hasDiagram ? ' has-diagram' : ''}${slide.answer ? ' is-answer' : ''}`}>
       {(slide.layout === 'statement' || slide.layout === 'timeline') && (
         <>
           {title}

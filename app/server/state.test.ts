@@ -50,6 +50,15 @@ test('zoom steps: the chart builds where it is told, zooms follow cues, and bad 
   assert.equal(checkSlide({ ...base, steps: [{ chart: true }, { zoom: 'NVIDIA' }, { bullet: 0 }, { zoom: 'all' }] }, datasets), null);
 });
 
+test('the spoken DCF worksheet cue reveals the actual model before the valuation bridge', () => {
+  const start = run(emptyState(), { type: 'goto', index: idx('fcf') });
+  const worksheet = run(start, say("here's the five year DCF"));
+  assert.equal(worksheet.live?.id, 'dcf-worksheet');
+  assert.equal(worksheet.live?.chart?.datasetKey, 'model_dcf_detail');
+  assert.equal(worksheet.reveal, elementCount(worksheet.live!));
+  assert.equal(run(worksheet, say('add it up')).live?.id, 'dcf-bridge');
+});
+
 test('the people benchmark is dated, lower for NVIDIA and marked unverified', () => {
   const people = spine[idx('people')];
   const bench = datasets.get('research_people_turnover')!;

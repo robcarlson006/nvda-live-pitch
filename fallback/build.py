@@ -125,15 +125,17 @@ def table(c: canvas.Canvas, spec: dict, ds: dict, box: tuple[float, float, float
     xx, yy, ww, hh = box
     rows = [x for x in ds["x"] if x not in spec.get("exclude", [])]
     cols = spec["series"]
-    label_w = ww * 0.36
+    worksheet = ds["key"] == "model_dcf_detail"
+    label_w = ww * (0.30 if worksheet else 0.36)
     col_w = (ww - label_w) / len(cols)
     row_h = min(54, hh / (len(rows) + 2))
     top = yy + hh
-    c.setFont("Pitch", 10); c.setFillColor(FAINT)
+    c.setFont("Pitch", 12 if worksheet else 10); c.setFillColor(FAINT)
     c.drawString(xx, top + 10, ds["title"])
-    c.setFont("PitchBold", 9); c.setFillColor(DETAIL)
+    heading_size = 13 if worksheet else 9
+    c.setFont("PitchBold", heading_size); c.setFillColor(DETAIL)
     for k, name in enumerate(cols):
-        lines = fit_lines(c, name.upper(), col_w - 8, "PitchBold", 9, 3)
+        lines = fit_lines(c, name.upper(), col_w - 8, "PitchBold", heading_size, 3)
         for j, line in enumerate(lines):
             c.drawRightString(xx + label_w + (k + 1) * col_w - 4, top - 14 - j * 11, line)
     y = top - 56 - row_h * 0.5
@@ -143,11 +145,18 @@ def table(c: canvas.Canvas, spec: dict, ds: dict, box: tuple[float, float, float
         if hi:
             c.setFillColor(HexColor("#10140b")); c.rect(xx - 4, y - row_h * 0.3, ww + 8, row_h, fill=1, stroke=0)
         c.setStrokeColor(HexColor("#30362b")); c.setLineWidth(.6); c.line(xx, y - row_h * 0.3, xx + ww, y - row_h * 0.3)
-        draw_lines(c, x, xx, y + 4, label_w - 8, 13, 2, 14, color=WHITE if hi else DETAIL)
+        draw_lines(c, x, xx, y + 4, label_w - 8, 16 if worksheet else 13, 2, 17 if worksheet else 14, color=WHITE if hi else DETAIL)
         for k, name in enumerate(cols):
             v = ds["series"][name][i]
-            c.setFont("PitchBold", 20); c.setFillColor(GREEN if hi and k == 0 else WHITE)
-            c.drawRightString(xx + label_w + (k + 1) * col_w - 4, y, "–" if v is None else fmt(v, unit_of(ds, name)))
+            cell = "–"
+            if v is not None:
+                if worksheet:
+                    cell = f"{v:.4f}" if x == "Discount factor" else f"{v:,.2f}"
+                else:
+                    cell = fmt(v, unit_of(ds, name))
+            c.setFont("PitchBold", 24 if worksheet else 20)
+            c.setFillColor(GREEN if hi and (worksheet or k == 0) else WHITE)
+            c.drawRightString(xx + label_w + (k + 1) * col_w - 4, y, cell)
         y -= row_h
     ref = spec.get("refLine")
     if ref:
@@ -292,6 +301,7 @@ def page(c: canvas.Canvas, slide: dict, index: int, header: str | None = None) -
     c.setFont("Pitch", 8); c.setFillColor(FAINT); c.drawString(52,H-30,header or f"{index:02d}  /  {slide.get('speaker','')}  /  STATIC BACKUP")
     layout=slide.get("layout","split")
     has_chart=bool(slide.get("chart"))
+    full_width_table=layout == "chart" and slide.get("chart", {}).get("display") == "table"
     has_diagram=bool(slide.get("diagram")) and not has_chart and not slide.get("stat")
     title=resolve(slide["title"])
     title_width=390 if (has_chart and layout == "split") or has_diagram else 840
@@ -310,7 +320,7 @@ def page(c: canvas.Canvas, slide: dict, index: int, header: str | None = None) -
     elif has_chart:
         cy=100; ch=max(150, y-130); cx=66; cw=830
     else: cy=ch=cx=cw=0
-    if has_chart: chart(c,slide,(cx,cy,cw,ch))
+    if has_chart and not full_width_table: chart(c,slide,(cx,cy,cw,ch))
     if layout == "inputs":
         groups = slide.get("groups", [])
         if len(groups) > 4: raise ValueError("Too many input groups")
@@ -344,6 +354,10 @@ def page(c: canvas.Canvas, slide: dict, index: int, header: str | None = None) -
     for b in bullets:
         if y < 115: raise ValueError(f"Slide {slide['id']} bullets overflow")
         y=draw_lines(c,b,52,y-17,title_width,17 if has_chart or has_diagram else 21,4,22 if has_chart or has_diagram else 27,color=DETAIL)
+    if full_width_table:
+        table_bottom = 85
+        table_top = y - 18
+        chart(c, slide, (52, table_bottom, 856, table_top - table_bottom))
     src="  •  ".join(sources(slide))
     c.setFillColor(HexColor("#171b15")); c.rect(0,0,W,55,fill=1,stroke=0)
     draw_lines(c,"Source: "+src,52,42,850,8,5,9,color=FAINT)

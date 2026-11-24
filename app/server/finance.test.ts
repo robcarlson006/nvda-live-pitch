@@ -34,6 +34,35 @@ test('the DCF bridge adds up at each rate, and matches the sensitivity value', (
   }
 });
 
+test('the annual DCF figures reconcile to the base case bridge', () => {
+  const key = 'model_dcf_detail';
+  const years = ['FY28', 'FY29', 'FY30', 'FY31', 'FY32'];
+  const rate = at('model_dcf_inputs', 'WACC, US semiconductor industry average', 'value');
+  const margin = at('model_dcf_inputs', 'Free-cash-flow margin, FY24–26 average', 'value') / 100;
+  assert.deepEqual(Object.keys(ds(key).series), years);
+  assert.deepEqual(ds(key).x, ['Revenue', 'Free cash flow', 'Discount factor', 'Present value of cash flow']);
+  const worksheet = spine.find((slide) => slide.id === 'dcf-worksheet')!;
+  assert.equal(worksheet.chart?.datasetKey, key);
+  assert.equal(worksheet.chart?.display, 'table');
+  assert.deepEqual(worksheet.chart?.series, years);
+  let pvTotal = 0;
+  for (const year of years) {
+    const revenue = at(key, year, 'Revenue');
+    const cash = at(key, year, 'Free cash flow');
+    const discount = at(key, year, 'Discount factor');
+    const pv = at(key, year, 'Present value of cash flow');
+    assert.equal(revenue, at('model_revenue_paths', 'Base', year), `${year}: same revenue path`);
+    assert.equal(cash, at('model_fcf_forecast', 'Base-case forecast', year), `${year}: same cash forecast`);
+    assert.ok(near(revenue * margin, cash, 0.05), `${year}: revenue × margin = cash`);
+    const yearEnd = Date.UTC(2000 + Number(year.slice(2)), 0, 31);
+    const yearsFromValuation = (yearEnd - Date.parse(ds(key).asOf)) / (365.25 * 864e5);
+    assert.ok(near(discount, 1 / (1 + rate / 100) ** yearsFromValuation, 0.00005), `${year}: discount factor`);
+    assert.ok(near(cash * discount, pv, 0.06), `${year}: cash × discount = present value`);
+    pvTotal += pv;
+  }
+  assert.ok(near(pvTotal / 1000, at('model_dcf_bridge', `${rate}%`, 'PV of FY28–32 cash flow'), 0.0005), 'sum in USD trillions matches bridge');
+});
+
 test('the base case is above today\'s price at all three rates (the three-rates slide and recommendation claim it)', () => {
   const price = at('model_dcf_inputs', 'Share price', 'value');
   assert.equal(price, at('model_valuation', 'Value per share', 'Share price today'));
@@ -52,7 +81,7 @@ test('the DCF inputs slide uses the three rates and shows every model input', ()
 test('the finance run is in order and the old valuation slide is gone', () => {
   const ids = spine.map((s) => s.id);
   assert.ok(!ids.includes('valuation'));
-  const order = ['peers', 'dcf-inputs', 'fcf', 'dcf-bridge', 'three-rates', 'reverse-dcf', 'bear-case', 'ai-ended'];
+  const order = ['peers', 'dcf-inputs', 'fcf', 'dcf-worksheet', 'dcf-bridge', 'three-rates', 'reverse-dcf', 'bear-case', 'ai-ended'];
   const pos = order.map((id) => ids.indexOf(id));
   assert.ok(pos.every((p, i) => p >= 0 && (i === 0 || p === pos[i - 1] + 1)), `consecutive: ${pos}`);
   assert.equal(spine[pos.at(-1)! + 1].speaker, "Mi'kael");

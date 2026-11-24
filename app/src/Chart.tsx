@@ -43,6 +43,13 @@ export function waterfallBases(x: string[], values: (number | null)[], totals: s
 export function DataTable({ spec, dataset: full, zoom = null }: { spec: NonNullable<Slide['chart']>; dataset: Dataset; zoom?: string | null }) {
   const dataset = inRange(full, spec.range, spec.exclude);
   const fmt = (v: number | null | undefined, series: string) => (v == null ? '–' : formatValue(v, (dataset.units?.[series]) || dataset.unit));
+  const isDcfWorksheet = dataset.key === 'model_dcf_detail';
+  const cell = (s: string, i: number) => {
+    const v = dataset.series[s]?.[i];
+    if (!isDcfWorksheet || v == null) return fmt(v, s);
+    const decimals = dataset.x[i] === 'Discount factor' ? 4 : 2;
+    return v.toLocaleString('en-GB', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  };
   const hi = zoom ?? spec.highlight ?? null;
   const ref = spec.refLine ? dataset.series[spec.refLine.series]?.find((v) => v != null) : undefined;
   return (
@@ -60,8 +67,8 @@ export function DataTable({ spec, dataset: full, zoom = null }: { spec: NonNulla
           {dataset.x.map((x, i) => (
             <tr key={x} className={x === hi ? 'hi' : undefined} style={{ '--row': i } as CSSProperties}>
               <th scope="row">{x}</th>
-              {spec.series.map((s) => (
-                <td key={s}>{fmt(dataset.series[s]?.[i], s)}</td>
+              {spec.series.map((s, column) => (
+                <td key={s} style={{ '--column': column } as CSSProperties}>{cell(s, i)}</td>
               ))}
             </tr>
           ))}

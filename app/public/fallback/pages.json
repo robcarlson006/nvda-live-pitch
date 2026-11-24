@@ -23,6 +23,7 @@
   "peers",
   "dcf-inputs",
   "fcf",
+  "dcf-worksheet",
   "dcf-bridge",
   "three-rates",
   "reverse-dcf",

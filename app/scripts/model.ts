@@ -26,11 +26,12 @@ export function dcf(i: Omit<Inputs, 'rev27'>) {
   const w = i.wacc / 100;
   const g = i.g / 100;
   const fcf = i.path.map((r) => r * i.margin);
-  const pv = fcf.map((f, k) => f / (1 + w) ** i.t[k]);
+  const discount = i.t.map((years) => 1 / (1 + w) ** years);
+  const pv = fcf.map((f, k) => f * discount[k]);
   const tv = (fcf.at(-1)! * (1 + g)) / (w - g);
-  const pvTv = tv / (1 + w) ** i.t.at(-1)!;
+  const pvTv = tv * discount.at(-1)!;
   const ev = pv.reduce((a, b) => a + b, 0) + pvTv;
-  return { fcf, pv, tv, pvTv, ev, equity: ev + i.netCash, perShare: (ev + i.netCash) / i.shares };
+  return { fcf, discount, pv, tv, pvTv, ev, equity: ev + i.netCash, perShare: (ev + i.netCash) / i.shares };
 }
 
 export const grow = (start: number, rates: number[]) => rates.reduce<number[]>((acc, g) => [...acc, (acc.at(-1) ?? start) * (1 + g / 100)], []);
@@ -132,7 +133,7 @@ function main() {
   const source = 'Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data';
   // The datasets are dated with the share price they use (the override date, else the Bloomberg snapshot).
   const asOf: string = A.priceOverride.value != null ? (A.priceOverride.asOf ?? valuationDate) : valuationDate;
-  const write = (d: Omit<Dataset, 'placeholder' | 'asOf'>) => fs.writeFileSync(path.join(CLEAN, `${d.key}.json`), JSON.stringify(Dataset.parse({ ...d, asOf, placeholder: false }), null, 2) + '\n');
+  const write = (d: Omit<Dataset, 'placeholder' | 'asOf'>, date = asOf) => fs.writeFileSync(path.join(CLEAN, `${d.key}.json`), JSON.stringify(Dataset.parse({ ...d, asOf: date, placeholder: false }), null, 2) + '\n');
   write({
     key: 'model_valuation', title: 'What one NVIDIA share is worth', unit: 'USD', source: `${source}. WACC ${wacc}%, terminal growth ${g}%. Share price $${price}`,
     x: ['Share price today', 'If AI ended for good', 'Bear case', 'Base case', 'Bull case', 'Peer P/E check'],
@@ -203,6 +204,15 @@ function main() {
       'Base-case forecast': [...histYears.map(() => null), ...results.base.fcf.map(r2)],
     },
   });
+  const base = results.base;
+  write({
+    key: 'model_dcf_detail', title: 'Base-case cash flows, USD billions', unit: '',
+    source: `${source}. Base case using ${wacc}% WACC; revenue and cash flow in USD billions`,
+    x: ['Revenue', 'Free cash flow', 'Discount factor', 'Present value of cash flow'],
+    series: Object.fromEntries(years.map((year, k) => [
+      year, [r2(base.path[k]), r2(base.fcf[k]), Number(base.discount[k].toFixed(4)), r2(base.pv[k])],
+    ])),
+  }, valuationDate);
   // Bridge at each of the three rates, in USD tn: PV of FY28–32 cash flow + PV of terminal value = EV; + net cash = equity.
   const tn = (v: number) => Math.round(v * 10) / 1e4; // USD bn → USD tn, 3 decimals
   const bridgeAt = waccs.map((w) => dcf({ path: results.base.path, margin: baseMargin, wacc: w, g, netCash, shares, t }));

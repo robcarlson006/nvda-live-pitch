@@ -1,0 +1,46 @@
+{
+  "key": "model_dcf_detail",
+  "title": "Base-case cash flows, USD billions",
+  "unit": "",
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Base case using 10.55% WACC; revenue and cash flow in USD billions",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "Revenue",
+    "Free cash flow",
+    "Discount factor",
+    "Present value of cash flow"
+  ],
+  "series": {
+    "FY28": [
+      728.64,
+      329.72,
+      0.8869,
+      292.44
+    ],
+    "FY29": [
+      1130.69,
+      511.66,
+      0.8021,
+      410.41
+    ],
+    "FY30": [
+      1557.93,
+      704.99,
+      0.7256,
+      511.55
+    ],
+    "FY31": [
+      1875.64,
+      848.76,
+      0.6564,
+      557.14
+    ],
+    "FY32": [
+      1931.91,
+      874.22,
+      0.5938,
+      519.12
+    ]
+  }
+}

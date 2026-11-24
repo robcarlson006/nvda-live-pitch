@@ -112,6 +112,31 @@ body.is-stage { overflow: hidden; cursor: none; }
 .data-table tbody tr.hi { background: #10140b; }
 .data-table-ref { margin: calc(2.4 * var(--u)) 0 0; font-size: calc(2.5 * var(--u)); color: var(--detail); text-align: right; }
 
+/* DCF worksheet: each fiscal year lights up as its forecast and discounting land. */
+.has-dcf-worksheet .point { max-width: none; margin-bottom: 0; color: var(--detail); }
+.dcf-worksheet .data-table { justify-content: flex-start; }
+.dcf-worksheet table { background: #0c0f0b; border-top: 1px solid #353e2e; }
+.dcf-worksheet .data-table th, .dcf-worksheet .data-table td {
+  padding: calc(2.2 * var(--u)) calc(1.5 * var(--u));
+}
+.dcf-worksheet .data-table thead th { font-size: calc(2.65 * var(--u)); }
+.dcf-worksheet .data-table tbody th { width: 27%; font-size: calc(3.1 * var(--u)); }
+.dcf-worksheet .data-table tbody td { width: 14.6%; font-size: calc(3.75 * var(--u)); }
+.dcf-worksheet .data-table tbody tr { animation: none; }
+.dcf-worksheet .data-table tbody tr.hi td { color: var(--green); }
+.dcf-worksheet .data-table tbody tr.hi { border-top: 1px solid var(--green); }
+.motion .dcf-worksheet tbody td {
+  animation: dcf-cell 0.52s ease-out calc(0.1s + var(--column) * 0.18s + var(--row) * 0.24s) both;
+}
+@keyframes dcf-cell {
+  0% { opacity: 0; }
+  42% { opacity: 1; background-color: #223412; }
+  100% { opacity: 1; background-color: transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .motion .dcf-worksheet tbody td { animation: none; }
+}
+
 /* Keep the answer text and diagram in separate columns. */
 .has-diagram.layout-statement { padding-right: 46vw; }
 .has-diagram .statement { font-size: calc(7.5 * var(--u)) !important; max-width: 16ch !important; }
