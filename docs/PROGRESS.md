@@ -186,3 +186,11 @@ cd app && npm install && npm run dev
 - **Jensen Huang resigned (12 Nov 2026).** Colette Kress is interim CEO. The stock is at its 52-week low (~$135, P/E ~16). Governance is the obvious first ESG question, so it needs a Q&A-bank slide and possibly a line in the main pitch. Verify with a major outlet before quoting.
 - Bloomberg WACC = 19.3%, far above the typical 9–12%. Show the sensitivity range rather than silently picking one number.
 - The share price will move before Wednesday. The model takes the price as a dated input; update it on the morning of the pitch.
+
+## 24 Nov continuation: content, timing, fallback
+
+- Repaired the stepped reveal's right-edge clipping; checked the full DCF bridge and reverse DCF on the stage.
+- Added a four-stop space-race timeline, a sourced staff-turnover comparison, and the TSMC exclusion on the main emissions chart. LinkedIn's 12.9% benchmark is from 2022 and is a directional comparison to Bloomberg FY26, not a like-for-like statistic.
+- Tightened the `say` script to 1,182 words. See `docs/script/TIMING.md`. All speech-cue tests pass with digits and spoken numbers.
+- Built `fallback/spine.pdf` and 36 bundled static slide images. Operator **B** switches to them; Next/Back advance full pages. The switch, navigation and return to live were observed in the browser.
+- Updated governance wording to the board investigation and ongoing government inquiries, supported by NVIDIA's 12 and 23 Nov releases and Form 8-K. The pitch-morning price, real microphone, room timing, projector dimensions and motion/performance checks still need a live rehearsal. Full camera/morph authoring in the v2 spec remains open.

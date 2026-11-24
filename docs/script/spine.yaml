@@ -1,7 +1,7 @@
 # The scripted spine: the slides in order, and the phrases that trigger them.
 # Running order: Rob (why) → Panshul (financials) → Mi'kael (ESG and the recommendation) → Rob (close).
-# Timed for 9 minutes: about 1,200 spoken words. Read aloud at 150 words a minute with natural pauses it runs
-# just under 9:00 (checked with scripts/deepgram-run.ts). Draft 7, 24 Nov 2026.
+# Current draft: 1182 spoken words, 7.88 minutes at 150 wpm before pauses. See docs/script/TIMING.md.
+# A timed room rehearsal is still required before claiming a sub-nine-minute run.
 #
 # How it works on the day
 #   - When the mic hears any phrase in `cues`, that slide starts building.
@@ -41,7 +41,7 @@
       cue: every pc
     - text: Paid for by video games
       cue: video games
-  say: "In 1993, three engineers sat in a booth at a Denny's in San Jose. Their idea: 3D graphics on every PC, paid for by video games. People told them nobody starts a company to play games."
+  say: "In 1993, three engineers met at a Denny's in San Jose. Their idea: 3D graphics on every PC, paid for by video games. People said nobody starts a company to play games."
   sources: [NVIDIA company history (Wikipedia; Sequoia Capital)]
 
 - id: first-gpu
@@ -51,12 +51,12 @@
   title: "1999: the world's first GPU."
   bullets:
     - text: "2000: Microsoft picks NVIDIA for the first Xbox, paying {{research_facts | Xbox advance | value}} up front"
-      cue: first xbox
+      cue: nvidia for xbox
     - text: "2007: Forbes company of the year"
       cue: company of the year
     - text: A successful gaming company. They could have stopped there.
-      cue: stopped there
-  say: "In 1999 they launched the GeForce 256 and called it the GPU. Microsoft picked NVIDIA for the first Xbox, and by 2007 Forbes named it company of the year. They could have stopped there."
+      cue: could have stopped
+  say: "In 1999 came the GeForce 256, the GPU. Microsoft chose NVIDIA for Xbox; Forbes named it company of the year in 2007. They could have stopped."
   sources: [GeForce 256 launch, 1999; Forbes, 3 January 2008]
 
 # The cores: a handful light one by one, then thousands at once
@@ -75,7 +75,7 @@
       cue: let anyone
     - text: Given away free, and built into every gaming card
       cue: away for free
-  say: "Instead, in November 2006, they announced CUDA. A normal processor is a few fast workers doing one job after another. A graphics chip is thousands of workers, all at the same time. CUDA let anyone use them, and NVIDIA gave it away for free, on every gaming card."
+  say: "Instead, in November 2006, they announced CUDA. A normal processor is a handful of very fast workers doing one job after another. A graphics chip is thousands of smaller workers, all at the same time. CUDA let anyone put them to work, and NVIDIA gave it away for free on every gaming card."
   sources: [NVIDIA, SC06, November 2006; Ian Buck, Brook for GPUs (Stanford)]
 
 - id: wall-street
@@ -85,15 +85,14 @@
   title: Wall Street hated it.
   bullets:
     - Bigger, pricier chips, for gamers who didn't care
-    - text: "About {{research_facts_unverified | CUDA spend per year | value}} a year spent on CUDA"
-      cue: half a billion
-    - text: The stock more than halved in 2008. An activist fund circled in 2013.
-      cue: activist fund
+    - text: The stock more than halved in 2008
+      cue: stock halved
     - text: Revenue stuck for years. NVIDIA held on anyway.
-      cue: look at revenue
+      cue: revenue stalled
   chart: { type: bar, datasetKey: nvda_revenue_annual, series: [Revenue], range: [FY05, FY13], highlight: FY13 }
-  say: "Wall Street hated it. CUDA made chips pricier for gamers who didn't care, at about half a billion dollars a year. The stock halved in 2008, and in 2013 an activist fund circled. Look at revenue: stuck for years."
-  sources: [Share price and Starboard Value stake, research notes]
+  # DRAFT say
+  say: "Wall Street hated it. Gamers paid for CUDA they didn't use; the stock halved in 2008. Revenue stalled. NVIDIA held on."
+  sources: [NVIDIA Bloomberg FA annual FY05–FY13; 2008 historical share price, research notes]
 
 - id: alexnet
   speaker: Rob
@@ -104,10 +103,10 @@
     - text: "2009: Stanford trains neural networks up to {{research_facts | Stanford speed-up | value}} faster on CUDA"
       cue: times faster
     - text: "2012: AlexNet, trained on NVIDIA gaming cards, wins ImageNet by a mile"
-      cue: university of toronto
+      cue: toronto student
   chart: { type: bar, datasetKey: research_alexnet, series: [Top-5 error], highlight: "AlexNet, on NVIDIA GPUs" }
-  chartCue: error rate
-  say: "Then, in 2009, a Stanford team led by Andrew Ng trained neural networks 70 times faster on CUDA. In 2012, a student at the University of Toronto won the top image-recognition contest on two NVIDIA gaming cards, with an error rate of 15 percent against 26. Modern AI was built on NVIDIA."
+  chartCue: percent error
+  say: "Then, in 2009, Andrew Ng's Stanford team trained neural networks 70 times faster with CUDA. In 2012, a Toronto student won the top image-recognition contest using two NVIDIA gaming cards: 15 percent error against 26. AI found NVIDIA."
 
 - id: revenue-long
   speaker: Rob
@@ -128,7 +127,7 @@
       cue: four layers
     - text: A competitor has to beat all of them, at once.
       cue: at once
-  say: "So why is NVIDIA the gold standard? Four layers. And a competitor has to beat all four at once."
+  say: "Why the gold standard? Four layers a rival must match at once."
 
 - id: chips
   speaker: Rob
@@ -139,14 +138,13 @@
     - text: "Tensor Cores, added in 2017, are circuits built for the maths of AI"
       cue: tensor cores
     - text: A new chip generation every year, so rivals are always aiming at last year's chip
-      cue: every year
-    - text: "On paper AMD has more memory: {{research_facts | AMD MI355X memory | value}} against {{research_facts | NVIDIA B200 memory | value}}. But NVIDIA sells the whole system"
-      cue: gigabytes
+      cue: arrives yearly
     - text: "In data centres, NVIDIA makes {{peers_datacenter_revenue | Multiple of AMD | NVIDIA}} what AMD makes"
-      cue: every dollar
+      cue: amd makes
   chart: { type: bar, datasetKey: peers_datacenter_revenue, series: [Data centre revenue], highlight: NVIDIA }
-  chartCue: billion against
-  say: "One: chips. Tensor Cores do exactly the maths AI needs, with a new generation every year. On paper, AMD's latest chip has more memory, 288 gigabytes against 192. But for every dollar AMD makes from data centres, NVIDIA makes twelve: 194 billion against 17."
+  chartCue: nvidia makes
+  # DRAFT say
+  say: "One: chips. Tensor Cores do AI maths; a new generation arrives yearly. AMD makes 17 billion dollars from data centres; NVIDIA makes 194 billion."
 
 # The cores: one core lights, a ripple spreads across the block, then it locks in
 - id: software
@@ -161,10 +159,10 @@
     - text: "More than {{research_facts | CUDA-X libraries | value}} free libraries, refined since 2007"
       cue: libraries
     - text: To switch, a company must rewrite its code and retrain its engineers
-      cue: to switch
+      cue: switching means
     - text: "AMD's answer, ROCm, arrived in 2016: nine years behind"
-      cue: years behind
-  say: "Two: software. Think iPhone versus Android. Six million developers write code for CUDA, with over a thousand free libraries. To switch, a company must rewrite its code and retrain its engineers, and AMD's answer arrived nine years behind. A rival can copy a chip, not twenty years of work."
+      cue: nine years later
+  say: "Two: software. Six million developers use CUDA and over a thousand free libraries. Switching means rewriting code and retraining engineers. AMD's answer arrived nine years later. A rival can copy a chip, not twenty years of software."
 
 # The cores: clusters merge into one block
 - id: connections
@@ -175,12 +173,12 @@
   title: "Three: connections."
   bullets:
     - text: "NVLink: {{research_facts | GPUs per NVL72 rack | value}} chips in a rack act as one giant chip"
-      cue: single rack
-    - text: "2019: NVIDIA buys Mellanox for about {{research_facts | Mellanox price | value}}"
+      cue: one rack
+    - text: "2019: NVIDIA agrees to buy Mellanox for about {{research_facts | Mellanox price | value}}"
       cue: agreed to buy
     - text: "Last year that networking business made {{research_facts_unverified | Networking revenue FY26 | value}}. In one year."
-      cue: networking business
-  say: "Three: connections. NVLink wires 72 chips in a single rack into one giant chip. In 2019 NVIDIA agreed to buy Mellanox for about seven billion dollars, and that networking business now makes over 31 billion a year."
+      cue: networking now
+  say: "Three: connections. NVLink joins 72 chips into one rack. NVIDIA agreed to buy Mellanox for seven billion dollars in 2019; networking now makes over 31 billion a year."
 
 - id: supply
   speaker: Rob
@@ -189,11 +187,11 @@
   title: "Four: supply."
   bullets:
     - text: "TSMC in Taiwan makes about {{research_facts | TSMC share of leading-edge chips | value}} of the most advanced chips"
-      cue: most advanced chips
+      cue: advanced chips
     - text: The bottleneck is packaging, and NVIDIA has booked most of it
-      cue: bottleneck
+      cue: scarce packaging
   chart: { type: bar, datasetKey: research_cowos_share, series: [Share of CoWoS], highlight: NVIDIA }
-  say: "Four: supply. TSMC in Taiwan makes about nine in ten of the most advanced chips. The bottleneck is packaging, and NVIDIA has booked around 60 percent of it. A rival with a better design can't get it built."
+  say: "Four: supply. TSMC makes about nine in ten advanced chips. NVIDIA booked around 60 percent of scarce packaging. A rival's better design still needs a factory."
 
 - id: catch-up
   speaker: Rob
@@ -203,10 +201,10 @@
   stat: { datasetKey: research_facts_unverified, series: Share of AI chip spending, x: value, label: of AI chip spending goes to NVIDIA }
   bullets:
     - text: Google came closest, with its own chips since 2015 and tens of billions spent
-      cue: come closest
+      cue: came closest
     - text: Amazon, Microsoft and Meta are trying too, and still buy NVIDIA
       cue: still buy
-  say: "Has anyone caught up? Google has come closest, after eleven years and tens of billions. Amazon, Microsoft and Meta all still buy NVIDIA. Industry estimates give it around 80 percent of AI chip spending."
+  say: "Has anyone caught up? Google came closest after eleven years and tens of billions. Amazon, Microsoft and Meta still buy NVIDIA. Industry estimates put its AI-chip share near 80 percent."
 
 - id: bubble
   speaker: Rob
@@ -216,8 +214,8 @@
   bullets:
     - { zoom: "AI 2025–32", cue: projected at }
   chart: { type: bar, datasetKey: research_infra_gdp, series: [Average yearly spend], highlight: "AI 2025–32" }
-  chartCue: interstate highways
-  say: "Is this the dot-com bubble again? The interstate highways took about 1.1 percent of US GDP a year, the fibre boom about the same, the railroads 2.2. The AI build-out is projected at 3.6 percent: the biggest in American history."
+  chartCue: highways and fibre
+  say: "Is this the dot-com bubble again? Highways and fibre each took about 1.1 percent of US GDP annually; railroads, 2.2. The AI build-out is projected at 3.6 percent: America's biggest."
 
 - id: if-it-pops
   speaker: Rob
@@ -226,13 +224,13 @@
   title: And if the bubble does pop, NVIDIA is built to survive it.
   bullets:
     - text: The dot-com crash wiped out companies built on ideas. The ones selling something people needed survived.
-      cue: wiped out
+      cue: stock falls
     - text: NVIDIA owns both halves of AI, the hardware and the CUDA software every AI developer already builds on
-      cue: both halves
+      cue: hardware and software
     - text: When money gets tight, the weakest bets are cut first. The best platform is the last to lose customers.
       cue: cut first
   # DRAFT say (stress-case sentence and bullet cut, spec 1f)
-  say: "And if the bubble pops? The share price would fall. But the dot-com crash wiped out companies built on ideas, not ones selling what people needed. NVIDIA owns both halves of AI, the hardware and the software, and when money gets tight the weakest bets are cut first."
+  say: "If the bubble pops, the stock falls. But NVIDIA sells needed hardware and software, while weak AI bets get cut first. It is built to survive."
 
 - id: already-doing
   speaker: Rob
@@ -241,26 +239,26 @@
   title: AI isn't a fad.
   bullets:
     - text: "2024 Nobel Prize in Chemistry: AI that predicts and designs proteins"
-      cue: nobel prize
+      cue: chemistry nobel
     - text: "A lung-disease drug: idea to clinical trials in under {{research_facts | Drug: idea to trials, months | value}} months"
-      cue: lung disease
+      cue: lung-disease drug
     - text: "Sweden: {{research_facts | Sweden: more cancers found | value}} more breast cancers found, with {{research_facts | Sweden: less reading work | value}} less work for doctors"
       cue: breast cancers
-  say: "And AI isn't a fad. The 2024 Nobel Prize in Chemistry went to AI that designs proteins. A lung disease drug reached clinical trials in under 30 months, and in Sweden, AI screening found 20 percent more breast cancers."
+  say: "AI isn't a fad. The 2024 Chemistry Nobel went to protein-design AI. A lung-disease drug reached trials in under 30 months; Swedish screening found 20 percent more breast cancers."
   sources: [Nobel Prize in Chemistry 2024]
 
 
 - id: handoff
   speaker: Rob
-  cues: [the best chips, has the best chips, best chips the best software]
+  cues: [nvidia has the chips, has the chips software, chips software connections]
   layout: statement
   title: The best chips, software, connections and supply.
   bullets:
     - text: The biggest companies and governments are all building AI
-      cue: biggest governments
+      cue: governments keep building
     - text: The only way to stop NVIDIA is to stop innovation.
-      cue: stop innovation
-  say: "So NVIDIA has the best chips, software, connections and supply, and the world's biggest companies and two biggest governments are building AI. The only way to stop NVIDIA is to stop innovation. Panshul?"
+      cue: do the numbers agree
+  say: "NVIDIA has the chips, software, connections and supply. Companies and governments keep building AI. Panshul, do the numbers agree?"
 
 # ---------------- Panshul: financials ----------------
 
@@ -270,7 +268,7 @@
   layout: number
   title: Revenue in a single quarter
   stat: { datasetKey: nvda_revenue_quarterly, series: Revenue, x: FY27 Q3, label: "Three months to 25 October 2026, reported on 17 November: {{nvda_revenue_surprise | Revenue surprise | FY27 Q3}} above what analysts expected." }
-  say: "In the three months to October, NVIDIA's revenue was 116 billion dollars. In one quarter. More than double a year earlier, and six percent above what analysts expected."
+  say: "Last quarter, NVIDIA made 116 billion dollars in revenue: more than double a year earlier and six percent above expectations."
 
 - id: beats
   speaker: Panshul
@@ -280,14 +278,14 @@
   chartFirst: true
   bullets:
     - text: The grey line is what analysts expected
-      cue: analysts expected
+      cue: expectations thirteen
     - text: The green line is what NVIDIA delivered
-      cue: delivered
+      cue: green is delivery
     - { zoom: FY27 Q3, cue: look at this quarter }
     - text: "Earnings per share in the October quarter: {{nvda_eps_quarterly | EPS | FY27 Q3}}, against {{nvda_eps_quarterly | Consensus | FY27 Q3}} expected"
       cue: earnings per share
   chart: { type: line, datasetKey: nvda_revenue_quarterly, series: [Revenue, Consensus], highlight: FY27 Q3 }
-  say: "And it isn't luck. Revenue has beaten what analysts expected thirteen quarters in a row. The grey line is what analysts expected; the green line, what NVIDIA delivered. Look at this quarter: another beat, and earnings per share beat too, 2 dollars 68 against 2 47."
+  say: "Revenue has beaten expectations thirteen quarters running. Grey is consensus; green is delivery. Look at this quarter: another beat. Earnings per share beat too: 2 dollars 68 against 2 47."
   sources: [Bloomberg FA, 20 Nov 2026]
 
 # From the Q3 FY27 earnings call (17 Nov). Figures are in data/clean/research_q3_call.json, unverified until checked against the 10-Q.
@@ -307,7 +305,7 @@
     - text: "The new Vera Rubin chips earned nearly {{research_q3_call | Vera Rubin revenue, first quarter of shipments | value}} in their first quarter of shipping"
       cue: vera rubin
   chart: { type: bar, datasetKey: nvda_revenue_guidance, series: [Revenue], highlight: FY27 Q4 (guide) }
-  say: "And next quarter is bigger again: 130 billion dollars, give or take three percent. NVIDIA raised next year's growth outlook to about 75 percent, from 70, and the new Vera Rubin chips earned nearly 20 billion dollars in their first quarter."
+  say: "Next quarter's guidance is 130 billion dollars, give or take three percent. NVIDIA raised next year's growth outlook from 70 to about 75 percent; Vera Rubin earned nearly 20 billion in its first quarter."
   sources: [NVIDIA Q3 FY27 earnings call, 17 Nov 2026; Bloomberg FA, 20 Nov 2026]
 
 - id: returns
@@ -317,12 +315,12 @@
   title: The cash goes back to shareholders
   bullets:
     - text: "{{research_q3_call | Cash returned to shareholders, Q3 FY27 | value}} returned in the October quarter, through buybacks and dividends"
-      cue: october quarter
+      cue: last quarter
     - text: "{{research_q3_call | Buyback authorization remaining | value}} of buyback authorization still to use, after adding {{research_q3_call | Buyback authorization added | value}}"
-      cue: authorization
+      cue: is authorized
     - text: NVIDIA plans to return all excess free cash flow, after strategic uses, to shareholders
       cue: excess
-  say: "A business this profitable hands the cash back: 28 billion dollars in the October quarter, through buybacks and dividends. It still has 227 billion dollars of buyback authorization, and it plans to return all excess cash to shareholders."
+  say: "NVIDIA returned 28 billion dollars through buybacks and dividends last quarter. Another 227 billion is authorized. It plans to return all excess cash."
   sources: [NVIDIA Q3 FY27 earnings call, 17 Nov 2026]
 
 - id: peers
@@ -335,17 +333,17 @@
     - text: Forward P/E on the fiscal year ending around January 2027
     - { zoom: NVIDIA, cue: cheapest }
     - text: "On earnings already reported over the last year it is {{research_market | P/E ratio, trailing | value}}"
-      cue: already reported
+      cue: reported earnings
   chart: { type: bar, datasetKey: peers_pe, series: [Forward P/E], highlight: NVIDIA }
   # DRAFT say
-  say: "You might think it's expensive. On this year's expected earnings, it's the cheapest of the five big chip companies. On earnings already reported, it trades at about sixteen and a half times."
+  say: "Is it expensive? On this year's expected earnings, it is the cheapest of five big chip companies. On reported earnings, about sixteen and a half times."
   sources: [Bloomberg, 20 Nov 2026 for the peers; NVIDIA re-priced at the 24 Nov 2026 share price]
 
 # ---- The DCF, one step at a time (v2, 24 Nov 2026). Every figure is from data/clean/model_*.json. ----
 # The credibility moment: every input, grouped by where it comes from. Each input lights green as it is said.
 - id: dcf-inputs
   speaker: Panshul
-  cues: [what is it worth, none of these numbers, numbers are ours, where our numbers come from]
+  cues: [what is one share worth, none of these figures, figures are ours, where our numbers come from]
   layout: inputs
   title: None of these numbers are ours.
   groups:
@@ -377,7 +375,7 @@
         - text: "Growth fades in a straight line to {{model_dcf_inputs | Terminal growth (our choice) | value}} by FY32"
           cue: fading to
   # DRAFT say
-  say: "So what is it worth? None of these numbers are ours. They come from Bloomberg, Google Finance and NVIDIA's own filings, and every figure on screen shows its source. From Bloomberg: last year's revenue, 216 billion dollars; analyst consensus for the next two years; NVIDIA's actual three-year average cash margin, 45 percent; the share count and net cash; and Bloomberg's own discount rate, 15.4 percent. From Google Finance: the share price, 152.85, and its rate, 14.45. From Damodaran at NYU: the US chip-industry average, 10.55. Only two choices are ours: long-run growth of 3 percent, and growth fading to that by 2032."
+  say: "What is one share worth? None of these figures are ours: Bloomberg gives last year's 216 billion in revenue, two years of consensus, a forty-five percent three-year cash margin, shares, net cash and a 15.4 percent rate. Google Finance gives today's 152.85 share price and 14.45 percent rate. Damodaran at NYU gives the 10.55 percent chip-industry rate. Our choices: 3 percent terminal growth, with growth fading to it by 2032. Every figure shows its source."
 
 - id: fcf
   speaker: Panshul
@@ -389,11 +387,11 @@
     - { zoom: FY26, cue: last year }
     - { zoom: FY32, cue: base case reaches }
     - text: "Revenue: analyst consensus. Margin: NVIDIA's own FY24 to FY26 average"
-      cue: same three year margin
+      cue: that three-year margin
     - { zoom: all }
   chart: { type: stackedBar, datasetKey: model_fcf_forecast, series: [Actual, Base-case forecast], range: [FY22, FY32], highlight: FY26 }
   # DRAFT say
-  say: "This is free cash flow: the cash left after running the business. Last year, 97 billion dollars. Our base case reaches 874 billion by 2032, on consensus revenue and that same three-year margin."
+  say: "Free cash flow is cash left after running the business. Last year: 97 billion dollars. On consensus revenue and that three-year margin, our base case reaches 874 billion by 2032."
 
 # Waterfall at the industry rate: PV of five years → PV of everything after → enterprise value → + net cash → equity value.
 - id: dcf-bridge
@@ -412,7 +410,7 @@
     - { zoom: all }
   chart: { type: waterfall, datasetKey: model_dcf_bridge, series: ["10.55%"], totals: [Enterprise value, Equity value], highlight: Equity value }
   # DRAFT say
-  say: "Then we add it up. The cash of the next five years, discounted at the industry rate, is worth 2.3 trillion dollars today. Everything after that, 7.1 trillion. Together, an enterprise value of 9.4 trillion. Add 60 billion of net cash, divide by 24 billion shares, and one share is worth 391 dollars, against 153 today."
+  say: "Add it up. The next five years' cash, discounted at the industry rate, is worth 2.3 trillion today. Everything after: 7.1 trillion. Enterprise value: 9.4 trillion. Add 60 billion net cash, divide by 24 billion shares: 391 dollars a share, against 153 today."
 
 - id: three-rates
   speaker: Panshul
@@ -425,11 +423,11 @@
     - { zoom: 14.45% Google Finance, cue: at google finance }
     - { zoom: 15.4% Bloomberg, cue: at bloomberg }
     - text: "Enterprise value: {{model_three_rates | Enterprise value | 10.55% industry (Damodaran)}}, {{model_three_rates | Enterprise value | 14.45% Google Finance}} and {{model_three_rates | Enterprise value | 15.4% Bloomberg}}"
-      cue: enterprise value of
+      cue: enterprise value spans
     - { zoom: all }
   chart: { type: bar, datasetKey: model_three_rates, series: [Value per share], refLine: { series: Share price today }, highlight: 10.55% industry (Damodaran) }
   # DRAFT say
-  say: "We didn't invent a discount rate. We used the US chip-industry average, and checked it against Google Finance's and Bloomberg's own rates for NVIDIA. At the industry rate, 391 dollars. At Google Finance's 14.45, 249. At Bloomberg's 15.4, 228. That is an enterprise value of 5.4 to 9.4 trillion dollars, and above today's price at all three rates."
+  say: "We didn't invent a discount rate. At the industry rate, a share is worth 391 dollars; at Google Finance's 14.45, 249; at Bloomberg's 15.4, 228. Enterprise value spans 5.4 to 9.4 trillion dollars. All three exceed today's price."
 
 - id: reverse-dcf
   speaker: Panshul
@@ -445,7 +443,7 @@
     - { zoom: all }
   chart: { type: bar, datasetKey: model_implied_growth, series: [Growth per year], highlight: Priced in today }
   # DRAFT say
-  say: "Now turn it around: what does today's price assume? Revenue growth of about eleven and a half percent a year. Consensus slowing to 3 percent gives thirty-five and a half. The market is pricing in far less than analysts expect."
+  say: "Turn it around: what does today's price assume? About eleven and a half percent annual revenue growth. Consensus slowing to 3 percent yields thirty-five and a half. The market prices in far less."
 
 # Two downside cases: two slides, two names, never merged. Always say "our bear case, where rivals take share" and "if AI ended for good".
 - id: bear-case
@@ -464,7 +462,7 @@
       cue: about one percent
   chart: { type: line, datasetKey: model_path_bear, series: [Bear case, Base case], highlight: FY29 }
   # DRAFT say
-  say: "Now two downside cases, kept apart. First, our bear case, where rivals take share and spending pauses for a year. Revenue grows a little, falls in 2029, then recovers. One share is worth 102 dollars, a third below today. With our 3 percent position, that costs the portfolio about one percent."
+  say: "First, our bear case, where rivals take share and spending pauses for a year. Revenue falls in 2029, then recovers. One share is worth 102 dollars, about a third below today. At a 3 percent position, the portfolio loses about one percent."
 
 # The cores go dark. Muted grey line: visibly not the bear case.
 - id: ai-ended
@@ -485,9 +483,29 @@
       cue: under two percent
   chart: { type: line, datasetKey: model_path_ai_ended, series: [If AI ended for good, Base case], muted: true, highlight: FY29 }
   # DRAFT say
-  say: "Second, the harshest case we could build: if AI ended for good. Revenue flat, then down a fifth, then no real growth ever again, with margins ten points lower. That is harsher than anything in NVIDIA's history. Even then, one share is still worth 64 dollars, not zero, and at 3 percent of the portfolio it costs us under two percent. So could AI really end for good? Mi'kael."
+  say: "Second, if AI ended for good: revenue flat, then down a fifth, no real growth thereafter, and margins ten points lower. Harsher than NVIDIA's history. Even then, a share is worth 64 dollars, not zero. At a 3 percent position, the portfolio loses under two percent. Could AI end for good? Mi'kael."
 
 # ---------------- Mi'kael: ESG and the recommendation ----------------
+
+# The space-race analogy is an argument about sustained competition, not a forecast in the DCF.
+- id: space-race
+  speaker: Mi'kael
+  cues: [space race, like the space race, remember sputnik, from sputnik]
+  layout: timeline
+  effect: spread
+  title: "A race can change the world."
+  bullets:
+    - text: "1957: Sputnik starts the space race"
+      cue: sputnik
+    - text: "1969: people land on the Moon"
+      cue: moon
+    - text: "The by-product: Earth-observation satellites now track climate and forests"
+      cue: earth observation
+    - text: "AI is a race now. What useful tools will it leave behind?"
+      cue: ai is a race
+  # DRAFT say
+  say: "Could AI end for good? Think of the space race. Sputnik launched in 1957; people reached the Moon in 1969. Earth observation satellites now track climate and forests. AI is a race too; its by-products may help."
+  sources: ["NASA, The Dawn of the Space Age; NASA, Apollo 11; NASA Earth Observatory, Space-based Observations of the Earth"]
 
 # VERIFY the reinstatement and every date against a major news source on the morning of the pitch.
 - id: governance
@@ -500,11 +518,11 @@
       cue: reinstated
     - text: The board created an independent committee for national security and export control
       cue: committee
-    - text: SEC and California investigations have been reported, and are not yet closed
+    - text: The board investigation and government inquiries remain open
       cue: investigations
-  say: "Let's start with the hard one: governance. Jensen Huang resigned as CEO this month, and the board reinstated him days later, with a new independent committee for national security and export control. The SEC and California investigations are still open, and we won't pretend that risk has gone."
+  say: "Let's start with the hard one: governance. Jensen Huang resigned as CEO this month, and the board reinstated him days later, with a new independent committee for national security and export control. The board investigation and government inquiries remain open; we won't pretend that risk has gone."
   video: { file: jensen-reinstated.mp4, credit: The Wall Street Journal } # muted and looping; the file lives in app/public/media (not in git)
-  sources: [CNBC, 12 Nov 2026; NBC News, Nov 2026]
+  sources: [NVIDIA press releases, 12 and 23 Nov 2026; NVIDIA Form 8-K, 23 Nov 2026]
 
 # Competition (added 24 Nov 2026, evening), from docs/research/nvidia-open-ai-ecosystem-report.md. Names only: no figures.
 # Hugging Face: agreed 3 Sep 2026, still needs regulatory approval, so never say "bought".
@@ -522,24 +540,29 @@
       cue: fireworks
     - text: More choice keeps the giants' prices and lock-in in check, and whichever model wins still needs chips
       cue: more choice
-  say: "NVIDIA is also funding competition to the AI giants. It has agreed to buy Hugging Face, home of open models, and backs Mistral, Black Forest Labs and AI21, which build them, and Fireworks, Together and Replicate, which run them. More choice keeps the giants' prices in check, and every model still needs chips. The catch: some of these firms buy NVIDIA chips, so we watch for money going round in a circle."
+  # DRAFT say
+  say: "NVIDIA funds competition to the AI giants. It agreed to buy Hugging Face, pending approval, and backs Mistral, Black Forest Labs, AI21, Fireworks, Together and Replicate. More choice keeps the giants' prices in check. Every model needs chips."
   sources: ["NVIDIA blog, 3 Sep 2026 (Hugging Face, pending approval); funding announcements: Mistral 2024, AI21 Labs 2023, Black Forest Labs 2025, Fireworks AI 2024, Replicate 2023, Together AI (Reuters) 2024; NVIDIA Form 10-K FY26"]
 
 # The "S" in ESG (added 24 Nov 2026, evening). Rankings checked on each publisher's page; people figures from Bloomberg.
 - id: people
   speaker: Mi'kael
-  cues: [people want to work, want to work there, staff left]
-  layout: number
-  title: People want to work here, and they stay.
-  stat: { datasetKey: research_people, series: "Staff turnover, FY26", x: value, label: "of staff left in the last year (Bloomberg)" }
+  cues: [staff turnover, people want to work, want to work there, staff left]
+  layout: split
+  title: Staff turnover is low.
+  chartFirst: true
   bullets:
+    - { zoom: NVIDIA FY26, cue: staff left }
+    - text: "NVIDIA: {{research_people | Staff turnover, FY26 | value}} in FY26; tech-and-media benchmark: {{research_people_turnover | Staff turnover | Tech and media 2022}} in 2022"
+      cue: tech and media benchmark
+    - { zoom: all }
     - text: "Glassdoor Best Places to Work 2026: #{{research_people | Glassdoor Best Places to Work 2026, US rank | value}} in the US"
       cue: glassdoor
-    - text: "Fortune 100 Best Companies to Work For: top {{research_people | Fortune 100 Best, lowest rank 2022–2026 | value}} every year since 2022"
+    - text: "Fortune: top {{research_people | Fortune 100 Best, lowest rank 2022–2026 | value}} every year since 2022; TIME sustainable-growth rank: #{{research_people | TIME Sustainable Growth 2026, world rank | value}}"
       cue: fortune
-    - text: "TIME World's Best Companies in Sustainable Growth 2026: #{{research_people | TIME Sustainable Growth 2026, world rank | value}}"
-      cue: sustainable growth
-  say: "And people want to work there. Only 3.7 percent of staff left last year. Glassdoor ranks NVIDIA the third best place to work in America, Fortune has it in the top six every year since 2022, and TIME ranks it sixth in the world for sustainable growth. The weak spot: NVIDIA now publishes less social data, and as shareholders we would push for more."
+  chart: { type: bar, datasetKey: research_people_turnover, series: [Staff turnover], highlight: NVIDIA FY26 }
+  # DRAFT say
+  say: "Only 3.7 percent of NVIDIA staff left last year. A tech and media benchmark was 12.9 percent in 2022; different years and sectors. Glassdoor ranks NVIDIA third in America, Fortune kept it in the top six since 2022, and TIME sixth for sustainable growth."
 
 - id: renewables
   speaker: Mi'kael
@@ -561,11 +584,9 @@
     - text: "Carbon from each company's own buildings and the electricity they buy, per $1m of sales"
       cue: every million dollars
     - { zoom: NVIDIA, cue: nvidia emits }
-    - { zoom: TSMC, cue: hundred and nine }
-    - text: TSMC makes NVIDIA's chips, so the factory emissions count in TSMC's number, not NVIDIA's
-      cue: factory emissions
-  chart: { type: bar, datasetKey: peers_emissions_intensity, series: [Emissions intensity], highlight: NVIDIA }
-  say: "Now compare other chip companies: the carbon from each one's own buildings and electricity, for every million dollars of sales. NVIDIA emits about 48 kilograms. Intel, 25 tonnes. TSMC, a hundred and nine tonnes. To be fair, TSMC makes NVIDIA's chips, so those factory emissions count in TSMC's number."
+  chart: { type: bar, datasetKey: peers_emissions_intensity, series: [Emissions intensity], highlight: NVIDIA, exclude: [TSMC] }
+  # DRAFT say
+  say: "Now compare chip companies' own buildings and electricity for every million dollars of sales. NVIDIA emits about 48 kilograms. Intel, 25 tonnes."
 
 # Sizes are the team's own choice, written in words on purpose.
 - id: recommendation
@@ -583,7 +604,7 @@
     - text: We would add only if cloud spending plans rise again and the CEO investigation closes, and sell if they are cut
       cue: we would add
   # DRAFT say
-  say: "Our recommendation is to buy: three percent of the portfolio, for three to five years. Our base case is above today's price at all three rates. Our bear case, where rivals take share, would cost the portfolio about one percent; if AI ended for good, under two. We would add if cloud spending plans rise and the CEO investigation closes, and sell if those plans are cut."
+  say: "We recommend a three percent position for three to five years. Our base case beats today's price at all three rates. Our bear case, where rivals take share, costs about one percent of the portfolio; if AI ended for good, under two. We would add if cloud spending rises and the CEO investigation closes; sell if spending is cut."
 
 # ---------------- Rob: the close ----------------
 
@@ -594,7 +615,7 @@
   title: The AI industry runs on infrastructure NVIDIA built.
   bullets:
     - text: The best chips, the best software, the best connections and the best supply
-      cue: best software
+      cue: hardware and software
     - text: Our recommendation is to buy.
-      cue: to buy
-  say: "The AI industry runs on infrastructure NVIDIA built, and the company with the best hardware and the best software is the hardest one to replace. Our recommendation is to buy. Thank you."
+      cue: a buy
+  say: "The AI industry runs on infrastructure NVIDIA built. Its hardware and software are hard to replace. We recommend a buy. Thank you."

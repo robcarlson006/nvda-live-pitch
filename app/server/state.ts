@@ -142,7 +142,7 @@ export function relocate(state: ShowState, spine: SpineSlide[]): Pick<ShowState,
 }
 
 export function emptyState(): ShowState {
-  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false, follow: 'script', seen: [], approveTangents: false, motion: true };
+  return { index: -1, live: null, reveal: 0, liveSince: 0, history: [], autoCue: true, heard: '', consumed: 0, lastCue: null, skipped: [], rehearsal: null, mode: 'script', question: '', questionTail: '', stray: '', drafts: [], under: 0, riff: true, autoShow: false, follow: 'script', seen: [], approveTangents: false, motion: true, backup: false };
 }
 
 export function loadState(): ShowState {
@@ -237,6 +237,10 @@ function step(spine: SpineSlide[], skipped: string[], from: number, dir: 1 | -1)
 }
 
 function next(state: ShowState, spine: SpineSlide[]): ShowState {
+  if (state.backup) {
+    const i = step(spine, state.skipped, state.index, 1);
+    return i >= 0 ? { ...show(state, spine[i], i), reveal: elementCount(spine[i]) } : state;
+  }
   if (state.live && state.reveal < elementCount(state.live)) return { ...state, reveal: revealFrom(state.live, state.reveal), heard: '', stray: '' };
   const i = step(spine, state.skipped, state.index, 1);
   return i >= 0 ? show(state, spine[i], i) : state;
@@ -264,6 +268,7 @@ function candidates(state: ShowState, spine: SpineSlide[]): Candidate<Target>[] 
  * After a cue fires, the words after it carry on, so a bullet said in the same breath as its slide still lands.
  */
 function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[]): ShowState {
+  if (state.backup) return state;
   const prior = state.heard ? state.heard.split(' ') : [];
   const fresh = words(text).slice(state.consumed);
   const buf = [...prior, ...fresh];
@@ -307,6 +312,8 @@ export function logMove(state: ShowState, out: ShowState, via: RunEntry['via'], 
 
 function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, spine }: Ctx): ShowState | string {
   switch (msg.type) {
+    case 'backup':
+      return { ...state, backup: msg.on, heard: '', consumed: 0 };
     case 'clear':
       return { ...state, seen: [], index: -1, live: null, reveal: 0, liveSince: Date.now(), heard: '' };
     case 'push': {
@@ -324,7 +331,7 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
     }
     case 'goto':
       if (msg.index < 0 || msg.index >= spine.length) return `No slide ${msg.index + 1}`;
-      return show(state, spine[msg.index], msg.index); // explicit jumps may land on a skipped slide
+      return state.backup ? { ...show(state, spine[msg.index], msg.index), reveal: elementCount(spine[msg.index]) } : show(state, spine[msg.index], msg.index); // explicit jumps may land on a skipped slide
     case 'autoCue':
       return { ...state, autoCue: msg.on, heard: '', consumed: 0 };
     case 'skip': {

@@ -27,16 +27,16 @@ test('the script loads and every chart/number points at real data', () => {
 
 test('zoom steps: the chart builds where it is told, zooms follow cues, and bad zooms are refused', () => {
   const e = spine[idx('emissions-peers')];
-  assert.deepEqual(stepsOf(e), [{ chart: true }, { bullet: 0 }, { zoom: 'NVIDIA' }, { zoom: 'TSMC' }, { bullet: 1 }]);
-  assert.equal(elementCount(e), 6);
+  assert.deepEqual(stepsOf(e), [{ chart: true }, { bullet: 0 }, { zoom: 'NVIDIA' }]);
+  assert.equal(elementCount(e), 4);
   let s = run(emptyState(), { type: 'goto', index: idx('emissions-peers') });
   assert.equal(s.reveal, 2, 'chartFirst: the chart builds with the title');
   s = run(s, say('for every million dollars of sales'));
   assert.equal(zoomAt(e, s.reveal), null);
   s = run(s, say('NVIDIA emits about forty eight kilograms'));
   assert.equal(zoomAt(e, s.reveal), 'NVIDIA');
-  s = run(s, say('TSMC, a hundred and nine tonnes'));
-  assert.equal(zoomAt(e, s.reveal), 'TSMC');
+  assert.deepEqual(e.chart?.exclude, ['TSMC']);
+  assert.equal(datasets.get('peers_emissions_intensity')?.x.includes('TSMC'), true, 'the underlying dataset stays complete');
   // A zoom without a cue lands together with the point before it; "all" zooms back out.
   const v = spine[idx('dcf-bridge')];
   let t = run(emptyState(), { type: 'goto', index: idx('dcf-bridge') }, say('the cash of the next five years'), say('everything after that'), say('an enterprise value of'), say('add sixty billion of net cash'));
@@ -48,6 +48,16 @@ test('zoom steps: the chart builds where it is told, zooms follow cues, and bad 
   assert.match(checkSlide({ ...base, steps: [{ chart: true }, { bullet: 0 }, { zoom: 'Nvidia Corp' }] }, datasets)!, /not an x value/);
   assert.match(checkSlide({ ...base, steps: [{ chart: true }] }, datasets)!, /every bullet/);
   assert.equal(checkSlide({ ...base, steps: [{ chart: true }, { zoom: 'NVIDIA' }, { bullet: 0 }, { zoom: 'all' }] }, datasets), null);
+});
+
+test('the people benchmark is dated, lower for NVIDIA and marked unverified', () => {
+  const people = spine[idx('people')];
+  const bench = datasets.get('research_people_turnover')!;
+  assert.equal(bench.verified, false);
+  assert.deepEqual(bench.x, ['NVIDIA FY26', 'Tech and media 2022']);
+  assert.ok(bench.series['Staff turnover'][0]! < bench.series['Staff turnover'][1]!);
+  assert.equal(people.chart?.datasetKey, bench.key);
+  assert.equal(isUnverified(people, Object.fromEntries(datasets)), true);
 });
 
 test('emissions figures read as plain English', () => {
@@ -249,4 +259,19 @@ test('after a script edit the live slide is found again by id', () => {
   const moved = [spine[0], ...spine]; // everything shifts down one
   assert.equal(relocate(s, moved as SpineSlide[]).index, idx('cuda') + 1);
   assert.equal(relocate(s, spine.filter((x) => x.id !== 'cuda')).index, -1, 'deleted slide → standby');
+});
+
+test('static backup switches the stage to full pages and advances whole slides', () => {
+  let s = run(emptyState(), { type: 'goto', index: idx('dcf-bridge') }, { type: 'backup', on: true });
+  assert.equal(s.backup, true);
+  s = run(s, { type: 'next' });
+  assert.equal(s.index, idx('three-rates'));
+  assert.equal(s.reveal, elementCount(spine[s.index]));
+  s = run(s, say('turn it around'));
+  assert.equal(s.index, idx('three-rates'), 'speech cannot move the static deck');
+  s = run(s, { type: 'back' });
+  assert.equal(s.index, idx('dcf-bridge'));
+  assert.equal(s.reveal, elementCount(spine[s.index]));
+  s = run(s, { type: 'backup', on: false });
+  assert.equal(s.backup, false);
 });

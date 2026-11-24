@@ -3,6 +3,12 @@
 Pitch: **Wed 25 Nov 2026, 9:00 hard limit.** The full spec is [`docs/script/CLAUDE_CODE_PROMPT_v2.md`](../script/CLAUDE_CODE_PROMPT_v2.md).
 Branch: **`v2-final-pitch`**. Backup of the old deck: git tag **`pre-v2-backup`**.
 
+## Continuation update — 24 Nov 2026
+
+The newer work is on this checkout, after the handoff below. Content sections 1c–1h are implemented: space-race timeline, staff comparison (12.9% LinkedIn 2022, directional), TSMC removed from the emissions peer chart, trims and governance source correction. The script is 1,182 spoken words; see `docs/script/TIMING.md`. Section 1i has a 36-page PDF and an operator **B** static backup. The clipped DCF line is repaired and visually checked. See `docs/REHEARSAL.md` for the current keys.
+
+Still open: a timed rehearsal with the real mic and projector, morning share-price refresh, remaining unverified claims, and the shared camera/morph work in section 2. The older "Next steps" below records the previous pause and is not the current queue.
+
 ## How to continue (new Claude account or new computer)
 1. `git clone https://github.com/robcarlson006/nvda-live-pitch.git && cd nvda-live-pitch && git checkout v2-final-pitch`
 2. Copy over two things git does not carry: **`app/.env`** (Deepgram + Anthropic keys) and **`app/public/media/`** (the WSJ clip).

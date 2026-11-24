@@ -186,6 +186,13 @@ const out: Dataset[] = [
     'Women in the workforce, FY26': { value: 21.6, unit: '%', source: 'Bloomberg FA (ESG Social, Diversity), NVDA annual, 20 Nov 2026' },
   }, { source: 'Award publishers and Bloomberg FA (ESG), as listed per figure', asOf: '2026-11-24' }),
   own({
+    key: 'research_people_turnover', title: 'Staff turnover: NVIDIA versus a dated tech-sector benchmark',
+    unit: '%', verified: false,
+    source: 'NVIDIA: Bloomberg FA (ESG Social, Human Capital), 20 Nov 2026. Tech and media: LinkedIn Talent Insights, Industries with the Highest (and Lowest) Turnover Rates, 11 Aug 2022 (July 2021–June 2022 activity). Different years, sectors and methods; directional comparison only.',
+    x: ['NVIDIA FY26', 'Tech and media 2022'],
+    series: { 'Staff turnover': [3.7, 12.9] },
+  }, '2026-11-24'),
+  own({
     // Years matched by the Environmental pillar row, which the export prints in full on its FY20–FY26 page (FY25 = 7.48).
     key: 'nvda_esg_scores', title: 'Bloomberg ESG pillar scores, out of 10', unit: '', verified: true,
     source: 'Bloomberg FA (ESG Financial Materiality and Disclosure Scores), NVDA annual, 20 Nov 2026. Latest score year is FY25',

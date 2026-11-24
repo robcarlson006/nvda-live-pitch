@@ -40,6 +40,11 @@ export function Stage() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  if (state?.backup) {
+    const page = String(Math.max(1, state.index + 1)).padStart(2, '0');
+    return <div className="stage no-motion" style={{ background: '#000' }}><img src={`/fallback/slide-${page}.jpg`} alt={slide?.title ?? 'Static backup'} style={{ display: 'block', width: '100%', height: '100%', objectFit: 'contain' }} /></div>;
+  }
+
   return (
     <div className={`stage${motion ? ' motion' : ' no-motion'}${slide?.effect === 'dark' && (state?.reveal ?? 0) > 1 ? ' fx-dark' : ''}`}>
       <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length || !!slide?.groups} effect={slide?.effect === 'dark' ? undefined : slide?.effect} reveal={state?.reveal ?? 0} />
@@ -171,7 +176,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
 
   return (
     <main className={`slide layout-${slide.layout}${slide.video ? ' has-video' : ''}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}`}>
-      {slide.layout === 'statement' && (
+      {(slide.layout === 'statement' || slide.layout === 'timeline') && (
         <>
           {title}
           {points}

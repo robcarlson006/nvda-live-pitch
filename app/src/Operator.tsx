@@ -75,6 +75,16 @@ export function Operator() {
   const [said, setSaid] = useState('');
   const mic = useSpeech((text, final) => send({ type: 'transcript', text, final }));
   useNavKeys(send, state);
+  useEffect(() => {
+    const backupKey = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'b' && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLTextAreaElement)) {
+        e.preventDefault();
+        send({ type: 'backup', on: !state?.backup });
+      }
+    };
+    window.addEventListener('keydown', backupKey);
+    return () => window.removeEventListener('keydown', backupKey);
+  }, [send, state?.backup]);
 
   const cur = state && state.index >= 0 ? spine[state.index] : undefined;
   const total = state?.live ? elementCount(state.live) : 0;
@@ -127,6 +137,8 @@ export function Operator() {
             Next
           </button>
           <button onClick={() => send({ type: 'clear' })}>Standby</button>
+          <button className={state?.backup ? 'primary' : 'danger'} onClick={() => send({ type: 'backup', on: !state?.backup })}>{state?.backup ? 'Resume live deck (B)' : 'Backup deck (B)'}</button>
+          <a className="pill link" href="/fallback/spine.pdf" target="_blank" rel="noreferrer">Open backup PDF</a>
           <div className="op-meta">Keys: → or Space next, ← back</div>
         </div>
       </section>

@@ -1,0 +1,20 @@
+{
+  "key": "research_people_turnover",
+  "title": "Staff turnover: NVIDIA versus a dated tech-sector benchmark",
+  "unit": "%",
+  "source": "NVIDIA: Bloomberg FA (ESG Social, Human Capital), 20 Nov 2026. Tech and media: LinkedIn Talent Insights, Industries with the Highest (and Lowest) Turnover Rates, 11 Aug 2022 (July 2021–June 2022 activity). Different years, sectors and methods; directional comparison only.",
+  "asOf": "2026-11-24",
+  "placeholder": false,
+  "curated": true,
+  "verified": false,
+  "x": [
+    "NVIDIA FY26",
+    "Tech and media 2022"
+  ],
+  "series": {
+    "Staff turnover": [
+      3.7,
+      12.9
+    ]
+  }
+}

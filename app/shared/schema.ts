@@ -44,7 +44,7 @@ export const Group = z.object({ tag: z.string().min(1).max(60), items: z.array(z
 // inputs: blocks of figures grouped by source (the DCF inputs slide)
 export const Slide = z.object({
   id: z.string().min(1),
-  layout: z.enum(['statement', 'number', 'chart', 'split', 'inputs']).default('split'),
+  layout: z.enum(['statement', 'number', 'chart', 'split', 'inputs', 'timeline']).default('split'),
   speaker: z.string().optional(),
   title: z.string().min(1).max(200), // raw length; checkSlide limits the length on screen
   bullets: z.array(z.string().max(260)).max(4).default([]),
@@ -203,6 +203,7 @@ export type ShowState = {
   follow: 'script' | 'live'; // script: cue words move the deck. live: it follows the meaning, and tangents get a slide by themselves
   seen: string[]; // ids of the script slides shown so far
   approveTangents: boolean; // live mode: wait for a tap before a tangent slide goes up
+  backup: boolean; // show static, locally bundled slide images on the stage
   motion: boolean; // camera moves and slide morphs. false = the plain pre-v2 behaviour (kill-switch: operator toggle, key m, or ?motion=off on the stage)
 };
 
@@ -212,6 +213,7 @@ export type AiInfo = { follow: { text: string; ms: number; error: string | null 
 export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('push'), slide: Slide }),
   z.object({ type: z.literal('clear') }),
+  z.object({ type: z.literal('backup'), on: z.boolean() }),
   z.object({ type: z.literal('next') }),
   z.object({ type: z.literal('back') }),
   z.object({ type: z.literal('goto'), index: z.number().int() }),
