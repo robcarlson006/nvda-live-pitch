@@ -62,6 +62,21 @@ function withFigures(s: Slide, datasets: Record<string, Dataset>): Slide {
   return { ...s, title: r(s.title), bullets: s.bullets.map(r), stat: s.stat && { ...s.stat, label: r(s.stat.label) }, groups: s.groups?.map((g) => ({ ...g, items: g.items.map(r) })), sources: slideSources(s, datasets) };
 }
 
+/**
+ * The zoom in force at this reveal. A zoomed line chart crops its own lines and axes, so on line charts a zoom lets go
+ * as soon as the speaker moves on to a later point: the zoom is a "look here", and the next point needs the whole picture
+ * (the bear case otherwise ended on a cropped chart with the base case running off the frame).
+ */
+export function zoomFor(slide: Slide, reveal: number): string | null {
+  const on = zoomAt(slide, reveal);
+  if (!on || slide.chart?.type !== 'line') return on;
+  const steps = stepsOf(slide);
+  let zoomStep = -1;
+  steps.forEach((st, k) => { if ('zoom' in st && k + 1 < reveal) zoomStep = k; });
+  const movedOn = steps.some((st, k) => k > zoomStep && k + 1 < reveal && 'bullet' in st);
+  return movedOn ? null : on;
+}
+
 /** Animates in once, when first mounted; the delay is fixed at mount so later re-renders never replay it. */
 function Reveal({ at, children, className, as: Tag = 'div' }: { at: number; children: ReactNode; className?: string; as?: 'div' | 'h1' | 'p' }) {
   const [delay] = useState(at);
@@ -109,7 +124,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   // The point just said is in focus; earlier ones step back, so the eye follows the speaker.
   // Approved answers stay fully readable: a board member may still be reading the first line.
   const newest = !slide.answer && shownBullets.length > 1 ? shownBullets.reduce((a, b) => (bulletIdx(b) > bulletIdx(a) ? b : a)) : -1;
-  const zoom = zoomAt(slide, reveal);
+  const zoom = zoomFor(slide, reveal);
   // Inputs slide: each input appears as it is named and is green while it is the one being said.
   const itemIdx = (g: number, i: number) => 1 + steps.findIndex((st) => 'item' in st && st.item[0] === g && st.item[1] === i);
   const lastStep = steps.length; // element index of the final step

@@ -235,7 +235,8 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
                 symbol: 'rect',
                 symbolSize: vh * 1.6,
                 itemStyle: { color },
-                label: { position: 'left', distance: vh * 1.2, color: '#f4f6f1', fontSize: vh * 3.4, fontWeight: 600, fontFamily: FONT, formatter: () => fmt(values[hiIdx] ?? 0, name) },
+                // Above the point, not beside it: beside, the figure sat on top of the line it labels.
+                label: { position: 'top', distance: vh * 1.4, color: '#f4f6f1', fontSize: vh * 3.4, fontWeight: 600, fontFamily: FONT, formatter: () => fmt(values[hiIdx] ?? 0, name) },
                 data: [{ coord: [hiIdx, values[hiIdx]] }],
               }
             : undefined,
