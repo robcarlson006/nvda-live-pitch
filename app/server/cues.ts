@@ -6,7 +6,7 @@ const STOP = new Set('a an the and of to is it in that this we our you on for at
 // Deepgram writes US spellings even in en-GB mode ("fiber", "tons"), so UK spellings in cues are mapped to them.
 const SPELLING: Record<string, string> = {
   centre: 'center', centres: 'centers', colour: 'color', fibre: 'fiber', fibres: 'fibers', tonne: 'ton', tonnes: 'tons',
-  programme: 'program', programmes: 'programs', analyse: 'analyze', modelling: 'modeling', labour: 'labor', defence: 'defense',
+  grey: 'gray', programme: 'program', programmes: 'programs', analyse: 'analyze', modelling: 'modeling', labour: 'labor', defence: 'defense',
 };
 
 export function words(s: string): string[] {
