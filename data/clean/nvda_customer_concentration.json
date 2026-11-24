@@ -1,0 +1,17 @@
+{
+  "key": "nvda_customer_concentration",
+  "title": "Three largest direct customers, share of NVIDIA revenue",
+  "unit": "%",
+  "source": "NVIDIA Q3 FY27 supplemental financial information, SEC Form 8-K exhibit, 17 Nov 2026. Aggregate is the sum of the three disclosed shares.",
+  "asOf": "2026-11-17",
+  "placeholder": false,
+  "curated": true,
+  "verified": true,
+  "x": ["Q3 FY27"],
+  "series": {
+    "Top three direct customers": [36],
+    "Largest direct customer": [14],
+    "Second direct customer": [11],
+    "Third direct customer": [11]
+  }
+}

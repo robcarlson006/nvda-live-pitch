@@ -150,7 +150,7 @@ export const companies: [string, Loaded, string][] = [['NVIDIA', nvdaA, 'FY27'],
 // ---------- write ----------
 fs.mkdirSync(CLEAN, { recursive: true });
 // model_* come from model.ts and research_* are curated by hand from docs/research: keep both.
-for (const f of fs.readdirSync(CLEAN)) if (f.endsWith('.json') && !f.startsWith('model_') && !f.startsWith('research_')) fs.rmSync(path.join(CLEAN, f));
+for (const f of fs.readdirSync(CLEAN)) if (f.endsWith('.json') && !f.startsWith('model_') && !f.startsWith('research_') && f !== 'nvda_customer_concentration.json') fs.rmSync(path.join(CLEAN, f));
 for (const d of out) fs.writeFileSync(path.join(CLEAN, `${d.key}.json`), JSON.stringify(d, null, 2) + '\n');
 console.log(`Wrote ${out.length} datasets to data/clean/`);
 for (const d of out) console.log(`  ${d.key.padEnd(28)} ${d.x[0]}…${d.x.at(-1)}  ${Object.keys(d.series).join(', ')}`);

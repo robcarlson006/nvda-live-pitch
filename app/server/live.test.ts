@@ -54,7 +54,8 @@ test('a line chart drops series too small to see', () => {
 test('an answer with no data says so; a presenter aside just gets its graphic', async () => {
   const r = reply({ layout: 'statement', bullets: ['We do not have that figure'], chart: null, icons: ['robot', 'hospital'] });
   const a = await go(new Ai(new Budget(tmp(), 4), async () => message(r), () => true));
-  assert.deepEqual('slide' in a && a.slide.sources, ['Team commentary; no dataset used']);
+  assert.ok('slide' in a && !a.answered);
+  assert.deepEqual(a.slide.sources, ['Pitch evidence bank · no supporting source for this question']);
   const t = await go(new Ai(new Budget(tmp(), 4), async () => message(r), () => true), { ...job, kind: 'riff' });
   assert.ok('slide' in t);
   assert.deepEqual([t.slide.sources, t.slide.icons], [[], ['robot', 'hospital']]);
@@ -111,7 +112,7 @@ test('a live-built slide covers the script without losing its place', () => {
   assert.deepEqual([back.live!.id, back.reveal], ['cuda', reveal]);
   assert.equal(run(shown, say('wall street hated it')).live!.id, 'wall-street', 'the next cue still works');
   assert.equal(run(s, { type: 'draft', action: 'reject', id: 'd1' }).drafts.length, 0);
-  assert.ok(isCovered(addDraft({ ...s, autoShow: true }, d)));
+  assert.equal(addDraft({ ...s, autoShow: true, drafts: [] }, d).drafts[0]?.id, d.id, 'answers always wait for approval');
 });
 
 test('off script is noticed; reading any slide is not', () => {

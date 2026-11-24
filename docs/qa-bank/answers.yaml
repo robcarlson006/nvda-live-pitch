@@ -1,295 +1,1058 @@
-# Prepared answers. Used instantly, free, when a question contains one of the `ask` phrases
-# (all the words, close together). Otherwise the question goes to Claude.
-# Figures follow the same rule as the script: {{dataset | series | x}}, never typed.
-
+# Prepared, sourced answers for stage and offline fallback. Quantities use dataset references.
 - id: wasteful
   question: You used AI for a slideshow. Isn't that wasteful?
-  ask: [ai for a slideshow, ai slideshow, wasteful, waste of energy, used ai slides, environmental disaster]
+  ask:
+    - ai for a slideshow
+    - ai slideshow
+    - wasteful
+    - waste of energy
+    - used ai slides
+    - environmental disaster
   slide:
     layout: split
-    title: "Fair challenge: AI's footprint is real, and rising"
+    title: The footprint is real
     bullets:
-      - "NVIDIA's supply chain emissions: {{nvda_emissions | Scope 3 | FY25}} in FY25, {{nvda_emissions | Scope 3 | FY26}} in FY26"
-      - We don't have a measured energy figure for this presentation
-      - The test is whether the work AI does is worth the energy it uses
-    chart: { type: line, datasetKey: nvda_emissions, series: [Scope 3], highlight: FY26 }
-
+      - We have no measured energy figure for this presentation.
+      - NVIDIA's supply-chain emissions rose to {{nvda_emissions | Scope 3 | FY26}} in FY26.
+      - We would ask for measured energy and water per useful workload.
+    chart:
+      type: line
+      datasetKey: nvda_emissions
+      series:
+        - Scope 3
+      highlight: FY26
+    sources:
+      - Bloomberg FA, 20 November 2026, local terminal exports
+      - NVIDIA, sustainability disclosures
+  links:
+    - title: NVIDIA, sustainability disclosures
+      url: https://www.nvidia.com/en-gb/foundation/archives/
 - id: energy
   question: How much energy does NVIDIA use?
-  ask: [energy does nvidia, electricity does nvidia, power does nvidia, nvidia energy use, nvidia energy consumption, nvidia power consumption, company energy use, energy does the company]
+  ask:
+    - energy does nvidia
+    - electricity does nvidia
+    - power does nvidia
+    - nvidia energy use
+    - nvidia energy consumption
+    - nvidia power consumption
+    - company energy use
+    - energy does the company
   slide:
     layout: split
-    title: NVIDIA's own energy use is rising, and now renewable
+    title: NVIDIA's own energy use rose
     bullets:
-      - "{{nvda_energy | Total energy | FY24}} in FY24; {{nvda_energy | Total energy | FY26}} in FY26"
-      - "Renewable share of that: {{nvda_renewable_share | Renewable | FY26}}"
-      - This is NVIDIA's own use. Customers' data centres are not in it.
-    chart: { type: line, datasetKey: nvda_energy, series: [Total energy, Renewable energy], highlight: FY26 }
-
+      - NVIDIA used {{nvda_energy | Total energy | FY26}} in FY26.
+      - Renewables supplied {{nvda_renewable_share | Renewable | FY26}} of the reported total.
+      - Customers' data centres are outside that total. We track them separately.
+    chart:
+      type: line
+      datasetKey: nvda_energy
+      series:
+        - Total energy
+        - Renewable energy
+      highlight: FY26
+    sources:
+      - Bloomberg FA, 20 November 2026, local terminal exports
+      - NVIDIA, sustainability disclosures
+  links:
+    - title: NVIDIA, sustainability disclosures
+      url: https://www.nvidia.com/en-gb/foundation/archives/
 - id: scope3
   question: What about Scope 3 and supply chain emissions?
-  ask: [scope three, scope 3, supply chain emissions, nvidia carbon footprint, nvidia carbon emissions, nvidia greenhouse gas, company carbon footprint, their carbon footprint]
+  ask:
+    - scope three
+    - scope 3
+    - supply chain emissions
+    - nvidia carbon footprint
+    - nvidia carbon emissions
+    - nvidia greenhouse gas
+    - company carbon footprint
+    - their carbon footprint
   slide:
     layout: split
-    title: Scope 3 is the weak point, and it is growing
+    title: Supply-chain emissions are the weak point
     bullets:
-      - "{{nvda_emissions | Scope 3 | FY24}} in FY24; {{nvda_emissions | Scope 3 | FY26}} in FY26"
-      - Most of it comes from making the chips, at partners like TSMC
-      - "Own operations are far smaller: {{nvda_emissions | Scope 1 | FY26}} direct in FY26"
-    chart: { type: line, datasetKey: nvda_emissions, series: [Scope 3], highlight: FY26 }
-
+      - Scope 3 rose from {{nvda_emissions | Scope 3 | FY24}} in FY24 to {{nvda_emissions | Scope 3 | FY26}} in FY26.
+      - Chip fabrication sits outside its direct operations.
+      - We would ask for supplier-level reductions and a clear timetable.
+    chart:
+      type: line
+      datasetKey: nvda_emissions
+      series:
+        - Scope 3
+      highlight: FY26
+    sources:
+      - Bloomberg FA, 20 November 2026, local terminal exports
+      - NVIDIA, sustainability disclosures
+  links:
+    - title: NVIDIA, sustainability disclosures
+      url: https://www.nvidia.com/en-gb/foundation/archives/
 - id: water
   question: How much water does NVIDIA use?
-  ask: [water does nvidia, nvidia water use, nvidia water usage, nvidia water consumption, water does the company]
+  ask:
+    - water does nvidia
+    - nvidia water use
+    - nvidia water usage
+    - nvidia water consumption
+    - water does the company
   slide:
     layout: statement
-    title: Water use is rising, and we won't quote a figure we haven't confirmed.
+    title: Water use spans the whole supply chain
     bullets:
-      - Bloomberg shows water withdrawal rising each year since FY24, but we have not confirmed its units, so we will not quote a figure
-      - It falls mainly on chip factories and on customers' data centres
-      - It is a question we would put to the company before investing
-
+      - Bloomberg shows rising withdrawals. We are checking the units.
+      - Factories and customers' data centres have separate water footprints.
+      - We would ask for site-level withdrawals, water stress and reuse.
+    diagram:
+      kind: map
+      nodes:
+        - Chip fabrication
+        - NVIDIA operations
+        - Customer data centres
+    sources:
+      - Bloomberg FA, 20 November 2026, local terminal exports
+      - NVIDIA, sustainability disclosures
+  links:
+    - title: NVIDIA, sustainability disclosures
+      url: https://www.nvidia.com/en-gb/foundation/archives/
 - id: cleaner-than-peers
   question: How does NVIDIA compare with peers on emissions?
-  ask: [emissions peers, emissions compare, emissions competitors, cleaner than]
+  ask:
+    - emissions peers
+    - emissions compare
+    - emissions competitors
+    - cleaner than
   slide:
     layout: split
-    title: Lowest of the five, with a catch
+    title: NVIDIA leads this direct-emissions comparison
     bullets:
-      - NVIDIA owns no chip factories; TSMC and Intel do
-      - NVIDIA's manufacturing emissions sit in Scope 3, not in this chart
-    chart: { type: bar, datasetKey: peers_emissions_intensity, series: [Emissions intensity], highlight: NVIDIA }
-
+      - It has the lowest footprint per dollar of sales in this Bloomberg peer set.
+      - It outsources fabrication. Those emissions sit in NVIDIA's Scope 3.
+      - We use this as an operating comparison and assess supply-chain emissions separately.
+    chart:
+      type: bar
+      datasetKey: peers_emissions_intensity
+      series:
+        - Emissions intensity
+      highlight: NVIDIA
+    sources:
+      - Bloomberg FA, 20 November 2026, local terminal exports
 - id: social-score
   question: Bloomberg gives NVIDIA a weak social score. Why?
-  ask: [social score, social rating, social pillar, bloomberg social, social side, the s in esg]
+  ask:
+    - social score
+    - social rating
+    - social pillar
+    - bloomberg social
+    - social side
+    - the s in esg
   slide:
     layout: split
-    title: The social score fell as NVIDIA reported less social data
+    title: Bloomberg’s social disclosure score fell
     bullets:
-      - "Bloomberg's social disclosure score fell from {{nvda_esg_scores | Social disclosure score | FY22}} to {{nvda_esg_scores | Social disclosure score | FY25}}, out of a hundred"
-      - "What NVIDIA does report is strong: staff turnover of {{research_people | Staff turnover, FY26 | value}} and no workplace deaths"
-      - Our ask as shareholders is simple. Publish the social data again
-    chart: { type: line, datasetKey: nvda_esg_scores, series: [Social, Environmental, Governance], highlight: FY25 }
-    sources: ["Bloomberg FA (ESG Social, Health & Safety), NVDA annual, 20 Nov 2026"]
-
+      - Disclosure fell from {{nvda_esg_scores | Social disclosure score | FY22}} to {{nvda_esg_scores | Social disclosure score | FY25}}.
+      - Bloomberg reports {{research_people | Staff turnover, FY26 | value}} FY26 staff turnover.
+      - We would ask the board to publish fuller social data.
+    chart:
+      type: line
+      datasetKey: nvda_esg_scores
+      series:
+        - Social
+        - Environmental
+        - Governance
+      highlight: FY25
+    sources:
+      - Bloomberg FA, 20 November 2026, local terminal exports
 - id: governance
   question: What about governance, since the CEO resigned?
-  ask: [ceo resigned, jensen resigned, new ceo, interim ceo, governance, who runs nvidia, without jensen, jensen huang leaving]
+  ask:
+    - since the ceo resigned
+    - what about governance
+    - jensen resigned
+    - new ceo
+    - interim ceo
+    - governance
+    - who runs nvidia
   slide:
     layout: statement
-    title: Governance is the biggest open risk, but the founder is back.
+    title: The founder is back and the risk remains
     bullets:
-      - Jensen Huang resigned as CEO on 12 November 2026, and the board reinstated him days later
-      - The board set up an independent national security and export-control oversight committee
-      - The board investigation and government inquiries remain open
-      - This risk is still open, which is one reason we size the position at three percent
-    sources: ["NVIDIA press releases, 12 and 23 Nov 2026; NVIDIA Form 8-K, 23 Nov 2026"]
-
+      - Huang resigned in November and the board subsequently reinstated him.
+      - Oversight changed, and the board investigation and government inquiries remain open.
+      - We would reassess our position if that oversight or operating continuity weakens.
+    sources:
+      - NVIDIA, CEO transition, 12 November
+      - NVIDIA, reinstatement Form 8-K
+      - NVIDIA, governance and investigations
+    diagram:
+      kind: flow
+      nodes:
+        - CEO resignation
+        - Interim leadership
+        - Board reinstatement
+        - Ongoing inquiries
+  links:
+    - title: NVIDIA, CEO transition, 12 November
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000087/nvda-20261112.htm
+    - title: NVIDIA, reinstatement Form 8-K
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000090/nvda-20261122.htm
+    - title: NVIDIA, governance and investigations
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Board-Reinstates-Jensen-Huang-as-President-CEO-and-Board-Director/default.aspx
 - id: taiwan
   question: What if something happens to Taiwan or TSMC?
-  ask: [taiwan, depend on tsmc, reliance on tsmc, tsmc risk]
+  ask:
+    - taiwan
+    - depend on tsmc
+    - reliance on tsmc
+    - tsmc risk
   slide:
-    layout: split
-    title: Taiwan is a real concentration risk
+    layout: statement
+    title: Taiwan remains a major supply risk
     bullets:
-      - "TSMC makes about {{research_facts | TSMC share of leading-edge chips | value}} of the most advanced chips"
-      - The same risk hits AMD, Broadcom and most rivals
-      - We have not priced a Taiwan conflict into the model
-    chart: { type: bar, datasetKey: research_cowos_share, series: [Share of CoWoS], highlight: NVIDIA }
-
+      - A prolonged manufacturing interruption could delay shipments.
+      - Rivals share much of the same supplier exposure.
+      - Our DCF does not price a conflict. We would review the position immediately.
+    diagram:
+      kind: flow
+      nodes:
+        - Fab disruption
+        - Fewer chip shipments
+        - Reassess sales and position
+    sources:
+      - Team DCF scenario assumptions
+      - NVIDIA, Q3 FY27 supplemental financial information
+  links:
+    - title: NVIDIA, Q3 FY27 supplemental financial information
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000088/supplementalfinancialinfor.htm
 - id: bubble
   question: Isn't this an AI bubble?
-  ask: [ai bubble, a bubble, dot com, overvalued, too expensive, bubble burst]
+  ask:
+    - ai bubble
+    - a bubble
+    - dot com
+    - overvalued
+    - too expensive
+    - bubble burst
   slide:
     layout: split
-    title: Even if AI ended for good, a share is still worth something
+    title: An AI slowdown would hurt the stock
     bullets:
-      - "Price today: {{model_valuation | Value per share | Share price today}}. Our bear case, where rivals take share: {{model_valuation | Value per share | Bear case}}. If AI ended for good: {{model_valuation | Value per share | If AI ended for good}}"
-      - "Forward P/E is {{peers_pe | Forward P/E | NVIDIA}}; Cisco in 2000 was {{research_facts | Cisco forward P/E, March 2000 | value}}"
-      - If it pops, the price falls, but NVIDIA owns the hardware and the CUDA software, so it keeps its lead
-    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
-    sources: ["Team valuation model; Google Finance, 24 Nov 2026"]
-
+      - Our bear case is {{model_valuation | Value per share | Bear case}} a share versus {{model_dcf_inputs | Share price | value}} at the model reference price.
+      - If AI ended for good, value falls to {{model_valuation | Value per share | If AI ended for good}}.
+      - We size the position for that downside and watch customer spending.
+    chart:
+      type: bar
+      datasetKey: model_valuation
+      series:
+        - Value per share
+      highlight: If AI ended for good
+    sources:
+      - Team DCF model, data/model/NVDA_DCF.xlsx
 - id: discount-rate
   question: Why that discount rate? Why not Bloomberg's?
-  ask: [discount rate, your wacc, cost of capital, bloomberg wacc, bloomberg rate, why not google finance, fourteen percent, fifteen percent, ten and a half percent, why that rate]
+  ask:
+    - discount rate
+    - your wacc
+    - cost of capital
+    - bloomberg wacc
+    - bloomberg rate
+    - why not google finance
+    - fourteen percent
+    - fifteen percent
+    - ten and a half percent
+    - why that rate
   slide:
     layout: split
-    title: We didn't invent a discount rate, and we show all three
+    title: We test the case at three rates
     bullets:
-      - "Ours is {{model_dcf_inputs | WACC, US semiconductor industry average | value}}, the US chip-industry average (Damodaran, NYU, January 2026)"
-      - "Checked against NVIDIA's own rates: {{model_dcf_inputs | WACC, Google Finance | value}} at Google Finance, {{model_dcf_inputs | WACC, Bloomberg | value}} at Bloomberg"
-      - "Base case at the three: {{model_sensitivity | Terminal growth 3% | 10.55%}}, {{model_sensitivity | Terminal growth 3% | 14.45%}} and {{model_sensitivity | Terminal growth 3% | 15.4%}}, all above today's {{model_dcf_inputs | Share price | value}}"
-    chart: { type: waterfall, datasetKey: model_dcf_bridge, series: ["10.55%"], totals: [Enterprise value, Equity value], highlight: Equity value }
-    sources: ["Damodaran (NYU), January 2026; Google Finance, NVDA, 24 Nov 2026; Bloomberg WACC, Q3 2026"]
-
+      - "Our base rate is the US chip-industry average: {{model_dcf_inputs | WACC, US semiconductor industry average | value}}."
+      - Higher rates lower the valuation. Our model also uses {{model_dcf_inputs | WACC, Google Finance | value}} and {{model_dcf_inputs | WACC, Bloomberg | value}}.
+      - We judge the position on the range and the downside cases.
+    chart:
+      type: waterfall
+      datasetKey: model_dcf_bridge
+      series:
+        - 10.55%
+      totals:
+        - Enterprise value
+        - Equity value
+      highlight: Equity value
+    sources:
+      - Team DCF model, data/model/NVDA_DCF.xlsx
+      - Damodaran, NYU, January 2026
+      - Google Finance, dated model input
+      - Bloomberg WACC, Q3 2026
+      - NYU Stern, cost of capital by industry
+  links:
+    - title: NYU Stern, cost of capital by industry
+      url: https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/wacc.html
 - id: concentration
   question: Isn't it too dependent on data centres?
-  ask: [customer concentration, few customers, dependent on data centers, reliant on data centers, one product, diversified]
+  ask:
+    - customer concentration
+    - few customers
+    - dependent on data centers
+    - reliant on data centers
+    - one product
+    - diversified
   slide:
     layout: split
-    title: Yes. Data Center is almost the whole company
+    title: Data Centre dominates revenue
     bullets:
-      - "Data Center: {{nvda_segments_annual | Data Center | FY26}} of {{nvda_revenue_annual | Revenue | FY26}} in FY26"
-      - Our data doesn't break revenue down by customer
-    chart: { type: stackedBar, datasetKey: nvda_segments_annual, series: [Data Center, Gaming, Pro Visualization, Automotive], highlight: FY26 }
-
-# ---- Added 24 Nov 2026 (Q&A prep). Full spoken answers live in docs/qa-bank/QA_PREP.md ----
-
+      - It made {{nvda_segments_annual | Data Center | FY26}} of NVIDIA's {{nvda_revenue_annual | Revenue | FY26}} in FY26.
+      - Government-backed projects and independent clouds widen the buyer base.
+      - That does not remove exposure to data-centre spending.
+    chart:
+      type: stackedBar
+      datasetKey: nvda_segments_annual
+      series:
+        - Data Center
+        - Gaming
+        - Pro Visualization
+        - Automotive
+      highlight: FY26
+    sources:
+      - Bloomberg FA, 20 November 2026, local terminal exports
+      - NVIDIA, UK infrastructure projects
+      - NVIDIA, Q3 FY27 earnings release
+  links:
+    - title: NVIDIA, UK infrastructure projects
+      url: https://nvidianews.nvidia.com/news/nvidia-and-united-kingdom-build-nations-ai-infrastructure-and-ecosystem-to-fuel-innovation-economic-growth-and-jobs
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
 - id: democrats-datacentres
-  question: Democrats now control Congress and want to stop data-centre building. What happens to NVIDIA?
-  ask: [democrats data centers, democrats data centres, data center moratorium, data centre moratorium, stop data centers, stop data centres, pause data centers, ban data centers, congress data centers, stop the build out]
+  question: What if Democrats push to stop US data-centre construction?
+  ask:
+    - democrats push to stop
+    - democrats want to stop
+    - democrats data centers
+    - democrats data centres
+    - democrats get in power
+    - democrats win
+    - democratic control
+    - data center moratorium
+    - data centre moratorium
+    - stop data centers
+    - stop data centres
+    - congress data centers
   slide:
-    layout: split
-    title: A moratorium is the real risk, and it is more likely a delay than a stop
+    layout: statement
+    title: Congress could change the pace of US builds
     bullets:
-      - Federal law needs the President's signature, and he has said he would veto. The pressure is local and about electricity bills.
-      - "Blocked or delayed in Q1 2026: {{research_policy | US data-centre projects blocked or delayed, Q1 2026 | value}} US projects, worth {{research_policy | Value of those projects | value}} billion dollars"
-      - "{{research_policy | Revenue from customers outside the US, FY26 | value}} of NVIDIA's FY26 revenue came from customers outside the US"
-      - "Our bear case, where rivals take share: {{model_valuation | Value per share | Bear case}} a share. If AI ended for good: {{model_valuation | Value per share | If AI ended for good}}"
-    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
-    sources: ["Data Center Watch via Network World, 2026; NVIDIA Form 10-K FY26; NVIDIA Q3 FY27 earnings call, 17 Nov 2026"]
-
+      - A federal construction pause was proposed. The bills were referred to committees.
+      - Power costs, water use and permits can delay individual projects.
+      - We would watch for cancelled orders before lowering our long-term sales forecast.
+    sources:
+      - US Congress, introduced Senate moratorium bill
+      - US Congress, introduced House moratorium bill
+      - US Congress, introduced bipartisan transparency bill
+    diagram:
+      kind: flow
+      nodes:
+        - Proposed rules
+        - Power, water and permits
+        - Project timing
+        - Chip-order outlook
+  links:
+    - title: US Congress, introduced Senate moratorium bill
+      url: https://www.govinfo.gov/app/details/BILLS-119s4214is
+    - title: US Congress, introduced House moratorium bill
+      url: https://www.govinfo.gov/app/details/BILLS-119hr9442ih
+    - title: US Congress, introduced bipartisan transparency bill
+      url: https://www.govinfo.gov/app/details/BILLS-119s5640is
 - id: china-export
   question: What about export controls and China?
-  ask: [export controls, china export, sell to china, china revenue, h20, h200, chinese market]
+  ask:
+    - export controls
+    - china export
+    - sell to china
+    - china revenue
+    - h20
+    - h200
+    - chinese market
   slide:
     layout: statement
-    title: China is already mostly out of the numbers
+    title: Export controls limit the China outlook
     bullets:
-      - "China was {{research_policy | China share of FY26 revenue | value}} of FY26 revenue, down from about a fifth in earlier years"
-      - "Licensed Hopper sales to China were {{research_q3_call | Licensed Hopper sales to China, Q3 FY27 | value}} in the October quarter; NVIDIA says they have stopped and its outlook includes none"
-      - The risk is a rival that grows up there, not a loss we have not yet priced
-    sources: ["NVIDIA Form 10-K FY26, as reported in research notes; NVIDIA Q3 FY27 earnings call, 17 Nov 2026"]
-
+      - NVIDIA’s latest guidance assumes no data-centre compute revenue from China.
+      - Licensing changes could shift sales or strengthen local alternatives.
+      - We would wait for confirmed licences and shipments before adding revenue.
+    sources:
+      - NVIDIA, Q3 FY27 earnings release
+    diagram:
+      kind: flow
+      nodes:
+        - Export rules
+        - Licences and shipments
+        - China revenue outlook
+  links:
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
 - id: customers
   question: Who are NVIDIA's biggest customers, and what if one stops buying?
-  ask: [biggest customers, largest customers, top customers, hyperscalers, microsoft amazon, one customer stops, customer pulls back]
+  ask:
+    - biggest customers
+    - largest customers
+    - top customers
+    - hyperscalers
+    - microsoft amazon
+    - one customer stops
+    - customer pulls back
   slide:
     layout: split
-    title: A few buyers are a large share of sales
+    title: A few direct buyers account for substantial sales
     bullets:
-      - "Two direct customers were {{research_policy | Largest direct customer, share of FY26 revenue | value}} and {{research_policy | Second direct customer, share of FY26 revenue | value}} of FY26 revenue"
-      - They are usually the contract manufacturers and distributors, not the end users, so this understates the cloud giants
-      - "Hyperscaler spending plans for 2026 add up to {{research_policy | Hyperscaler capex, 2026 guidance | value}} billion dollars"
-      - A pause by two or three of them is close to our bear case, where spending pauses for a year
-    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
-    sources: ["NVIDIA Form 10-K FY26; company guidance via Yahoo Finance, 2026"]
-
+      - Three direct customers made up {{nvda_customer_concentration | Top three direct customers | Q3 FY27}} of Q3 FY27 sales.
+      - Those are unnamed direct buyers, including possible distributors or integrators.
+      - We monitor cloud spending and orders from independent clouds and governments.
+    chart:
+      type: bar
+      datasetKey: nvda_customer_concentration
+      series:
+        - Largest direct customer
+        - Second direct customer
+        - Third direct customer
+    sources:
+      - NVIDIA, Q3 FY27 supplemental financial information
+      - NVIDIA, UK infrastructure projects
+  links:
+    - title: NVIDIA, Q3 FY27 supplemental financial information
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000088/supplementalfinancialinfor.htm
+    - title: NVIDIA, UK infrastructure projects
+      url: https://nvidianews.nvidia.com/news/nvidia-and-united-kingdom-build-nations-ai-infrastructure-and-ecosystem-to-fuel-innovation-economic-growth-and-jobs
 - id: circular
   question: Isn't this circular, with NVIDIA investing in its own customers?
-  ask: [circular financing, circular, vendor financing, invests in its customers, openai investment, round trip, propping up demand, guarantees, neocloud]
+  ask:
+    - circular financing
+    - circular
+    - vendor financing
+    - invests in its customers
+    - openai investment
+    - round trip
+    - propping up demand
+    - guarantees
+    - neocloud
   slide:
     layout: statement
-    title: This is the Lucent worry. The exposure is real, and NVIDIA says it is conditional
+    title: Customer financing can make demand look stronger
     bullets:
-      - Lucent lent to customers in 1999 who then could not pay
-      - "NVIDIA reports {{research_q3_call | Guarantees | value}} of guarantees, {{research_q3_call | Purchase commitments | value}} of purchase commitments and {{research_q3_call | Neocloud commitments | value}} of neocloud commitments"
-      - On the earnings call, management said a guarantee only starts once the customer has raised the money to build
-      - We have not yet read the full quarterly filing, and it is the first thing we would check before buying
-    sources: ["NVIDIA Q3 FY27 earnings call, 17 Nov 2026"]
-
+      - NVIDIA discloses financing commitments and guarantees.
+      - We would distinguish outside-funded orders from purchases relying on NVIDIA’s backing.
+      - We would cut exposure if financed demand rose while independent orders slowed.
+    sources:
+      - NVIDIA, Q3 FY27 supplemental financial information
+      - NVIDIA, Q3 FY27 earnings release
+    diagram:
+      kind: flow
+      nodes:
+        - NVIDIA financing
+        - Customer builds capacity
+        - Customer buys chips
+        - Check outside funding
+  links:
+    - title: NVIDIA, Q3 FY27 supplemental financial information
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000088/supplementalfinancialinfor.htm
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
 - id: depreciation
   question: GPUs wear out quickly. Is the spending sustainable?
-  ask: [gpus wear out, depreciation, useful life, obsolete, short lived chips, how long do gpus last, gpu lifespan]
+  ask:
+    - gpus wear out
+    - depreciation
+    - useful life
+    - obsolete
+    - short lived chips
+    - how long do gpus last
+    - gpu lifespan
   slide:
-    layout: split
-    title: Chips last years, not decades, so demand must keep renewing
+    layout: statement
+    title: Replacement demand depends on utilisation
     bullets:
-      - "Economic life of an AI chip: {{research_policy | GPU economic life, low | value}} to {{research_policy | GPU economic life, high | value}} years, against decades for fibre"
-      - "That cuts both ways: an overbuild cannot sit and wait, and customers must keep buying newer chips"
-      - "If AI ended for good, our harshest case, is exactly this: spending stalls and falls"
-    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
-
+      - New chips can improve performance while older chips still serve useful workloads.
+      - If rental prices fall, customers may stretch replacement cycles.
+      - We would watch utilisation and prices before lowering the growth case.
+    diagram:
+      kind: flow
+      nodes:
+        - GPU utilisation
+        - Rental economics
+        - Replacement decisions
+    sources:
+      - Team investment analysis
+      - NVIDIA, Q3 FY27 earnings release
+  links:
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
 - id: competition
   question: Isn't Google, Amazon or Broadcom going to take the business with custom chips?
-  ask: [custom chips, tpu, trainium, google chips, asics, broadcom, losing share, competition]
+  ask:
+    - custom chips
+    - tpu
+    - trainium
+    - google chips
+    - asics
+    - broadcom
+    - losing share
+    - competition
   slide:
     layout: statement
-    title: Share is slipping at the margin, and the biggest buyers are building their own
+    title: Custom chips can take some workloads
     bullets:
-      - "In announced post-2026 frontier deals, NVIDIA is {{research_policy | NVIDIA share of GPU power in announced post-2026 frontier deals | value}} of the power, the rest split across rivals"
-      - Custom chips suit known jobs; frontier training still runs mostly on NVIDIA and CUDA
-      - We named Google ourselves as the one to watch
-      - "Gross margin is guided to bottom at {{research_q3_call | Gross margin guide, Q4 FY27, low | value}} to {{research_q3_call | Gross margin guide, Q4 FY27, high | value}} next quarter, before improving"
-    sources: ["JPMorgan (Cembalest), as reported in research notes; NVIDIA Q3 FY27 earnings call, 17 Nov 2026"]
-
+      - Large buyers can design chips for recurring workloads.
+      - NVIDIA’s software and networking make switching harder for some users.
+      - We watch market share and margins for signs of lasting pressure.
+    sources:
+      - Team competitive assessment
+      - NVIDIA, Q3 FY27 earnings release
+    diagram:
+      kind: comparison
+      nodes:
+        - Custom chips for repeat workloads
+        - NVIDIA software and networking
+        - Share and margin pressure
+  links:
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
 - id: recommendation
   question: So what are you actually recommending, and what would make you sell?
-  ask: [your recommendation, recommending, would you buy, what would make you sell, price target, how much would you invest, position size]
+  ask:
+    - your recommendation
+    - recommending
+    - would you buy
+    - what would make you sell
+    - price target
+    - how much would you invest
+    - position size
   slide:
-    layout: statement
-    title: "Our recommendation: Buy."
+    layout: split
+    title: Our recommendation is a measured position
     bullets:
-      - Start with three percent of the portfolio for three to five years, well inside our ten percent limit on any one stock
-      - "Base case above today's {{model_dcf_inputs | Share price | value}} at all three rates: {{model_sensitivity | Terminal growth 3% | 10.55%}}, {{model_sensitivity | Terminal growth 3% | 14.45%}} and {{model_sensitivity | Terminal growth 3% | 15.4%}}"
-      - "Our bear case, where rivals take share, costs the portfolio {{model_downside | Cost to the portfolio | Bear case}}; if AI ended for good, {{model_downside | Cost to the portfolio | If AI ended for good}}"
-      - We would add only if cloud spending plans rise again and the CEO investigation closes, and sell if they are cut
-
-# ---- Added 24 Nov 2026 from the Q3 FY27 earnings call (17 Nov) and Google Finance. Unverified until checked against the 10-Q. ----
-
+      - Start with a three percent position and review the thesis as evidence changes.
+      - The base case clears the model price at all three rates. The bear case costs the portfolio {{model_downside | Cost to the portfolio | Bear case}}.
+      - We would trim if customer orders weaken or governance risk rises.
+    chart:
+      type: bar
+      datasetKey: model_valuation
+      series:
+        - Value per share
+      highlight: Bear case
+    sources:
+      - Team DCF model, data/model/NVDA_DCF.xlsx
+      - Team portfolio sizing assumptions
 - id: margins
   question: What happens to NVIDIA's profit margins?
-  ask: [profit margins, gross margin, margin compression, margins fall, pricing power, margins under pressure]
+  ask:
+    - profit margins
+    - gross margin
+    - margin compression
+    - margins fall
+    - pricing power
+    - margins under pressure
   slide:
     layout: split
-    title: Margins are guided to dip next quarter, then recover
+    title: A margin dip is in the forecast
     bullets:
-      - "Gross margin was {{research_q3_call | Gross margin, Q3 FY27 | value}} in the October quarter"
-      - "Guided to bottom at {{research_q3_call | Gross margin guide, Q4 FY27, low | value}} to {{research_q3_call | Gross margin guide, Q4 FY27, high | value}} next quarter"
-      - "Then {{research_q3_call | Gross margin outlook, FY28, low | value}} to {{research_q3_call | Gross margin outlook, FY28, high | value}} the year after. It was {{nvda_margins_annual | Gross margin | FY23}} in FY23, when demand paused"
-      - Our bear case, where rivals take share, already cuts the cash margin below NVIDIA's own recent level
-    chart: { type: line, datasetKey: nvda_margins_annual, series: [Gross margin], highlight: FY26 }
-    sources: ["Bloomberg FA, 20 Nov 2026; NVIDIA Q3 FY27 earnings call, 17 Nov 2026"]
-
+      - October-quarter gross margin was {{research_q3_call | Gross margin, Q3 FY27 | value}}.
+      - Guidance puts next quarter at {{research_q3_call | Gross margin guide, Q4 FY27, low | value}} to {{research_q3_call | Gross margin guide, Q4 FY27, high | value}}. Guidance can change.
+      - Our bear case tests weaker margins.
+    chart:
+      type: line
+      datasetKey: nvda_margins_annual
+      series:
+        - Gross margin
+      highlight: FY26
+    sources:
+      - Bloomberg FA, 20 November 2026, local terminal exports
+      - Team DCF model, data/model/NVDA_DCF.xlsx
+      - NVIDIA, Q3 FY27 earnings release
+  links:
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
 - id: buybacks
   question: Is NVIDIA just buying back shares because it has nothing better to spend on?
-  ask: [buybacks, buy back, buying back shares, buying back stock, share repurchases, capital allocation, return cash, dividends, what do they do with the cash]
+  ask:
+    - buybacks
+    - buy back
+    - buying back shares
+    - buying back stock
+    - share repurchases
+    - capital allocation
+    - return cash
+    - dividends
+    - what do they do with the cash
   slide:
     layout: statement
-    title: Buybacks come after the business has been funded, not instead of it
+    title: Buybacks return cash to shareholders
     bullets:
-      - "{{research_q3_call | Cash returned to shareholders, Q3 FY27 | value}} returned in the October quarter, {{research_q3_call | Share of free cash flow returned, year to date | value}} of this year's free cash flow so far"
-      - "{{research_q3_call | Buyback authorization remaining | value}} of authorization remains, to be used by the end of fiscal 2028"
-      - Management says its first call on cash is helping suppliers add capacity, then customer financing
-      - Our model does not count buybacks, so the share count stays flat
-    sources: ["NVIDIA Q3 FY27 earnings call, 17 Nov 2026"]
-
+      - NVIDIA returned {{research_q3_call | Cash returned to shareholders, Q3 FY27 | value}} in the October quarter.
+      - Repurchases can destroy value if the company overpays.
+      - We keep the share count flat in our DCF.
+    sources:
+      - Team DCF model, data/model/NVDA_DCF.xlsx
+      - NVIDIA, Q3 FY27 earnings release
+    diagram:
+      kind: flow
+      nodes:
+        - Cash generation
+        - Reinvestment or capital return
+        - Shareholder value
+  links:
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
 - id: analyst-targets
   question: Why should we trust your numbers over Wall Street's?
-  ask: [wall street, the street, analyst targets, analysts say, trust your numbers, trust your model, your model versus analysts, what do analysts think]
+  ask:
+    - wall street
+    - the street
+    - analyst targets
+    - analysts say
+    - trust your numbers
+    - trust your model
+    - your model versus analysts
+    - what do analysts think
   slide:
     layout: split
-    title: Our base case is above every analyst target, and that is the discount rate
+    title: Our valuation is sensitive to the discount rate
     bullets:
-      - "Average analyst target {{research_market | Analyst target, average | value}}, highest {{research_market | Analyst target, highest | value}}; our base case {{model_valuation | Value per share | Base case}}"
-      - "The gap is our rate. At Google Finance's {{research_market | WACC, Google Finance | value}} the base case is {{model_sensitivity | Terminal growth 3% | 14.45%}}, close to the average"
-      - "{{research_market | Analysts: buy | value}} of {{research_market | Analysts rating NVDA | value}} analysts rate it a buy; {{research_market | Analysts: sell | value}} rates it a sell"
-      - "Our bear case, where rivals take share, {{model_valuation | Value per share | Bear case}}, is below the lowest target, {{research_market | Analyst target, lowest | value}}"
-    chart: { type: bar, datasetKey: model_vs_analysts, series: [Value per share], highlight: Our base case }
-    sources: ["Google Finance, NVDA, 24 Nov 2026 (44 analysts, past 3 months); team valuation model"]
-
+      - Our base case is {{model_valuation | Value per share | Base case}} using the industry rate.
+      - At the higher Google Finance rate, it is {{model_sensitivity | Terminal growth 3% | 14.45%}}.
+      - We use the range to size the position and check our assumptions.
+    chart:
+      type: bar
+      datasetKey: model_vs_analysts
+      series:
+        - Value per share
+      highlight: Our base case
+    sources:
+      - Google Finance, dated analyst snapshot
+      - Team DCF model, data/model/NVDA_DCF.xlsx
 - id: less-risky
   question: Is NVIDIA really no riskier than the average chip company?
-  ask: [less risky, riskier than average, no riskier, why is your discount rate lower, discount rate lower than, is nvidia risky, how risky]
+  ask:
+    - less risky
+    - riskier than average
+    - no riskier
+    - why is your discount rate lower
+    - discount rate lower than
+    - is nvidia risky
+    - how risky
   slide:
-    layout: statement
-    title: Strong finances, but the market does treat it as riskier
+    layout: split
+    title: The market prices NVIDIA as a higher-risk stock
     bullets:
-      - "Operating margin {{peers_operating_margin | Operating margin | NVIDIA}} against {{peers_operating_margin | Operating margin | AMD}} for AMD, with more cash than debt"
-      - "But its beta is {{research_market | Beta | value}}: its share price moves more than the market, and Google Finance uses {{research_market | WACC, Google Finance | value}}"
-      - "Two direct customers were {{research_policy | Largest direct customer, share of FY26 revenue | value}} and {{research_policy | Second direct customer, share of FY26 revenue | value}} of FY26 revenue"
-      - That is why we show the higher rates next to ours, and why we size the position at three percent
-    sources: ["Bloomberg FA, 20 Nov 2026; Google Finance, NVDA, 24 Nov 2026; NVIDIA Form 10-K FY26"]
-
+      - Its margins are strong. Concentration and sentiment still matter.
+      - Higher risk calls for a higher discount rate.
+      - We test higher rates and keep the position small.
+    sources:
+      - Bloomberg FA, 20 November 2026, local terminal exports
+      - Team DCF model, data/model/NVDA_DCF.xlsx
+      - NVIDIA, Q3 FY27 supplemental financial information
+    chart:
+      type: bar
+      datasetKey: peers_operating_margin
+      series:
+        - Operating margin
+      highlight: NVIDIA
+  links:
+    - title: NVIDIA, Q3 FY27 supplemental financial information
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000088/supplementalfinancialinfor.htm
 - id: live-or-scripted
   question: Was that really live, or scripted?
-  ask: [was that live, really live, was it scripted, scripted, pre made, pre built, fake, how did you build this]
+  ask:
+    - was that live
+    - really live
+    - was it scripted
+    - scripted
+    - pre made
+    - pre built
+    - fake
+    - how did you build this
   slide:
     layout: statement
-    title: Built live from our own script and data
+    title: The presentation builds as we speak
     bullets:
-      - The story and every number were written and checked by us beforehand
-      - The software listens to our voices and builds each slide as we reach it
-      - A person controls it, and answers to your questions are drawn from the same data
+      - The spoken story and pitch data were prepared and checked in advance.
+      - Speech cues build the slides live.
+      - For Q&A we can show a prepared answer or generate a sourced one for approval.
+    diagram:
+      kind: flow
+      nodes:
+        - Prepared story and data
+        - Live speech cues
+        - Operator-approved Q&A
+    sources:
+      - Team presentation architecture
+- id: ecolab-water
+  question: What is Ecolab doing with NVIDIA on cooling?
+  ask:
+    - ecolab doing with nvidia
+    - ecolab
+    - coolit
+    - cool it systems
+    - closed loop cooling
+    - liquid cooling water
+  slide:
+    layout: statement
+    title: NVIDIA is helping test lower-water cooling
+    bullets:
+      - Ecolab and CoolIT unveiled a direct liquid-cooling platform in Chicago.
+      - NVIDIA engineers confirmed collaboration on coolant and system testing.
+      - We would look for measured, whole-site water savings after deployment.
+    sources:
+      - Ecolab, CoolIT acquisition and NVIDIA collaboration
+      - Ecolab, cooling platform launch at SC26
+    diagram:
+      kind: flow
+      nodes:
+        - Heat at the chip
+        - Recirculating coolant
+        - Heat removal
+        - Measure site water use
+  links:
+    - title: Ecolab, CoolIT acquisition and NVIDIA collaboration
+      url: https://www.ecolab.com/en-us/media-center/news/ecolab-closes-coolit-acquisition-and-expands-ai-cooling-platform
+    - title: Ecolab, cooling platform launch at SC26
+      url: https://en-vn.ecolab.com/news/2026/11/ecolab-unveils-first-of-its-kind-integrated-cooling-platform-to-unlock-the-next-generation-of-ai
+- id: huang-departure
+  question: What if Jensen Huang resigns again?
+  ask:
+    - jensen huang resigns again
+    - jensen resigns again
+    - huang resigns again
+    - jensen leaves again
+    - ceo leaves again
+    - ceo departure again
+    - succession
+    - who would replace jensen
+  slide:
+    layout: statement
+    title: Another departure would raise key-person risk
+    bullets:
+      - In November, Colette Kress served as interim CEO before Huang returned.
+      - A future succession would depend on the board’s plan and customer commitments.
+      - We would pause additions while reviewing orders, oversight and our valuation.
+    sources:
+      - NVIDIA, CEO transition, 12 November
+      - NVIDIA, reinstatement Form 8-K
+      - NVIDIA, board reinstatement statement
+    diagram:
+      kind: flow
+      nodes:
+        - Board succession plan
+        - Operating continuity
+        - Customer commitments
+        - Reassess position
+  links:
+    - title: NVIDIA, CEO transition, 12 November
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000087/nvda-20261112.htm
+    - title: NVIDIA, reinstatement Form 8-K
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000090/nvda-20261122.htm
+    - title: NVIDIA, board reinstatement statement
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Board-Reinstates-Jensen-Huang-as-President-CEO-and-Board-Director/default.aspx
+- id: porter-forces
+  question: How do Porter's Five Forces apply to NVIDIA?
+  ask:
+    - porter five forces apply
+    - porters five forces
+    - porter
+    - five forces
+    - industry structure
+  slide:
+    layout: statement
+    title: NVIDIA has a strong moat with real pressure points
+    bullets:
+      - Suppliers and major cloud buyers have leverage. Rival accelerators are improving.
+      - Custom chips can substitute for GPUs. New entrants face software and scale barriers.
+      - We track supply access, large orders and margins to test our thesis.
+    sources:
+      - Team assessment using Porter’s framework
+      - NVIDIA, Q3 FY27 supplemental financial information
+      - NVIDIA, Q3 FY27 earnings release
+      - Harvard Business School, Five Forces
+    diagram:
+      kind: map
+      nodes:
+        - "Suppliers: foundry capacity"
+        - "Buyers: large cloud firms"
+        - "Rivals: competing accelerators"
+        - "Substitutes: custom silicon"
+        - "Entrants: software and scale"
+  links:
+    - title: NVIDIA, Q3 FY27 supplemental financial information
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000088/supplementalfinancialinfor.htm
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
+    - title: Harvard Business School, Five Forces
+      url: https://www.isc.hbs.edu/strategy/business-strategy/Pages/the-five-forces.aspx
+- id: uk-compliance
+  question: Does NVIDIA comply with UK law?
+  ask:
+    - does nvidia comply with uk law
+    - comply with uk laws
+    - uk legal compliance
+    - follow uk law
+    - breaks uk law
+    - british laws
+    - uk law
+  slide:
+    layout: statement
+    title: Which law or conduct are we discussing?
+    bullets:
+      - NVIDIA publishes UK supply-chain and tax disclosures.
+      - The CMA’s Arm inquiry ended when the deal was abandoned.
+      - We would match the allegation to the relevant entity and regulator record.
+    sources:
+      - NVIDIA, sustainability disclosures
+      - CMA, NVIDIA and Arm merger inquiry
+    diagram:
+      kind: flow
+      nodes:
+        - Specify the allegation
+        - Identify the entity and law
+        - Check the regulator record
+  links:
+    - title: NVIDIA, sustainability disclosures
+      url: https://www.nvidia.com/en-gb/foundation/archives/
+    - title: CMA, NVIDIA and Arm merger inquiry
+      url: https://www.gov.uk/cma-cases/nvidia-slash-arm-merger-inquiry
+- id: uk-modern-slavery
+  question: What about the UK Modern Slavery Act?
+  ask:
+    - the uk modern slavery act
+    - modern slavery act
+    - forced labour in the uk
+    - forced labor in the uk
+    - slavery statement
+    - supply chain due diligence
+  slide:
+    layout: statement
+    title: NVIDIA publishes a UK supply-chain statement
+    bullets:
+      - The FY26 statement covers named UK subsidiaries.
+      - It describes due diligence and supplier audits. Supply-chain risk remains.
+      - We would ask for audit outcomes and evidence that issues were fixed.
+    sources:
+      - NVIDIA, FY26 supply-chain statement, page 4
+      - Home Office, supply-chain transparency
+    diagram:
+      kind: flow
+      nodes:
+        - Named UK entities
+        - Annual statement
+        - Supplier due diligence
+        - Check remediation
+  links:
+    - title: NVIDIA, FY26 supply-chain statement, page 4
+      url: https://www.nvidia.com/content/dam/en-zz/Solutions/about-us/documents/2025-Forced-Labor-Human-Trafficking-and-Child-Labor-Statement.pdf
+    - title: Home Office, supply-chain transparency
+      url: https://www.gov.uk/government/publications/transparency-in-supply-chains-a-practical-guide
+- id: uk-competition
+  question: Did the CMA clear NVIDIA’s Arm deal?
+  ask:
+    - cma clear nvidia arm deal
+    - cma clear
+    - arm deal
+    - arm acquisition
+    - uk competition law
+    - cma arm
+    - competition and markets authority
+  slide:
+    layout: statement
+    title: The Arm transaction was abandoned
+    bullets:
+      - The CMA closed its inquiry after the parties dropped the proposed merger.
+      - The case concerned that transaction. Current conduct needs its own evidence.
+      - We would assess the specific market and practice the board is asking about.
+    sources:
+      - CMA, NVIDIA and Arm merger inquiry
+    diagram:
+      kind: flow
+      nodes:
+        - Competition concerns
+        - CMA investigation
+        - Merger abandoned
+        - Inquiry closed
+  links:
+    - title: CMA, NVIDIA and Arm merger inquiry
+      url: https://www.gov.uk/cma-cases/nvidia-slash-arm-merger-inquiry
+- id: uk-privacy-consumer
+  question: What about UK privacy and consumer protection?
+  ask:
+    - uk privacy and consumer protection
+    - uk privacy
+    - uk gdpr
+    - uk consumer protection
+    - data protection in the uk
+    - uk unfair trading
+  slide:
+    layout: statement
+    title: UK privacy and consumer rules depend on the activity
+    bullets:
+      - NVIDIA publishes a privacy notice. The relevant controller depends on the service.
+      - Consumer rules apply to the trader and the specific practice.
+      - We would check the service, sales terms and regulator record.
+    sources:
+      - NVIDIA privacy notice
+      - ICO, controller obligations
+      - CMA, unfair commercial practices
+    diagram:
+      kind: map
+      nodes:
+        - Service and data controller
+        - Seller and customer terms
+        - Regulator decision
+  links:
+    - title: NVIDIA privacy notice
+      url: https://www.nvidia.com/en-us/about-nvidia/privacy-policy/
+    - title: ICO, controller obligations
+      url: https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/controllers-and-processors/controllers-and-processors/what-does-it-mean-if-you-are-a-controller
+    - title: CMA, unfair commercial practices
+      url: https://www.gov.uk/government/publications/unfair-commercial-practices-cma207
+- id: uk-anti-bribery
+  question: What about the UK Bribery Act?
+  ask:
+    - the uk bribery act
+    - uk bribery act
+    - anti bribery laws
+    - uk anti bribery
+    - british corruption law
+  slide:
+    layout: statement
+    title: NVIDIA has a policy that addresses UK bribery rules
+    bullets:
+      - NVIDIA’s global anti-corruption policy explicitly names the UK Bribery Act.
+      - A written policy shows the company’s stated procedures.
+      - For a specific incident we would look for enforcement findings and remediation.
+    sources:
+      - NVIDIA anti-corruption policy
+      - Ministry of Justice, Bribery Act guidance
+    diagram:
+      kind: flow
+      nodes:
+        - Company policy
+        - Procedures in practice
+        - Evidence and findings
+  links:
+    - title: NVIDIA anti-corruption policy
+      url: https://www.nvidia.com/content/dam/en-zz/Solutions/about-us/documents/NVIDIA-Anti-Corruption-Policy.pdf
+    - title: Ministry of Justice, Bribery Act guidance
+      url: https://www.gov.uk/government/publications/bribery-act-2010-guidance
+- id: uk-tax
+  question: Does NVIDIA publish a UK tax strategy?
+  ask:
+    - does nvidia publish a uk tax strategy
+    - uk tax strategy
+    - uk corporation tax
+    - tax transparency
+  slide:
+    layout: statement
+    title: NVIDIA publishes a UK tax strategy
+    bullets:
+      - NVIDIA published its FY26 UK tax strategy under the UK reporting rules.
+      - The document sets out its approach to tax risk.
+      - A question about tax paid needs the relevant entity’s accounts and period.
+    sources:
+      - NVIDIA, FY26 UK Public Tax Strategy
+      - HMRC, tax strategy requirements
+    diagram:
+      kind: flow
+      nodes:
+        - Published UK tax strategy
+        - Identify entity and period
+        - Read the accounts
+  links:
+    - title: NVIDIA, FY26 UK Public Tax Strategy
+      url: https://www.nvidia.com/content/dam/en-zz/NVIDIA-UK-Public-Tax-Strategy-FY26.pdf
+    - title: HMRC, tax strategy requirements
+      url: https://www.gov.uk/guidance/large-businesses-publish-your-tax-strategy
+- id: uk-export
+  question: How do UK export controls apply to NVIDIA?
+  ask:
+    - uk export controls apply
+    - uk export controls
+    - british export controls
+    - uk strategic export controls
+    - trade controls in the uk
+  slide:
+    layout: statement
+    title: UK export rules depend on the specific transfer
+    bullets:
+      - Start with the exporter, item, destination and end user.
+      - UK and US rules can apply to different parts of the same supply chain.
+      - We would check the licence position before drawing a conclusion.
+    sources:
+      - UK Export Control Joint Unit, strategic controls
+      - NVIDIA, Q3 FY27 earnings release
+    diagram:
+      kind: flow
+      nodes:
+        - Identify the item and exporter
+        - Check destination and end user
+        - Confirm licences
+  links:
+    - title: UK Export Control Joint Unit, strategic controls
+      url: https://www.gov.uk/guidance/uk-strategic-export-controls
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
+- id: peer-rankings
+  question: How far ahead is NVIDIA in the rankings?
+  ask:
+    - nvidia in the rankings
+    - how far ahead
+    - fortune rankings
+    - peer rankings
+    - workplace rankings
+    - competitors on the lists
+  slide:
+    layout: statement
+    title: Rankings measure different things
+    bullets:
+      - NVIDIA places near the top of Fortune’s US workplace list.
+      - Comparable peers are present on IMD’s technology readiness list.
+      - We use the named list and year. A missing name gives no numerical rank.
+    sources:
+      - Fortune, 2026 US Best Companies to Work For
+      - Great Place To Work, list and methodology
+      - IMD, Technology Future Readiness Index 2026
+    diagram:
+      kind: comparison
+      nodes:
+        - US workplace survey
+        - Technology readiness index
+        - Compare within each list
+  links:
+    - title: Fortune, 2026 US Best Companies to Work For
+      url: https://fortune.com/ranking/best-companies/2026/
+    - title: Great Place To Work, list and methodology
+      url: https://www.greatplacetowork.com/best-workplaces/100-best/2026
+    - title: IMD, Technology Future Readiness Index 2026
+      url: https://www.imd.org/future-readiness-indicator/home/technology-2026/
+- id: target-revision
+  question: Why did your valuation target change since round one?
+  ask:
+    - valuation target change since round one
+    - why did your target change
+    - target move since round one
+    - previous target
+    - round one valuation
+  slide:
+    layout: statement
+    title: Our valuation moved with the inputs
+    bullets:
+      - We updated the operating forecast and the cost of capital.
+      - This DCF is sensitive to both. It cannot isolate one driver without a model bridge.
+      - We would compare each assumption before defending the higher number.
+    sources:
+      - Team DCF model, data/model/NVDA_DCF.xlsx
+      - Team prior pitch assumptions
+      - NVIDIA, Q3 FY27 earnings release
+    diagram:
+      kind: flow
+      nodes:
+        - Earlier forecast
+        - Updated operating inputs
+        - Discount-rate sensitivity
+        - Current valuation
+  links:
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx

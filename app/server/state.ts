@@ -3,7 +3,7 @@ import path from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
 import { ClientMsg, Dataset, elementCount, lookup, resolveText, slideTexts, SpineSlide, tokenRefs, type Draft, type Rehearsal, type RunEntry, type ShowState, type Slide, type Step } from '../shared/schema.ts';
-import { findCue, words, type Candidate } from './cues.ts';
+import { findCue, findInterimCue, words, type Candidate } from './cues.ts';
 
 export const DATA_DIR = path.resolve(import.meta.dirname, '../../data/clean');
 export const SPINE_FILE = path.resolve(import.meta.dirname, '../../docs/script/spine.yaml');
@@ -129,7 +129,12 @@ export function loadSpine(datasets: Map<string, Dataset>, file = SPINE_FILE): Sp
     ids.add(parsed.data.id);
     const problem = checkSlide(parsed.data, datasets);
     if (problem) throw new Error(`${where}: ${problem}`);
-    return parsed.data;
+    const { say } = parsed.data;
+    if (!say) return parsed.data;
+    for (const { key, series, x } of tokenRefs(say)) {
+      if (lookup(datasets, key, series, x) === undefined) throw new Error(`${where}: No spoken value for ${key} / ${series} / ${x}`);
+    }
+    return { ...parsed.data, say: resolveText(say, datasets) };
   });
 }
 
@@ -179,7 +184,6 @@ function resume(state: ShowState, spine: SpineSlide[]): ShowState {
 /** A finished live-built slide arrives: on stage at once if auto-show is on, otherwise into the queue. */
 export function addDraft(state: ShowState, d: Draft): ShowState {
   // A web answer always waits for a person, even with auto-show on: it is not from our own data.
-  if (state.autoShow && state.mode === 'script' && d.from !== 'web') return cover(state, d.slide);
   return { ...state, drafts: [...state.drafts, d].slice(-5) };
 }
 
@@ -249,7 +253,7 @@ function next(state: ShowState, spine: SpineSlide[]): ShowState {
 type Target = { kind: 'element' } | { kind: 'slide'; index: number };
 
 /** Listen only for what can come next: this slide's next element, then the next two slides that are switched on. */
-function candidates(state: ShowState, spine: SpineSlide[]): Candidate<Target>[] {
+function candidates(state: ShowState, spine: SpineSlide[], final: boolean): Candidate<Target>[] {
   const out: Candidate<Target>[] = [];
   const live = state.index >= 0 ? spine[state.index] : undefined;
   if (live && state.live?.id === live.id && state.reveal < elementCount(live)) {
@@ -257,7 +261,7 @@ function candidates(state: ShowState, spine: SpineSlide[]): Candidate<Target>[] 
     if (c) out.push({ cue: c, target: { kind: 'element' } });
   }
   const a = step(spine, state.skipped, state.index, 1);
-  const b = a >= 0 ? step(spine, state.skipped, a, 1) : -1;
+  const b = final && a >= 0 ? step(spine, state.skipped, a, 1) : -1;
   for (const i of [a, b]) if (i >= 0) for (const cue of spine[i].cues) out.push({ cue, target: { kind: 'slide', index: i } });
   return out;
 }
@@ -267,8 +271,8 @@ function candidates(state: ShowState, spine: SpineSlide[]): Candidate<Target>[] 
  * remembers how much of the current utterance a cue has already used, so its final copy can't fire twice.
  * After a cue fires, the words after it carry on, so a bullet said in the same breath as its slide still lands.
  */
-function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[]): ShowState {
-  if (state.backup) return state;
+function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[], receivedAt?: number): ShowState {
+  if (state.backup || state.live?.answer || state.live?.id.startsWith('qa-')) return state;
   const prior = state.heard ? state.heard.split(' ') : [];
   const fresh = words(text).slice(state.consumed);
   const buf = [...prior, ...fresh];
@@ -276,11 +280,16 @@ function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[
   let used = 0;
   if (state.autoCue) {
     for (let k = 0; k < 4; k++) {
-      const hit = findCue(buf.slice(used), candidates(s, spine));
+      const eligible = candidates(s, spine, final);
+      const remaining = buf.slice(used);
+      const hit = final ? findCue(remaining, eligible) : findInterimCue(remaining, eligible, Math.max(0, prior.length - used));
       if (!hit) break;
+      const before = s;
       const live = s.index >= 0 ? spine[s.index] : undefined;
       s = hit.target.kind === 'element' ? next(s, spine) : show(s, spine[hit.target.index], hit.target.index);
-      s = { ...s, lastCue: { phrase: hit.cue, target: hit.target.kind === 'element' ? `${live?.id}: next element` : spine[hit.target.index].id, at: Date.now() } };
+      const at = Date.now();
+      s = { ...s, lastCue: { phrase: hit.cue, target: hit.target.kind === 'element' ? `${live?.id}: next element` : spine[hit.target.index].id, at, ...(receivedAt !== undefined && receivedAt <= at && at - receivedAt <= 30000 ? { receivedAt } : {}) } };
+      if (hit.target.kind === 'slide') s = logMove(before, s, 'cue', spine);
       used += hit.end + 1;
     }
   }
@@ -299,14 +308,15 @@ export function apply(state: ShowState, raw: unknown, ctx: Ctx): ShowState | str
   const out = reduce(state, msg, ctx);
   // Rehearsal log: one entry each time a script slide goes live, saying what moved it there.
   if (typeof out === 'string' || !out.rehearsal || out === state || out.liveSince === state.liveSince || out.index < 0) return out;
-  const via = msg.type === 'transcript' ? 'cue' : msg.type === 'next' || msg.type === 'back' || msg.type === 'goto' ? msg.type : null;
+  const via = msg.type === 'next' || msg.type === 'back' || msg.type === 'goto' ? msg.type : null;
   return via ? logMove(state, out, via, ctx.spine) : out;
 }
 
 /** Adds a script slide going live to the rehearsal log. */
 export function logMove(state: ShowState, out: ShowState, via: RunEntry['via'], spine: SpineSlide[]): ShowState {
   if (!out.rehearsal || out.liveSince === state.liveSince || out.index < 0 || isCovered(out)) return out;
-  const entry: RunEntry = { id: spine[out.index].id, index: out.index, at: out.liveSince, via, ...(via === 'cue' && out.lastCue ? { cue: out.lastCue.phrase } : {}) };
+  const measured = via === 'cue' ? out.lastCue : null;
+  const entry: RunEntry = { id: spine[out.index].id, index: out.index, at: out.liveSince, via, ...(measured ? { cue: measured.phrase } : {}), ...(measured?.receivedAt !== undefined ? { cueDispatchMs: measured.at - measured.receivedAt } : {}) };
   return { ...out, rehearsal: { ...out.rehearsal, entries: [...out.rehearsal.entries, entry] } };
 }
 
@@ -371,7 +381,7 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
     case 'transcript':
       if (state.mode === 'question')
         return msg.final ? { ...state, question: `${state.question} ${msg.text}`.trim().slice(-1500), questionTail: '' } : { ...state, questionTail: msg.text };
-      return hear(state, msg.text, msg.final, spine);
+      return hear(state, msg.text, msg.final, spine, msg.receivedAt);
   }
 }
 
@@ -383,7 +393,10 @@ export function runReport(run: Rehearsal, stoppedAt: number, spine: SpineSlide[]
     seconds: Math.round(((run.entries[i + 1]?.at ?? stoppedAt) - e.at) / 100) / 10,
     via: e.via,
     ...(e.cue ? { cue: e.cue } : {}),
+    ...(e.cueDispatchMs !== undefined ? { cueDispatchMs: e.cueDispatchMs } : {}),
   }));
+  const cueTimes = slides.flatMap((s) => s.cueDispatchMs === undefined ? [] : [s.cueDispatchMs]).sort((a, b) => a - b);
+  const middle = Math.floor(cueTimes.length / 2);
   const inSection = (id: string) => spine.findIndex((s) => s.id === id) <= sectionEnd;
   const sum = (xs: typeof slides) => Math.round(xs.reduce((t, s) => t + s.seconds, 0) * 10) / 10;
   return {
@@ -393,6 +406,7 @@ export function runReport(run: Rehearsal, stoppedAt: number, spine: SpineSlide[]
     openingSectionSeconds: sum(slides.filter((s) => inSection(s.id))),
     openingSectionTargetSeconds: 240,
     cueFired: slides.filter((s) => s.via === 'cue').length,
+    medianCueDispatchMs: cueTimes.length ? (cueTimes[middle] + cueTimes[Math.floor((cueTimes.length - 1) / 2)]) / 2 : null,
     followed: slides.filter((s) => s.via === 'live').length,
     manual: slides.filter((s) => s.via !== 'cue' && s.via !== 'live').length,
     slides,

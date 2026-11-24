@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { elementCount, isUnverified, resolveText, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { LivePanel } from './LivePanel.tsx';
+import { Teleprompter } from './Teleprompter.tsx';
 import { demoSlides } from './demoSlides.ts';
 import { useSpeech, type Engine } from './useSpeech.ts';
 import { useDatasets, useNavKeys, useShow } from './useShow.ts';
@@ -73,7 +74,7 @@ export function Operator() {
   const { state, spine, spineError, connected, clients, error, notice, send, ai, bank } = useShow();
   const datasets = useDatasets();
   const [said, setSaid] = useState('');
-  const mic = useSpeech((text, final) => send({ type: 'transcript', text, final }));
+  const mic = useSpeech((text, final) => send({ type: 'transcript', text, final, receivedAt: Date.now() }));
   useNavKeys(send, state);
   useEffect(() => {
     const backupKey = (e: KeyboardEvent) => {
@@ -93,6 +94,9 @@ export function Operator() {
   const upNext = state ? spine.slice(state.index + 1).find((s) => !skipped.includes(s.id)) : undefined;
   const text = (t: string) => resolveText(t, datasets);
   const unverified = (s: SpineSlide) => isUnverified(s, datasets);
+  const qaPaused = state?.mode === 'question' || Boolean(state?.live?.answer)
+    || Boolean(state?.live?.id.startsWith('qa-')) || Boolean(state?.drafts.some((d) => d.kind === 'answer'))
+    || ai?.busy === 'answer' || ai?.busy === 'research';
 
   return (
     <div className="operator">
@@ -115,6 +119,8 @@ export function Operator() {
       {spineError && <div className="op-error">Script not reloaded: {spineError}</div>}
       {notice && <div className="op-notice">{notice}</div>}
 
+      <div className="op-workspace">
+      <div className="op-controls">
       <section className="op-now">
         <div className="op-now-main">
           <div className="label">
@@ -129,7 +135,6 @@ export function Operator() {
               {waitingFor && <> · waiting for “{waitingFor}”</>}
             </div>
           )}
-          {cur?.say && <p className="op-say">{cur.say}</p>}
         </div>
         <div className="op-nav">
           <button onClick={() => send({ type: 'back' })}>Back</button>
@@ -241,6 +246,9 @@ export function Operator() {
           ))}
         </div>
       </details>
+      </div>
+      <Teleprompter spine={spine} index={state?.index ?? -1} skipped={skipped} paused={qaPaused} resolve={text} />
+      </div>
     </div>
   );
 }

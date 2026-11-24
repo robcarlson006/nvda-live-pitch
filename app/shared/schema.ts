@@ -6,6 +6,7 @@ import { ICON_NAMES } from './icons.ts';
 export const ChartSpec = z.object({
   // waterfall: each x adds to the running total and floats on it; x values in `totals` are full bars (e.g. enterprise value)
   type: z.enum(['line', 'bar', 'stackedBar', 'waterfall']),
+  display: z.literal('table').optional(),
   datasetKey: z.string().min(1),
   series: z.array(z.string()).min(1),
   highlight: z.string().optional(), // an x value to emphasise, e.g. "FY26"
@@ -42,6 +43,15 @@ export const Group = z.object({ tag: z.string().min(1).max(60), items: z.array(z
 
 // statement: one big line · number: a figure rendered by the core array · chart: chart fills the slide · split: text + chart
 // inputs: blocks of figures grouped by source (the DCF inputs slide)
+export const Diagram = z.object({
+  kind: z.enum(['flow', 'comparison', 'map']),
+  nodes: z.array(z.string().trim().min(2).max(40)).min(2).max(5),
+});
+export type Diagram = z.infer<typeof Diagram>;
+
+export const SourceLink = z.object({ title: z.string().min(1), url: z.url({ protocol: /^https?$/ }) });
+export type SourceLink = z.infer<typeof SourceLink>;
+
 export const Slide = z.object({
   id: z.string().min(1),
   layout: z.enum(['statement', 'number', 'chart', 'split', 'inputs', 'timeline']).default('split'),
@@ -51,6 +61,8 @@ export const Slide = z.object({
   groups: z.array(Group).max(4).optional(),
   chart: ChartSpec.optional(),
   stat: StatSpec.optional(),
+  diagram: Diagram.optional(),
+  answer: z.literal(true).optional(),
   effect: Effect.optional(),
   icons: z.array(z.enum(ICON_NAMES)).max(3).optional(), // drawn by the cores on the right: one big, or 2–3 in a chain
   steps: z.array(Step).max(12).optional(), // build order after the title; absent = the bullets in order, then the chart
@@ -174,11 +186,11 @@ export type SpineSlide = z.infer<typeof SpineSlide>;
 /** Elements build in this order: title (with the figure, for number slides), then each step (by default each bullet, then the chart). */
 export const elementCount = (s: Slide) => 1 + stepsOf(s).length;
 
-export type RunEntry = { id: string; index: number; at: number; via: 'cue' | 'next' | 'back' | 'goto' | 'live'; cue?: string };
+export type RunEntry = { id: string; index: number; at: number; via: 'cue' | 'next' | 'back' | 'goto' | 'live'; cue?: string; cueDispatchMs?: number };
 export type Rehearsal = { startedAt: number; entries: RunEntry[] };
 
 /** A slide built live, waiting for the operator (or shown at once if auto-show is on). */
-export type Draft = { id: string; kind: 'answer' | 'riff'; heard: string; slide: Slide; from: 'prepared' | 'claude' | 'web'; at: number; links?: { title: string; url: string }[] };
+export type Draft = { id: string; kind: 'answer' | 'riff'; heard: string; slide: Slide; from: 'prepared' | 'claude' | 'web'; at: number; links?: SourceLink[] };
 
 export type ShowState = {
   index: number; // position in the spine; -1 = standby or an ad-hoc slide
@@ -189,7 +201,7 @@ export type ShowState = {
   autoCue: boolean;
   heard: string; // speech since the last cue fired (normalised words)
   consumed: number; // words of the in-progress (interim) utterance already used by a cue
-  lastCue: { phrase: string; target: string; at: number } | null;
+  lastCue: { phrase: string; target: string; at: number; receivedAt?: number } | null;
   skipped: string[]; // ids of optional slides the operator has switched off
   rehearsal: Rehearsal | null;
   mode: 'script' | 'question'; // question: speech is collected as a board member's question, and fires no cues
@@ -208,7 +220,7 @@ export type ShowState = {
 };
 
 /** What the operator panel shows about Claude. Not saved with the show. */
-export type AiInfo = { follow: { text: string; ms: number; error: string | null }; busy: 'answer' | 'riff' | 'research' | null; note: string | null; spent: number; cap: number; model: string; hasKey: boolean; bankError: string | null };
+export type AiInfo = { follow: { text: string; ms: number; error: string | null }; busy: 'answer' | 'riff' | 'research' | 'visual' | null; note: string | null; spent: number; cap: number; model: string; hasKey: boolean; bankError: string | null };
 
 export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('push'), slide: Slide }),
@@ -217,12 +229,12 @@ export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('next') }),
   z.object({ type: z.literal('back') }),
   z.object({ type: z.literal('goto'), index: z.number().int() }),
-  z.object({ type: z.literal('transcript'), text: z.string().max(2000), final: z.boolean() }),
+  z.object({ type: z.literal('transcript'), text: z.string().max(2000), final: z.boolean(), receivedAt: z.number().int().optional() }),
   z.object({ type: z.literal('autoCue'), on: z.boolean() }),
   z.object({ type: z.literal('skip'), id: z.string(), on: z.boolean() }),
   z.object({ type: z.literal('rehearsal'), action: z.enum(['start', 'stop']) }),
   z.object({ type: z.literal('question'), action: z.enum(['start', 'answer', 'cancel']) }),
-  z.object({ type: z.literal('ask'), text: z.string().min(1).max(1500), kind: z.enum(['answer', 'riff']).default('answer'), fresh: z.boolean().default(false), web: z.boolean().default(false) }),
+  z.object({ type: z.literal('ask'), text: z.string().min(1).max(1500), kind: z.enum(['answer', 'riff']).default('answer'), fresh: z.boolean().default(false), web: z.boolean().default(false), followup: z.string().max(100).optional() }),
   z.object({ type: z.literal('draft'), action: z.enum(['show', 'reject']), id: z.string() }),
   z.object({ type: z.literal('bank'), id: z.string() }),
   z.object({ type: z.literal('resume') }),

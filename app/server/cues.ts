@@ -80,3 +80,16 @@ export function findCue<T>(heard: string | string[], candidates: Candidate<T>[],
   }
   return null;
 }
+
+/** The speech engine may revise a partial. Only use an exact, ordered cue that ends in new speech. */
+export function findInterimCue<T>(heard: string[], candidates: Candidate<T>[], newFrom: number): Hit<T> | null {
+  const start = Math.max(0, heard.length - WINDOW);
+  for (const candidate of candidates) {
+    const phrase = words(candidate.cue);
+    if (!phrase.length || (phrase.length === 1 && phrase[0].length < 4)) continue;
+    for (let i = Math.max(start, newFrom - phrase.length + 1); i <= heard.length - phrase.length; i++) {
+      if (phrase.every((word, j) => heard[i + j] === word)) return { ...candidate, end: i + phrase.length - 1 };
+    }
+  }
+  return null;
+}

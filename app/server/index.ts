@@ -5,10 +5,10 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { Ai, env, MODEL } from './ai.ts';
 import { findAnswer, loadBank, type BankEntry } from './bank.ts';
 import { Budget } from './budget.ts';
-import type { AiInfo, ClientMsg, Draft, ServerMsg, SpineSlide } from '../shared/schema.ts';
+import { resolveText, slideSources, SourceLink, type AiInfo, type ClientMsg, type Draft, type ServerMsg, type SpineSlide } from '../shared/schema.ts';
 import { deepgramKey, deepgramUrl, relay } from './deepgram.ts';
 import { accept, Director } from './director.ts';
-import { addDraft, apply, cover, isCovered, liveGo, livePoints, logMove, offScript, loadDatasets, loadSpine, loadState, relocate, runReport, saveState, SPINE_FILE } from './state.ts';
+import { addDraft, apply, isCovered, liveGo, livePoints, logMove, offScript, loadDatasets, loadSpine, loadState, relocate, runReport, saveState, SPINE_FILE } from './state.ts';
 
 const PORT = Number(process.env.PORT ?? 5173);
 const prod = process.env.NODE_ENV === 'production';
@@ -16,6 +16,7 @@ const root = path.resolve(import.meta.dirname, '..');
 const REHEARSAL_DIR = path.resolve(root, '../rehearsal');
 
 const datasets = loadDatasets();
+const sourceDatasets = Object.fromEntries(datasets);
 let spine: SpineSlide[] = [];
 let spineError: string | null = null;
 let state = loadState();
@@ -45,68 +46,121 @@ try {
   bankError = (e as Error).message;
   console.warn(`[q&a] ${bankError}`);
 }
-let job: { kind: 'answer' | 'riff' | 'research'; abort: AbortController } | null = null;
+let job: { kind: NonNullable<AiInfo['busy']>; abort: AbortController; draftId?: string } | null = null;
+const recentAnswers = new Map<string, Draft>();
+let followEpoch = 0;
 let note: string | null = null;
 let lastRiff = 0;
 const RIFF_GAP = 25_000; // at most one reaction per 25 s: keeps the stage calm and the bill small
 const director = new Director(ai.budget);
 const aiInfo = (): AiInfo => ({ follow: { text: director.recent(14), ms: director.ms, error: director.error }, busy: job?.kind ?? null, note, spent: ai.budget.spent, cap: ai.budget.cap, model: MODEL, hasKey: ai.hasKey(), bankError });
 
-const draft = (kind: Draft['kind'], heard: string, slide: Draft['slide'], from: Draft['from'], links?: Draft['links']): Draft => ({ id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, kind, heard, slide, from, at: Date.now(), ...(links ? { links } : {}) });
+function draft(kind: Draft['kind'], heard: string, slide: Draft['slide'], from: Draft['from'], links?: Draft['links'], id?: string): Draft {
+  const citations = new Map((links ?? []).map((l) => [l.url, l]));
+  if (kind === 'answer') {
+    for (const source of slideSources(slide, sourceDatasets)) {
+      for (const match of source.matchAll(/https?:\/\/[^\s<>)]+/g)) {
+        const url = match[0].replace(/[.,;]+$/, '');
+        const link = SourceLink.safeParse({ url, title: source.replace(match[0], '').trim().replace(/^[, .-]+|[, .-]+$/g, '') || url });
+        if (link.success && !citations.has(url)) citations.set(url, link.data);
+      }
+    }
+  }
+  return { id: id ?? `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`, kind, heard, slide, from, at: Date.now(), links: [...citations.values()] };
+}
+
+function remember(d: Draft) {
+  if (d.kind !== 'answer') return;
+  recentAnswers.set(d.id, d);
+  if (recentAnswers.size > 12) recentAnswers.delete(recentAnswers.keys().next().value!);
+}
+
+function submitDraft(d: Draft) {
+  remember(d);
+  state = addDraft(state, d);
+  saveState(state);
+  broadcast();
+}
+
 const stopJob = () => {
   job?.abort.abort();
   job = null;
 };
 
-async function build(kind: 'answer' | 'riff', heard: string, fresh = false) {
-  stopJob(); // a question always beats a reaction, and a new question beats the old one
+async function visualise(d: Draft) {
+  if (!ai.hasKey() || d.kind !== 'answer' || d.slide.chart || d.slide.stat || d.slide.diagram) return;
+  const mine = { kind: 'visual' as const, abort: new AbortController(), draftId: d.id };
+  job = mine;
+  broadcast();
+  const diagram = await ai.visual(d.slide, datasets, mine.abort.signal).catch(() => undefined);
+  if (job !== mine) return;
+  job = null;
+  if (diagram) {
+    const enriched = { ...d, slide: { ...d.slide, diagram } };
+    remember(enriched);
+    state = { ...state, drafts: state.drafts.map((item) => item.id === d.id ? enriched : item) };
+    saveState(state);
+  }
+  broadcast();
+}
+
+function usePrepared(entry: BankEntry, heard: string) {
+  stopJob();
   note = null;
-  if (kind === 'answer' && !fresh) {
+  const d = draft('answer', heard, entry.slide, 'prepared', entry.links);
+  submitDraft(d);
+  void visualise(d);
+}
+
+async function build(kind: 'answer' | 'riff', heard: string, fresh = false, previous?: string) {
+  stopJob(); // a new question always takes priority
+  note = null;
+  if (kind === 'answer' && !fresh && !previous) {
     const hit = findAnswer(bank, heard);
-    if (hit) {
-      state = addDraft(state, draft(kind, heard, hit.slide, 'prepared'));
-      saveState(state);
-      return broadcast();
-    }
+    if (hit) return usePrepared(hit, heard);
   }
   const mine = { kind, abort: new AbortController() };
   job = mine;
   broadcast();
-  const started = Date.now();
   const place = state.index;
   let r: Awaited<ReturnType<Ai['build']>>;
   try {
-    r = await ai.build({ kind, heard, onScreen: state.live ? [state.live.title, ...state.live.bullets].join(' / ') : 'nothing' }, datasets, spine, mine.abort.signal);
+    r = await ai.build({ kind, heard, previous, onScreen: state.live ? [state.live.title, ...state.live.bullets].join(' / ') : 'nothing' }, datasets, spine, mine.abort.signal);
   } catch (e) {
-    r = { error: (e as Error).message }; // whatever happens, the show goes on
+    r = { error: (e as Error).message };
   }
-  if (job !== mine) return; // cancelled or overtaken
+  if (job !== mine) return;
   job = null;
-  let gap: Draft | null = null; // an honest "not in our data" slide: research it
-  if ('error' in r) note = r.error;
-  // A reaction is only worth showing if the presenter hasn't already moved on.
-  else if ('slide' in r && (kind === 'answer' || (state.index === place && state.mode === 'script'))) {
-    const d = draft(kind, heard, r.slide, 'claude');
-    state = addDraft(state, d);
-    if (kind === 'answer' && !r.answered) gap = d;
+  if ('error' in r) {
+    note = r.error;
+    if (kind === 'answer') {
+      const fallback = draft('answer', heard, {
+        id: `gen-${Date.now()}`, layout: 'statement', answer: true, title: 'We need to check that',
+        bullets: ['We would verify it before drawing an investment conclusion.'],
+        sources: ['Pitch evidence bank · no verified answer for this question'],
+      }, 'claude');
+      submitDraft(fallback);
+      if (ai.hasKey()) void research(heard, fallback.id, previous);
+    } else broadcast();
+    return;
   }
-  console.log(`[ai] ${kind} ${'slide' in r ? 'slide' : 'error' in r ? r.error : 'nothing to show'} in ${Date.now() - started} ms, $${ai.budget.spent.toFixed(3)} spent`);
-  saveState(state);
-  broadcast();
-  if (gap) void research(heard, gap.id);
+  if (!('slide' in r) || (kind === 'riff' && (state.index !== place || state.mode !== 'script'))) return broadcast();
+  const d = draft(kind, heard, r.slide, 'claude', r.links);
+  submitDraft(d);
+  if (kind === 'answer' && !r.answered) void research(heard, d.id, previous);
+  else void visualise(d);
 }
 
-/** Our data doesn't answer it: search the web. The "not in our data" slide stays in the queue until this succeeds. */
-async function research(heard: string, replaces?: string) {
+/** The evidence-gap answer stays available if research takes too long or fails. */
+async function research(heard: string, replaces?: string, previous?: string) {
   stopJob();
   note = null;
-  const mine = { kind: 'research' as const, abort: new AbortController() };
+  const mine = { kind: 'research' as const, abort: new AbortController(), draftId: replaces };
   job = mine;
   broadcast();
-  const started = Date.now();
   let r: Awaited<ReturnType<Ai['research']>>;
   try {
-    r = await ai.research(heard, mine.abort.signal);
+    r = await ai.research(heard, mine.abort.signal, previous);
   } catch (e) {
     r = { error: (e as Error).message };
   }
@@ -114,11 +168,12 @@ async function research(heard: string, replaces?: string) {
   job = null;
   if ('error' in r) note = `Web research: ${r.error}`;
   else if ('slide' in r) {
-    state = { ...state, drafts: state.drafts.filter((d) => d.id !== replaces) };
-    state = addDraft(state, draft('answer', heard, r.slide, 'web', r.links));
+    const d = draft('answer', heard, r.slide, 'web', r.links, replaces);
+    if (replaces) state = { ...state, drafts: state.drafts.filter((item) => item.id !== replaces) };
+    submitDraft(d);
+    void visualise(d);
+    return;
   }
-  console.log(`[ai] research ${'slide' in r ? 'slide' : 'error' in r ? r.error : 'stopped'} in ${Date.now() - started} ms, $${ai.budget.spent.toFixed(3)} spent`);
-  saveState(state);
   broadcast();
 }
 
@@ -137,13 +192,18 @@ function maybeRiff() {
  * Live mode: every few words, a fast model says where the talk is now. Cue words keep working beside it,
  * so if the AI is slow, wrong or unreachable the deck still moves. Its verdicts only ever choose among our own slides.
  */
+function canFollow() {
+  return state.follow === 'live' && state.autoCue && state.mode === 'script' && !state.backup && !isCovered(state) && !state.drafts.some((d) => d.kind === 'answer') && job?.kind !== 'answer' && job?.kind !== 'research';
+}
+
 async function followSpeech() {
-  if (state.follow !== 'live' || !state.autoCue || state.mode !== 'script' || !director.ready()) return;
+  if (!canFollow() || !director.ready()) return;
   const was = state;
+  const epoch = followEpoch;
   const v = await director.look(was, spine, datasets);
   if (!v) return broadcast(); // shows the error banner, if any
   // The operator or a cue moved the show while the model was thinking: this verdict is about a screen that is gone.
-  if (state.liveSince !== was.liveSince || state.index !== was.index || state.reveal !== was.reveal || state.follow !== 'live' || state.mode !== 'script') return broadcast();
+  if (epoch !== followEpoch || !canFollow() || state.liveSince !== was.liveSince || state.index !== was.index || state.reveal !== was.reveal) return broadcast();
   const votes = director.vote(v.action === 'slide' ? `slide:${v.slide}` : v.action);
   if (!accept(v, state, spine, votes)) return broadcast();
   if (v.action === 'tangent') {
@@ -165,7 +225,10 @@ async function followSpeech() {
 
 function handleAi(msg: ClientMsg, before: typeof state): void {
   // Speech from before a manual move, a toggle or a question is about a different moment: never judge it again.
-  if (['next', 'back', 'goto', 'clear', 'follow', 'resume', 'bank', 'question', 'autoCue', 'draft'].includes(msg.type)) director.reset();
+  if (['next', 'back', 'goto', 'clear', 'follow', 'resume', 'bank', 'question', 'autoCue', 'draft', 'ask', 'backup', 'skip', 'push'].includes(msg.type)) {
+    followEpoch++;
+    director.reset();
+  }
   if (msg.type === 'question') {
     if (msg.action === 'answer') {
       const q = `${before.question} ${before.questionTail}`.trim();
@@ -173,12 +236,15 @@ function handleAi(msg: ClientMsg, before: typeof state): void {
       if (q) void build('answer', q);
       else note = 'No question was heard. Type it instead, or try again.';
     } else stopJob();
-  } else if (msg.type === 'ask' && msg.web) void research(msg.text);
-  else if (msg.type === 'ask') void build(msg.kind ?? 'answer', msg.text, msg.fresh);
-  else if (msg.type === 'clear') stopJob();
+  } else if (msg.type === 'ask') {
+    const prior = msg.followup ? recentAnswers.get(msg.followup) : undefined;
+    const previous = prior ? [prior.heard, prior.slide.title, ...prior.slide.bullets.map((b) => resolveText(b, datasets))].join(' / ') : undefined;
+    if (msg.web) void research(msg.text, undefined, previous);
+    else void build(msg.kind ?? 'answer', msg.text, msg.fresh, previous);
+  } else if (msg.type === 'clear' || (msg.type === 'draft' && job?.draftId === msg.id)) stopJob();
   else if (msg.type === 'bank') {
     const e = bank.find((b) => b.id === msg.id);
-    if (e) state = cover(state, e.slide);
+    if (e) usePrepared(e, e.question);
   } else if (msg.type === 'transcript' && msg.final) maybeRiff();
 }
 
@@ -241,11 +307,13 @@ wss.on('connection', (ws) => {
     const next = apply(state, raw, { datasets, spine });
     if (typeof next === 'string') return send(ws, { type: 'error', message: next });
     const msg = raw as ClientMsg; // apply() has validated it
-    if (msg.type === 'transcript' && state.follow === 'live' && state.mode === 'script' && state.autoCue) {
-      director.hear(msg.text, msg.final); // interim results too: most of them change nothing else
-      void followSpeech();
-    }
-    if (next === state && !['ask', 'bank', 'clear'].includes(msg.type)) return;
+    const feedDirector = () => {
+      if (msg.type === 'transcript' && canFollow()) {
+        director.hear(msg.text, msg.final);
+        void followSpeech();
+      }
+    };
+    if (next === state && !['ask', 'bank', 'clear'].includes(msg.type)) return feedDirector();
     if (state.rehearsal && !next.rehearsal) {
       // A rehearsal run just stopped: log it. A failed write must never take the show down.
       try {
@@ -262,6 +330,10 @@ wss.on('connection', (ws) => {
     const before = state;
     state = next;
     handleAi(msg, before);
+    if (msg.type === 'transcript' && state.lastCue !== before.lastCue) {
+      followEpoch++;
+      director.reset(); // miss speech already consumed by a deterministic cue
+    } else feedDirector();
     saveState(state);
     broadcast();
   });

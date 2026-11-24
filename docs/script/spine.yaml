@@ -1,6 +1,6 @@
 # The scripted spine: the slides in order, and the phrases that trigger them.
 # Running order: Rob (why) → Panshul (financials) → Mi'kael (ESG and the recommendation) → Rob (close).
-# Current draft: 1182 spoken words, 7.88 minutes at 150 wpm before pauses. See docs/script/TIMING.md.
+# See docs/script/TIMING.md for the current speaking-time estimate.
 # A timed room rehearsal is still required before claiming a sub-nine-minute run.
 #
 # How it works on the day
@@ -27,7 +27,7 @@
 #   - Charts and big numbers name a dataset in data/clean/. The numbers are always looked up, never typed.
 #   - A figure inside a title or bullet is written {{dataset | series | x}} and looked up too. The server refuses
 #     any other digits in slide text, except years, dates, FY/Q labels, Scope 1/2/3 and product names.
-#   - `say` is the script for the operator screen. It is never shown to the board.
+#   - `say` is the script for the operator screen. It supports *italics*, **bold**, and the same data references.
 
 # ---------------- Rob: the why ----------------
 
@@ -234,9 +234,9 @@
 
 - id: already-doing
   speaker: Rob
-  cues: [isn't a fad, isnt a fad, not a fad, already doing]
+  cues: [already delivering results, delivering results, results already]
   layout: statement
-  title: AI isn't a fad.
+  title: AI is already delivering results.
   bullets:
     - text: "2024 Nobel Prize in Chemistry: AI that predicts and designs proteins"
       cue: chemistry nobel
@@ -244,7 +244,7 @@
       cue: lung-disease drug
     - text: "Sweden: {{research_facts | Sweden: more cancers found | value}} more breast cancers found, with {{research_facts | Sweden: less reading work | value}} less work for doctors"
       cue: breast cancers
-  say: "AI isn't a fad. The 2024 Chemistry Nobel went to protein-design AI. A lung-disease drug reached trials in under 30 months; Swedish screening found 20 percent more breast cancers."
+  say: "AI is already **delivering results**. The 2024 Chemistry Nobel went to protein-design AI. A lung-disease drug reached trials in under 30 months. Swedish screening found 20 percent more breast cancers."
   sources: [Nobel Prize in Chemistry 2024]
 
 
@@ -345,7 +345,7 @@
   speaker: Panshul
   cues: [what is one share worth, none of these figures, figures are ours, where our numbers come from]
   layout: inputs
-  title: None of these numbers are ours.
+  title: What goes into our valuation?
   groups:
     - tag: Bloomberg
       items:
@@ -361,7 +361,7 @@
           cue: own discount rate
     - tag: Google Finance
       items:
-        - text: "Share price: {{model_dcf_inputs | Share price | value}}"
+        - text: "Reference price: {{model_dcf_inputs | Share price | value}}; quote date in summary"
           cue: from google finance
         - text: "WACC: {{model_dcf_inputs | WACC, Google Finance | value}}"
     - tag: Damodaran (NYU)
@@ -375,7 +375,7 @@
         - text: "Growth fades in a straight line to {{model_dcf_inputs | Terminal growth (our choice) | value}} by FY32"
           cue: fading to
   # DRAFT say
-  say: "What is one share worth? None of these figures are ours: Bloomberg gives last year's 216 billion in revenue, two years of consensus, a forty-five percent three-year cash margin, shares, net cash and a 15.4 percent rate. Google Finance gives today's 152.85 share price and 14.45 percent rate. Damodaran at NYU gives the 10.55 percent chip-industry rate. Our choices: 3 percent terminal growth, with growth fading to it by 2032. Every figure shows its source."
+  say: "What is one share worth? From **Bloomberg**: revenue, analyst consensus, cash margin, share count and net cash, and its own discount rate. From **Google Finance**: another rate. From **Damodaran**: the chip-industry rate. Our two choices: three percent long-run growth, fading to it by 2032."
 
 - id: fcf
   speaker: Panshul
@@ -405,18 +405,18 @@
     - { zoom: PV of terminal value, cue: everything after }
     - { zoom: Enterprise value, cue: enterprise value }
     - { zoom: Equity value, cue: net cash }
-    - text: "÷ {{model_dcf_inputs | Shares outstanding | value}} shares = {{model_three_rates | Value per share | 10.55% industry (Damodaran)}} a share, against {{model_dcf_inputs | Share price | value}} today"
+    - text: "÷ {{model_dcf_inputs | Shares outstanding | value}} shares = {{model_three_rates | Value per share | 10.55% industry (Damodaran)}} a share, against a {{model_dcf_inputs | Share price | value}} reference price"
       cue: divide by
     - { zoom: all }
   chart: { type: waterfall, datasetKey: model_dcf_bridge, series: ["10.55%"], totals: [Enterprise value, Equity value], highlight: Equity value }
   # DRAFT say
-  say: "Add it up. The next five years' cash, discounted at the industry rate, is worth 2.3 trillion today. Everything after: 7.1 trillion. Enterprise value: 9.4 trillion. Add 60 billion net cash, divide by 24 billion shares: 391 dollars a share, against 153 today."
+  say: "Add it up. The next five years' cash, discounted at the industry rate, is worth 2.3 trillion today. Everything after: 7.1 trillion. Enterprise value: 9.4 trillion. Add net cash, divide by the shares, and we get {{model_three_rates | Value per share | 10.55% industry (Damodaran)}} per share."
 
 - id: three-rates
   speaker: Panshul
   cues: [didnt invent a discount rate, invent a discount rate, we didnt invent]
   layout: split
-  title: Above today's price at all three discount rates
+  title: Base-case value per share
   chartFirst: true
   bullets:
     - { zoom: 10.55% industry (Damodaran), cue: at the industry rate }
@@ -425,9 +425,9 @@
     - text: "Enterprise value: {{model_three_rates | Enterprise value | 10.55% industry (Damodaran)}}, {{model_three_rates | Enterprise value | 14.45% Google Finance}} and {{model_three_rates | Enterprise value | 15.4% Bloomberg}}"
       cue: enterprise value spans
     - { zoom: all }
-  chart: { type: bar, datasetKey: model_three_rates, series: [Value per share], refLine: { series: Share price today }, highlight: 10.55% industry (Damodaran) }
+  chart: { type: bar, display: table, datasetKey: model_three_rates, series: [Value per share], refLine: { series: Share price today }, highlight: 10.55% industry (Damodaran) }
   # DRAFT say
-  say: "We didn't invent a discount rate. At the industry rate, a share is worth 391 dollars; at Google Finance's 14.45, 249; at Bloomberg's 15.4, 228. Enterprise value spans 5.4 to 9.4 trillion dollars. All three exceed today's price."
+  say: "We didn't invent a discount rate. At the industry rate, a share is worth **391 dollars**. At Google Finance, 249. At Bloomberg, 228. Enterprise value spans 5.4 to 9.4 trillion dollars. All three exceed our reference price."
 
 - id: reverse-dcf
   speaker: Panshul
@@ -436,14 +436,14 @@
   title: "Today's price assumes {{model_implied_growth | Growth per year | Priced in today}} growth a year"
   chartFirst: true
   bullets:
-    - { zoom: Priced in today, cue: eleven and a half }
+    - { zoom: Priced in today, cue: the market needs }
     - { zoom: "Base case (consensus, then slowing)", cue: consensus slowing }
     - text: The market is pricing in far less growth than analysts expect
       cue: far less
     - { zoom: all }
   chart: { type: bar, datasetKey: model_implied_growth, series: [Growth per year], highlight: Priced in today }
   # DRAFT say
-  say: "Turn it around: what does today's price assume? About eleven and a half percent annual revenue growth. Consensus slowing to 3 percent yields thirty-five and a half. The market prices in far less."
+  say: "Turn it around: what does our reference price assume? The market needs {{model_implied_growth | Growth per year | Priced in today}} annual revenue growth. Consensus slowing to 3 percent yields thirty-five and a half. The market prices in far less."
 
 # Two downside cases: two slides, two names, never merged. Always say "our bear case, where rivals take share" and "if AI ended for good".
 - id: bear-case
@@ -456,13 +456,13 @@
     - text: Revenue grows a little in FY28, falls in FY29, then recovers
       cue: then recovers
     - { zoom: FY29 }
-    - text: "One share is worth {{model_downside | Value per share | Bear case}}, {{model_downside | Change from today | Bear case}} from today"
-      cue: below today
-    - text: "With a {{model_downside | Position size | Bear case}} position, it costs the portfolio {{model_downside | Cost to the portfolio | Bear case}}"
-      cue: about one percent
+    - text: "Stock downside: {{model_downside | Change from today | Bear case}}, to {{model_downside | Value per share | Bear case}} per share"
+      cue: stock downside
+    - text: "Portfolio loss: {{model_downside | Cost to the portfolio | Bear case}} at a {{model_downside | Position size | Bear case}} position"
+      cue: portfolio would lose
   chart: { type: line, datasetKey: model_path_bear, series: [Bear case, Base case], highlight: FY29 }
   # DRAFT say
-  say: "First, our bear case, where rivals take share and spending pauses for a year. Revenue falls in 2029, then recovers. One share is worth 102 dollars, about a third below today. At a 3 percent position, the portfolio loses about one percent."
+  say: "First, our bear case: rivals take share. Revenue falls in 2029, then recovers. **Stock downside**: {{model_downside | Change from today | Bear case}}, to {{model_downside | Value per share | Bear case}} a share. At a {{model_downside | Position size | Bear case}} position, the portfolio would lose **only {{model_downside | Cost to the portfolio | Bear case}}**."
 
 # The cores go dark. Muted grey line: visibly not the bear case.
 - id: ai-ended
@@ -473,17 +473,15 @@
   title: If AI ended for good
   chartFirst: true
   bullets:
-    - text: Revenue flat, then down a fifth, then no real growth ever again. Margins ten points lower
+    - text: Revenue falls a fifth. Growth stays flat and margins fall
       cue: down a fifth
-    - text: Harsher than anything in NVIDIA's history
-      cue: harsher than
-    - text: "Even then, one share is still worth {{model_downside | Value per share | If AI ended for good}}, not zero"
-      cue: not zero
-    - text: "With a {{model_downside | Position size | If AI ended for good}} position, it costs the portfolio {{model_downside | Cost to the portfolio | If AI ended for good}}"
-      cue: under two percent
+    - text: "Value per share: {{model_downside | Value per share | If AI ended for good}}"
+      cue: share value
+    - text: "Portfolio loss: {{model_downside | Cost to the portfolio | If AI ended for good}} at a {{model_downside | Position size | If AI ended for good}} position"
+      cue: portfolio would lose
   chart: { type: line, datasetKey: model_path_ai_ended, series: [If AI ended for good, Base case], muted: true, highlight: FY29 }
   # DRAFT say
-  say: "Second, if AI ended for good: revenue flat, then down a fifth, no real growth thereafter, and margins ten points lower. Harsher than NVIDIA's history. Even then, a share is worth 64 dollars, not zero. At a 3 percent position, the portfolio loses under two percent. Could AI end for good? Mi'kael."
+  say: "Second, if AI ended for good: revenue goes down a fifth, then stays flat in real terms. Margins fall. Share value: {{model_downside | Value per share | If AI ended for good}}. At a {{model_downside | Position size | If AI ended for good}} position, the portfolio would lose {{model_downside | Cost to the portfolio | If AI ended for good}}. Mi'kael."
 
 # ---------------- Mi'kael: ESG and the recommendation ----------------
 
@@ -504,7 +502,7 @@
     - text: "AI is a race now. What useful tools will it leave behind?"
       cue: ai is a race
   # DRAFT say
-  say: "Could AI end for good? Think of the space race. Sputnik launched in 1957; people reached the Moon in 1969. Earth observation satellites now track climate and forests. AI is a race too; its by-products may help."
+  say: "Think of the **space race**. Sputnik launched in 1957, and people reached the Moon in 1969. Earth observation satellites now track climate and forests. AI is a race too. *What will it leave behind?*"
   sources: ["NASA, The Dawn of the Space Age; NASA, Apollo 11; NASA Earth Observatory, Space-based Observations of the Earth"]
 
 # VERIFY the reinstatement and every date against a major news source on the morning of the pitch.
@@ -541,8 +539,24 @@
     - text: More choice keeps the giants' prices and lock-in in check, and whichever model wins still needs chips
       cue: more choice
   # DRAFT say
-  say: "NVIDIA funds competition to the AI giants. It agreed to buy Hugging Face, pending approval, and backs Mistral, Black Forest Labs, AI21, Fireworks, Together and Replicate. More choice keeps the giants' prices in check. Every model needs chips."
+  say: "NVIDIA is funding competition. It wants to buy Hugging Face, and backs Mistral and Fireworks. **More choice** gives customers leverage."
   sources: ["NVIDIA blog, 3 Sep 2026 (Hugging Face, pending approval); funding announcements: Mistral 2024, AI21 Labs 2023, Black Forest Labs 2025, Fireworks AI 2024, Replicate 2023, Together AI (Reuters) 2024; NVIDIA Form 10-K FY26"]
+
+- id: beyond-hyperscalers
+  speaker: Mi'kael
+  cues: [demand beyond hyperscalers, beyond hyperscalers, beyond the hyperscalers, demand beyond the giants]
+  layout: statement
+  title: Demand beyond the hyperscalers
+  bullets:
+    - text: "Public compute: Isambard-AI is operating in Bristol"
+      cue: in bristol
+    - text: "Specialist cloud: Nscale has announced NVIDIA-powered capacity"
+      cue: nscale announced
+    - text: "Three direct customers still made up {{nvda_customer_concentration | Top three direct customers | Q3 FY27}} of Q3 FY27 revenue"
+      cue: three direct customers
+  say: "Demand extends beyond hyperscalers. Public compute in Bristol and capacity Nscale announced give smaller firms access. **Concentration remains**: three direct customers made up {{nvda_customer_concentration | Top three direct customers | Q3 FY27}} of revenue last quarter."
+  sources:
+    - "UK DSIT, AIRR advanced supercomputers for the UK; NVIDIA UK infrastructure announcement (Nscale deployment plans)"
 
 # The "S" in ESG (added 24 Nov 2026, evening). Rankings checked on each publisher's page; people figures from Bloomberg.
 - id: people
@@ -604,7 +618,7 @@
     - text: We would add only if cloud spending plans rise again and the CEO investigation closes, and sell if they are cut
       cue: we would add
   # DRAFT say
-  say: "We recommend a three percent position for three to five years. Our base case beats today's price at all three rates. Our bear case, where rivals take share, costs about one percent of the portfolio; if AI ended for good, under two. We would add if cloud spending rises and the CEO investigation closes; sell if spending is cut."
+  say: "We recommend a **three percent** position for three to five years. Base-case value exceeds our reference price at all three rates. The portfolio loses {{model_downside | Cost to the portfolio | Bear case}} in the bear case, and {{model_downside | Cost to the portfolio | If AI ended for good}} if AI ended for good. We would add if spending rises and the investigation closes, and sell if spending is cut."
 
 # ---------------- Rob: the close ----------------
 
