@@ -15,6 +15,7 @@ cd app && npm install && npm run dev
 - For the pitch itself: `npm run build && npm start` (no dev tooling running).
 
 ## Done
+- **Claude Code lane, `claude/pitch-deck`** (24 Nov, late evening): DCF summary table on stage (`display: table`), reconciliation and round-one bridge (`docs/financials/RECONCILE.md`), animated space-race timeline, stress slide wording and label fix, bank answers corrected against primary sources, UK evidence matrix and board drill, answer diagrams on stage and in the backup, backup rebuilt to 37 pages plus `qa-bank.pdf`. Details and Codex integration steps: `docs/handoff/CLAUDE-CODE-LANE.md`. Price unchanged at $152.85 (unverified; confirm on pitch morning).
 - **M1: stage + operator skeleton** (20 Nov)
   - Single Node process: Vite in dev, static files in prod, WebSocket at `/ws`.
   - The backend holds show state (`app/state.json`, written atomically), so a refresh or restart keeps the current slide.

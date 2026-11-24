@@ -177,13 +177,13 @@
     layout: statement
     title: The founder is back and the risk remains
     bullets:
-      - Huang resigned in November and the board subsequently reinstated him.
-      - Oversight changed, and the board investigation and government inquiries remain open.
-      - We would reassess our position if that oversight or operating continuity weakens.
+      - Huang resigned on 12 November. The board reinstated him on 22 November.
+      - A new committee of independent directors oversees national security and export control.
+      - The board's investigation continues and NVIDIA is cooperating with government inquiries. We would reassess if they find against him.
     sources:
       - NVIDIA, CEO transition, 12 November
       - NVIDIA, reinstatement Form 8-K
-      - NVIDIA, governance and investigations
+      - NVIDIA, board reinstatement press release, 23 November
     diagram:
       kind: flow
       nodes:
@@ -193,11 +193,11 @@
         - Ongoing inquiries
   links:
     - title: NVIDIA, CEO transition, 12 November
-      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000087/nvda-20261112.htm
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000082/nvidiaannouncesceotransiti.htm
     - title: NVIDIA, reinstatement Form 8-K
       url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000090/nvda-20261122.htm
-    - title: NVIDIA, governance and investigations
-      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Board-Reinstates-Jensen-Huang-as-President-CEO-and-Board-Director/default.aspx
+    - title: NVIDIA, board reinstatement press release, 23 November (8-K exhibit)
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000090/nov23pressrelease.htm
 - id: taiwan
   question: What if something happens to Taiwan or TSMC?
   ask:
@@ -339,8 +339,8 @@
     layout: statement
     title: Congress could change the pace of US builds
     bullets:
-      - A federal construction pause was proposed. The bills were referred to committees.
-      - Power costs, water use and permits can delay individual projects.
+      - Moratorium bills were introduced in the Senate in March 2026 and the House in June 2026. Both sit in committee.
+      - A bipartisan Senate bill from September 2026 asks for reporting on power and water, not a halt.
       - We would watch for cancelled orders before lowering our long-term sales forecast.
     sources:
       - US Congress, introduced Senate moratorium bill
@@ -354,11 +354,11 @@
         - Project timing
         - Chip-order outlook
   links:
-    - title: US Congress, introduced Senate moratorium bill
+    - title: S. 4214, AI Data Center Moratorium Act, introduced 25 March 2026
       url: https://www.govinfo.gov/app/details/BILLS-119s4214is
-    - title: US Congress, introduced House moratorium bill
+    - title: H.R. 9442, AI Data Center Moratorium Act, introduced 24 June 2026
       url: https://www.govinfo.gov/app/details/BILLS-119hr9442ih
-    - title: US Congress, introduced bipartisan transparency bill
+    - title: S. 5640, Data Center Transparency Act of 2026, introduced 30 September 2026
       url: https://www.govinfo.gov/app/details/BILLS-119s5640is
 - id: china-export
   question: What about export controls and China?
@@ -695,12 +695,12 @@
     layout: statement
     title: NVIDIA is helping test lower-water cooling
     bullets:
-      - Ecolab and CoolIT unveiled a direct liquid-cooling platform in Chicago.
-      - NVIDIA engineers confirmed collaboration on coolant and system testing.
-      - We would look for measured, whole-site water savings after deployment.
+      - Ecolab, which bought liquid-cooling maker CoolIT, unveiled an integrated cooling platform at the Supercomputing conference in Chicago this month.
+      - In July, Ecolab said NVIDIA engineers worked with it on coolant qualification and monitoring.
+      - Neither release gives a water-saving figure. We would ask for measured, whole-site results.
     sources:
-      - Ecolab, CoolIT acquisition and NVIDIA collaboration
-      - Ecolab, cooling platform launch at SC26
+      - Ecolab, CoolIT acquisition closes and NVIDIA collaboration, 2 July 2026
+      - Ecolab, integrated cooling platform unveiled at SC26, 16 November 2026
     diagram:
       kind: flow
       nodes:
@@ -744,7 +744,7 @@
         - Reassess position
   links:
     - title: NVIDIA, CEO transition, 12 November
-      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000087/nvda-20261112.htm
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000082/nvidiaannouncesceotransiti.htm
     - title: NVIDIA, reinstatement Form 8-K
       url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000090/nvda-20261122.htm
     - title: NVIDIA, board reinstatement statement
@@ -761,8 +761,8 @@
     layout: statement
     title: NVIDIA has a strong moat with real pressure points
     bullets:
-      - Suppliers and major cloud buyers have leverage. Rival accelerators are improving.
-      - Custom chips can substitute for GPUs. New entrants face software and scale barriers.
+      - "Buyers have leverage: three direct customers made up {{nvda_customer_concentration | Top three direct customers | Q3 FY27}} of Q3 FY27 revenue. TSMC controls supply."
+      - Rival accelerators and custom chips are improving. New entrants face CUDA and scale barriers.
       - We track supply access, large orders and margins to test our thesis.
     sources:
       - Team assessment using Porter’s framework
@@ -828,11 +828,11 @@
     layout: statement
     title: NVIDIA publishes a UK supply-chain statement
     bullets:
-      - The FY26 statement covers named UK subsidiaries.
-      - It describes due diligence and supplier audits. Supply-chain risk remains.
+      - The FY26 statement, updated 29 May 2026, is issued for NVIDIA Ltd, NVIDIA Development UK and NVIDIA Belfast.
+      - It describes supplier assessments and on-site third-party audits. Supply-chain risk remains.
       - We would ask for audit outcomes and evidence that issues were fixed.
     sources:
-      - NVIDIA, FY26 supply-chain statement, page 4
+      - NVIDIA, FY26 forced labour statement (UK Modern Slavery Act), 29 May 2026
       - Home Office, supply-chain transparency
     diagram:
       kind: flow
@@ -842,7 +842,7 @@
         - Supplier due diligence
         - Check remediation
   links:
-    - title: NVIDIA, FY26 supply-chain statement, page 4
+    - title: NVIDIA, FY26 forced labour statement (UK Modern Slavery Act), 29 May 2026
       url: https://www.nvidia.com/content/dam/en-zz/Solutions/about-us/documents/2025-Forced-Labor-Human-Trafficking-and-Child-Labor-Statement.pdf
     - title: Home Office, supply-chain transparency
       url: https://www.gov.uk/government/publications/transparency-in-supply-chains-a-practical-guide
@@ -920,7 +920,7 @@
     layout: statement
     title: NVIDIA has a policy that addresses UK bribery rules
     bullets:
-      - NVIDIA’s global anti-corruption policy explicitly names the UK Bribery Act.
+      - NVIDIA’s global anti-corruption policy, last updated 1 March 2023, names the UK Bribery Act.
       - A written policy shows the company’s stated procedures.
       - For a specific incident we would look for enforcement findings and remediation.
     sources:
@@ -948,7 +948,7 @@
     layout: statement
     title: NVIDIA publishes a UK tax strategy
     bullets:
-      - NVIDIA published its FY26 UK tax strategy under the UK reporting rules.
+      - NVIDIA published a UK tax strategy for the year to 25 January 2026, under the Finance Act 2016 rules.
       - The document sets out its approach to tax risk.
       - A question about tax paid needs the relevant entity’s accounts and period.
     sources:
@@ -1007,26 +1007,19 @@
     layout: statement
     title: Rankings measure different things
     bullets:
-      - NVIDIA places near the top of Fortune’s US workplace list.
-      - Comparable peers are present on IMD’s technology readiness list.
-      - We use the named list and year. A missing name gives no numerical rank.
+      - "Glassdoor Best Places to Work 2026: #{{research_people | Glassdoor Best Places to Work 2026, US rank | value}} in the US. Fortune 100 Best: #{{research_people | Fortune 100 Best Companies to Work For 2026, rank | value}} in 2026."
+      - "TIME sustainable growth 2026: #{{research_people | TIME Sustainable Growth 2026, world rank | value}}. Corporate Knights Global 100: #{{research_people | Corporate Knights Global 100 2026, rank | value}}, its first year on the list."
+      - Each list measures something different. We have not recorded rivals' places, so we make no head-to-head claim.
     sources:
-      - Fortune, 2026 US Best Companies to Work For
-      - Great Place To Work, list and methodology
-      - IMD, Technology Future Readiness Index 2026
-    diagram:
-      kind: comparison
-      nodes:
-        - US workplace survey
-        - Technology readiness index
-        - Compare within each list
+      - Glassdoor, Best Places to Work 2026
+      - Great Place To Work and Fortune, 100 Best Companies to Work For 2026
+      - TIME and Statista, World's Best Companies in Sustainable Growth 2026
+      - Corporate Knights, Global 100, 2026
   links:
     - title: Fortune, 2026 US Best Companies to Work For
       url: https://fortune.com/ranking/best-companies/2026/
     - title: Great Place To Work, list and methodology
       url: https://www.greatplacetowork.com/best-workplaces/100-best/2026
-    - title: IMD, Technology Future Readiness Index 2026
-      url: https://www.imd.org/future-readiness-indicator/home/technology-2026/
 - id: target-revision
   question: Why did your valuation target change since round one?
   ask:
@@ -1036,23 +1029,25 @@
     - previous target
     - round one valuation
   slide:
-    layout: statement
-    title: Our valuation moved with the inputs
+    layout: split
+    title: Most of the change is new inputs, not the discount rate
     bullets:
-      - We updated the operating forecast and the cost of capital.
-      - This DCF is sensitive to both. It cannot isolate one driver without a model bridge.
-      - We would compare each assumption before defending the higher number.
+      - "Today's inputs at round one's {{model_target_bridge | Discount rate | Round-one target}} rate add {{model_target_bridge | Value per share | Updated inputs, same rate}} a share."
+      - "Moving to the {{model_target_bridge | Discount rate | Base case today}} industry rate adds {{model_target_bridge | Value per share | Discount rate change}}."
+      - At Bloomberg's rate the base case is still above our reference price.
+    chart:
+      type: waterfall
+      datasetKey: model_target_bridge
+      series:
+        - Value per share
+      totals:
+        - Round-one target
+        - Base case today
+      highlight: Base case today
     sources:
-      - Team DCF model, data/model/NVDA_DCF.xlsx
-      - Team prior pitch assumptions
+      - Team DCF model (data/model/assumptions.json, app/scripts/model.ts)
+      - Team round-one target, as recorded in docs/PROGRESS.md
       - NVIDIA, Q3 FY27 earnings release
-    diagram:
-      kind: flow
-      nodes:
-        - Earlier forecast
-        - Updated operating inputs
-        - Discount-rate sensitivity
-        - Current valuation
   links:
     - title: NVIDIA, Q3 FY27 earnings release
       url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx

@@ -219,7 +219,7 @@ function main() {
   });
   write({
     key: 'model_three_rates', title: 'Base-case value per share at three discount rates', unit: 'USD',
-    units: { 'Enterprise value': 'USD tn' },
+    units: { 'Enterprise value': 'USD tn', 'Above reference price': '%' },
     source: `${source}. ${wacc}%: Damodaran US semiconductor average (Jan 2026); ${gfWacc}%: Google Finance (24 Nov 2026); ${bbgWacc}%: Bloomberg WACC (Q3 2026). Share price $${price}`,
     seriesSources: { 'Value per share': `${source}. Share price $${price}` },
     x: [`${damo}% industry (Damodaran)`, `${gfWacc}% Google Finance`, `${bbgWacc}% Bloomberg`],
@@ -227,9 +227,28 @@ function main() {
       'Value per share': [damo, gfWacc, bbgWacc].map((w) => r2(bridgeAt[waccs.indexOf(w)].perShare)),
       'Enterprise value': [damo, gfWacc, bbgWacc].map((w) => Math.round(bridgeAt[waccs.indexOf(w)].ev / 10) / 100),
       'Share price today': [price, price, price],
-      'Upside to today': [damo, gfWacc, bbgWacc].map((w) => r2((bridgeAt[waccs.indexOf(w)].perShare / price - 1) * 100)),
+      // Per cent above the dated reference price (a %, not dollars: the old name 'Upside to today' was formatted as USD).
+      'Above reference price': [damo, gfWacc, bbgWacc].map((w) => r2((bridgeAt[waccs.indexOf(w)].perShare / price - 1) * 100)),
     },
   });
+  // Bridge from the round-one target (team-reported, not in this repo) to today's base case, in two steps:
+  // today's inputs at round one's rate, then the move to today's rate. Order matters: rate first gives a different split.
+  if (A.priorTarget?.value != null) {
+    const pt: { value: number; wacc: number } = A.priorTarget;
+    const atOldRate = r2(dcf({ path: results.base.path, margin: baseMargin, wacc: pt.wacc, g, netCash, shares, t }).perShare);
+    const now = r2(results.base.perShare);
+    write({
+      key: 'model_target_bridge', title: "From our round-one target to today's base case", unit: 'USD',
+      units: { 'Discount rate': '%' },
+      source: `Round-one target $${pt.value} at ${pt.wacc}% (team-reported, docs/PROGRESS.md; round-one model not in repo); ${source}, base case at ${wacc}%`,
+      verified: false,
+      x: ['Round-one target', 'Updated inputs, same rate', 'Discount rate change', 'Base case today'],
+      series: {
+        'Value per share': [pt.value, r2(atOldRate - pt.value), r2(now - atOldRate), now],
+        'Discount rate': [pt.wacc, pt.wacc, wacc, wacc],
+      },
+    });
+  }
   // A 3% position: what each downside case would cost the whole portfolio.
   const pos: number = A.position.value;
   write({

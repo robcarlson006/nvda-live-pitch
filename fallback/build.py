@@ -7,6 +7,7 @@ import math
 import re
 import shutil
 import subprocess
+import tempfile
 import textwrap
 from pathlib import Path
 
@@ -18,6 +19,8 @@ from reportlab.pdfgen import canvas
 
 ROOT = Path(__file__).resolve().parents[1]
 SPINE = ROOT / "docs/script/spine.yaml"
+BANK = ROOT / "docs/qa-bank/answers.yaml"
+QA_PDF = ROOT / "fallback/qa-bank.pdf"
 DATA = ROOT / "data/clean"
 PDF = ROOT / "fallback/spine.pdf"
 IMAGES = ROOT / "app/public/fallback"
@@ -34,6 +37,7 @@ pdfmetrics.registerFont(TTFont("PitchBold", str(BOLD)))
 
 datasets = {p.stem: json.loads(p.read_text()) for p in DATA.glob("*.json")}
 slides = yaml.safe_load(SPINE.read_text())
+bank = yaml.safe_load(BANK.read_text())
 token = re.compile(r"\{\{\s*([^|}]+?)\s*\|\s*([^|}]+?)\s*\|\s*([^|}]+?)\s*\}\}")
 
 
@@ -112,9 +116,86 @@ def sources(slide: dict) -> list[str]:
     return out
 
 
+def unit_of(ds: dict, series: str) -> str:
+    return ds.get("units", {}).get(series, ds["unit"])
+
+
+def table(c: canvas.Canvas, spec: dict, ds: dict, box: tuple[float, float, float, float]) -> None:
+    """ChartSpec.display == 'table': one row per x value, one column per series, refLine as a dated footer."""
+    xx, yy, ww, hh = box
+    rows = [x for x in ds["x"] if x not in spec.get("exclude", [])]
+    cols = spec["series"]
+    label_w = ww * 0.36
+    col_w = (ww - label_w) / len(cols)
+    row_h = min(54, hh / (len(rows) + 2))
+    top = yy + hh
+    c.setFont("Pitch", 10); c.setFillColor(FAINT)
+    c.drawString(xx, top + 10, ds["title"])
+    c.setFont("PitchBold", 9); c.setFillColor(DETAIL)
+    for k, name in enumerate(cols):
+        lines = fit_lines(c, name.upper(), col_w - 8, "PitchBold", 9, 3)
+        for j, line in enumerate(lines):
+            c.drawRightString(xx + label_w + (k + 1) * col_w - 4, top - 14 - j * 11, line)
+    y = top - 56 - row_h * 0.5
+    for x in rows:
+        i = ds["x"].index(x)
+        hi = x == spec.get("highlight")
+        if hi:
+            c.setFillColor(HexColor("#10140b")); c.rect(xx - 4, y - row_h * 0.3, ww + 8, row_h, fill=1, stroke=0)
+        c.setStrokeColor(HexColor("#30362b")); c.setLineWidth(.6); c.line(xx, y - row_h * 0.3, xx + ww, y - row_h * 0.3)
+        draw_lines(c, x, xx, y + 4, label_w - 8, 13, 2, 14, color=WHITE if hi else DETAIL)
+        for k, name in enumerate(cols):
+            v = ds["series"][name][i]
+            c.setFont("PitchBold", 20); c.setFillColor(GREEN if hi and k == 0 else WHITE)
+            c.drawRightString(xx + label_w + (k + 1) * col_w - 4, y, "–" if v is None else fmt(v, unit_of(ds, name)))
+        y -= row_h
+    ref = spec.get("refLine")
+    if ref:
+        v = next(v for v in ds["series"][ref["series"]] if v is not None)
+        name = "Reference share price" if ref["series"] == "Share price today" else ref["series"]
+        c.setFont("Pitch", 12); c.setFillColor(DETAIL)
+        c.drawRightString(xx + ww, y + row_h * 0.2, f"{name}: {fmt(v, unit_of(ds, ref['series']))}, as of {ds['asOf']}")
+
+
+def diagram(c: canvas.Canvas, d: dict, box: tuple[float, float, float, float]) -> None:
+    """Slide.diagram as static boxes: a vertical flow with arrows, or a two-column grid (comparison, map)."""
+    xx, yy, ww, hh = box
+    nodes = d["nodes"]
+    grid = d["kind"] != "flow"
+    per_row = 2 if grid else 1
+    n_rows = math.ceil(len(nodes) / per_row)
+    gap = 16
+    bh = min(56, (hh - gap * (n_rows - 1)) / n_rows)
+    bw = (ww - gap * (per_row - 1)) / per_row
+    top = yy + hh
+    for k, node in enumerate(nodes):
+        r, col = divmod(k, per_row)
+        last_alone = grid and k == len(nodes) - 1 and len(nodes) % 2 == 1
+        bx = xx + col * (bw + gap)
+        w = ww if last_alone else bw
+        by = top - (r + 1) * bh - r * gap
+        emphasis = k == len(nodes) - 1 and d["kind"] != "map"
+        c.setFillColor(HexColor("#0b0d0a")); c.setStrokeColor(GREEN if emphasis else HexColor("#3c4436")); c.setLineWidth(1.2)
+        c.rect(bx, by, w, bh, fill=1, stroke=1)
+        if d["kind"] == "map":
+            c.setFillColor(GREEN); c.rect(bx, by, 3, bh, fill=1, stroke=0)
+        lines = fit_lines(c, node, w - 24, "Pitch", 14, 2)
+        ly = by + bh / 2 + (len(lines) - 1) * 8 - 5
+        c.setFont("Pitch", 14); c.setFillColor(WHITE)
+        for line in lines:
+            c.drawString(bx + 12, ly, line); ly -= 16
+        if not grid and k < len(nodes) - 1:
+            c.setStrokeColor(GREEN); c.setLineWidth(1.5)
+            ax = bx + w / 2
+            c.line(ax, by, ax, by - gap + 3)
+            c.line(ax - 4, by - gap + 8, ax, by - gap + 3); c.line(ax + 4, by - gap + 8, ax, by - gap + 3)
+
+
 def chart(c: canvas.Canvas, slide: dict, box: tuple[float, float, float, float]) -> None:
     spec = slide["chart"]
     ds = datasets[spec["datasetKey"]]
+    if spec.get("display") == "table":
+        return table(c, spec, ds, box)
     xvals = ds["x"]
     idx = list(range(len(xvals)))
     if spec.get("range"):
@@ -142,7 +223,8 @@ def chart(c: canvas.Canvas, slide: dict, box: tuple[float, float, float, float])
     if refv is not None:
         c.setStrokeColor(FAINT); c.setDash(3, 3); c.line(xx, py(refv), xx+ww, py(refv)); c.setDash()
         c.setFont("Pitch", 8); c.setFillColor(FAINT); c.drawRightString(xx+ww, py(refv)+3, fmt(refv, ds.get("units", {}).get(ref["series"], ds["unit"])))
-    colors = [GREEN, WHITE, FAINT, HexColor("#596051")]
+    # muted: the first series in grey, as on stage, so "If AI ended for good" never looks like the green bear case
+    colors = [HexColor("#d9dccf") if spec.get("muted") else GREEN, FAINT if spec.get("muted") else WHITE, FAINT, HexColor("#596051")]
     if spec["type"] == "line":
         for si, arr in enumerate(vals):
             c.setStrokeColor(colors[si % len(colors)]); c.setLineWidth(3 if si == 0 else 2)
@@ -205,13 +287,14 @@ def chart(c: canvas.Canvas, slide: dict, box: tuple[float, float, float, float])
             c.setFillColor(colors[si%len(colors)]); c.drawString(xx+si*ww/max(1,len(series)), yy-28, name)
 
 
-def page(c: canvas.Canvas, slide: dict, index: int) -> None:
+def page(c: canvas.Canvas, slide: dict, index: int, header: str | None = None) -> None:
     c.setFillColor(HexColor("#000000")); c.rect(0,0,W,H,fill=1,stroke=0)
-    c.setFont("Pitch", 8); c.setFillColor(FAINT); c.drawString(52,H-30,f"{index:02d}  /  {slide.get('speaker','')}  /  STATIC BACKUP")
+    c.setFont("Pitch", 8); c.setFillColor(FAINT); c.drawString(52,H-30,header or f"{index:02d}  /  {slide.get('speaker','')}  /  STATIC BACKUP")
     layout=slide.get("layout","split")
     has_chart=bool(slide.get("chart"))
+    has_diagram=bool(slide.get("diagram")) and not has_chart and not slide.get("stat")
     title=resolve(slide["title"])
-    title_width=390 if has_chart and layout == "split" else 840
+    title_width=390 if (has_chart and layout == "split") or has_diagram else 840
     title_size=30 if len(title)>45 else 39
     y=draw_lines(c,title,52,H-100,title_width,title_size,4,title_size*1.12,bold=True)
     if slide.get("stat"):
@@ -241,26 +324,71 @@ def page(c: canvas.Canvas, slide: dict, index: int) -> None:
                 label = item if isinstance(item, str) else item["text"]
                 gy = draw_lines(c, resolve(label), gx, gy, 195, 13, 4, 17, color=DETAIL) - 10
             if gy < 65: raise ValueError(f"Input group {group['tag']} overflows the source footer")
+    if has_diagram: diagram(c, slide["diagram"], (500, 110, 400, 300))
+    if layout == "timeline":
+        # A rail with a node per date; the year in green so it reads from the back of the room.
+        rail_x = 62; y -= 14
+        for k, b in enumerate(bullets):
+            if y < 115: raise ValueError(f"Slide {slide['id']} timeline overflows")
+            m = re.match(r"^(\d{4}):\s*(.*)$", b)
+            c.setFillColor(GREEN); c.rect(rail_x - 5, y - 2, 10, 10, fill=1, stroke=0)
+            if m:
+                c.setFont("PitchBold", 22); c.setFillColor(GREEN); c.drawString(rail_x + 22, y - 4, m.group(1))
+                ny = draw_lines(c, m.group(2), rail_x + 100, y - 4, 520, 22, 2, 27, color=WHITE)
+            else:
+                ny = draw_lines(c, b, rail_x + 22, y - 4, 600, 22, 2, 27, color=WHITE)
+            if k < len(bullets) - 1:
+                c.setStrokeColor(HexColor("#50594a")); c.setLineWidth(2); c.line(rail_x, y - 4, rail_x, ny - 4)
+            y = ny - 14
+        bullets = []
     for b in bullets:
         if y < 115: raise ValueError(f"Slide {slide['id']} bullets overflow")
-        y=draw_lines(c,b,52,y-17,title_width,17 if has_chart else 21,4,22 if has_chart else 27,color=DETAIL)
+        y=draw_lines(c,b,52,y-17,title_width,17 if has_chart or has_diagram else 21,4,22 if has_chart or has_diagram else 27,color=DETAIL)
     src="  •  ".join(sources(slide))
     c.setFillColor(HexColor("#171b15")); c.rect(0,0,W,55,fill=1,stroke=0)
     draw_lines(c,"Source: "+src,52,42,850,8,5,9,color=FAINT)
     c.showPage()
 
 
+def rasterise(pdf: Path, out: Path) -> None:
+    """JPEG pages for the stage backup: pdftoppm (Poppler) if installed, else PyMuPDF."""
+    if shutil.which("pdftoppm"):
+        subprocess.run(["pdftoppm","-jpeg","-jpegopt","quality=86","-r","96",str(pdf),str(out/"slide")],check=True)
+        return
+    import fitz  # PyMuPDF
+    doc = fitz.open(str(pdf))
+    width = len(str(len(doc)))
+    for i, pg in enumerate(doc, 1):
+        pg.get_pixmap(dpi=96).save(str(out / f"slide-{i:0{max(2, width)}d}.jpg"), jpg_quality=86)
+
+
 def main() -> None:
     PDF.parent.mkdir(exist_ok=True)
     IMAGES.mkdir(parents=True,exist_ok=True)
-    c=canvas.Canvas(str(PDF),pagesize=(W,H),pageCompression=1)
-    c.setTitle("NVIDIA stock pitch — static fallback")
-    for i,s in enumerate(slides,1): page(c,s,i)
-    c.save()
-    shutil.copy2(PDF, IMAGES / "spine.pdf")
-    subprocess.run(["pdftoppm","-jpeg","-jpegopt","quality=86","-r","96",str(PDF),str(IMAGES/"slide")],check=True)
-    generated=sorted(IMAGES.glob("slide-*.jpg"))
-    assert len(generated)==len(slides),(len(generated),len(slides))
-    print(f"{len(slides)} pages, {len(generated)} images: {PDF}")
+    # Build everything in a temporary folder first: the checked-in backup is only replaced once the new one is complete.
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        spine_pdf = tmp / "spine.pdf"
+        c=canvas.Canvas(str(spine_pdf),pagesize=(W,H),pageCompression=1)
+        c.setTitle("NVIDIA stock pitch — static fallback")
+        for i,s in enumerate(slides,1): page(c,s,i)
+        c.save()
+        qa_pdf = tmp / "qa-bank.pdf"
+        q=canvas.Canvas(str(qa_pdf),pagesize=(W,H),pageCompression=1)
+        q.setTitle("NVIDIA stock pitch — prepared answers")
+        for i,e in enumerate(bank,1):
+            page(q,{**e["slide"],"id":e["id"]},i,header=f"Q&A {i:02d}  /  {e['question'][:110]}")
+        q.save()
+        images = tmp / "images"; images.mkdir()
+        rasterise(spine_pdf, images)
+        generated=sorted(images.glob("slide-*.jpg"))
+        assert len(generated)==len(slides),(len(generated),len(slides))
+        # Verified: replace the old copies.
+        for old in IMAGES.glob("slide-*.jpg"): old.unlink()
+        for img in generated: shutil.copy2(img, IMAGES / img.name)
+        shutil.copy2(spine_pdf, PDF); shutil.copy2(spine_pdf, IMAGES / "spine.pdf")
+        shutil.copy2(qa_pdf, QA_PDF); shutil.copy2(qa_pdf, IMAGES / "qa-bank.pdf")
+        (IMAGES / "pages.json").write_text(json.dumps({"spine": [s["id"] for s in slides], "qaBank": [e["id"] for e in bank]}, indent=1) + "\n")
+    print(f"{len(slides)} spine pages, {len(generated)} images, {len(bank)} Q&A pages: {PDF}, {QA_PDF}")
 
 if __name__ == "__main__": main()

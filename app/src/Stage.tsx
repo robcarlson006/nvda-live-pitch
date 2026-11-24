@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { lookup, resolveText, slideSources, stepsOf, zoomAt, type Dataset, type Slide } from '../shared/schema.ts';
-import { Chart } from './Chart.tsx';
+import { Chart, DataTable } from './Chart.tsx';
 import { CoreArray } from './CoreArray.tsx';
 import { useDatasets, useNavKeys, useShow } from './useShow.ts';
+import { useNextVisual } from './useNextVisual.ts';
 
 // Units every formatted value already carries ("48 kg", "10.7m t CO2e"), so the chart caption needn't repeat them.
 const UNIT_IN_VALUES = new Set(['tonnes CO2', "'000 t CO2e", "'000 MWh"]);
@@ -24,7 +25,8 @@ function urlMotionOff(): boolean {
 }
 
 export function Stage() {
-  const { state, send } = useShow();
+  const { state, send, spine } = useShow();
+  useNextVisual(state, spine); // warms the next slide's video or backup page
   const [forcedOff] = useState(urlMotionOff);
   const motion = !forcedOff && state?.motion !== false;
   const datasets = useDatasets();
@@ -103,7 +105,8 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   const bulletIdx = (i: number) => 1 + steps.findIndex((st) => 'bullet' in st && st.bullet === i);
   const shownBullets = slide.bullets.map((_, i) => i).filter((i) => shown(bulletIdx(i)));
   // The point just said is in focus; earlier ones step back, so the eye follows the speaker.
-  const newest = shownBullets.length > 1 ? shownBullets.reduce((a, b) => (bulletIdx(b) > bulletIdx(a) ? b : a)) : -1;
+  // Approved answers stay fully readable: a board member may still be reading the first line.
+  const newest = !slide.answer && shownBullets.length > 1 ? shownBullets.reduce((a, b) => (bulletIdx(b) > bulletIdx(a) ? b : a)) : -1;
   const zoom = zoomAt(slide, reveal);
   // Inputs slide: each input appears as it is named and is green while it is the one being said.
   const itemIdx = (g: number, i: number) => 1 + steps.findIndex((st) => 'item' in st && st.item[0] === g && st.item[1] === i);
@@ -140,7 +143,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
       {slide.bullets.map((b, i) =>
         shown(bulletIdx(i)) ? (
           <Reveal key={i} as="p" className={`point${newest >= 0 && i !== newest ? ' past' : ''}`} at={at(bulletIdx(i))}>
-            {b}
+            {slide.layout === 'timeline' ? <TimelineText text={b} /> : b}
           </Reveal>
         ) : null,
       )}
@@ -154,17 +157,27 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
           <Delayed at={at(chartIdx)}>
             <figcaption>
               {dataset.title}
-              {!dataset.unit || UNIT_IN_VALUES.has(dataset.unit) ? '' : `, ${dataset.unit}`}
+              {!dataset.unit || UNIT_IN_VALUES.has(dataset.unit) || slide.chart.display === 'table' ? '' : `, ${dataset.unit}`}
               {dataset.placeholder && <span className="placeholder">Placeholder data</span>}
             </figcaption>
             <div className="chart-body">
-              <Chart spec={slide.chart} dataset={dataset} zoom={zoom} />
+              {slide.chart.display === 'table' ? <DataTable spec={slide.chart} dataset={dataset} zoom={zoom} /> : <Chart spec={slide.chart} dataset={dataset} zoom={zoom} />}
             </div>
           </Delayed>
         ) : (
           <figcaption>No data loaded for this chart yet</figcaption>
         ))}
     </figure>
+  );
+
+  // A prepared or generated answer with no chart or figure can carry a small diagram of its own phrases.
+  // INTEGRATION: when Codex's AnswerVisual lands, render <AnswerVisual diagram={slide.diagram} /> here instead of StaticDiagram.
+  // It builds after the last text element, so the words are read first.
+  const hasDiagram = !!slide.diagram && !slide.chart && !slide.stat;
+  const diagram = hasDiagram && shown(lastStep) && (
+    <Reveal className="answer-diagram" at={at(lastStep) + 0.3}>
+      <StaticDiagram diagram={slide.diagram!} />
+    </Reveal>
   );
 
   const video = slide.video && (
@@ -175,7 +188,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   );
 
   return (
-    <main className={`slide layout-${slide.layout}${slide.video ? ' has-video' : ''}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}`}>
+    <main className={`slide layout-${slide.layout}${slide.video ? ' has-video' : ''}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}${hasDiagram ? ' has-diagram' : ''}${slide.answer ? ' is-answer' : ''}`}>
       {(slide.layout === 'statement' || slide.layout === 'timeline') && (
         <>
           {title}
@@ -234,6 +247,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
           {chart}
         </>
       )}
+      {diagram}
       {video}
       {sources.length > 0 && (
         <Reveal className="sources" at={2.2}>
@@ -241,5 +255,30 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
         </Reveal>
       )}
     </main>
+  );
+}
+
+/** "1957: Sputnik starts the space race" → the year in green, then the event. Other text is unchanged. */
+function TimelineText({ text }: { text: string }) {
+  const m = text.match(/^(\d{4}):\s*(.*)$/);
+  if (!m) return <>{text}</>;
+  return (
+    <>
+      <span className="tl-year">{m[1]}</span>
+      {m[2]}
+    </>
+  );
+}
+
+/** A plain, static rendering of Slide.diagram: boxes in a row joined by arrows (flow), a split (comparison) or a grid (map). */
+export function StaticDiagram({ diagram }: { diagram: NonNullable<Slide['diagram']> }) {
+  return (
+    <div className={`static-diagram kind-${diagram.kind}`}>
+      {diagram.nodes.map((n, i) => (
+        <div key={i} className="sd-node" style={{ '--i': i } as CSSProperties}>
+          {n}
+        </div>
+      ))}
+    </div>
   );
 }

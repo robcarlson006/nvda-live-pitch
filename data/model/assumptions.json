@@ -83,5 +83,12 @@
       "marginShift": -10,
       "why": "Our harshest case, named 'If AI ended for good' on every slide: FY28 revenue flat on FY27, then a 20% fall in FY29, then 0% and 3% (no real growth) and long-run growth of 3% after FY32. Free-cash-flow margin 10 points lower. Harsher than anything in NVIDIA's history; a stress test, not a forecast."
     }
+  },
+  "priorTarget": {
+    "value": 232,
+    "wacc": 11.1,
+    "asOf": "round one",
+    "verified": false,
+    "why": "Team-reported round-one pitch target and discount rate (docs/PROGRESS.md, 24 Nov 2026). The round-one model file is not in this repository, so the step from it to today's inputs cannot be split further. Used only for the target-revision bridge in the Q&A bank."
   }
 }

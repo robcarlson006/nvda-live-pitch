@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import * as echarts from 'echarts';
 import { formatValue, type Dataset, type Slide } from '../shared/schema.ts';
 
@@ -34,6 +34,46 @@ export function waterfallBases(x: string[], values: (number | null)[], totals: s
     run += v;
     return base;
   });
+}
+
+/**
+ * `display: 'table'`: the same dataset as a summary table (e.g. the DCF at three rates). One row per x value,
+ * one column per series. A zoom highlights its row instead of magnifying. `refLine` becomes a dated footer line.
+ */
+export function DataTable({ spec, dataset: full, zoom = null }: { spec: NonNullable<Slide['chart']>; dataset: Dataset; zoom?: string | null }) {
+  const dataset = inRange(full, spec.range, spec.exclude);
+  const fmt = (v: number | null | undefined, series: string) => (v == null ? '–' : formatValue(v, (dataset.units?.[series]) || dataset.unit));
+  const hi = zoom ?? spec.highlight ?? null;
+  const ref = spec.refLine ? dataset.series[spec.refLine.series]?.find((v) => v != null) : undefined;
+  return (
+    <div className="data-table">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col" />
+            {spec.series.map((s) => (
+              <th key={s} scope="col">{s}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {dataset.x.map((x, i) => (
+            <tr key={x} className={x === hi ? 'hi' : undefined} style={{ '--row': i } as CSSProperties}>
+              <th scope="row">{x}</th>
+              {spec.series.map((s) => (
+                <td key={s}>{fmt(dataset.series[s]?.[i], s)}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {spec.refLine && ref != null && (
+        <p className="data-table-ref">
+          {spec.refLine.series === 'Share price today' ? 'Reference share price' : spec.refLine.series}: {fmt(ref, spec.refLine.series)}, as of {dataset.asOf}
+        </p>
+      )}
+    </div>
+  );
 }
 
 const ZOOM = 2.1; // how far a zoom step magnifies the chart
@@ -197,10 +237,11 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
     };
 
     const series = makeSeries(baseHi);
+    // Line charts label each line at its end: leave room for the longest name (e.g. "If AI ended for good").
     chart.setOption({
       backgroundColor: 'transparent',
       textStyle: { fontFamily: FONT },
-      grid: { left: isBar ? vh * (n > 8 ? 8 : 3) : 0, right: isBar ? vh * (n > 8 ? 8 : 3) : vh * 18, top: vh * 6, bottom: 0, containLabel: true }, // bars: room for a label wider than its bar
+      grid: { left: isBar ? vh * (n > 8 ? 8 : 3) : 0, right: isBar ? vh * (n > 8 ? 8 : 3) : vh * Math.max(18, Math.max(...spec.series.map((x) => x.length)) * 1.7 + 2), top: vh * 6, bottom: 0, containLabel: true }, // bars: room for a label wider than its bar
       legend: isBar && spec.series.length > 1 ? { top: 0, left: 0, textStyle: { color: '#b4b9ae', fontSize: vh * 2.6 }, icon: 'rect' } : undefined,
       xAxis: {
         type: 'category',
