@@ -1,4 +1,4 @@
-import { useEffect, useRef, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import * as echarts from 'echarts';
 import { formatValue, type Dataset, type Slide } from '../shared/schema.ts';
 
@@ -83,6 +83,32 @@ export function DataTable({ spec, dataset: full, zoom = null }: { spec: NonNulla
   );
 }
 
+/**
+ * A hand-drawn ring: an ellipse that wobbles a little and overshoots where it closes, like a pen circling a figure.
+ * Seeded by the x index so the same bar always gets the same stroke.
+ */
+export function ringPath(cx: number, cy: number, rx: number, ry: number, seed: number): string {
+  let s = seed * 7919 + 17;
+  const rnd = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  const start = -Math.PI * 0.62; // begin at upper left, as a right-handed pen does
+  const sweep = Math.PI * 2 * 1.1; // overshoot past the start
+  const pts: string[] = [];
+  const n = 28;
+  for (let k = 0; k <= n; k++) {
+    const t = start + (sweep * k) / n;
+    const wobble = 1 + (rnd() - 0.5) * 0.07 + (k / n) * 0.06; // the second pass drifts slightly outward
+    pts.push(`${(cx + Math.cos(t) * rx * wobble).toFixed(1)},${(cy + Math.sin(t) * ry * wobble).toFixed(1)}`);
+  }
+  // A smooth curve through the points (Catmull-Rom as cubic Béziers).
+  const P = pts.map((p) => p.split(',').map(Number));
+  let d = `M ${P[0][0]} ${P[0][1]}`;
+  for (let i = 0; i < P.length - 1; i++) {
+    const p0 = P[Math.max(0, i - 1)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(P.length - 1, i + 2)];
+    d += ` C ${(p1[0] + (p2[0] - p0[0]) / 6).toFixed(1)} ${(p1[1] + (p2[1] - p0[1]) / 6).toFixed(1)}, ${(p2[0] - (p3[0] - p1[0]) / 6).toFixed(1)} ${(p2[1] - (p3[1] - p1[1]) / 6).toFixed(1)}, ${p2[0]} ${p2[1]}`;
+  }
+  return d;
+}
+
 const ZOOM = 2.1; // how far a zoom step magnifies the chart
 const ZOOM_MS = 1300;
 
@@ -92,7 +118,10 @@ const ZOOM_MS = 1300;
  */
 export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<Slide['chart']>; dataset: Dataset; zoom?: string | null }) {
   const el = useRef<HTMLDivElement>(null);
-  const live = useRef<{ chart: echarts.ECharts; restyle: (hi: number) => void; point: (i: number) => [number, number] | null; born: number } | null>(null);
+  const live = useRef<{ chart: echarts.ECharts; restyle: (hi: number) => void; point: (i: number) => [number, number] | null; slot: number; born: number } | null>(null);
+  const box = useRef<HTMLDivElement>(null);
+  // The ring around the highlight: redrawn (and re-animated, via its key) whenever the highlight moves.
+  const [ring, setRing] = useState<{ d: string; key: string } | null>(null);
   const dataset = inRange(full, spec.range, spec.exclude);
 
   useEffect(() => {
@@ -273,9 +302,13 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
       ...(spec.type === 'line' ? {} : {}),
     });
     let curHi = baseHi;
-    const highlight = setTimeout(() => chart.setOption({ series: makeSeries(curHi) }), 2400);
+    const highlight = setTimeout(() => {
+      chart.setOption({ series: makeSeries(curHi) });
+      drawRing(curHi);
+    }, 2400);
     live.current = {
       chart,
+      slot: el.current!.clientWidth / Math.max(1, n),
       born: performance.now(),
       restyle: (hi) => {
         if (hi === curHi) return;
@@ -309,23 +342,26 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
   // Zoom: magnify around the bar or point being talked about, keeping the chart filling its box.
   useEffect(() => {
     const c = live.current;
-    const box = el.current;
-    if (!c || !box) return;
+    const frame = box.current;
+    if (!c || !frame) return;
     const i = zoom ? dataset.x.indexOf(zoom) : -1;
     const apply = () => {
       const p = i >= 0 ? c.point(i) : null;
       if (!p) {
-        box.style.transform = '';
-        c.restyle(spec.highlight ? dataset.x.indexOf(spec.highlight) : spec.type !== 'line' ? dataset.x.length - 1 : -1);
+        frame.style.transform = '';
+        const base = spec.highlight ? dataset.x.indexOf(spec.highlight) : spec.type !== 'line' ? dataset.x.length - 1 : -1;
+        c.restyle(base);
+        drawRing(base);
         return;
       }
-      const w = box.clientWidth, h = box.clientHeight;
+      const w = frame.clientWidth, h = frame.clientHeight;
       const lift = spec.type === 'line' ? 0 : h * 0.06; // bars: aim a little above the top, where the label is
       const clamp = (v: number, lo: number) => Math.min(0, Math.max(lo, v));
       const tx = clamp(w * 0.5 - ZOOM * p[0], w - ZOOM * w);
       const ty = clamp(h * 0.55 - ZOOM * (p[1] - lift), h - ZOOM * h);
-      box.style.transform = `translate(${tx}px, ${ty}px) scale(${ZOOM})`;
+      frame.style.transform = `translate(${tx}px, ${ty}px) scale(${ZOOM})`;
       c.restyle(i);
+      drawRing(i);
     };
     // A zoom built together with its chart waits for the bars to grow first.
     const wait = Math.max(0, (spec.type === 'line' ? 2500 : 1700) - (performance.now() - c.born));
@@ -333,9 +369,29 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
     return () => clearTimeout(t);
   }, [zoom, JSON.stringify(spec), full.key]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  /** Ring the bar or point at x index i: around the top of a bar and its label, or around a point on a line. */
+  function drawRing(i: number) {
+    const c = live.current;
+    const p = i >= 0 ? c?.point(i) : null;
+    if (!c || !p) return setRing(null);
+    const vh = Math.min(window.innerHeight, window.innerWidth * 0.5625) / 100;
+    const isLine = spec.type === 'line';
+    const rx = isLine ? vh * 8 : Math.max(c.slot * 0.55, vh * 8.5); // wide enough for the value label ("$215.9bn")
+    const ry = isLine ? vh * 5 : vh * 5.8;
+    const cy = isLine ? p[1] - vh * 1.8 : p[1] - vh * 2.4; // bars: around the top and the value label above it
+    setRing({ d: ringPath(p[0], cy, rx, ry, i + 1), key: `${i}-${zoom ?? ''}` });
+  }
+
   return (
     <div className="chart-clip">
-      <div ref={el} className="chart-canvas" style={{ width: '100%', height: '100%', transformOrigin: '0 0', transition: `transform ${ZOOM_MS}ms cubic-bezier(0.6, 0, 0.2, 1)` }} />
+      <div ref={box} className="chart-canvas" style={{ position: 'relative', width: '100%', height: '100%', transformOrigin: '0 0', transition: `transform ${ZOOM_MS}ms cubic-bezier(0.6, 0, 0.2, 1)` }}>
+        <div ref={el} style={{ width: '100%', height: '100%' }} />
+        {ring && (
+          <svg className="chart-ring" aria-hidden="true">
+            <path key={ring.key} d={ring.d} pathLength={1} />
+          </svg>
+        )}
+      </div>
     </div>
   );
 }

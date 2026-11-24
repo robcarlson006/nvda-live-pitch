@@ -1,6 +1,7 @@
 import { AnswerVisual } from './AnswerVisual.tsx';
 import { AnimatePresence, motion as m } from 'framer-motion';
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { CARD_MS, ChapterRail, chapterFor, SECTIONS, SectionCard } from './Effects.tsx';
 import { Figures } from './Figures.tsx';
 import { sceneFor } from './scenes/index.tsx';
 import { lookup, resolveText, slideSources, stepsOf, zoomAt, type Dataset, type Slide } from '../shared/schema.ts';
@@ -36,7 +37,28 @@ export function Stage() {
   const datasets = useDatasets();
   useNavKeys(send, state);
   const slide = state?.live ?? null;
-  const glyph = slide ? (slide.layout === 'number' ? statValue(slide, datasets) : undefined) : 'NVIDIA';
+
+  // Section opener: decided once per slide change, and only moving forward into a section's first slide.
+  const lastIndex = useRef(-1);
+  const decidedFor = useRef(0);
+  const cardFor = useRef(0); // liveSince of the slide whose opener card is playing (0 = none)
+  const [cardDone, setCardDone] = useState(0);
+  if (state && decidedFor.current !== state.liveSince) {
+    const forward = lastIndex.current >= 0 && state.index > lastIndex.current;
+    cardFor.current = motion && forward && slide && !slide.answer && SECTIONS[slide.id] ? state.liveSince : 0;
+    decidedFor.current = state.liveSince;
+    lastIndex.current = state.index;
+  }
+  const carding = cardFor.current !== 0 && cardDone !== cardFor.current;
+  useEffect(() => {
+    const k = cardFor.current;
+    if (!k) return;
+    const t = setTimeout(() => setCardDone(k), CARD_MS);
+    return () => clearTimeout(t);
+  }, [state?.liveSince]);
+
+  const glyph = carding ? undefined : slide ? (slide.layout === 'number' ? statValue(slide, datasets) : undefined) : 'NVIDIA';
+  const chapter = carding || slide?.answer ? null : chapterFor(slide?.id);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -53,22 +75,24 @@ export function Stage() {
 
   return (
     <div className={`stage${motion ? ' motion' : ' no-motion'}${slide?.effect === 'dark' && (state?.reveal ?? 0) > 1 ? ' fx-dark' : ''}`}>
-      <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length || !!slide?.groups} effect={slide?.effect === 'dark' || (slide && sceneFor(slide.id)) ? undefined : slide?.effect} reveal={state?.reveal ?? 0} />
+      <CoreArray buildKey={carding ? -1 : state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length || !!slide?.groups} effect={slide?.effect === 'dark' || (slide && sceneFor(slide.id)) ? undefined : slide?.effect} reveal={state?.reveal ?? 0} />
       {/* Slide to slide: the old slide flies past the camera, then the new one settles in from just behind it.
           "wait" keeps the two from overlapping (two sets of text on screen at once read as a glitch). */}
       <AnimatePresence initial={false} mode="wait">
         {slide && (
           <m.div
-            key={state!.liveSince}
+            key={carding ? `card-${state!.liveSince}` : state!.liveSince}
             className="slide-shell"
             initial={motion ? { opacity: 0, scale: 0.94 } : false}
             animate={{ opacity: 1, scale: 1, transition: { duration: motion ? 0.9 : 0, ease: [0.16, 1, 0.3, 1] } }}
             exit={{ opacity: 0, scale: motion ? 1.06 : 1, transition: { duration: motion ? 0.38 : 0, ease: [0.7, 0, 0.84, 0] } }}
           >
-            <SlideView slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} motion={motion} />
+            {carding ? <SectionCard {...SECTIONS[slide.id]} /> : <SlideView slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} motion={motion} />}
           </m.div>
         )}
       </AnimatePresence>
+      {/* Carried over across a run of slides, so it lives outside the slide shell and never fades between them. */}
+      <AnimatePresence>{chapter && <ChapterRail key={chapter.key} labels={chapter.labels} active={chapter.active} motion={motion} />}</AnimatePresence>
     </div>
   );
 }
