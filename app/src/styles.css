@@ -44,14 +44,24 @@ body.is-stage { overflow: hidden; cursor: none; }
 .layout-statement .point { font-size: calc(4.6 * var(--u)); max-width: 42ch; color: var(--white); font-stretch: 105%; margin-bottom: calc(2.6 * var(--u)); }
 .statement { font-stretch: 125% !important; font-weight: 780 !important; font-size: calc(11 * var(--u)) !important; line-height: 1.02 !important; max-width: 17ch !important; }
 
-/* The space-race handoff follows a visible timeline while the core field lights beside it. */
+/* The space-race timeline: each date lands on its cue, and the rail grows down from the last date to the new one. */
 .layout-timeline { display: flex; flex-direction: column; justify-content: center; }
 .layout-timeline .statement { font-size: calc(7 * var(--u)) !important; max-width: 52vw !important; }
-.layout-timeline .points { position: relative; margin: calc(3 * var(--u)) 0 0 calc(1.2 * var(--u)); padding-left: calc(3.2 * var(--u)); border-left: 2px solid #50594a; max-width: 50vw; }
-.layout-timeline .point { position: relative; margin: 0 0 calc(2.2 * var(--u)); font-size: calc(3.15 * var(--u)); line-height: 1.23; max-width: 50vw; }
-.layout-timeline .point:last-child { margin-bottom: 0; }
-.layout-timeline .point::before { content: ''; position: absolute; left: calc(-3.2 * var(--u) - 6px); top: 0.35em; width: 10px; height: 10px; background: var(--green); }
+.layout-timeline .points { position: relative; margin: calc(4 * var(--u)) 0 0 calc(1.2 * var(--u)); padding-left: calc(4 * var(--u)); max-width: 52vw; }
+.layout-timeline .point { position: relative; margin: 0; padding-bottom: calc(2.8 * var(--u)); font-size: calc(3.4 * var(--u)); line-height: 1.25; max-width: 50vw; color: var(--white); }
+.layout-timeline .point.past { opacity: 0.6; }
+/* The node: a core that switches on as the date is said. */
+.layout-timeline .point::before { content: ''; position: absolute; left: calc(-4 * var(--u) - 0.55 * var(--u)); top: 0.3em; width: calc(1.5 * var(--u)); height: calc(1.5 * var(--u)); background: var(--green); animation: tl-node 0.5s cubic-bezier(0.3, 1.6, 0.5, 1) var(--at, 0s) both; }
+/* The rail to the next node: drawn only once a later point exists (so the newest point never dangles a line). */
+.layout-timeline .point:not(:last-child)::after { content: ''; position: absolute; left: calc(-4 * var(--u) + 0.15 * var(--u)); top: calc(0.3em + 1.5 * var(--u)); bottom: calc(-0.3em); width: 3px; background: #7a8174; transform-origin: top; animation: tl-rail 0.7s ease-out both; }
+.tl-year { display: inline-block; min-width: 4.2ch; margin-right: 0.6ch; color: var(--green); font-weight: 700; font-stretch: 112%; font-variant-numeric: tabular-nums; }
+@keyframes tl-node { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes tl-rail { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+.no-motion .layout-timeline .point::before, .no-motion .layout-timeline .point::after { animation: none; }
 .no-motion .layout-timeline .point::before { background: var(--detail); }
+/* The shared wipe clips at the left edge, which would hide the node and rail drawn left of the text. */
+.layout-timeline .point.reveal { animation-name: wipe-tl; }
+@keyframes wipe-tl { from { clip-path: inset(-10% 100% -40% -12%); } to { clip-path: inset(-10% -12% -40% -12%); } }
 
 .layout-number .number-text { position: absolute; left: var(--margin); right: var(--margin); top: 66vh; } /* sits under the core-array figure, which is placed by viewport height */
 .layout-number h1 { font-size: calc(5.2 * var(--u)); max-width: 30ch; }
@@ -88,6 +98,26 @@ body.is-stage { overflow: hidden; cursor: none; }
 .has-video:not(:has(.slide-video.missing)) h1, .has-video:not(:has(.slide-video.missing)) .points { max-width: 50vw !important; }
 .placeholder { color: var(--black); background: #e8b04a; padding: calc(0.2 * var(--u)) 0.6vw; border-radius: 2px; font-weight: 600; }
 .sources { position: absolute; left: var(--margin); right: var(--margin); bottom: calc(3 * var(--u)); font-size: calc(1.7 * var(--u)); color: var(--faint); }
+
+/* Summary table (ChartSpec.display 'table'): large, tabular figures; a zoom step highlights a row. */
+.data-table { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+.data-table table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.data-table th, .data-table td { padding: calc(2.2 * var(--u)) calc(1.4 * var(--u)); text-align: right; border-bottom: 1px solid #262a23; transition: color 0.6s ease, background 0.6s ease; }
+.data-table thead th { font-size: calc(2.1 * var(--u)); letter-spacing: 0.06em; text-transform: uppercase; color: var(--detail); font-weight: 600; }
+.data-table tbody th { text-align: left; font-size: calc(2.9 * var(--u)); font-weight: 500; color: #d6dacf; }
+.data-table tbody td { font-size: calc(4.2 * var(--u)); font-weight: 650; font-stretch: 108%; color: #d6dacf; }
+.data-table tbody tr { animation: wipe 0.6s steps(12, end) calc(0.25s + var(--row) * 0.35s) both; }
+.data-table tbody tr.hi th, .data-table tbody tr.hi td { color: var(--white); }
+.data-table tbody tr.hi td:first-of-type { color: var(--green); }
+.data-table tbody tr.hi { background: #10140b; }
+.data-table-ref { margin: calc(2.4 * var(--u)) 0 0; font-size: calc(2.5 * var(--u)); color: var(--detail); text-align: right; }
+
+/* Keep the answer text and diagram in separate columns. */
+.has-diagram.layout-statement { padding-right: 46vw; }
+.has-diagram .statement { font-size: calc(7.5 * var(--u)) !important; max-width: 16ch !important; }
+.has-diagram .point { font-size: calc(3.4 * var(--u)) !important; max-width: 40ch; }
+.is-answer .point.past { opacity: 1; }
+.answer-diagram { position: absolute; right: var(--margin); top: calc(14 * var(--u)); bottom: calc(14 * var(--u)); width: 38vw; display: flex; align-items: center; }
 
 @media (prefers-reduced-motion: reduce) { .reveal, .word, .slide { animation: none; } .chart-canvas { transition: none !important; } }
 

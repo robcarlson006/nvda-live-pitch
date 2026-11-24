@@ -1,50 +1,37 @@
-# Spoken script timing — 24 November 2026
+# Spoken script timing — 24 November 2026 (late evening)
 
-The current `say` text is **1182 words**, about **7.88 minutes at 150 words/minute**, before slide pauses and audience reactions. The nine-minute run is not yet proven with a real microphone. The earlier committed draft is the comparison baseline.
+The `say` text across all **37 slides**, including the new `beyond-hyperscalers` demand slide, is **1,106 words**, with each `{{data}}` figure counted as one word. The 12 figures in `say` lines take roughly five spoken words each ("three hundred and ninety-one dollars"), so the spoken length is about **1,150 words: 7.7 minutes at 150 words a minute**, before pauses and slide builds. That is below the earlier 1,182-word count. The nine-minute run is still unproven with a real microphone.
 
-| Slide | Before | Now | Change |
-|---|---:|---:|---:|
-| founding | 36 | 32 | -4 |
-| first-gpu | 34 | 26 | -8 |
-| cuda | 48 | 53 | +5 |
-| wall-street | 39 | 21 | -18 |
-| alexnet | 52 | 38 | -14 |
-| revenue-long | 16 | 16 | +0 |
-| four-layers | 19 | 12 | -7 |
-| chips | 44 | 24 | -20 |
-| software | 49 | 37 | -12 |
-| connections | 37 | 28 | -9 |
-| supply | 38 | 26 | -12 |
-| catch-up | 34 | 30 | -4 |
-| bubble | 40 | 30 | -10 |
-| if-it-pops | 48 | 26 | -22 |
-| already-doing | 39 | 29 | -10 |
-| handoff | 33 | 19 | -14 |
-| last-quarter | 28 | 20 | -8 |
-| beats | 46 | 30 | -16 |
-| guidance | 41 | 34 | -7 |
-| returns | 38 | 23 | -15 |
-| peers | 32 | 26 | -6 |
-| dcf-inputs | 102 | 75 | -27 |
-| fcf | 33 | 30 | -3 |
-| dcf-bridge | 56 | 43 | -13 |
-| three-rates | 58 | 38 | -20 |
-| reverse-dcf | 40 | 33 | -7 |
-| bear-case | 51 | 42 | -9 |
-| ai-ended | 69 | 52 | -17 |
-| space-race | 0 | 37 | +37 |
-| governance | 48 | 47 | -1 |
-| open-ai | 72 | 38 | -34 |
-| people | 64 | 44 | -20 |
-| renewables | 20 | 20 | +0 |
-| emissions-peers | 49 | 22 | -27 |
-| recommendation | 67 | 59 | -8 |
-| close | 32 | 22 | -10 |
+Recount after any script edit (scratch script, not in the repo: load `docs/script/spine.yaml`, resolve tokens, split on spaces).
 
-| Speaker | Words | Speech time at 150 wpm |
-|---|---:|---:|
-| Rob | 469 | 3.13 min |
-| Panshul | 446 | 2.97 min |
-| Mi'kael | 267 | 1.78 min |
+| Slide | Words | | Slide | Words |
+|---|---:|---|---|---:|
+| founding | 32 | | dcf-inputs | 44 |
+| first-gpu | 26 | | fcf | 30 |
+| cuda | 53 | | dcf-bridge | 39 |
+| wall-street | 21 | | three-rates | 29 (EV sentence cut: the table shows it) |
+| alexnet | 38 | | reverse-dcf | 32 |
+| revenue-long (optional) | 16 | | bear-case | 30 |
+| four-layers | 12 | | ai-ended | 32 |
+| chips | 24 | | space-race | 34 |
+| software | 37 | | governance | 47 |
+| connections | 28 | | open-ai | 20 |
+| supply | 26 | | **beyond-hyperscalers (new)** | **28** |
+| catch-up | 30 | | people | 44 |
+| bubble | 30 | | renewables | 20 |
+| if-it-pops | 26 | | emissions-peers | 22 |
+| already-doing | 30 | | recommendation | 52 |
+| handoff | 19 | | close | 22 |
+| last-quarter | 20 | | | |
+| beats | 30 | | | |
+| guidance | 34 | | | |
+| returns | 23 | | | |
+| peers | 26 | | | |
 
-The operator can omit `revenue-long` to save 16 words. A timed room rehearsal remains the release gate.
+| Speaker | Words | Speech at 150 wpm |
+|---|---:|---|
+| Rob | 470 | 3.1 min |
+| Panshul | 369 (plus about 40 for spoken figures) | 2.7 min |
+| Mi'kael | 267 | 1.8 min |
+
+If the room run is long, the operator can skip `revenue-long` (16 words). Next cuts, in order: the second sentence of `governance`, the Fortune/TIME clause of `people`. A timed room rehearsal remains the release gate.

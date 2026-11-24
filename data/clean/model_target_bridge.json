@@ -1,0 +1,32 @@
+{
+  "key": "model_target_bridge",
+  "title": "From our round-one target to today's base case",
+  "unit": "USD",
+  "units": {
+    "Discount rate": "%"
+  },
+  "source": "Round-one target $232 at 11.1% (team-reported, docs/PROGRESS.md; round-one model not in repo); Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data, base case at 10.55%",
+  "asOf": "2026-11-24",
+  "placeholder": false,
+  "verified": false,
+  "x": [
+    "Round-one target",
+    "Updated inputs, same rate",
+    "Discount rate change",
+    "Base case today"
+  ],
+  "series": {
+    "Value per share": [
+      232,
+      130.84,
+      28.54,
+      391.38
+    ],
+    "Discount rate": [
+      11.1,
+      11.1,
+      10.55,
+      10.55
+    ]
+  }
+}

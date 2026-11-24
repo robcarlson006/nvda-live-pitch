@@ -1,6 +1,7 @@
 .answer-visual {
   display: grid;
   align-content: center;
+  width: 100%;
   gap: clamp(.65rem, 1.6vw, 1.6rem);
   margin: 0;
   padding: 0;

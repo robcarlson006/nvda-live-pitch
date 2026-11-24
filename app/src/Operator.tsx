@@ -146,7 +146,8 @@ export function Operator() {
           </button>
           <button onClick={() => send({ type: 'clear' })}>Standby</button>
           <button className={state?.backup ? 'primary' : 'danger'} onClick={() => send({ type: 'backup', on: !state?.backup })}>{state?.backup ? 'Resume live deck (B)' : 'Backup deck (B)'}</button>
-          <a className="pill link" href="/fallback/spine.pdf" target="_blank" rel="noreferrer">Open backup PDF</a>
+          <a className="pill link" href="/fallback/spine.pdf" target="_blank" rel="noreferrer">Open deck PDF</a>
+          <a className="pill link" href="/fallback/qa-bank.pdf" target="_blank" rel="noreferrer">Open Q&amp;A PDF</a>
           <div className="op-meta">Keys: → or Space next, ← back</div>
         </div>
       </section>

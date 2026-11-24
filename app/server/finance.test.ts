@@ -141,3 +141,22 @@ test('the label check catches a swap', () => {
   const t = 'Our bear case: {{model_valuation | Value per share | If AI ended for good}}';
   assert.ok(clauses(t).some((c) => tokenRefs(c).some(isEnded) && BEAR.test(c)));
 });
+
+test('the DCF summary table on stage: the three approved rates, value, EV, % above a dated reference price', () => {
+  const s = spine.find((s) => s.id === 'three-rates')!;
+  assert.equal(s.chart?.display, 'table');
+  assert.deepEqual(s.chart?.series, ['Value per share', 'Enterprise value', 'Above reference price']);
+  assert.deepEqual(ds('model_three_rates').x, RATE_X);
+  assert.equal(s.chart?.refLine?.series, 'Share price today');
+  assert.equal(ds('model_three_rates').units?.['Above reference price'], '%');
+  assert.match(ds('model_three_rates').asOf, /^\d{4}-\d{2}-\d{2}$/, 'the reference price carries a date');
+  const price = at('model_dcf_inputs', 'Share price', 'value');
+  for (const x of RATE_X) assert.ok(near(at('model_three_rates', 'Above reference price', x), (at('model_three_rates', 'Value per share', x) / price - 1) * 100, 0.01), x);
+});
+
+test('the bridge from the round-one target adds up to today\'s base case, and is flagged unverified', () => {
+  const b = (x: string) => at('model_target_bridge', 'Value per share', x);
+  assert.ok(near(b('Round-one target') + b('Updated inputs, same rate') + b('Discount rate change'), b('Base case today'), 0.011));
+  assert.equal(b('Base case today'), at('model_three_rates', 'Value per share', RATE_X[0]));
+  assert.equal(ds('model_target_bridge').verified, false, 'round one is team-reported, not a primary source');
+});

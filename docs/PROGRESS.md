@@ -4,6 +4,12 @@ Pitch: **Wednesday 25 Nov 2026**, 8–9 min. Rob (why) → Panshul (financials) 
 
 The live Q&A and operator lane passed Node 24, browser and provider checks on 24 November. Stage mounting, the combined fallback export and venue rehearsal are tracked in the [live lane handoff](handoff/LIVE-LANE.md).
 
+## Combined rehearsal build (24 Nov)
+
+- Combined the live lane at `e1b6bee` and the deck lane at `f9263bc` on `codex/pitch-integration`. The stage uses the shared answer visual, and the operator opens both fallback PDFs.
+- Node 24.14.1 typecheck, all 98 tests and production build passed. A 1920×1080 browser run without provider keys checked approval, the answer diagram, the three-rate DCF table, both PDF links, whole-page backup navigation and return to live. The rebuilt fallback has 37 spine pages and 35 prepared answers.
+- Venue checks remain. Run the physical lavalier, projector and clicker rehearsal, confirm the dated reference-price input, and place the licensed clip on the presenting laptop if it is available. Follow [the rehearsal guide](REHEARSAL.md).
+
 ## How to run
 **On the day:** `./start.sh` in the repo folder (checks keys, builds, opens both screens in Chrome). Works without npm or git access once installed.
 
@@ -17,6 +23,7 @@ cd app && npm install && npm run dev
 - For the pitch itself: `npm run build && npm start` (no dev tooling running).
 
 ## Done
+- **Claude Code lane, `claude/pitch-deck`** (24 Nov, late evening): DCF summary table on stage (`display: table`), reconciliation and round-one bridge (`docs/financials/RECONCILE.md`), animated space-race timeline, stress slide wording and label fix, bank answers corrected against primary sources, UK evidence matrix and board drill, answer diagrams on stage and in the backup, backup rebuilt to 37 pages plus `qa-bank.pdf`. Details and Codex integration steps: `docs/handoff/CLAUDE-CODE-LANE.md`. Price unchanged at $152.85 (unverified; confirm on pitch morning).
 - **M1: stage + operator skeleton** (20 Nov)
   - Single Node process: Vite in dev, static files in prod, WebSocket at `/ws`.
   - The backend holds show state (`app/state.json`, written atomically), so a refresh or restart keeps the current slide.
