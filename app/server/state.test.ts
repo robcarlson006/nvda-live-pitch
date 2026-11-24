@@ -236,6 +236,9 @@ test('cue scoring', () => {
   assert.deepEqual(words('Data Centre, 2006!'), ['data', 'center', '2006']);
   assert.equal(cueScore('the CEO', words('so the ceo resigned')), 1);
   assert.equal(cueScore('built live', words('we built this')), 0.5);
+  // Deepgram writes US spellings even in en-GB mode.
+  assert.equal(cueScore('highways and fibre', words('highways and fiber each took')), 1);
+  assert.equal(cueScore('twenty five tonnes', words('intel twenty five tons')), 1);
   assert.equal(findCue('nothing relevant here', [{ cue: 'released cuda', target: 1 }]), null);
   assert.equal(findCue('so they released cuda and then', [{ cue: 'released cuda', target: 1 }])!.end, 3);
   assert.equal(findCue('they cuda released', [{ cue: 'released cuda', target: 1 }]), null);
