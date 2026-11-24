@@ -24,7 +24,7 @@ export type Verdict = z.infer<typeof Verdict>;
 /** The things said on a slide, in build order: its bullets, its chart and any zooms into the chart. */
 export const points = (s: SpineSlide, datasets: Map<string, Dataset>) =>
   stepsOf(s).map((st) =>
-    'bullet' in st ? resolveText(s.bullets[st.bullet], datasets) : 'chart' in st ? `(chart) ${datasets.get(s.chart!.datasetKey)?.title ?? 'chart'}` : st.zoom === 'all' ? '(chart zooms back out)' : `(chart zooms in on ${st.zoom})`,
+    'bullet' in st ? resolveText(s.bullets[st.bullet], datasets) : 'item' in st ? `${s.groups?.[st.item[0]]?.tag}: ${resolveText(s.groups?.[st.item[0]]?.items[st.item[1]] ?? '', datasets)}` : 'chart' in st ? `(chart) ${datasets.get(s.chart!.datasetKey)?.title ?? 'chart'}` : st.zoom === 'all' ? '(chart zooms back out)' : `(chart zooms in on ${st.zoom})`,
   );
 
 export function directorPrompt(spine: SpineSlide[], datasets: Map<string, Dataset>): string {

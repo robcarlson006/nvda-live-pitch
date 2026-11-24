@@ -59,6 +59,18 @@ body.is-stage { overflow: hidden; cursor: none; }
 .chart-body { flex: 1; min-height: 0; }
 .chart-clip { width: 100%; height: 100%; overflow: hidden; }
 
+/* Inputs slide: one column per source, a small text tag over its figures. The figure being said turns green. */
+.layout-inputs { display: grid; grid-template-rows: auto 1fr; }
+.inputs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.6vw; margin-top: calc(6 * var(--u)); align-content: start; }
+.input-group { border-top: 1px solid #262a23; padding-top: calc(1.6 * var(--u)); transition: opacity 0.6s ease; }
+.input-group.past { opacity: 0.55; }
+.input-tag { margin: 0 0 calc(2.4 * var(--u)); font-size: calc(2 * var(--u)); letter-spacing: 0.08em; text-transform: uppercase; color: var(--detail); font-weight: 600; }
+.input-item { margin: 0 0 calc(2 * var(--u)); font-size: calc(2.9 * var(--u)); line-height: 1.28; color: #d6dacf; transition: color 0.5s ease; }
+.input-item.now { color: var(--green); }
+/* "If AI ended for good": the cores go dark behind the slide. */
+.core-array { transition: opacity 2.4s ease; }
+.fx-dark .core-array { opacity: 0.18; }
+
 /* A clip beside the text (e.g. governance): muted and looping, so it plays while the speaker talks. */
 .slide-video { position: absolute; right: var(--margin); top: calc(9 * var(--u)); bottom: calc(12 * var(--u)); width: 38vw; display: flex; flex-direction: column; align-items: flex-end; justify-content: center; }
 .slide-video video { max-width: 100%; max-height: calc(100% - 4 * var(--u)); border-radius: calc(0.6 * var(--u)); background: #000; box-shadow: 0 0 0 1px #262a23; }

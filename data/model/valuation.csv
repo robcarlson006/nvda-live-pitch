@@ -1,14 +1,17 @@
 NVIDIA valuation model,valuation date 2026-11-20
 
 INPUT,VALUE,SOURCE
-Share price (USD),165.05,"Team override (assumptions.json): Google Finance, NVDA, 24 Nov 2026 (price shown on the page)"
+Share price (USD),152.85,"Team override (assumptions.json): Team input, 24 Nov 2026; confirm and update on pitch morning"
 Shares outstanding (bn),24.1,Bloomberg DES
 Net cash (USD bn),59.6,Bloomberg DES: market cap minus enterprise value
 FY26 revenue (USD bn),215.938,Bloomberg FA
 FY27 revenue consensus (USD bn),422.222,Bloomberg FA consensus
 FY28 revenue consensus (USD bn),728.636,Bloomberg FA consensus
 Base FCF margin (%),45.25,"Average of FY24, FY25, FY26 (Bloomberg FA)"
-WACC (%),10.55,"Headline rate: Damodaran, US semiconductor industry average cost of capital, January 2026: 10.55%. Bloomberg WACC = 19.3%"
+WACC (%),10.55,"Headline rate: Damodaran (NYU), US semiconductor industry average cost of capital, January 2026: 10.55%"
+"WACC, Google Finance (%)",14.45,"Google Finance, 24 Nov 2026"
+"WACC, Bloomberg (%)",15.4,"Bloomberg WACC, Q3 2026 (team-confirmed)"
+"NOTE (reference only, not shown)",Bloomberg WACC screen 20 Nov 2026 = 19.3%; Stock Analysis 23 Nov 2026 = 16.42%
 Terminal growth (%),3,Team assumption
 FY27 EPS consensus (USD),9.64,Bloomberg DES
 
@@ -40,7 +43,7 @@ Enterprise value (USD bn),10408.38
 + Net cash = equity value (USD bn),10467.98
 Value per share (USD) [bull],434.36
 
-SCENARIO: Bear: share loss and one soft year
+SCENARIO: Bear: rivals take share and spending pauses for a year
 ,FY28,FY29,FY30,FY31,FY32
 Revenue (USD bn),464.44,441.22,485.34,519.32,540.09
 Growth (%),10,-5,10,7,4
@@ -54,7 +57,7 @@ Enterprise value (USD bn),2388.1
 + Net cash = equity value (USD bn),2447.7
 Value per share (USD) [bear],101.56
 
-SCENARIO: Stress: AI spending pauses
+"SCENARIO: If AI ended for good: revenue flat, then down 20%, then no real growth"
 ,FY28,FY29,FY30,FY31,FY32
 Revenue (USD bn),422.22,337.78,337.78,347.91,358.35
 Growth (%),0,-20,0,3,3
@@ -68,12 +71,12 @@ Enterprise value (USD bn),1492.8
 + Net cash = equity value (USD bn),1552.4
 Value per share (USD) [stress],64.41
 
-SENSITIVITY: base value per share,WACC 10%,WACC 10.55%,WACC 12%,WACC 14.45%,WACC 16.42%,WACC 19.3%
-Terminal growth 2%,381.03,354.49,298.67,234.25,198.58,161.37
-Terminal growth 3%,424.45,391.38,323.72,248.69,208.49,167.5
-Terminal growth 4%,482.35,439.54,355.04,265.9,219.99,174.44
+SENSITIVITY: base value per share,WACC 10.55%,WACC 14.45%,WACC 15.4%
+Terminal growth 2%,354.49,234.25,215.71
+Terminal growth 3%,391.38,248.69,227.68
+Terminal growth 4%,439.54,265.9,241.75
 
-REVERSE DCF,Growth per year FY28-FY32 priced in at today’s price (%),13.43
+REVERSE DCF,Growth per year FY28-FY32 priced in at today’s price (%),11.47
 ,Base case growth per year FY28-FY32 (%),35.55
 
 PEER CHECK,Median peer forward P/E,30.86,x FY27 EPS,9.64,= USD,297.49

@@ -13,8 +13,17 @@ const PERIOD = /(?:Original|Restated|Preliminary|Estimate):(\d{4}(?: Q[1-4]| A)?
 const DATE = /\d{4}-\d{1,2}-\d{1,2}/g;
 const NUM = /(?<=\s\s)-?[\d,]*\.?\d+(?=\s|$)/g;
 
-export function pdfText(file: string): string {
-  return execFileSync('pdftotext', ['-layout', file, '-'], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+/**
+ * `plain`: the text is only searched with regexes (DES and WACC snapshots), so if pdftotext (poppler) is not installed,
+ * macOS's own PDFKit is used instead. Tables (FA reports) always need pdftotext, which keeps the columns aligned.
+ */
+export function pdfText(file: string, opts: { plain?: boolean } = {}): string {
+  try {
+    return execFileSync('pdftotext', ['-layout', file, '-'], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  } catch (e: any) {
+    if (!opts.plain || e?.code !== 'ENOENT') throw e;
+    return execFileSync('swift', [fileURLToPath(new URL('./pdf-text.swift', import.meta.url)), file], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+  }
 }
 
 /** "2026 Q3" → "FY26 Q3", "2026 A" / "2026" → "FY26", "Current/LTM" → "LTM" */

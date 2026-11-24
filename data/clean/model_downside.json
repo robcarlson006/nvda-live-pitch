@@ -1,0 +1,35 @@
+{
+  "key": "model_downside",
+  "title": "The two downside cases",
+  "unit": "USD",
+  "units": {
+    "Change from today": "%",
+    "Cost to the portfolio": "%",
+    "Position size": "%"
+  },
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Share price $152.85; a 3% position",
+  "asOf": "2026-11-24",
+  "placeholder": false,
+  "x": [
+    "Bear case",
+    "If AI ended for good"
+  ],
+  "series": {
+    "Value per share": [
+      101.56,
+      64.41
+    ],
+    "Change from today": [
+      -33.55,
+      -57.86
+    ],
+    "Cost to the portfolio": [
+      1.01,
+      1.74
+    ],
+    "Position size": [
+      3,
+      3
+    ]
+  }
+}

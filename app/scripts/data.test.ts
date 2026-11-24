@@ -51,11 +51,11 @@ test('reverse DCF growth reproduces the price', () => {
 test('valuation cases are ordered, and the headline rate is in the sensitivity table', () => {
   const A = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, '../../data/model/assumptions.json'), 'utf8'));
   const [price, stress, bear, base, bull] = ds('model_valuation').series['Value per share'];
-  assert.deepEqual(ds('model_valuation').x.slice(0, 5), ['Share price today', 'Stress case', 'Bear case', 'Base case', 'Bull case']);
+  assert.deepEqual(ds('model_valuation').x.slice(0, 5), ['Share price today', 'If AI ended for good', 'Bear case', 'Base case', 'Bull case']);
   assert.ok(stress < bear && bear < base && base < bull, 'stress < bear < base < bull');
   assert.equal(price, A.priceOverride.value ?? price);
   if (typeof A.wacc.value === 'number') assert.ok(ds('model_sensitivity').x.includes(`${A.wacc.value}%`), 'headline WACC column');
-  assert.ok(ds('model_sensitivity').x.includes('10.55%') && ds('model_sensitivity').x.includes('19.3%'), 'range ends');
+  assert.ok(ds('model_sensitivity').x.includes('10.55%') && ds('model_sensitivity').x.includes('15.4%') && !ds('model_sensitivity').x.some((x: string) => parseFloat(x) > 15.4), 'three rates, none above 15.4%');
 });
 
 test('realistic bear case: custom growth path and margin override reach the revenue paths', () => {

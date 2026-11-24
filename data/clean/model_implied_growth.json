@@ -2,7 +2,7 @@
   "key": "model_implied_growth",
   "title": "Yearly revenue growth FY28–FY32",
   "unit": "%",
-  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Reverse DCF at $165.05",
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Reverse DCF at $152.85",
   "asOf": "2026-11-24",
   "placeholder": false,
   "x": [
@@ -11,7 +11,7 @@
   ],
   "series": {
     "Growth per year": [
-      13.43,
+      11.47,
       35.55
     ]
   }

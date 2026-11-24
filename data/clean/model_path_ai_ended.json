@@ -1,0 +1,37 @@
+{
+  "key": "model_path_ai_ended",
+  "title": "If AI ended for good: revenue",
+  "unit": "USD bn",
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. FY26 actual, FY27 consensus",
+  "asOf": "2026-11-24",
+  "placeholder": false,
+  "x": [
+    "FY26",
+    "FY27",
+    "FY28",
+    "FY29",
+    "FY30",
+    "FY31",
+    "FY32"
+  ],
+  "series": {
+    "Base case": [
+      215.94,
+      422.22,
+      728.64,
+      1130.69,
+      1557.93,
+      1875.64,
+      1931.91
+    ],
+    "If AI ended for good": [
+      215.94,
+      422.22,
+      422.22,
+      337.78,
+      337.78,
+      347.91,
+      358.35
+    ]
+  }
+}

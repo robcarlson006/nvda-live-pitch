@@ -11,9 +11,8 @@
     "52-week low": "USD",
     "WACC, Google Finance": "%",
     "Cost of equity, Google Finance": "%",
-    "Discount rate, lowest estimate (US semiconductor average)": "%",
-    "Discount rate, Stock Analysis": "%",
-    "Discount rate, highest estimate (Bloomberg)": "%",
+    "WACC, US semiconductor industry average (Damodaran)": "%",
+    "WACC, Bloomberg Q3 2026": "%",
     "Analysts rating NVDA": "",
     "Analysts: buy": "",
     "Analysts: hold": "",
@@ -24,17 +23,16 @@
   },
   "source": "Google Finance, NVDA page, 24 Nov 2026",
   "seriesSources": {
-    "Share price": "Google Finance, NVDA page, 24 Nov 2026",
-    "P/E ratio, trailing": "Google Finance, NVDA page, 24 Nov 2026",
+    "Share price": "Google Finance, NVDA, 24 Nov 2026 (team input; confirm on pitch morning)",
+    "P/E ratio, trailing": "Share price $152.85 ÷ trailing EPS $9.31 (Google Finance, 24 Nov 2026)",
     "EPS, trailing": "Google Finance, NVDA page, 24 Nov 2026",
     "Beta": "Google Finance, NVDA page, 24 Nov 2026",
     "52-week high": "Google Finance, NVDA page, 24 Nov 2026",
     "52-week low": "Google Finance, NVDA page, 24 Nov 2026",
     "WACC, Google Finance": "Google Finance, NVDA page, 24 Nov 2026",
     "Cost of equity, Google Finance": "Google Finance, NVDA page, 24 Nov 2026",
-    "Discount rate, lowest estimate (US semiconductor average)": "Damodaran, US semiconductor industry average cost of capital, January 2026",
-    "Discount rate, Stock Analysis": "Stock Analysis, NVDA statistics page, 23 Nov 2026",
-    "Discount rate, highest estimate (Bloomberg)": "Bloomberg WACC screen, NVDA US Equity, 20 Nov 2026",
+    "WACC, US semiconductor industry average (Damodaran)": "Damodaran (NYU), US semiconductor industry average cost of capital, January 2026",
+    "WACC, Bloomberg Q3 2026": "Bloomberg WACC, Q3 2026",
     "Analysts rating NVDA": "Google Finance, NVDA page, 24 Nov 2026",
     "Analysts: buy": "Google Finance, NVDA page, 24 Nov 2026",
     "Analysts: hold": "Google Finance, NVDA page, 24 Nov 2026",
@@ -47,15 +45,18 @@
   "placeholder": false,
   "curated": true,
   "verified": false,
+  "seriesVerified": {
+    "WACC, Bloomberg Q3 2026": true
+  },
   "x": [
     "value"
   ],
   "series": {
     "Share price": [
-      165.05
+      152.85
     ],
     "P/E ratio, trailing": [
-      17.73
+      16.42
     ],
     "EPS, trailing": [
       9.31
@@ -75,14 +76,11 @@
     "Cost of equity, Google Finance": [
       15
     ],
-    "Discount rate, lowest estimate (US semiconductor average)": [
+    "WACC, US semiconductor industry average (Damodaran)": [
       10.55
     ],
-    "Discount rate, Stock Analysis": [
-      16.42
-    ],
-    "Discount rate, highest estimate (Bloomberg)": [
-      19.3
+    "WACC, Bloomberg Q3 2026": [
+      15.4
     ],
     "Analysts rating NVDA": [
       44

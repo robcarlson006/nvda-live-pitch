@@ -2,7 +2,7 @@
   "key": "model_vs_analysts",
   "title": "Our values against analysts’ 12-month price targets",
   "unit": "USD",
-  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Analyst targets: Google Finance, NVDA page, 24 Nov 2026. Share price $165.05",
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Analyst targets: Google Finance, NVDA page, 24 Nov 2026. Share price $152.85",
   "asOf": "2026-11-24",
   "placeholder": false,
   "x": [
@@ -17,7 +17,7 @@
     "Value per share": [
       101.56,
       130,
-      165.05,
+      152.85,
       233.36,
       391.38,
       350

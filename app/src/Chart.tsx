@@ -8,13 +8,32 @@ const OTHERS = ['#8d9388', '#d9dccf', '#5d6358'];
 const FAINT = '#7a8174';
 const FONT = "'Archivo Variable', system-ui, sans-serif";
 
-/** Only the x values from range[0] to range[1], e.g. FY05–FY13. */
-function inRange(ds: Dataset, range?: [string, string]): Dataset {
-  if (!range) return ds;
-  const a = ds.x.indexOf(range[0]);
-  const b = ds.x.indexOf(range[1]);
-  if (a < 0 || b < a) return ds;
-  return { ...ds, x: ds.x.slice(a, b + 1), series: Object.fromEntries(Object.entries(ds.series).map(([k, v]) => [k, v.slice(a, b + 1)])) };
+/** Only the x values from range[0] to range[1], e.g. FY05–FY13, minus any the slide excludes. */
+function inRange(ds: Dataset, range?: [string, string], exclude: string[] = []): Dataset {
+  let a = 0;
+  let b = ds.x.length - 1;
+  if (range) {
+    const ra = ds.x.indexOf(range[0]);
+    const rb = ds.x.indexOf(range[1]);
+    if (ra >= 0 && rb >= ra) [a, b] = [ra, rb];
+  }
+  const keep = ds.x.map((x, i) => i >= a && i <= b && !exclude.includes(x));
+  return { ...ds, x: ds.x.filter((_, i) => keep[i]), series: Object.fromEntries(Object.entries(ds.series).map(([k, v]) => [k, v.filter((_, i) => keep[i])])) };
+}
+
+/** Waterfall: where each bar starts. Steps add to a running total; `totals` are full bars from zero (and reset the total). */
+export function waterfallBases(x: string[], values: (number | null)[], totals: string[] = []): number[] {
+  let run = 0;
+  return x.map((name, i) => {
+    const v = values[i] ?? 0;
+    if (totals.includes(name)) {
+      run = v;
+      return 0;
+    }
+    const base = v >= 0 ? run : run + v;
+    run += v;
+    return base;
+  });
 }
 
 const ZOOM = 2.1; // how far a zoom step magnifies the chart
@@ -27,20 +46,71 @@ const ZOOM_MS = 1300;
 export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<Slide['chart']>; dataset: Dataset; zoom?: string | null }) {
   const el = useRef<HTMLDivElement>(null);
   const live = useRef<{ chart: echarts.ECharts; restyle: (hi: number) => void; point: (i: number) => [number, number] | null; born: number } | null>(null);
-  const dataset = inRange(full, spec.range);
+  const dataset = inRange(full, spec.range, spec.exclude);
 
   useEffect(() => {
     // Drawn at a higher resolution than the screen, so a zoom stays sharp.
     const chart = echarts.init(el.current!, undefined, { renderer: 'canvas', devicePixelRatio: Math.max(2, window.devicePixelRatio || 1) * ZOOM });
     const vh = Math.min(window.innerHeight, window.innerWidth * 0.5625) / 100; // same unit as --u in styles.css
-    const fmt = (v: number) => formatValue(v, dataset.unit);
+    const fmt = (v: number, series?: string) => formatValue(v, (series && dataset.units?.[series]) || dataset.unit);
     const isBar = spec.type !== 'line';
+    const isFall = spec.type === 'waterfall';
     const baseHi = spec.highlight ? dataset.x.indexOf(spec.highlight) : isBar ? dataset.x.length - 1 : -1;
     const cell = Math.round(vh * 0.9);
     const n = dataset.x.length;
     const stagger = Math.min(160, 1000 / n); // the whole chart builds in about a second, however many bars
 
-    const makeSeries = (hiIdx: number) => spec.series.map((name, i) => {
+    const refValue = spec.refLine ? dataset.series[spec.refLine.series]?.find((v) => v != null) ?? null : null;
+    const refLine =
+      refValue != null
+        ? {
+            silent: true,
+            symbol: 'none',
+            lineStyle: { color: '#f4f6f1', width: Math.max(1, vh * 0.22), type: [vh * 0.9, vh * 0.6] },
+            label: { position: 'insideEndTop', color: '#f4f6f1', fontSize: vh * 2.5, fontFamily: FONT, formatter: () => `${spec.refLine!.series}: ${fmt(refValue, spec.refLine!.series)}` },
+            data: [{ yAxis: refValue }],
+            animationDuration: 900,
+          }
+        : undefined;
+
+    const makeSeries = (hiIdx: number): any[] => {
+      if (isFall) {
+        // Waterfall in the core-stack style: an invisible base lifts each step onto the running total;
+        // the step itself is a bar whose stripes read as stacked cores.
+        const name = spec.series[0];
+        const values = dataset.series[name];
+        const bases = waterfallBases(dataset.x, values, spec.totals);
+        const gap = Math.max(2, Math.round(cell * 0.35));
+        return [
+          { name: '_base', type: 'bar', stack: 'fall', silent: true, data: bases, itemStyle: { color: 'transparent' }, barCategoryGap: '28%', animation: false },
+          {
+            name,
+            type: 'bar',
+            stack: 'fall',
+            barCategoryGap: '28%',
+            animationDuration: 1200,
+            animationDelay: (j: number) => j * 220,
+            data: values.map((v, j) => ({
+              value: v == null ? null : Math.abs(v),
+              itemStyle: {
+                color: j === hiIdx ? GREEN : spec.totals?.includes(dataset.x[j]) ? '#4a6a12' : DIM_GREEN,
+                decal: { symbol: 'rect', dashArrayX: [1, 0], dashArrayY: [gap, cell], color: '#000', symbolSize: 1, rotation: 0 },
+              },
+              label: {
+                show: true,
+                position: 'top',
+                distance: vh,
+                formatter: () => (v == null ? '' : fmt(v, name)),
+                color: j === hiIdx ? '#f4f6f1' : '#9aa094',
+                fontSize: j === hiIdx ? vh * 3.4 : vh * 2.6,
+                fontWeight: 500,
+                fontFamily: FONT,
+              },
+            })),
+          },
+        ];
+      }
+      return spec.series.map((name, i) => {
       const values = dataset.series[name];
       if (spec.type === 'stackedBar') {
         // ECharts can't stack pictorial bars, so stacked charts use plain bars in the same colours.
@@ -58,6 +128,7 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
           symbolMargin: Math.max(2, Math.round(cell * 0.35)),
           symbolClip: true,
           barCategoryGap: '28%',
+          markLine: i === 0 ? refLine : undefined,
           animationDuration: 1600,
           animationDelay: (j: number) => j * stagger,
           data: values.map((v, j) => ({
@@ -67,7 +138,7 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
               show: spec.series.length === 1 && (n <= 8 || j === hiIdx), // long series: label only the highlight
               position: 'top',
               distance: vh,
-              formatter: () => (v == null ? '' : fmt(v)),
+              formatter: () => (v == null ? '' : fmt(v, name)),
               color: j === hiIdx ? '#f4f6f1' : '#9aa094',
               fontSize: j === hiIdx ? vh * 3.4 : vh * 2.6,
               fontWeight: 500,
@@ -76,7 +147,7 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
           })),
         };
       }
-      const color = i === 0 ? GREEN : OTHERS[(i - 1) % OTHERS.length];
+      const color = i === 0 ? (spec.muted ? '#d9dccf' : GREEN) : OTHERS[(i - 1) % OTHERS.length];
       return {
         name,
         type: 'line',
@@ -92,13 +163,14 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
             ? {
                 symbol: 'rect',
                 symbolSize: vh * 1.6,
-                itemStyle: { color: GREEN },
-                label: { position: 'left', distance: vh * 1.2, color: '#f4f6f1', fontSize: vh * 3.4, fontWeight: 600, fontFamily: FONT, formatter: () => fmt(values[hiIdx] ?? 0) },
+                itemStyle: { color },
+                label: { position: 'left', distance: vh * 1.2, color: '#f4f6f1', fontSize: vh * 3.4, fontWeight: 600, fontFamily: FONT, formatter: () => fmt(values[hiIdx] ?? 0, name) },
                 data: [{ coord: [hiIdx, values[hiIdx]] }],
               }
             : undefined,
       };
     });
+    };
 
     const series = makeSeries(baseHi);
     chart.setOption({
@@ -124,6 +196,8 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
       },
       // The highlight's label isn't animated by ECharts, so add the highlight once the line has drawn.
       series: series.map((s) => ({ ...s, markPoint: undefined })),
+      // Lines with gaps (actual, then forecast) still join up where one series ends and the next begins.
+      ...(spec.type === 'line' ? {} : {}),
     });
     let curHi = baseHi;
     const highlight = setTimeout(() => chart.setOption({ series: makeSeries(curHi) }), 2400);
@@ -136,7 +210,13 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
         chart.setOption({ animation: false, series: makeSeries(hi) }); // recolour in place: the bars must not grow again
       },
       point: (i) => {
-        const v = dataset.series[spec.series[0]]?.[i];
+        // The value drawn at x: the first series with a value there (stacked: the top of the stack; waterfall: the top of the step).
+        let v: number | null = null;
+        if (isFall) {
+          const vals = dataset.series[spec.series[0]];
+          v = waterfallBases(dataset.x, vals, spec.totals)[i] + Math.abs(vals[i] ?? 0);
+        } else if (spec.type === 'stackedBar') v = spec.series.reduce((a, s) => a + (dataset.series[s]?.[i] ?? 0), 0);
+        else v = spec.series.map((s) => dataset.series[s]?.[i]).find((x) => x != null) ?? null;
         if (v == null) return null;
         const p = chart.convertToPixel({ gridIndex: 0 }, [i, v]) as number[] | undefined;
         return p && Number.isFinite(p[0]) && Number.isFinite(p[1]) ? [p[0], p[1]] : null;

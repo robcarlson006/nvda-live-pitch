@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
-import { ClientMsg, Dataset, elementCount, lookup, resolveText, SpineSlide, tokenRefs, type Draft, type Rehearsal, type RunEntry, type ShowState, type Slide, type Step } from '../shared/schema.ts';
+import { ClientMsg, Dataset, elementCount, lookup, resolveText, slideTexts, SpineSlide, tokenRefs, type Draft, type Rehearsal, type RunEntry, type ShowState, type Slide, type Step } from '../shared/schema.ts';
 import { findCue, words, type Candidate } from './cues.ts';
 
 export const DATA_DIR = path.resolve(import.meta.dirname, '../../data/clean');
@@ -36,6 +36,7 @@ export const stripAllowed = (t: string) =>
 export function checkSlide(slide: Slide, datasets: Map<string, Dataset>): string | null {
   const { chart, stat, layout } = slide;
   if ((layout === 'chart' || layout === 'split') && !chart) return `Layout "${layout}" needs a chart`;
+  if (layout === 'inputs' && !slide.groups?.length) return 'Layout "inputs" needs groups';
   if (layout === 'number' && !stat) return 'Layout "number" needs a stat';
   if (stat) {
     const ds = datasets.get(stat.datasetKey);
@@ -47,30 +48,38 @@ export function checkSlide(slide: Slide, datasets: Map<string, Dataset>): string
     if (!ds) return `Unknown dataset "${chart.datasetKey}"`;
     const missing = chart.series.filter((s) => !(s in ds.series));
     if (missing.length) return `Dataset "${ds.key}" has no series: ${missing.join(', ')}`;
-    for (const x of [...(chart.range ?? []), ...(chart.highlight ? [chart.highlight] : [])])
+    for (const x of [...(chart.range ?? []), ...(chart.highlight ? [chart.highlight] : []), ...(chart.exclude ?? []), ...(chart.totals ?? [])])
       if (!ds.x.includes(x)) return `Dataset "${ds.key}" has no x value "${x}"`;
+    if (chart.highlight && chart.exclude?.includes(chart.highlight)) return `Highlight "${chart.highlight}" is excluded from the chart`;
+    if (chart.refLine && !(chart.refLine.series in ds.series)) return `Dataset "${ds.key}" has no series "${chart.refLine.series}" for the reference line`;
+    if (chart.totals && chart.type !== 'waterfall') return '`totals` only applies to waterfall charts';
   }
   if (slide.steps) {
     const order = slide.steps;
     const bulletsSeen = order.flatMap((s) => ('bullet' in s ? [s.bullet] : []));
     if (bulletsSeen.length !== slide.bullets.length || slide.bullets.some((_, i) => !bulletsSeen.includes(i))) return 'Steps must build every bullet exactly once';
+    const itemsSeen = order.flatMap((s) => ('item' in s ? [s.item.join('.')] : []));
+    const allItems = (slide.groups ?? []).flatMap((g, gi) => g.items.map((_, ii) => `${gi}.${ii}`));
+    if (itemsSeen.length !== allItems.length || allItems.some((k) => !itemsSeen.includes(k))) return 'Steps must build every input item exactly once';
     const chartAt = order.findIndex((s) => 'chart' in s);
     if (!!chart !== chartAt >= 0 || order.filter((s) => 'chart' in s).length > 1) return 'Steps must build the chart exactly once';
     for (const [k, s] of order.entries()) {
       if (!('zoom' in s)) continue;
       if (chartAt < 0 || k < chartAt) return `Zoom "${s.zoom}" comes before the chart is built`;
       if (s.zoom !== 'all' && !datasets.get(chart!.datasetKey)?.x.includes(s.zoom)) return `Zoom "${s.zoom}" is not an x value of "${chart!.datasetKey}"`;
+      if (chart!.exclude?.includes(s.zoom)) return `Zoom "${s.zoom}" is excluded from the chart`;
     }
   }
   // Figures in the text ({{key | series | x}}) must exist, and digits outside them are refused:
   // every quantity on screen comes from data/. Dates and names are allowed: 1993, 12 November, FY18, Q3, Scope 3.
-  for (const text of [slide.title, ...slide.bullets, stat?.label ?? '']) {
+  for (const text of slideTexts(slide)) {
     for (const r of tokenRefs(text)) if (lookup(datasets, r.key, r.series, r.x) === undefined) return `No value for {{${r.key} | ${r.series} | ${r.x}}}`;
     if (/\d/.test(stripAllowed(resolveText(text, new Map())))) return `Hand-typed number in "${text}". Put it in data/clean and write it as {{dataset | series | x}}`;
   }
   const shown = (t: string) => resolveText(t, datasets).length;
   if (shown(slide.title) > 120) return 'Title is too long for the screen (120 characters max)';
   if (slide.bullets.some((b) => shown(b) > 160)) return 'A bullet is too long for the screen (160 characters max)';
+  if ((slide.groups ?? []).some((g) => g.items.some((t) => shown(t) > 80))) return 'An input item is too long for the screen (80 characters max)';
   return null;
 }
 
@@ -92,8 +101,17 @@ function spineSteps(r: any): { bullets: string[]; steps: Step[] | undefined; cue
     cues.push(b.cue == null ? null : String(b.cue));
     if (r.chart && !r.chartFirst && k === lastText) chart();
   });
-  const plain = !r.chartFirst && !items.some(isZoom); // the default order: no need to spell it out
-  return { bullets: items.filter((b) => !isZoom(b)).map((b) => b.text), steps: plain ? undefined : steps, cues };
+  // Input groups (layout: inputs) build first, one item at a time: { tag, items: [ text | { text, cue } ] }
+  const groupSteps: Step[] = [];
+  const groupCues: (string | null)[] = [];
+  (r.groups ?? []).forEach((g: any, gi: number) =>
+    (g?.items ?? []).forEach((it: any, ii: number) => {
+      groupSteps.push({ item: [gi, ii] });
+      groupCues.push(typeof it === 'object' && it?.cue != null ? String(it.cue) : null);
+    }),
+  );
+  const plain = !r.chartFirst && !items.some(isZoom) && !groupSteps.length; // the default order: no need to spell it out
+  return { bullets: items.filter((b) => !isZoom(b)).map((b) => b.text), steps: plain ? undefined : [...groupSteps, ...steps], cues: [...groupCues, ...cues] };
 }
 
 /** Reads docs/script/spine.yaml. Bullets may be plain strings, { text, cue } or { zoom, cue }; the chart may have chartCue. Throws with a readable message. */
@@ -103,7 +121,8 @@ export function loadSpine(datasets: Map<string, Dataset>, file = SPINE_FILE): Sp
   const ids = new Set<string>();
   return raw.map((r: any, i: number) => {
     const { bullets, steps, cues } = spineSteps(r ?? {});
-    const parsed = SpineSlide.safeParse({ ...r, bullets, steps, elementCues: cues });
+    const groups = r?.groups?.map((g: any) => ({ ...g, items: (g?.items ?? []).map((it: any) => (typeof it === 'object' ? it?.text : it)) }));
+    const parsed = SpineSlide.safeParse({ ...r, bullets, steps, elementCues: cues, ...(groups ? { groups } : {}) });
     const where = `Slide ${i + 1} (${r?.id ?? 'no id'})`;
     if (!parsed.success) throw new Error(`${where}: ${parsed.error.issues[0].path.join('.')} ${parsed.error.issues[0].message}`);
     if (ids.has(parsed.data.id)) throw new Error(`${where}: duplicate id`);

@@ -12,7 +12,7 @@ const CLEAN = path.resolve(import.meta.dirname, '../../data/clean');
 const AS_OF = '2026-11-21';
 const VIA = 'via NotebookLM research, 21 Nov 2026';
 
-type Fact = { value: number; unit: string; source: string };
+type Fact = { value: number; unit: string; source: string; verified?: boolean };
 /** `meta` overrides the dataset-level source and date for facts that do not come from the NotebookLM research notes. */
 function facts(key: string, title: string, verified: boolean, f: Record<string, Fact>, meta?: { source: string; asOf: string }): Dataset {
   return Dataset.parse({
@@ -20,6 +20,7 @@ function facts(key: string, title: string, verified: boolean, f: Record<string, 
     source: meta?.source ?? `Research notes (${VIA})`, seriesSources: Object.fromEntries(Object.entries(f).map(([k, v]) => [k, v.source])),
     asOf: meta?.asOf ?? AS_OF, placeholder: false, curated: true, verified, x: ['value'],
     series: Object.fromEntries(Object.entries(f).map(([k, v]) => [k, [v.value]])),
+    ...(Object.values(f).some((v) => v.verified != null) ? { seriesVerified: Object.fromEntries(Object.entries(f).filter(([, v]) => v.verified != null).map(([k, v]) => [k, v.verified!])) } : {}),
   });
 }
 
@@ -106,18 +107,20 @@ const out: Dataset[] = [
     'NVIDIA share of GPU power in announced post-2026 frontier deals': { value: 28, unit: '%', source: 'JPMorgan (Cembalest), as reported in research notes' },
   }),
   facts('research_market', 'Share price, valuation and analyst figures (Google Finance)', false, {
-    'Share price': gf(165.05, 'USD'),
-    'P/E ratio, trailing': gf(17.73, 'x'),
+    // Team input, 24 Nov 2026 (the price on Google Finance that day); confirm on pitch morning. Must match priceOverride in assumptions.json.
+    'Share price': { value: 152.85, unit: 'USD', source: 'Google Finance, NVDA, 24 Nov 2026 (team input; confirm on pitch morning)' },
+    // Re-priced at the share price above: price ÷ Google Finance trailing EPS ($9.31). Google Finance showed 17.73x at $165.05.
+    'P/E ratio, trailing': { value: Math.round((152.85 / 9.31) * 100) / 100, unit: 'x', source: 'Share price $152.85 ÷ trailing EPS $9.31 (Google Finance, 24 Nov 2026)' },
     'EPS, trailing': gf(9.31, 'USD'),
     'Beta': gf(2.21, ''),
     '52-week high': gf(243.37, 'USD'),
     '52-week low': gf(145.71, 'USD'),
     'WACC, Google Finance': gf(14.45, '%'),
     'Cost of equity, Google Finance': gf(15, '%'),
-    // The range of independent discount-rate estimates for NVIDIA (the headline rate is in assumptions.json)
-    'Discount rate, lowest estimate (US semiconductor average)': { value: 10.55, unit: '%', source: 'Damodaran, US semiconductor industry average cost of capital, January 2026' },
-    'Discount rate, Stock Analysis': { value: 16.42, unit: '%', source: 'Stock Analysis, NVDA statistics page, 23 Nov 2026' },
-    'Discount rate, highest estimate (Bloomberg)': { value: 19.3, unit: '%', source: 'Bloomberg WACC screen, NVDA US Equity, 20 Nov 2026' },
+    // The three discount rates the pitch uses (the headline rate is in assumptions.json). Nothing above 15.4% is shown to the board;
+    // the older, higher estimates (Stock Analysis 16.42%, Bloomberg screen 19.3% on 20 Nov) are kept only in assumptions.json for reference.
+    'WACC, US semiconductor industry average (Damodaran)': { value: 10.55, unit: '%', source: 'Damodaran (NYU), US semiconductor industry average cost of capital, January 2026' },
+    'WACC, Bloomberg Q3 2026': { value: 15.4, unit: '%', source: 'Bloomberg WACC, Q3 2026', verified: true }, // confirmed by the team
     'Analysts rating NVDA': gf(44, ''),
     'Analysts: buy': gf(34, ''),
     'Analysts: hold': gf(9, ''),

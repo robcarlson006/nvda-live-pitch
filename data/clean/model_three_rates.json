@@ -1,0 +1,41 @@
+{
+  "key": "model_three_rates",
+  "title": "Base-case value per share at three discount rates",
+  "unit": "USD",
+  "units": {
+    "Enterprise value": "USD tn"
+  },
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. 10.55%: Damodaran US semiconductor average (Jan 2026); 14.45%: Google Finance (24 Nov 2026); 15.4%: Bloomberg WACC (Q3 2026). Share price $152.85",
+  "seriesSources": {
+    "Value per share": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Share price $152.85"
+  },
+  "asOf": "2026-11-24",
+  "placeholder": false,
+  "x": [
+    "10.55% industry (Damodaran)",
+    "14.45% Google Finance",
+    "15.4% Bloomberg"
+  ],
+  "series": {
+    "Value per share": [
+      391.38,
+      248.69,
+      227.68
+    ],
+    "Enterprise value": [
+      9.37,
+      5.93,
+      5.43
+    ],
+    "Share price today": [
+      152.85,
+      152.85,
+      152.85
+    ],
+    "Upside to today": [
+      156.06,
+      62.7,
+      48.96
+    ]
+  }
+}

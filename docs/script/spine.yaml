@@ -231,7 +231,7 @@
       cue: both halves
     - text: When money gets tight, the weakest bets are cut first. The best platform is the last to lose customers.
       cue: cut first
-    - text: "The share price would still fall. Our stress case, where AI spending stops, is {{model_valuation | Value per share | Stress case}}"
+    - text: "The share price would still fall. Our stress case, where AI spending stops, is {{model_valuation | Value per share | If AI ended for good}}"
       cue: stress case
   say: "And if the bubble pops? The share price would fall. But the dot-com crash wiped out companies built on ideas, not ones selling what people needed. NVIDIA owns both halves of AI, the hardware and the software, and when money gets tight the weakest bets are cut first. Our stress case, where AI spending stops, is 64 dollars a share."
 
@@ -348,15 +348,15 @@
   title: Our base case is worth far more than today's price
   chartFirst: true
   bullets:
-    - text: "Discount rate {{research_market | Discount rate, lowest estimate (US semiconductor average) | value}}: the US chip-industry average (Damodaran)"
+    - text: "Discount rate {{research_market | WACC, US semiconductor industry average (Damodaran) | value}}: the US chip-industry average (Damodaran)"
       cue: discount rate
     - text: "Base case {{model_valuation | Value per share | Base case}}, against a price of {{model_valuation | Value per share | Share price today}}"
       cue: base case
     - { zoom: Base case }
-    - text: "At Google Finance's higher rate: {{model_sensitivity | Terminal growth 3% | 14.45%}}. At Bloomberg's: {{model_sensitivity | Terminal growth 3% | 19.3%}}"
+    - text: "At Google Finance's higher rate: {{model_sensitivity | Terminal growth 3% | 14.45%}}. At Bloomberg's: {{model_sensitivity | Terminal growth 3% | 15.4%}}"
       cue: google finance
     - { zoom: all }
-    - text: "Bear case {{model_valuation | Value per share | Bear case}}. If AI spending stops: {{model_valuation | Value per share | Stress case}}"
+    - text: "Bear case {{model_valuation | Value per share | Bear case}}. If AI spending stops: {{model_valuation | Value per share | If AI ended for good}}"
       cue: bear case
   chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Base case }
   say: "So what is it worth? Our five-year cash-flow model uses a discount rate of ten and a half percent, the US chip-industry average, because NVIDIA holds more cash than debt. Our base case is about 391 dollars, against a price of 165. At Google Finance's higher rate it's 249; at Bloomberg's, about 167, roughly today's price. Our bear case, with rivals taking share and one soft year, is 102. If AI spending stops, 64."

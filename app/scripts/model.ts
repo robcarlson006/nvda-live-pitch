@@ -51,8 +51,8 @@ export function impliedGrowth(i: Omit<Inputs, 'path'>, price: number): number {
 // ---------- inputs from Bloomberg ----------
 function main() {
   const A = JSON.parse(fs.readFileSync(path.join(MODEL, 'assumptions.json'), 'utf8'));
-  const des = pdfText(path.join(ROOT, 'data/bloomberg-raw/nvda_des_2026-11-20.pdf'));
-  const waccPdf = pdfText(path.join(ROOT, 'data/bloomberg-raw/nvda_wacc_2026-11-20.pdf'));
+  const des = pdfText(path.join(ROOT, 'data/bloomberg-raw/nvda_des_2026-11-20.pdf'), { plain: true });
+  const waccPdf = pdfText(path.join(ROOT, 'data/bloomberg-raw/nvda_wacc_2026-11-20.pdf'), { plain: true });
   const num = (text: string, re: RegExp) => {
     const m = text.match(re);
     if (!m) throw new Error(`Snapshot value not found: ${re}`);
@@ -66,7 +66,8 @@ function main() {
   const ev = num(des, /Curr EV\s+([\d,.]+)B/);
   const netCash = mktCap - ev; // USD bn; DES EV = market cap + debt − cash
   const eps27 = num(des, /Est EPS\s+([\d.]+)/);
-  const bbgWacc = num(waccPdf, /WACC\s+([\d.]+)%/);
+  const bbgScreen = num(waccPdf, /WACC\s+([\d.]+)%/); // 20 Nov screen: reference only, never shown
+  const bbgWacc: number = A.bloombergWacc?.value ?? bbgScreen; // Bloomberg WACC, Q3 2026 (team-confirmed)
 
   const fc = read('nvda_revenue_forecast');
   const at = (s: string, x: string) => fc.series[s][fc.x.indexOf(x)]!;
@@ -100,8 +101,10 @@ function main() {
     }),
   ) as Record<string, { label: string; path: number[]; margin: number } & ReturnType<typeof dcf>>;
 
-  // Range of independent estimates for NVIDIA: Damodaran sector 10.55%, team 12%, headline (Google Finance 14.45%), Stock Analysis 16.42%, Bloomberg 19.3%
-  const waccs = [...new Set([10, 10.55, 12, 14.45, 16.42, bbgWacc, wacc])].sort((a, b) => a - b);
+  // The three rates the pitch shows: Damodaran US semiconductor average 10.55%, Google Finance 14.45%, Bloomberg 15.4% (assumptions.json)
+  const waccs = [...new Set([...(A.discountRates.value as number[]), wacc])].sort((a, b) => a - b);
+  const MAX_SHOWN = 15.4; // nothing above this reaches the board
+  if (waccs.some((w) => w > MAX_SHOWN)) throw new Error(`A discount rate above ${MAX_SHOWN}% would reach the slides: ${waccs}`);
   const gs = [2, 3, 4];
   const sens = gs.map((gg) => waccs.map((w) => r2(dcf({ path: results.base.path, margin: baseMargin, wacc: w, g: gg, netCash, shares, t }).perShare)));
   const implied = impliedGrowth({ rev27, margin: baseMargin, wacc, g, netCash, shares, t }, price);
@@ -132,7 +135,7 @@ function main() {
   const write = (d: Omit<Dataset, 'placeholder' | 'asOf'>) => fs.writeFileSync(path.join(CLEAN, `${d.key}.json`), JSON.stringify(Dataset.parse({ ...d, asOf, placeholder: false }), null, 2) + '\n');
   write({
     key: 'model_valuation', title: 'What one NVIDIA share is worth', unit: 'USD', source: `${source}. WACC ${wacc}%, terminal growth ${g}%. Share price $${price}`,
-    x: ['Share price today', 'Stress case', 'Bear case', 'Base case', 'Bull case', 'Peer P/E check'],
+    x: ['Share price today', 'If AI ended for good', 'Bear case', 'Base case', 'Bull case', 'Peer P/E check'],
     series: { 'Value per share': [price, results.stress.perShare, results.bear.perShare, results.base.perShare, results.bull.perShare, peerValue].map(r2) },
   });
   write({
@@ -142,15 +145,15 @@ function main() {
   });
   // Our values against the sell-side targets (Google Finance, 24 Nov 2026). Targets come from research_market; our values from the model above.
   const mkt = read('research_market');
-  const fact = (k: string) => mkt.series[k][0]!;
+  const mfact = (k: string) => mkt.series[k][0]!;
   write({
     key: 'model_vs_analysts', title: 'Our values against analysts’ 12-month price targets', unit: 'USD',
     source: `${source}. Analyst targets: ${mkt.seriesSources?.['Analyst target, average'] ?? mkt.source}. Share price $${price}`,
     x: ['Our bear case', 'Lowest target', 'Price today', 'Average target', 'Our base case', 'Highest target'],
-    series: { 'Value per share': [results.bear.perShare, fact('Analyst target, lowest'), price, fact('Analyst target, average'), results.base.perShare, fact('Analyst target, highest')].map(r2) },
+    series: { 'Value per share': [results.bear.perShare, mfact('Analyst target, lowest'), price, mfact('Analyst target, average'), results.base.perShare, mfact('Analyst target, highest')].map(r2) },
   });
   write({
-    key: 'model_sensitivity', title: 'Base-case value per share by discount rate', unit: 'USD', source: `${source}. ${bbgWacc}% = Bloomberg WACC; headline rate ${wacc}%; 14.45% = Google Finance`,
+    key: 'model_sensitivity', title: 'Base-case value per share by discount rate', unit: 'USD', source: `${source}. ${wacc}% = Damodaran US semiconductor average (Jan 2026); 14.45% = Google Finance (24 Nov 2026); ${bbgWacc}% = Bloomberg WACC (Q3 2026)`,
     x: waccs.map((w) => `${w}%`),
     series: Object.fromEntries(gs.map((gg, i) => [`Terminal growth ${gg}%`, sens[i]])),
   });
@@ -159,6 +162,96 @@ function main() {
     x: ['Priced in today', 'Base case (consensus, then slowing)'],
     series: { 'Growth per year': [r2(implied), r2(baseCagr)] },
   });
+
+  // ---------- the DCF, step by step (finance section) ----------
+  const fact = (k: string) => mkt.series[k][0]!;
+  const gfWacc = fact('WACC, Google Finance');
+  const damo = fact('WACC, US semiconductor industry average (Damodaran)');
+  if (Math.abs(gfWacc - 14.45) > 1e-9 || Math.abs(damo - wacc) > 1e-9 || Math.abs(fact('WACC, Bloomberg Q3 2026') - bbgWacc) > 1e-9)
+    throw new Error('research_market discount rates do not match assumptions.json');
+  if (Math.abs(fact('Share price') - price) > 1e-9) throw new Error(`research_market share price ${fact('Share price')} ≠ assumptions.json price ${price}`);
+  const BBG = 'Bloomberg FA and DES, NVDA US Equity, 20 Nov 2026';
+  const inputs: Record<string, { v: number; unit: string; src: string }> = {
+    'FY26 revenue': { v: revA.series.Revenue.at(-1)!, unit: 'USD bn', src: 'Bloomberg FA, NVDA annual, 20 Nov 2026' },
+    'FY27 revenue, analyst consensus': { v: rev27, unit: 'USD bn', src: 'Bloomberg consensus (FA/DES), 20 Nov 2026' },
+    'FY28 revenue, analyst consensus': { v: rev28, unit: 'USD bn', src: 'Bloomberg consensus (FA/DES), 20 Nov 2026' },
+    'Free-cash-flow margin, FY24–26 average': { v: r2(baseMargin * 100), unit: '%', src: `Bloomberg FA: free cash flow ÷ revenue, average of ${marginYears.join(', ')}` },
+    'Shares outstanding': { v: shares, unit: 'bn', src: 'Bloomberg DES, 20 Nov 2026' },
+    'Net cash': { v: r2(netCash), unit: 'USD bn', src: 'Bloomberg DES, 20 Nov 2026: market cap minus enterprise value' },
+    'WACC, Bloomberg': { v: bbgWacc, unit: '%', src: 'Bloomberg WACC, Q3 2026' },
+    'Share price': { v: price, unit: 'USD', src: mkt.seriesSources?.['Share price'] ?? 'Google Finance, 24 Nov 2026' },
+    'WACC, Google Finance': { v: gfWacc, unit: '%', src: 'Google Finance, NVDA, 24 Nov 2026' },
+    'WACC, US semiconductor industry average': { v: damo, unit: '%', src: 'Damodaran (NYU), US semiconductor industry average, January 2026' },
+    'Terminal growth (our choice)': { v: g, unit: '%', src: 'Our choice: long-run growth after FY32, about nominal world GDP growth' },
+    'Growth fades in a straight line to terminal growth by (our choice)': { v: 2032, unit: 'year', src: 'Our choice: growth after FY28 consensus fades in a straight line to 3% by FY32' },
+  };
+  write({
+    key: 'model_dcf_inputs', title: 'Every input to our DCF, and where it comes from', unit: '',
+    units: Object.fromEntries(Object.entries(inputs).map(([k, v]) => [k, v.unit])),
+    source: `${BBG}; Google Finance, 24 Nov 2026; Damodaran (NYU), January 2026; our two choices in data/model/assumptions.json`,
+    seriesSources: Object.fromEntries(Object.entries(inputs).map(([k, v]) => [k, v.src])),
+    x: ['value'],
+    series: Object.fromEntries(Object.entries(inputs).map(([k, v]) => [k, [v.v]])),
+  });
+  const histYears = fcfA.x.filter((y) => Number(y.slice(2)) >= 20);
+  write({
+    key: 'model_fcf_forecast', title: 'Free cash flow: actual, then our base case', unit: 'USD bn',
+    source: `Actual: Bloomberg FA (nvda_fcf_annual). Forecast: ${source}; consensus revenue × ${r2(baseMargin * 100)}% average margin. FY27, the current year, is not discounted`,
+    x: [...histYears, ...years],
+    series: {
+      Actual: [...histYears.map((y) => fcfA.series['Free cash flow'][fcfA.x.indexOf(y)]), ...years.map(() => null)],
+      'Base-case forecast': [...histYears.map(() => null), ...results.base.fcf.map(r2)],
+    },
+  });
+  // Bridge at each of the three rates, in USD tn: PV of FY28–32 cash flow + PV of terminal value = EV; + net cash = equity.
+  const tn = (v: number) => Math.round(v * 10) / 1e4; // USD bn → USD tn, 3 decimals
+  const bridgeAt = waccs.map((w) => dcf({ path: results.base.path, margin: baseMargin, wacc: w, g, netCash, shares, t }));
+  const rateName = (w: number) => `${w}%`;
+  write({
+    key: 'model_dcf_bridge', title: 'From cash flow to value per share (base case)', unit: 'USD tn',
+    units: { 'Value per share': 'USD' },
+    source: `${source}. Base case; terminal growth ${g}%; net cash $${r2(netCash)}bn; ${shares}bn shares. Rates: ${waccs.map(rateName).join(', ')}`,
+    x: ['PV of FY28–32 cash flow', 'PV of terminal value', 'Enterprise value', 'Net cash', 'Equity value'],
+    series: Object.fromEntries(waccs.map((w, k) => {
+      const b = bridgeAt[k];
+      return [rateName(w), [tn(b.pv.reduce((a, c) => a + c, 0)), tn(b.pvTv), tn(b.ev), tn(netCash), tn(b.equity)]];
+    })),
+  });
+  write({
+    key: 'model_three_rates', title: 'Base-case value per share at three discount rates', unit: 'USD',
+    units: { 'Enterprise value': 'USD tn' },
+    source: `${source}. ${wacc}%: Damodaran US semiconductor average (Jan 2026); ${gfWacc}%: Google Finance (24 Nov 2026); ${bbgWacc}%: Bloomberg WACC (Q3 2026). Share price $${price}`,
+    seriesSources: { 'Value per share': `${source}. Share price $${price}` },
+    x: [`${damo}% industry (Damodaran)`, `${gfWacc}% Google Finance`, `${bbgWacc}% Bloomberg`],
+    series: {
+      'Value per share': [damo, gfWacc, bbgWacc].map((w) => r2(bridgeAt[waccs.indexOf(w)].perShare)),
+      'Enterprise value': [damo, gfWacc, bbgWacc].map((w) => Math.round(bridgeAt[waccs.indexOf(w)].ev / 10) / 100),
+      'Share price today': [price, price, price],
+      'Upside to today': [damo, gfWacc, bbgWacc].map((w) => r2((bridgeAt[waccs.indexOf(w)].perShare / price - 1) * 100)),
+    },
+  });
+  // A 3% position: what each downside case would cost the whole portfolio.
+  const pos: number = A.position.value;
+  write({
+    key: 'model_downside', title: 'The two downside cases', unit: 'USD',
+    units: { 'Change from today': '%', 'Cost to the portfolio': '%', 'Position size': '%' },
+    source: `${source}. Share price $${price}; a ${pos}% position`,
+    x: ['Bear case', 'If AI ended for good'],
+    series: {
+      'Value per share': [results.bear.perShare, results.stress.perShare].map(r2),
+      'Change from today': [results.bear.perShare, results.stress.perShare].map((v) => r2((v / price - 1) * 100)),
+      'Cost to the portfolio': [results.bear.perShare, results.stress.perShare].map((v) => r2(Math.max(0, (1 - v / price) * pos))),
+      'Position size': [pos, pos],
+    },
+  });
+  // Revenue paths for each downside case against the base case (one chart per case, never merged).
+  for (const [key, n, title] of [['model_path_bear', 'bear', 'Bear case: rivals take share, a year of paused spending'], ['model_path_ai_ended', 'stress', 'If AI ended for good: revenue']] as const) {
+    write({
+      key, title, unit: 'USD bn', source: `${source}. FY26 actual, FY27 consensus`,
+      x: ['FY26', 'FY27', ...years],
+      series: { 'Base case': [revA.series.Revenue.at(-1)!, rev27, ...results.base.path].map(r2), [n === 'bear' ? 'Bear case' : 'If AI ended for good']: [revA.series.Revenue.at(-1)!, rev27, ...results[n].path].map(r2) },
+    });
+  }
 
   // ---------- CSV for Excel ----------
   const L: (string | number)[][] = [];
@@ -172,7 +265,10 @@ function main() {
   L.push(['FY27 revenue consensus (USD bn)', rev27, 'Bloomberg FA consensus']);
   L.push(['FY28 revenue consensus (USD bn)', rev28, 'Bloomberg FA consensus']);
   L.push(['Base FCF margin (%)', r2(baseMargin * 100), `Average of ${marginYears.join(', ')} (Bloomberg FA)`]);
-  L.push(['WACC (%)', wacc, A.wacc.value === 'bloomberg' ? 'Bloomberg WACC screen, 20 Nov 2026' : `Headline rate: ${A.wacc.why.split('. ')[0]}. Bloomberg WACC = ${bbgWacc}%`]);
+  L.push(['WACC (%)', wacc, A.wacc.value === 'bloomberg' ? 'Bloomberg WACC' : `Headline rate: ${A.wacc.why.split('. ')[0]}`]);
+  L.push(['WACC, Google Finance (%)', 14.45, 'Google Finance, 24 Nov 2026']);
+  L.push(['WACC, Bloomberg (%)', bbgWacc, 'Bloomberg WACC, Q3 2026 (team-confirmed)']);
+  L.push(['NOTE (reference only, not shown)', `Bloomberg WACC screen 20 Nov 2026 = ${bbgScreen}%; Stock Analysis 23 Nov 2026 = ${A.referenceOnly?.['Stock Analysis WACC, 23 Nov 2026 (%)'] ?? 16.42}%`]);
   L.push(['Terminal growth (%)', g, 'Team assumption']);
   L.push(['FY27 EPS consensus (USD)', eps27, 'Bloomberg DES']);
   for (const [n, r] of Object.entries(results)) {
@@ -207,6 +303,7 @@ function main() {
   console.log(`  Peer forward P/E ${r2(peerMedian)}x × EPS $${eps27} = $${r2(peerValue)}`);
   console.log(`  Reverse DCF: price implies ${r2(implied)}%/yr FY28–FY32 vs base ${r2(baseCagr)}%/yr`);
   console.log(`  Sensitivity (rows g=${gs}; cols WACC=${waccs}):`, sens);
+  for (const [k, w] of waccs.entries()) console.log(`  At ${w}%: EV $${r2(bridgeAt[k].ev)}bn, equity $${r2(bridgeAt[k].equity)}bn, $${r2(bridgeAt[k].perShare)}/share (${bridgeAt[k].perShare > price ? 'ABOVE' : 'BELOW'} $${price})`);
 }
 
 if (process.argv[1] === import.meta.filename) main();

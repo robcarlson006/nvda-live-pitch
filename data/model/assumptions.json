@@ -1,13 +1,31 @@
 {
   "_readme": "Team-owned valuation assumptions. Edit a value, then run `npm run data` in app/. Every number here is a choice we must be able to defend; data-driven inputs (revenue, consensus, free cash flow, price, shares, net cash) come from Bloomberg and are NOT set here.",
   "priceOverride": {
-    "value": 165.05,
+    "value": 152.85,
     "asOf": "2026-11-24",
-    "why": "Google Finance, NVDA, 24 Nov 2026 (price shown on the page). Leave null to use the Bloomberg DES price ($135.46, 20 Nov). On pitch morning, set today's price here and note the time, then run `npm run data`."
+    "why": "Team input, 24 Nov 2026; confirm and update on pitch morning. (Earlier: Google Finance $165.05 on 24 Nov; Bloomberg DES $135.46 on 20 Nov.) Keep research_market 'Share price' in app/scripts/research-data.ts the same."
   },
   "wacc": {
     "value": 10.55,
-    "why": "Damodaran, US semiconductor industry average cost of capital, January 2026: 10.55%. Team choice (24 Nov): the industry rate, argued on NVIDIA's net cash, margins and market position. Other estimates for NVIDIA are higher: Google Finance 14.45% (cost of equity 15%, beta 2.21, 24 Nov), Stock Analysis 16.42% (23 Nov), Bloomberg 19.3% (20 Nov). The sensitivity table and slides show all of them. To use another rate, put a number here, or \"bloomberg\" for Bloomberg's own 19.3%."
+    "why": "Damodaran (NYU), US semiconductor industry average cost of capital, January 2026: 10.55%. Checked against Google Finance's rate for NVIDIA (14.45%, 24 Nov 2026) and Bloomberg's WACC (15.4%, Q3 2026); the slides show all three."
+  },
+  "bloombergWacc": {
+    "value": 15.4,
+    "asOf": "Q3 2026",
+    "why": "Bloomberg WACC, Q3 2026, confirmed by the team. Used instead of the 20 Nov 2026 Bloomberg WACC screen PDF, which showed 19.3%."
+  },
+  "discountRates": {
+    "value": [
+      10.55,
+      14.45,
+      15.4
+    ],
+    "why": "The three rates the pitch shows: Damodaran US semiconductor average 10.55% (Jan 2026), Google Finance 14.45% (24 Nov 2026), Bloomberg 15.4% (Q3 2026). Nothing above 15.4% is shown to the board."
+  },
+  "referenceOnly": {
+    "_note": "Not shown to the board. Kept for our own reference.",
+    "Bloomberg WACC screen, 20 Nov 2026 (%)": 19.3,
+    "Stock Analysis WACC, 23 Nov 2026 (%)": 16.42
   },
   "terminalGrowth": {
     "value": 3,
@@ -20,6 +38,10 @@
       "FY26"
     ],
     "why": "Base free-cash-flow margin = average of these actual years (Bloomberg)."
+  },
+  "position": {
+    "value": 3,
+    "why": "Team choice: 3% of the portfolio, inside the 10% single-stock limit."
   },
   "scenarios": {
     "base": {
@@ -37,7 +59,7 @@
       "why": "Same revenue path as base; free-cash-flow margin 5 points higher (software and networking mix)."
     },
     "bear": {
-      "label": "Bear: share loss and one soft year",
+      "label": "Bear: rivals take share and spending pauses for a year",
       "fy28": "custom",
       "growth": [
         10,
@@ -50,7 +72,7 @@
       "why": "A realistic downside: the build-out continues but custom chips and AMD take share, and customers digest their spending for a year (FY28 +10%, FY29 -5%, then recovery). Free-cash-flow margin 38.8% = NVIDIA's own FY27 year-to-date margin (docs/financials/AUDIT.md, Bloomberg), not an invented cut. Growth rates are the team's judgement, shaped like the FY23 pause and the FY20 dip."
     },
     "stress": {
-      "label": "Stress: AI spending pauses",
+      "label": "If AI ended for good: revenue flat, then down 20%, then no real growth",
       "fy28": "flat",
       "growth": [
         -20,
@@ -59,7 +81,7 @@
         3
       ],
       "marginShift": -10,
-      "why": "The extreme case: FY28 revenue flat on FY27, then a 20% fall in FY29 as cloud companies cut spending, then slow growth. Margin 10 points lower from price competition. Harsher than anything in NVIDIA's history; shown as a stress test, not a forecast."
+      "why": "Our harshest case, named 'If AI ended for good' on every slide: FY28 revenue flat on FY27, then a 20% fall in FY29, then 0% and 3% (no real growth) and long-run growth of 3% after FY32. Free-cash-flow margin 10 points lower. Harsher than anything in NVIDIA's history; a stress test, not a forecast."
     }
   }
 }

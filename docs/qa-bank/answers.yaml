@@ -105,10 +105,10 @@
     layout: split
     title: If spending stops, the stress case is severe; a realistic bear case is milder
     bullets:
-      - "Price today: {{model_valuation | Value per share | Share price today}}. Realistic bear case: {{model_valuation | Value per share | Bear case}}. If spending stops: {{model_valuation | Value per share | Stress case}}"
+      - "Price today: {{model_valuation | Value per share | Share price today}}. Realistic bear case: {{model_valuation | Value per share | Bear case}}. If spending stops: {{model_valuation | Value per share | If AI ended for good}}"
       - "Forward P/E is {{peers_pe | Forward P/E | NVIDIA}}; Cisco in 2000 was {{research_facts | Cisco forward P/E, March 2000 | value}}"
       - If it pops, the price falls, but NVIDIA owns the hardware and the CUDA software, so it keeps its lead
-    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Stress case }
+    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
     sources: ["Team valuation model; Google Finance, 24 Nov 2026"]
 
 - id: discount-rate
@@ -118,9 +118,9 @@
     layout: split
     title: The answer depends on the discount rate, so we show the whole range
     bullets:
-      - "Our rate is {{research_market | Discount rate, lowest estimate (US semiconductor average) | value}}, the average for US semiconductor companies. Google Finance has {{research_market | WACC, Google Finance | value}} for NVIDIA itself"
-      - "Estimates run up to {{research_market | Discount rate, highest estimate (Bloomberg) | value}} (Bloomberg)"
-      - "Base case at the three: {{model_sensitivity | Terminal growth 3% | 10.55%}}, {{model_sensitivity | Terminal growth 3% | 14.45%}} and {{model_sensitivity | Terminal growth 3% | 19.3%}} a share"
+      - "Our rate is {{research_market | WACC, US semiconductor industry average (Damodaran) | value}}, the average for US semiconductor companies. Google Finance has {{research_market | WACC, Google Finance | value}} for NVIDIA itself"
+      - "Estimates run up to {{research_market | WACC, Bloomberg Q3 2026 | value}} (Bloomberg)"
+      - "Base case at the three: {{model_sensitivity | Terminal growth 3% | 10.55%}}, {{model_sensitivity | Terminal growth 3% | 14.45%}} and {{model_sensitivity | Terminal growth 3% | 15.4%}} a share"
       - "At Bloomberg's rate the price is about fair, which is why we show it"
     chart: { type: bar, datasetKey: model_sensitivity, series: ["Terminal growth 3%"], highlight: "10.55%" }
     sources: ["Google Finance, NVDA, 24 Nov 2026; Damodaran, Jan 2026; Stock Analysis, 23 Nov 2026; Bloomberg WACC, 20 Nov 2026"]
@@ -148,8 +148,8 @@
       - Federal law needs the President's signature, and he has said he would veto. The pressure is local and about electricity bills.
       - "Blocked or delayed in Q1 2026: {{research_policy | US data-centre projects blocked or delayed, Q1 2026 | value}} US projects, worth {{research_policy | Value of those projects | value}} billion dollars"
       - "{{research_policy | Revenue from customers outside the US, FY26 | value}} of NVIDIA's FY26 revenue came from customers outside the US"
-      - "If spending stops, our stress case is {{model_valuation | Value per share | Stress case}} a share; our realistic bear case is {{model_valuation | Value per share | Bear case}}"
-    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Stress case }
+      - "If spending stops, our stress case is {{model_valuation | Value per share | If AI ended for good}} a share; our realistic bear case is {{model_valuation | Value per share | Bear case}}"
+    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
     sources: ["Data Center Watch via Network World, 2026; NVIDIA Form 10-K FY26; NVIDIA Q3 FY27 earnings call, 17 Nov 2026"]
 
 - id: china-export
@@ -175,7 +175,7 @@
       - They are usually the contract manufacturers and distributors, not the end users, so this understates the cloud giants
       - "Hyperscaler spending plans for 2026 add up to {{research_policy | Hyperscaler capex, 2026 guidance | value}} billion dollars"
       - A pause by two or three of them is our stress case
-    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Stress case }
+    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
     sources: ["NVIDIA Form 10-K FY26; company guidance via Yahoo Finance, 2026"]
 
 - id: circular
@@ -201,7 +201,7 @@
       - "Economic life of an AI chip: {{research_policy | GPU economic life, low | value}} to {{research_policy | GPU economic life, high | value}} years, against decades for fibre"
       - "That cuts both ways: an overbuild cannot sit and wait, and customers must keep buying newer chips"
       - Our stress case is exactly this, where spending stalls and falls
-    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: Stress case }
+    chart: { type: bar, datasetKey: model_valuation, series: [Value per share], highlight: If AI ended for good }
 
 - id: competition
   question: Isn't Google, Amazon or Broadcom going to take the business with custom chips?

@@ -41,8 +41,8 @@ export function Stage() {
   }, []);
 
   return (
-    <div className={`stage${motion ? ' motion' : ' no-motion'}`}>
-      <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length} effect={slide?.effect} reveal={state?.reveal ?? 0} />
+    <div className={`stage${motion ? ' motion' : ' no-motion'}${slide?.effect === 'dark' && (state?.reveal ?? 0) > 1 ? ' fx-dark' : ''}`}>
+      <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length || !!slide?.groups} effect={slide?.effect === 'dark' ? undefined : slide?.effect} reveal={state?.reveal ?? 0} />
       {slide && <SlideView key={state!.liveSince} slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} />}
     </div>
   );
@@ -51,7 +51,7 @@ export function Stage() {
 /** Figures written {{dataset | series | x}} in the text are looked up here, so the stage never shows a typed number. */
 function withFigures(s: Slide, datasets: Record<string, Dataset>): Slide {
   const r = (t: string) => resolveText(t, datasets);
-  return { ...s, title: r(s.title), bullets: s.bullets.map(r), stat: s.stat && { ...s.stat, label: r(s.stat.label) }, sources: slideSources(s, datasets) };
+  return { ...s, title: r(s.title), bullets: s.bullets.map(r), stat: s.stat && { ...s.stat, label: r(s.stat.label) }, groups: s.groups?.map((g) => ({ ...g, items: g.items.map(r) })), sources: slideSources(s, datasets) };
 }
 
 /** Animates in once, when first mounted; the delay is fixed at mount so later re-renders never replay it. */
@@ -100,6 +100,18 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   // The point just said is in focus; earlier ones step back, so the eye follows the speaker.
   const newest = shownBullets.length > 1 ? shownBullets.reduce((a, b) => (bulletIdx(b) > bulletIdx(a) ? b : a)) : -1;
   const zoom = zoomAt(slide, reveal);
+  // Inputs slide: each input appears as it is named and is green while it is the one being said.
+  const itemIdx = (g: number, i: number) => 1 + steps.findIndex((st) => 'item' in st && st.item[0] === g && st.item[1] === i);
+  const lastStep = steps.length; // element index of the final step
+  const newestItem = (() => {
+    let best: [number, number] | null = null;
+    let at = -1;
+    (slide.groups ?? []).forEach((g, gi) => g.items.forEach((_, ii) => {
+      const k = itemIdx(gi, ii);
+      if (shown(k) && k > at) { at = k; best = [gi, ii]; }
+    }));
+    return reveal > lastStep ? null : best as [number, number] | null; // fully built: everything settles to white
+  })();
   const sources = slide.sources; // already includes every dataset the slide uses (withFigures)
 
   const title = slide.layout === 'statement' ? (
@@ -186,6 +198,28 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
             {points}
           </div>
           {chart}
+        </>
+      )}
+      {slide.layout === 'inputs' && (
+        <>
+          {title}
+          <div className="inputs">
+            {(slide.groups ?? []).map((g, gi) =>
+              g.items.some((_, ii) => shown(itemIdx(gi, ii))) ? (
+                <Reveal key={gi} className={`input-group${newestItem && newestItem[0] !== gi ? ' past' : ''}`} at={at(itemIdx(gi, 0))}>
+                  <p className="input-tag">{g.tag}</p>
+                  {g.items.map((t, ii) =>
+                    shown(itemIdx(gi, ii)) ? (
+                      <Reveal key={ii} as="p" className={`input-item${newestItem?.[0] === gi && newestItem[1] === ii ? ' now' : ''}`} at={at(itemIdx(gi, ii))}>
+                        {t}
+                      </Reveal>
+                    ) : null,
+                  )}
+                </Reveal>
+              ) : null,
+            )}
+          </div>
+          {points}
         </>
       )}
       {slide.layout === 'chart' && (

@@ -1,0 +1,41 @@
+{
+  "key": "model_dcf_bridge",
+  "title": "From cash flow to value per share (base case)",
+  "unit": "USD tn",
+  "units": {
+    "Value per share": "USD"
+  },
+  "source": "Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data. Base case; terminal growth 3%; net cash $59.6bn; 24.1bn shares. Rates: 10.55%, 14.45%, 15.4%",
+  "asOf": "2026-11-24",
+  "placeholder": false,
+  "x": [
+    "PV of FY28–32 cash flow",
+    "PV of terminal value",
+    "Enterprise value",
+    "Net cash",
+    "Equity value"
+  ],
+  "series": {
+    "10.55%": [
+      2.2907,
+      7.0821,
+      9.3728,
+      0.0596,
+      9.4324
+    ],
+    "14.45%": [
+      2.0339,
+      3.9,
+      5.9339,
+      0.0596,
+      5.9935
+    ],
+    "15.4%": [
+      1.9777,
+      3.4498,
+      5.4275,
+      0.0596,
+      5.4871
+    ]
+  }
+}

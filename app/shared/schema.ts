@@ -4,11 +4,16 @@ import { ICON_NAMES } from './icons.ts';
 // The one slide format used everywhere: script spine, Q&A bank and Claude output.
 // Charts carry only a dataset key + series names; the numbers are always looked up in code.
 export const ChartSpec = z.object({
-  type: z.enum(['line', 'bar', 'stackedBar']),
+  // waterfall: each x adds to the running total and floats on it; x values in `totals` are full bars (e.g. enterprise value)
+  type: z.enum(['line', 'bar', 'stackedBar', 'waterfall']),
   datasetKey: z.string().min(1),
   series: z.array(z.string()).min(1),
   highlight: z.string().optional(), // an x value to emphasise, e.g. "FY26"
   range: z.tuple([z.string(), z.string()]).optional(), // first and last x value to show, e.g. ["FY05", "FY13"]
+  exclude: z.array(z.string()).optional(), // x values left off this chart (they stay in the dataset)
+  totals: z.array(z.string()).optional(), // waterfall only: x values drawn as full bars from zero
+  refLine: z.object({ series: z.string().min(1) }).optional(), // a horizontal line at this series' first value, labelled (e.g. today's share price)
+  muted: z.boolean().optional(), // draw the first series in grey instead of green (e.g. "If AI ended for good")
 });
 
 // A single headline figure, looked up from a dataset (never typed by hand or by the model).
@@ -20,19 +25,30 @@ export const StatSpec = z.object({
 });
 
 // Background effects drawn by the core array. Purely visual: if one fails, the slide still shows.
-export const Effect = z.enum(['cpu-gpu', 'merge72', 'spread']);
+export const Effect = z.enum(['cpu-gpu', 'merge72', 'spread', 'dark']);
 
 // One build step after the title: a bullet (by index), the chart, or a zoom into one x value of the chart ("all" zooms back out).
-export const Step = z.union([z.object({ bullet: z.number().int().min(0) }), z.object({ chart: z.literal(true) }), z.object({ zoom: z.string().min(1) })]);
+// `item` = [group, item] on an `inputs` slide: that input appears, highlighted while it is being said.
+export const Step = z.union([
+  z.object({ bullet: z.number().int().min(0) }),
+  z.object({ chart: z.literal(true) }),
+  z.object({ zoom: z.string().min(1) }),
+  z.object({ item: z.tuple([z.number().int().min(0), z.number().int().min(0)]) }),
+]);
 export type Step = z.infer<typeof Step>;
 
+// A block of inputs from one source on an `inputs` slide: a small text tag (no logo) and its figures.
+export const Group = z.object({ tag: z.string().min(1).max(60), items: z.array(z.string().max(160)).min(1).max(6) });
+
 // statement: one big line · number: a figure rendered by the core array · chart: chart fills the slide · split: text + chart
+// inputs: blocks of figures grouped by source (the DCF inputs slide)
 export const Slide = z.object({
   id: z.string().min(1),
-  layout: z.enum(['statement', 'number', 'chart', 'split']).default('split'),
+  layout: z.enum(['statement', 'number', 'chart', 'split', 'inputs']).default('split'),
   speaker: z.string().optional(),
   title: z.string().min(1).max(200), // raw length; checkSlide limits the length on screen
   bullets: z.array(z.string().max(260)).max(4).default([]),
+  groups: z.array(Group).max(4).optional(),
   chart: ChartSpec.optional(),
   stat: StatSpec.optional(),
   effect: Effect.optional(),
@@ -45,7 +61,15 @@ export const Slide = z.object({
 export type Slide = z.infer<typeof Slide>;
 
 /** The build order after the title. Slides without explicit steps build their bullets, then their chart. */
-export const stepsOf = (s: Slide): Step[] => s.steps ?? [...s.bullets.map((_, i) => ({ bullet: i })), ...(s.chart ? [{ chart: true as const }] : [])];
+export const stepsOf = (s: Slide): Step[] =>
+  s.steps ?? [
+    ...(s.groups ?? []).flatMap((g, gi) => g.items.map((_, ii) => ({ item: [gi, ii] as [number, number] }))),
+    ...s.bullets.map((_, i) => ({ bullet: i })),
+    ...(s.chart ? [{ chart: true as const }] : []),
+  ];
+
+/** Every piece of text on a slide that can hold figures: title, bullets, headline label and input items. */
+export const slideTexts = (s: Slide): string[] => [s.title, ...s.bullets, s.stat?.label ?? '', ...(s.groups ?? []).flatMap((g) => g.items)];
 
 /** Which chart x value the slide is zoomed into once `reveal` elements are built, if any. */
 export function zoomAt(s: Slide, reveal: number): string | null {
@@ -67,6 +91,7 @@ export const Dataset = z.object({
   placeholder: z.boolean(),
   curated: z.boolean().optional(), // typed in from research, not parsed from Bloomberg
   verified: z.boolean().optional(), // false = needs a primary source before the pitch
+  seriesVerified: z.record(z.string(), z.boolean()).optional(), // per-series override of `verified` (e.g. one figure the team has confirmed)
   x: z.array(z.string()),
   series: z.record(z.string(), z.array(z.number().nullable())),
 });
@@ -77,7 +102,9 @@ const whole = (v: number) => Number.isInteger(v);
 /** "USD bn" → "$115.8bn"; anything else keeps its unit. Whole numbers drop the ".0". */
 export function formatValue(v: number, unit: string): string {
   if (unit === 'USD bn') return whole(v) ? `$${v}bn` : `$${v.toFixed(1)}bn`;
-  if (unit === 'USD tn') return `$${v}tn`;
+  if (unit === 'USD tn') return `$${Number(v.toFixed(2))}tn`;
+  if (unit === 'bn') return `${v}bn`;
+  if (unit === 'year') return `${v}`;
   if (unit === 'USD m') return `$${v.toLocaleString('en-GB')}m`;
   // Up to two decimals, so a 14.45% discount rate or a 10.55% sector rate is never shown as 14.4% / 10.6%.
   if (unit === '%') return `${whole(v) ? v : Number(v.toFixed(2))}%`;
@@ -113,7 +140,7 @@ export const resolveText = (text: string, datasets: Map<string, Dataset> | Recor
 
 /** Every dataset a slide draws on: chart, headline figure, and figures in its text. */
 export function slideDatasetKeys(s: Slide): string[] {
-  const keys = [s.chart?.datasetKey, s.stat?.datasetKey, ...[s.title, ...s.bullets, s.stat?.label ?? ''].flatMap((t) => tokenRefs(t).map((r) => r.key))];
+  const keys = [s.chart?.datasetKey, s.stat?.datasetKey, ...slideTexts(s).flatMap((t) => tokenRefs(t).map((r) => r.key))];
   return [...new Set(keys.filter((k): k is string => !!k))];
 }
 
@@ -124,7 +151,7 @@ export function slideSources(s: Slide, datasets: Record<string, Dataset>): strin
     const ds = key ? datasets[key] : undefined;
     if (ds) out.push(ds.seriesSources?.[s.stat?.series ?? ''] && key === s.stat?.datasetKey ? ds.seriesSources[s.stat!.series] : `${ds.source}, as of ${ds.asOf}`);
   }
-  for (const r of [s.title, ...s.bullets, s.stat?.label ?? ''].flatMap(tokenRefs)) {
+  for (const r of slideTexts(s).flatMap(tokenRefs)) {
     const ds = datasets[r.key];
     if (ds) out.push(ds.seriesSources?.[r.series] ?? `${ds.source}, as of ${ds.asOf}`);
   }

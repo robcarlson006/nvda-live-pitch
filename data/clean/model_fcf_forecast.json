@@ -1,0 +1,52 @@
+{
+  "key": "model_fcf_forecast",
+  "title": "Free cash flow: actual, then our base case",
+  "unit": "USD bn",
+  "source": "Actual: Bloomberg FA (nvda_fcf_annual). Forecast: Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data; consensus revenue × 45.25% average margin. FY27, the current year, is not discounted",
+  "asOf": "2026-11-24",
+  "placeholder": false,
+  "x": [
+    "FY20",
+    "FY21",
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26",
+    "FY28",
+    "FY29",
+    "FY30",
+    "FY31",
+    "FY32"
+  ],
+  "series": {
+    "Actual": [
+      4.272,
+      4.694,
+      8.132,
+      3.808,
+      27.021,
+      60.853,
+      96.676,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "Base-case forecast": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      329.72,
+      511.66,
+      704.99,
+      848.76,
+      874.22
+    ]
+  }
+}
