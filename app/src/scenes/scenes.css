@@ -1,0 +1,115 @@
+/* Bespoke scenes: they take the right of the slide; the slide's own title and points keep the left. */
+.scene { position: absolute; top: 0; bottom: 0; right: 0; width: 50vw; pointer-events: none; }
+.has-scene h1, .has-scene .points { max-width: 42vw !important; }
+.has-scene.layout-statement .statement { font-size: calc(7.6 * var(--u)) !important; max-width: 13ch !important; }
+.has-scene.layout-statement .point { font-size: calc(3.5 * var(--u)) !important; max-width: 40vw; }
+.has-scene.layout-timeline .statement { font-size: calc(6.6 * var(--u)) !important; max-width: 12ch !important; }
+.has-scene.layout-timeline .point { font-size: calc(3.1 * var(--u)); max-width: 38vw; }
+.has-scene .sources { right: 52vw; }
+
+/* ---------- Space race ---------- */
+.scene-space-race .scene { width: 54vw; }
+.space-race { width: 100%; height: 100%; display: block; overflow: visible; font-family: 'Archivo Variable', system-ui, sans-serif; }
+
+.sr-stars circle { fill: #f4f6f1; opacity: var(--o); animation: sr-twinkle 5s ease-in-out var(--d) infinite alternate, sr-in 2.4s ease-out both; }
+@keyframes sr-twinkle { from { opacity: var(--o); } to { opacity: calc(var(--o) * 0.25); } }
+@keyframes sr-in { from { opacity: 0; } }
+
+.sr-earth { animation: sr-rise 2.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both; }
+@keyframes sr-rise { from { transform: translateY(180px); opacity: 0; } }
+.sr-atmos { transition: opacity 1.6s ease, stroke-width 1.6s ease; }
+
+.sr-orbit { fill: none; stroke: #7a8174; stroke-width: 1.4; stroke-dasharray: 0.004 0.006; animation: sr-fade 1.4s ease both; }
+@keyframes sr-fade { from { opacity: 0; } }
+.sr-sputnik line { stroke: #d9dccf; stroke-width: 1.6; }
+.sr-sat-body { fill: #f4f6f1; }
+.sr-beep { fill: none; stroke: #76b900; stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: sr-beep 1.2s ease-out infinite; }
+@keyframes sr-beep { from { transform: scale(1); opacity: 0.9; } to { transform: scale(5); opacity: 0; } }
+
+.sr-label text { fill: #d6dacf; font-size: 24px; font-weight: 450; letter-spacing: 0.01em; }
+.sr-label .sr-year { fill: #76b900; font-size: 34px; font-weight: 720; font-stretch: 115%; }
+.sr-label { animation: sr-label 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both; }
+@keyframes sr-label { from { opacity: 0; transform: translateY(14px); } }
+/* An SVG transform attribute and a CSS transform would fight, so labels animate on their text instead. */
+.sr-label { animation: none; }
+.sr-label text { animation: sr-label 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both; }
+
+.sr-moon { animation: sr-moonrise 1.8s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes sr-moonrise { from { transform: translate(40px, 60px); opacity: 0; } }
+.sr-trajectory { fill: none; stroke: #f4f6f1; stroke-width: 1.6; opacity: 0.55; stroke-dasharray: 1; stroke-dashoffset: 1; animation: sr-draw 2.6s cubic-bezier(0.65, 0, 0.35, 1) 0.5s forwards; }
+@keyframes sr-draw { to { stroke-dashoffset: 0; } }
+.sr-touchdown { fill: none; stroke: #76b900; stroke-width: 3; opacity: 0; transform-box: fill-box; transform-origin: center; animation: sr-touch 1.6s ease-out 3.1s both; }
+@keyframes sr-touch { 0% { opacity: 0.95; transform: scale(1); } 100% { opacity: 0; transform: scale(1.8); } }
+.sr-label-moon text { animation-delay: 2.9s; }
+
+.sr-ring { transform-box: view-box; transform-origin: 400px 1180px; animation: sr-spin 90s linear infinite; }
+@keyframes sr-spin { to { transform: rotate(360deg); } }
+.sr-obs { animation: sr-fade 0.9s ease calc(var(--i) * 0.06s) both; }
+.sr-beam { fill: url(#sr-beam); animation: sr-scan 2.8s ease-in-out calc(var(--i) * 0.31s) infinite alternate; }
+@keyframes sr-scan { from { opacity: 0.15; } to { opacity: 0.9; } }
+.sr-label-earth text { animation-delay: 1s; }
+
+/* The AI race: the camera pulls back, the space race steps behind, and the two races are laid side by side. */
+.sr-space { transition: transform 1.8s cubic-bezier(0.65, 0, 0.35, 1), opacity 1.8s ease; transform-box: view-box; transform-origin: 400px 900px; }
+.racing .sr-space { transform: translateY(90px) scale(0.78); opacity: 0.5; }
+.racing .sr-atmos { opacity: 0.8; stroke-width: 18px; }
+/* The space-race captions have been said; with the camera pulled back they would only clutter the comparison. */
+.sr-label { transition: opacity 1s ease; }
+.racing .sr-label { opacity: 0; }
+.sr-race text { fill: #d6dacf; }
+.sr-race-head { font-size: 22px; letter-spacing: 0.12em; text-transform: uppercase; fill: #9aa094 !important; font-weight: 600; animation: sr-fade 1s ease 0.8s both; }
+.sr-race-name { font-size: 30px; font-weight: 700; font-stretch: 112%; fill: #f4f6f1 !important; animation: sr-fade 0.8s ease 1s both; }
+.sr-race-ai { fill: #76b900 !important; }
+.sr-track { fill: #151912; animation: sr-fade 0.8s ease 1s both; }
+.sr-bar { transform-box: fill-box; transform-origin: left center; }
+.sr-bar-space { fill: #b4b9ae; animation: sr-grow 1.6s cubic-bezier(0.65, 0, 0.35, 1) 1.3s both; }
+.sr-bar-ai { fill: #76b900; animation: sr-grow 2.2s cubic-bezier(0.65, 0, 0.35, 1) 2.2s both; }
+@keyframes sr-grow { from { transform: scaleX(0); } }
+.sr-finish { fill: #f4f6f1; animation: sr-fade 0.5s ease 2.8s both; }
+.sr-head { fill: #76b900; transform-box: fill-box; transform-origin: center; animation: sr-fade 0.5s ease 4.3s both, sr-pulse 1.4s ease-in-out 4.8s infinite alternate; }
+@keyframes sr-pulse { to { transform: scale(1.35); } }
+.sr-ahead { stroke: #76b900; stroke-width: 3; stroke-dasharray: 6 10; opacity: 0.6; animation: sr-fade 1s ease 4.6s both, sr-run 1s linear infinite; }
+@keyframes sr-run { to { stroke-dashoffset: -16; } }
+.sr-race-tick { font-size: 22px; fill: #9aa094 !important; animation: sr-fade 0.8s ease 1.4s both; }
+.sr-race-end { fill: #f4f6f1 !important; animation-delay: 2.8s; }
+.sr-race-now { fill: #76b900 !important; font-weight: 650; animation-delay: 4.3s; }
+.sr-question { font-size: 24px; font-style: italic; letter-spacing: 0.02em; fill: #f4f6f1 !important; animation: sr-fade 1.2s ease 5s both; }
+
+.no-motion .space-race *, .no-motion .space-race { animation: none !important; transition: none !important; }
+
+/* ---------- AI across industries ---------- */
+.scene-already-doing .scene { width: 52vw; right: calc(var(--margin) * 0.6); display: flex; align-items: center; }
+.ai-board { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(1.3 * var(--u)); }
+.ai-tile {
+  position: relative; min-height: calc(17 * var(--u)); padding: calc(1.6 * var(--u)) calc(1.6 * var(--u)) calc(1.2 * var(--u));
+  background: rgba(10, 12, 9, 0.82); border: 1px solid #262a23; border-radius: calc(0.5 * var(--u));
+  display: flex; flex-direction: column; gap: calc(0.7 * var(--u));
+  transition: border-color 0.8s ease, background 0.8s ease, opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.8s ease;
+  animation: ai-boot 0.9s cubic-bezier(0.16, 1, 0.3, 1) var(--boot) both;
+}
+@keyframes ai-boot { from { opacity: 0; transform: translateY(calc(2 * var(--u))) scale(0.96); } }
+.ai-industry { margin: 0; font-size: calc(1.7 * var(--u)); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 650; color: #7a8174; display: flex; gap: 0.8ch; align-items: center; flex-wrap: wrap; transition: color 0.8s ease; }
+.ai-nv { font-size: calc(1.35 * var(--u)); letter-spacing: 0.06em; color: #000; background: var(--green); padding: 0.15em 0.5em; border-radius: 2px; }
+.ai-text { margin: 0; font-size: calc(2.25 * var(--u)); line-height: 1.25; color: #5d6358; transition: color 0.8s ease; flex: 1; }
+.ai-source { margin: 0; font-size: calc(1.25 * var(--u)); color: #4a5045; transition: color 0.8s ease; }
+
+/* Not yet: a dim core waiting its turn. */
+.ai-tile.idle { opacity: 0.55; }
+/* Said just now: lit green, lifted. */
+.ai-tile.now { border-color: var(--green); background: rgba(16, 26, 6, 0.92); box-shadow: 0 0 calc(3 * var(--u)) rgba(118, 185, 0, 0.28), inset 0 0 0 1px var(--green); transform: translateY(calc(-0.6 * var(--u))); }
+.ai-tile.now .ai-industry { color: var(--green); }
+.ai-tile.now .ai-text { color: var(--white); }
+.ai-tile.now .ai-source { color: #9aa094; }
+/* Said earlier: stays green-edged, steps back. */
+.ai-tile.said { border-color: #3d5a0b; }
+.ai-tile.said .ai-industry { color: #8fbf3a; }
+.ai-tile.said .ai-text { color: #d6dacf; }
+.ai-tile.said .ai-source { color: #7a8174; }
+/* The rest of the board lights in a wave once the spoken three are done. */
+.ai-tile.lit { opacity: 1; transition-delay: var(--wave); border-color: #353e2e; }
+.ai-tile.lit .ai-industry { color: #b4b9ae; transition-delay: var(--wave); }
+.ai-tile.lit .ai-text { color: var(--white); transition-delay: var(--wave); }
+.ai-tile.lit .ai-source { color: #7a8174; transition-delay: var(--wave); }
+.ai-tile.lit.nvidia { border-color: var(--green); }
+.all-lit .ai-tile.now { transform: none; box-shadow: inset 0 0 0 1px var(--green); }
+.no-motion .ai-tile { animation: none; transition: none; }

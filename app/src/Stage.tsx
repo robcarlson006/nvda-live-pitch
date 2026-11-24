@@ -1,5 +1,8 @@
 import { AnswerVisual } from './AnswerVisual.tsx';
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { AnimatePresence, motion as m } from 'framer-motion';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { Figures } from './Figures.tsx';
+import { sceneFor } from './scenes/index.tsx';
 import { lookup, resolveText, slideSources, stepsOf, zoomAt, type Dataset, type Slide } from '../shared/schema.ts';
 import { Chart, DataTable } from './Chart.tsx';
 import { CoreArray } from './CoreArray.tsx';
@@ -50,8 +53,21 @@ export function Stage() {
 
   return (
     <div className={`stage${motion ? ' motion' : ' no-motion'}${slide?.effect === 'dark' && (state?.reveal ?? 0) > 1 ? ' fx-dark' : ''}`}>
-      <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length || !!slide?.groups} effect={slide?.effect === 'dark' ? undefined : slide?.effect} reveal={state?.reveal ?? 0} />
-      {slide && <SlideView key={state!.liveSince} slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} />}
+      <CoreArray buildKey={state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length || !!slide?.groups} effect={slide?.effect === 'dark' || (slide && sceneFor(slide.id)) ? undefined : slide?.effect} reveal={state?.reveal ?? 0} />
+      {/* Slide to slide: the old slide flies past the camera while the new one settles in from just behind it. */}
+      <AnimatePresence initial={false}>
+        {slide && (
+          <m.div
+            key={state!.liveSince}
+            className="slide-shell"
+            initial={motion ? { opacity: 0, scale: 0.94 } : false}
+            animate={{ opacity: 1, scale: 1, transition: { duration: motion ? 0.9 : 0, ease: [0.16, 1, 0.3, 1], delay: motion ? 0.12 : 0 } }}
+            exit={{ opacity: 0, scale: motion ? 1.08 : 1, transition: { duration: motion ? 0.55 : 0, ease: [0.7, 0, 0.84, 0] } }}
+          >
+            <SlideView slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} motion={motion} />
+          </m.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -78,10 +94,10 @@ export function zoomFor(slide: Slide, reveal: number): string | null {
 }
 
 /** Animates in once, when first mounted; the delay is fixed at mount so later re-renders never replay it. */
-function Reveal({ at, children, className, as: Tag = 'div' }: { at: number; children: ReactNode; className?: string; as?: 'div' | 'h1' | 'p' }) {
+function Reveal({ at, children, className, as: Tag = 'div', data }: { at: number; children: ReactNode; className?: string; as?: 'div' | 'h1' | 'p'; data?: number }) {
   const [delay] = useState(at);
   return (
-    <Tag className={`reveal ${className ?? ''}`} style={{ '--at': `${delay}s` } as CSSProperties}>
+    <Tag className={`reveal ${className ?? ''}`} style={{ '--at': `${delay}s` } as CSSProperties} data-point={data}>
       {children}
     </Tag>
   );
@@ -105,7 +121,7 @@ function Delayed({ at, children }: { at: number; children: ReactNode }) {
   return ready ? <>{children}</> : null;
 }
 
-function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: number; datasets: Record<string, Dataset>; figure?: string }) {
+function SlideView({ slide, reveal, datasets, figure, motion }: { slide: Slide; reveal: number; datasets: Record<string, Dataset>; figure?: string; motion: boolean }) {
   // Elements: 0 = title, then one per step (by default the bullets, then the chart). Those revealed together are staggered.
   const prev = useRef(0);
   const batchStart = prev.current;
@@ -155,15 +171,38 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
     </Reveal>
   );
 
+  // The focus rail: a green bar beside the point being said, which glides to each new point as it lands,
+  // so the eye moves from thing to thing with the speaker. Timelines and input grids have their own markers.
+  const latest = shownBullets.length ? shownBullets.reduce((a, b) => (bulletIdx(b) > bulletIdx(a) ? b : a)) : -1;
+  const railed = !slide.answer && slide.layout !== 'timeline' && slide.layout !== 'inputs' && !isDcfWorksheet;
+  const pointsEl = useRef<HTMLDivElement>(null);
+  const [rail, setRail] = useState<{ top: number; height: number; at: number } | null>(null);
+  useLayoutEffect(() => {
+    if (!railed || latest < 0) return setRail(null);
+    const el = pointsEl.current?.querySelector<HTMLElement>(`[data-point="${latest}"]`);
+    if (!el) return;
+    const lh = parseFloat(getComputedStyle(el).lineHeight) || el.offsetHeight;
+    setRail((r) => ({ top: el.offsetTop, height: Math.min(el.offsetHeight, lh * 2.2), at: r ? 0 : at(bulletIdx(latest)) }));
+  }, [latest, railed]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const points = (
-    <div className="points">
+    <div className="points" ref={pointsEl}>
+      {rail && <span className="focus-rail" style={{ '--rail-y': `${rail.top}px`, '--rail-h': `${rail.height}px`, '--at': `${rail.at}s` } as CSSProperties} />}
       {slide.bullets.map((b, i) =>
         shown(bulletIdx(i)) ? (
-          <Reveal key={i} as="p" className={`point${newest >= 0 && i !== newest ? ' past' : ''}`} at={at(bulletIdx(i))}>
-            {slide.layout === 'timeline' ? <TimelineText text={b} /> : b}
+          <Reveal key={i} as="p" className={`point${newest >= 0 && i !== newest ? ' past' : ''}${i === latest ? ' current' : ''}`} at={at(bulletIdx(i))} data={i}>
+            {slide.layout === 'timeline' ? <TimelineText text={b} /> : <Figures text={b} at={at(bulletIdx(i))} motion={motion} />}
           </Reveal>
         ) : null,
       )}
+    </div>
+  );
+
+  // A bespoke animated scene for a few slides (space race, AI across industries). Keyed by slide id, so the script needs no change.
+  const Scene = sceneFor(slide.id);
+  const scene = Scene && (
+    <div className="scene" aria-hidden="true">
+      <Scene stage={shownBullets.length} motion={motion} />
     </div>
   );
 
@@ -204,7 +243,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
   );
 
   return (
-    <main className={`slide layout-${slide.layout}${isDcfWorksheet ? ' has-dcf-worksheet' : ''}${slide.video ? ' has-video' : ''}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}${hasDiagram ? ' has-diagram' : ''}${slide.answer ? ' is-answer' : ''}`}>
+    <main className={`slide layout-${slide.layout}${isDcfWorksheet ? ' has-dcf-worksheet' : ''}${slide.video ? ' has-video' : ''}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect && !Scene ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}${hasDiagram ? ' has-diagram' : ''}${slide.answer ? ' is-answer' : ''}${Scene ? ` has-scene scene-${slide.id}` : ''}`}>
       {(slide.layout === 'statement' || slide.layout === 'timeline') && (
         <>
           {title}
@@ -263,6 +302,7 @@ function SlideView({ slide, reveal, datasets, figure }: { slide: Slide; reveal: 
           {chart}
         </>
       )}
+      {scene}
       {diagram}
       {video}
       {sources.length > 0 && (
