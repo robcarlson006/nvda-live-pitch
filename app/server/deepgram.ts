@@ -24,12 +24,20 @@ export function deepgramKey(): string {
   }
 }
 
-// Words speech-to-text tends to get wrong. Deepgram's limit is 500 tokens; its advice is 20–50 terms.
-const KEYTERMS = [
-  'NVIDIA', 'CUDA', 'GeForce 256', 'RIVA 128', 'NV1', 'Sega', "Denny's", 'Jensen Huang', 'Chris Malachowsky', 'Curtis Priem',
-  'Ian Buck', 'Andrew Ng', 'Alex Krizhevsky', 'AlexNet', 'ImageNet', 'AMD', 'ROCm', 'NVLink', 'Mellanox', 'TSMC',
-  'Blackwell', 'hyperscaler', 'EBITDA', 'P/E', 'discounted cash flow', 'Scope 1', 'Scope 2', 'Scope 3', 'Colette Kress',
-  'Panshul', "Mi'kael", 'OpenAI', 'Anthropic', 'GPU',
+// Words speech-to-text tends to get wrong, taken from what the spine says and the Q&A bank asks.
+// Deepgram's limit is 500 tokens; its advice is 20–50 terms, so names no longer in the script are dropped.
+export const KEYTERMS = [
+  // The story and the products
+  'NVIDIA', 'CUDA', 'GeForce 256', 'RIVA 128', "Denny's", 'Jensen Huang', 'Ian Buck', 'Andrew Ng', 'AlexNet', 'ImageNet',
+  'Xbox', 'Tensor Cores', 'NVLink', 'Mellanox', 'Blackwell', 'Vera Rubin', 'Sputnik', 'GPU',
+  // Competitors, customers, the open-model ecosystem
+  'AMD', 'ROCm', 'TSMC', 'Broadcom', 'Huawei', 'H20', 'Nscale', 'Hugging Face', 'Mistral', 'OpenAI', 'Anthropic', 'hyperscaler',
+  // Finance and valuation
+  'EBITDA', 'P/E', 'WACC', 'discounted cash flow', 'Damodaran',
+  // ESG and governance
+  'Scope 1', 'Scope 2', 'Scope 3', 'export controls', 'Glassdoor', 'Colette Kress',
+  // The team
+  'Panshul', "Mi'kael",
 ];
 
 export function deepgramUrl(lang: string, base = 'wss://api.deepgram.com/v1/listen'): string {

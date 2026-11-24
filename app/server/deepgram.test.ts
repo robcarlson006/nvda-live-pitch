@@ -4,7 +4,7 @@ import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { test, type TestContext } from 'node:test';
 import { WebSocket, WebSocketServer } from 'ws';
-import { deepgramUrl, relay } from './deepgram.ts';
+import { deepgramUrl, KEYTERMS, relay } from './deepgram.ts';
 
 const results = (transcript: string, is_final: boolean) => JSON.stringify({ type: 'Results', is_final, channel: { alternatives: [{ transcript }] } });
 const until = async (ok: () => boolean, what: string) => {
@@ -46,6 +46,12 @@ async function setup(t: TestContext, opts: { status?: number; key?: string; give
   await once(browser, 'open');
   return { conns, got, browser, attempts: () => attempts, states: () => got.filter((m) => m.type === 'status').map((m) => m.state) };
 }
+
+test("keyterms stay within Deepgram's advice: unique, at most 50, every one sent", () => {
+  assert.ok(KEYTERMS.length <= 50, `${KEYTERMS.length} keyterms`);
+  assert.equal(new Set(KEYTERMS.map((t) => t.toLowerCase())).size, KEYTERMS.length);
+  assert.deepEqual(new URL(deepgramUrl('en-GB')).searchParams.getAll('keyterm'), KEYTERMS);
+});
 
 test('the relay sends the key and settings, passes audio up and text back', async (t) => {
   const { conns, got, browser, states } = await setup(t);
