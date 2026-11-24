@@ -6,6 +6,11 @@
 .has-scene.layout-timeline .statement { font-size: calc(6.6 * var(--u)) !important; max-width: 12ch !important; }
 .has-scene.layout-timeline .point { font-size: calc(3.1 * var(--u)); max-width: 38vw; }
 .has-scene .sources { right: 52vw; }
+/* Never let the left column run under the scene: cap it by viewport width, not characters. */
+/* (main.slide.has-scene beats the layout's own many-points/four-points title rules, which are also !important.) */
+main.slide.has-scene h1 { max-width: 38vw !important; }
+main.slide.has-scene .points, main.slide.has-scene .point { max-width: 37vw !important; }
+main.slide.scene-already-doing h1.statement { font-size: calc(6.8 * var(--u)) !important; }
 
 /* ---------- Space race ---------- */
 .scene-space-race .scene { width: 54vw; }
@@ -78,7 +83,7 @@
 .no-motion .space-race *, .no-motion .space-race { animation: none !important; transition: none !important; }
 
 /* ---------- AI across industries ---------- */
-.scene-already-doing .scene { width: 52vw; right: calc(var(--margin) * 0.6); display: flex; align-items: center; }
+.scene-already-doing .scene { width: 50vw; right: calc(var(--margin) * 0.6); display: flex; align-items: center; }
 .ai-board { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(1.3 * var(--u)); }
 .ai-tile {
   position: relative; min-height: calc(17 * var(--u)); padding: calc(1.6 * var(--u)) calc(1.6 * var(--u)) calc(1.2 * var(--u));
