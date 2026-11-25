@@ -1,0 +1,14 @@
+{
+ "title": "Three largest direct customers, share of NVIDIA revenue",
+ "subtitle": "Our data \u00b7 nvda_customer_concentration",
+ "kind": "table",
+ "dataset": {
+  "key": "nvda_customer_concentration",
+  "series": [
+   "Top three direct customers",
+   "Largest direct customer",
+   "Second direct customer",
+   "Third direct customer"
+  ]
+ }
+}

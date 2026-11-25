@@ -225,3 +225,16 @@ cd app && npm install && npm run dev
 - Backup deck rebuilt (40 pages); the summary page has the full number grid. Keyterms add John Deere, Ecolab, EBIT, CAGR.
 - Speech is about 8.9 min + ~20 s transitions. See TIMING.md for cuts. Notes for Panshul in `docs/script/GRAPHICS-NOTES.md`.
 - Checked on `/stage` at 1600×900: drivers, bridge, summary, already-doing. Not yet checked on the projector.
+
+## 25 Nov, 01:00–02:30: final fixes, teleprompter, research vault
+
+- **Close:** after "Our recommendation is to buy." lands, everything else falls away and the line zooms to the centre; the show ends there (`Stage.tsx`, `close.css`).
+- **Recommendation graphic:** the red outline now says "even if NVDA went to zero: at most these 3%" and prints the bear-case and AI-ended costs to the portfolio (1.01% / 1.74%, `model_downside`). The old "the most we can lose" was true but read as the bear case.
+- **P/E slide:** 15.9x (forward: $152.85 ÷ FY27 consensus EPS $9.64) and 16.4x (trailing: ÷ last-12-months EPS $9.31) are both right; the bullet now says why they differ.
+- **Beyond the hyperscalers:** Bloomberg's quarterly FA splits Data Center by customer type. Q3 FY27: hyperscalers $60.1bn = 51.9% of revenue (+71% y/y); AI clouds, industrial & enterprise $47.5bn = 41.0% (+195% y/y); 48.1% of revenue came from outside the hyperscalers. New datasets `nvda_dc_customers`, `nvda_dc_customer_mix` (build-data.ts); the slide's streams are drawn to scale. Bloomberg's label does not say "sovereign/government": don't claim that split without NVIDIA's CFO commentary.
+- **Q&A "couldn't answer" alert:** if Claude can't tell what was asked it returns `clarify` instead of guessing; the operator gets an amber alert with what was heard, why, a line to say, and "edit and re-ask". Also shown for no-data and AI failures.
+- **Operator tabs:** Controls | Teleprompter. The teleprompter follows the voice word by word (skips words and whole sentences, never jumps back on a common word), eye-line, smooth glide, pace gauge, "find your place" boxes after 3 s silence, auto-scroll fallback, full screen. Matching tested in `server/prompter.test.ts`.
+- **Chart library** on the operator: every dataset (all DCF steps, reverse DCF, three rates…) one click to the stage; all 51 pass the stage's checks (`server/library.test.ts`).
+- **research-vault/** (new, GPT overnight loop, sandboxed to that folder): see its README. Started 01:46; research until 07:46, visuals (gpt-6.2-sol) until 09:46.
+- **Script length:** the spine is ~2,360 spoken words (~15½ min), not the 8.9 min in TIMING.md. Proposal: `docs/script/CUT-PROPOSAL.md` (28 slides, ~9½ min). Not applied.
+- **Not done:** backup deck (`fallback/spine.pdf` + slide images) not regenerated for tonight's slide changes; prompter not yet tried with the real mic.

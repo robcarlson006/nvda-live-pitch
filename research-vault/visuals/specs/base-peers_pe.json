@@ -1,0 +1,12 @@
+{
+ "title": "Price/earnings: today and on this year\u2019s expected earnings",
+ "subtitle": "Our data \u00b7 peers_pe",
+ "kind": "bar",
+ "dataset": {
+  "key": "peers_pe",
+  "series": [
+   "Current P/E"
+  ]
+ },
+ "highlight": "NVIDIA"
+}

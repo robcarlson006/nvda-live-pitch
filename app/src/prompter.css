@@ -1,0 +1,55 @@
+/* ---------- Full-screen teleprompter (operator tab) ---------- */
+.prompter { --pf: 56px; position: relative; display: flex; flex-direction: column; height: calc(100dvh - 120px); min-height: 420px; background: #050605; border: 1px solid #262b22; border-radius: 12px; overflow: hidden; color: #f4f6f1; }
+.prompter:fullscreen { height: 100dvh; border: 0; border-radius: 0; }
+
+.pr-bar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 18px; padding: 10px 18px; border-bottom: 1px solid #1d2219; background: #0a0c09; font-size: 14px; }
+.pr-speaker { font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #76b900; min-width: 8ch; }
+.pr-pace { display: flex; align-items: baseline; gap: 6px; color: #9aa094; }
+.pr-pace b { font-size: 22px; color: #f4f6f1; font-variant-numeric: tabular-nums; }
+.pr-pace i { font-style: normal; font-weight: 700; margin-left: 6px; }
+.pr-pace.good i { color: #9ee04a; }
+.pr-pace.fast i { color: #ff8a8d; }
+.pr-pace.slow i { color: #e8b04a; }
+.pr-meter { position: relative; width: 140px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, #e8b04a 0 29%, #4e7a00 29% 67%, #e5484d 67% 100%); opacity: 0.8; }
+.pr-meter span { position: absolute; top: -4px; width: 4px; height: 16px; margin-left: -2px; border-radius: 2px; background: #fff; transition: left 0.6s ease; }
+.pr-left { color: #9aa094; font-variant-numeric: tabular-nums; }
+.pr-tools { margin-left: auto; display: flex; gap: 6px; }
+.pr-tools button { padding: 4px 10px; font-size: 13px; }
+
+.pr-view { position: relative; flex: 1; min-height: 0; }
+/* The eye line: where the speaker reads. Carets on both edges, a faint band across. */
+.pr-eye { position: absolute; left: 0; right: 0; top: 33%; height: calc(var(--pf) * 1.35); transform: translateY(-12%); display: flex; justify-content: space-between; align-items: center; padding: 0 10px; pointer-events: none; z-index: 2;
+  background: linear-gradient(90deg, rgba(118, 185, 0, 0.10), rgba(118, 185, 0, 0.03) 15%, rgba(118, 185, 0, 0.03) 85%, rgba(118, 185, 0, 0.10)); }
+.pr-eye span { color: #76b900; font-size: calc(var(--pf) * 0.5); text-shadow: 0 0 12px rgba(118, 185, 0, 0.6); }
+.pr-scroll { position: absolute; inset: 0; overflow: hidden; }
+/* Fade the top and bottom so the eye stays on the line. */
+.pr-view::before, .pr-view::after { content: ''; position: absolute; left: 0; right: 0; height: 22%; z-index: 1; pointer-events: none; }
+.pr-view::before { top: 0; background: linear-gradient(#050605, rgba(5, 6, 5, 0)); }
+.pr-view::after { bottom: 0; background: linear-gradient(rgba(5, 6, 5, 0), #050605); }
+
+.pr-text { max-width: 30ch; margin: 0 auto; padding: 33vh 0 60vh; font-family: 'Archivo Variable', system-ui, sans-serif; font-size: var(--pf); line-height: 1.35; font-weight: 600; letter-spacing: 0.005em; }
+.prompter:not(:fullscreen) .pr-text { max-width: 34ch; }
+.pr-w { color: #f4f6f1; border-radius: 0.12em; transition: color 0.35s ease, background-color 0.2s ease, opacity 0.35s ease; cursor: pointer; }
+.pr-w.said { color: #4b5146; }
+.pr-w.skipped { color: #3a3f36; text-decoration: line-through; text-decoration-color: rgba(255, 255, 255, 0.12); }
+.pr-w.now { color: #0b0d0a; background: #b7f04a; box-shadow: 0 0 0 0.08em #b7f04a; }
+.pr-w.strong { font-weight: 800; }
+.pr-w.strong:not(.said):not(.now) { color: #c6f25a; }
+.pr-w.em { font-style: italic; }
+.pr-w.eos::after { content: ''; display: inline-block; width: 0.35em; }
+/* Lost your place? After a few seconds of silence the next words are boxed. */
+.pr-w.find { outline: 0.06em solid rgba(183, 240, 74, 0.7); outline-offset: 0.05em; animation: pr-find 1.2s ease-in-out infinite; }
+@keyframes pr-find { 50% { outline-color: rgba(183, 240, 74, 0.15); } }
+.pr-slide { display: block; height: 0.6em; }
+.pr-slide:not(:empty) { height: auto; margin: 0.9em 0 0.3em; font-size: 0.42em; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase; color: #76b900; }
+.pr-end { display: block; margin-top: 1em; text-align: center; color: #4b5146; font-size: 0.5em; }
+
+.pr-paused { position: absolute; z-index: 3; top: 12px; left: 50%; transform: translateX(-50%); padding: 6px 16px; border-radius: 999px; background: #2a2008; border: 1px solid #e8b04a; color: #f4e3bd; font-weight: 700; }
+.is-paused .pr-text { opacity: 0.35; }
+
+/* Operator tabs */
+.op-tabs { display: flex; gap: 6px; margin: 0 0 12px; }
+.op-tabs button { padding: 8px 18px; border-radius: 8px 8px 0 0; font-weight: 700; }
+.op-tabs button[aria-selected='true'] { background: var(--green); color: #0b0d0a; border-color: var(--green); }
+.op-tab-hidden { display: none !important; }
+@media (prefers-reduced-motion: reduce) { .pr-w, .pr-meter span { transition: none; } .pr-w.find { animation: none; } }

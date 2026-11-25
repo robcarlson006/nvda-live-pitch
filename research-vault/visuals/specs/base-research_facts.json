@@ -1,0 +1,39 @@
+{
+ "title": "Figures from the research notes",
+ "subtitle": "Our data \u00b7 research_facts",
+ "kind": "table",
+ "dataset": {
+  "key": "research_facts",
+  "series": [
+   "NV1 chips made",
+   "NV1 chips returned",
+   "Sega investment",
+   "RIVA 128 sold in four months",
+   "Xbox advance"
+  ]
+ },
+ "units": {
+  "NV1 chips made": "",
+  "NV1 chips returned": "",
+  "Sega investment": "USD m",
+  "RIVA 128 sold in four months": "m",
+  "Xbox advance": "USD m",
+  "Stanford speed-up": "x",
+  "AMD MI355X memory": "GB",
+  "NVIDIA B200 memory": "GB",
+  "CUDA developers": "m",
+  "CUDA-X libraries": "",
+  "GPUs per NVL72 rack": "",
+  "Mellanox price": "USD bn",
+  "TSMC share of leading-edge chips": "%",
+  "Cisco forward P/E, March 2000": "x",
+  "Drug: idea to trials, months": "",
+  "Sweden: more cancers found": "%",
+  "Sweden: less reading work": "%",
+  "Writers: faster": "%",
+  "Support: more solved": "%",
+  "Support: more solved, new staff": "%",
+  "Spying campaign run by AI, low": "%",
+  "Spying campaign run by AI, high": "%"
+ }
+}

@@ -1,0 +1,11 @@
+{
+ "title": "Share of NVIDIA energy from renewables",
+ "subtitle": "Our data \u00b7 nvda_renewable_share",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_renewable_share",
+  "series": [
+   "Renewable"
+  ]
+ }
+}

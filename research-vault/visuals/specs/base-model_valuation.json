@@ -1,0 +1,11 @@
+{
+ "title": "What one NVIDIA share is worth",
+ "subtitle": "Our data \u00b7 model_valuation",
+ "kind": "table",
+ "dataset": {
+  "key": "model_valuation",
+  "series": [
+   "Value per share"
+  ]
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "title": "NVIDIA energy use",
+ "subtitle": "Our data \u00b7 nvda_energy",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_energy",
+  "series": [
+   "Total energy",
+   "Renewable energy"
+  ]
+ }
+}

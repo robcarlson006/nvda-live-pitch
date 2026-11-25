@@ -1,0 +1,19 @@
+{
+ "title": "The two downside cases",
+ "subtitle": "Our data \u00b7 model_downside",
+ "kind": "table",
+ "dataset": {
+  "key": "model_downside",
+  "series": [
+   "Value per share",
+   "Change from today",
+   "Cost to the portfolio",
+   "Position size"
+  ]
+ },
+ "units": {
+  "Change from today": "%",
+  "Cost to the portfolio": "%",
+  "Position size": "%"
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "title": "Policy, customer and power figures for Q&A",
+ "subtitle": "Our data \u00b7 research_policy",
+ "kind": "table",
+ "dataset": {
+  "key": "research_policy",
+  "series": [
+   "Largest direct customer, share of FY26 revenue",
+   "Second direct customer, share of FY26 revenue",
+   "Revenue from customers outside the US, FY26",
+   "China share of FY26 revenue",
+   "US data-centre projects blocked or delayed, Q1 2026"
+  ]
+ },
+ "units": {
+  "Largest direct customer, share of FY26 revenue": "%",
+  "Second direct customer, share of FY26 revenue": "%",
+  "Revenue from customers outside the US, FY26": "%",
+  "China share of FY26 revenue": "%",
+  "US data-centre projects blocked or delayed, Q1 2026": "",
+  "Value of those projects": "USD bn",
+  "Hyperscaler capex, 2026 guidance": "USD bn",
+  "GPU economic life, low": "years",
+  "GPU economic life, high": "years",
+  "NVIDIA share of GPU power in announced post-2026 frontier deals": "%"
+ }
+}

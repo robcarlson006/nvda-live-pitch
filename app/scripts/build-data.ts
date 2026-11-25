@@ -96,6 +96,32 @@ function add(d: Omit<Dataset, 'placeholder'>) {
   const dc = pick(r, { template: 'By Segment', section: 'Data Center', label: 'Revenue by End User' });
   const xd = ['FY24 Q1', 'FY24 Q2', 'FY24 Q3', 'FY24 Q4', 'FY25 Q1', 'FY25 Q2', 'FY25 Q3', 'FY25 Q4', 'FY26 Q1', 'FY26 Q2', 'FY26 Q3', 'FY26 Q4', 'FY27 Q1', 'FY27 Q2', 'FY27 Q3'];
   add({ key: 'nvda_datacenter_quarterly', title: 'NVIDIA Data Center revenue by quarter', unit: 'USD bn', source: src(r, 'PGEO By Segment'), asOf: r.asOf, x: xd, series: { 'Data Center': series(dc, xd, bn) } });
+
+  // Who buys Data Center: the hyperscalers vs AI clouds, industrial & enterprise (Bloomberg's supplemental breakdown,
+  // reported from FY25 Q4; FY26 Q2–Q3 are not in the export). Revenue in USD bn by quarter, then last quarter's mix.
+  const hyper = pick(r, { template: 'By Measure', section: '', label: 'Hyperscale' });
+  const acie = pick(r, { template: 'By Measure', section: '', label: 'AI Clouds, Industrial &' });
+  const total = pick(r, { template: 'By Measure', section: '', label: 'Revenue by End User' });
+  const hyperGrowth = pick(r, { template: 'By Measure', section: 'Enterprise', label: 'Hyperscale' }); // the parser files this growth row under the wrapped label "Enterprise"
+  const acieGrowth = pick(r, { template: 'By Measure', section: 'Supplemental Breakdown', label: 'AI Clouds, Industrial &' });
+  const xc = ['FY25 Q4', 'FY26 Q1', 'FY26 Q4', 'FY27 Q1', 'FY27 Q2', 'FY27 Q3'];
+  const custSrc = src(r, 'By Measure, Revenue by End User, Data Center supplemental breakdown') + '. FY27 Q3 is preliminary';
+  add({ key: 'nvda_dc_customers', title: 'Data Center revenue by type of customer', unit: 'USD bn', source: custSrc, asOf: r.asOf, x: xc, series: { Hyperscalers: series(hyper, xc, bn), 'AI clouds, industrial & enterprise': series(acie, xc, bn) } });
+  const q = 'FY27 Q3';
+  const t = total.values[q];
+  const share = (v: number) => Math.round((v / t) * 1000) / 10; // one decimal: 51.9%
+  const hq = hyper.values[q];
+  const aq = acie.values[q];
+  add({
+    key: 'nvda_dc_customer_mix', title: 'Who NVIDIA sold to last quarter (FY27 Q3, to Oct 2026)', unit: '%', source: custSrc + '. Share = customer type ÷ total revenue; growth is on the same quarter a year earlier', asOf: r.asOf,
+    units: { 'Revenue': 'USD bn' },
+    x: ['Hyperscalers', 'AI clouds, industrial & enterprise', 'Beyond the hyperscalers'],
+    series: {
+      'Share of revenue': [share(hq), share(aq), Math.round(1000 - share(hq) * 10) / 10],
+      'Growth on a year ago': [hyperGrowth.values[q], acieGrowth.values[q], null],
+      Revenue: [round(hq * bn), round(aq * bn), round((t - hq) * bn)],
+    },
+  });
 }
 
 // ---------- Peers ----------

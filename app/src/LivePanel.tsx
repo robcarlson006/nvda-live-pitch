@@ -162,6 +162,24 @@ export function LivePanel({ state, ai, connected, bank, answers, datasets, send 
           {ai.activeQuestion && <p className="op-answer-question">{ai.activeQuestion}</p>}
         </div>
       )}
+      {ai?.stuck && (
+        <div className={`op-stuck ${ai.stuck.kind}`} role="alert">
+          <div className="op-stuck-head">
+            <strong>{ai.stuck.kind === 'unclear' ? '⚠ Couldn’t answer: the question wasn’t clear' : ai.stuck.kind === 'no-data' ? '⚠ Couldn’t answer from our data' : '⚠ Couldn’t answer: the AI failed'}</strong>
+            <button type="button" onClick={() => send({ type: 'dismissStuck' })}>Dismiss</button>
+          </div>
+          <p className="op-stuck-heard">Heard: “{ai.stuck.question}”</p>
+          <p>{ai.stuck.reason}</p>
+          <p className="op-stuck-say">
+            {ai.stuck.kind === 'unclear'
+              ? 'Say: “Sorry, could you repeat the question?” Then hold Q&A again, or type it below.'
+              : 'Say: “Good question. We don’t want to guess; we’ll come back to you with the exact figure.” Or pick a prepared answer below.'}
+          </p>
+          {ai.stuck.kind === 'unclear' && (
+            <button type="button" className="primary" onClick={() => { setTyped(ai.stuck!.question); composer.current?.focus(); }}>Edit what was heard and re-ask</button>
+          )}
+        </div>
+      )}
       {ai?.note && <div className="op-error" role="status">{ai.note}</div>}
       {ai?.bankError && <div className="op-error">Prepared answers unavailable · {ai.bankError}</div>}
 

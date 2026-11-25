@@ -337,6 +337,8 @@ export function logMove(state: ShowState, out: ShowState, via: RunEntry['via'], 
 
 function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, spine, pauseCues = false }: Ctx): ShowState | string {
   switch (msg.type) {
+    case 'dismissStuck': // the server's own alert, not show state
+      return state;
     case 'backup':
       return { ...state, backup: msg.on, heard: '', stray: '' };
     case 'clear':

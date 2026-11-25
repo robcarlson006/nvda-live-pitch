@@ -1,0 +1,12 @@
+{
+ "title": "PEG: forward P/E divided by expected EPS growth",
+ "subtitle": "Our data \u00b7 peers_peg",
+ "kind": "bar",
+ "dataset": {
+  "key": "peers_peg",
+  "series": [
+   "PEG"
+  ]
+ },
+ "highlight": "NVIDIA"
+}

@@ -1,0 +1,13 @@
+{
+ "title": "Revenue paths in the model",
+ "subtitle": "Our data \u00b7 model_revenue_paths",
+ "kind": "line",
+ "dataset": {
+  "key": "model_revenue_paths",
+  "series": [
+   "If AI ended for good",
+   "Bear",
+   "Base"
+  ]
+ }
+}

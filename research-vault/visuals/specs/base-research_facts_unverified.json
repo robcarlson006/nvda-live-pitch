@@ -1,0 +1,23 @@
+{
+ "title": "Figures marked [VERIFY] in the script",
+ "subtitle": "Our data \u00b7 research_facts_unverified",
+ "kind": "table",
+ "dataset": {
+  "key": "research_facts_unverified",
+  "series": [
+   "CUDA spend per year",
+   "Networking revenue FY26",
+   "Supply commitments",
+   "Share of AI training",
+   "Share of AI chip spending"
+  ]
+ },
+ "units": {
+  "CUDA spend per year": "USD bn",
+  "Networking revenue FY26": "USD bn",
+  "Supply commitments": "USD bn",
+  "Share of AI training": "%",
+  "Share of AI chip spending": "%",
+  "Humans in the loop": ""
+ }
+}

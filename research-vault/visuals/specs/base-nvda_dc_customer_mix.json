@@ -1,0 +1,16 @@
+{
+ "title": "Who NVIDIA sold to last quarter (FY27 Q3, to Oct 2026)",
+ "subtitle": "Our data \u00b7 nvda_dc_customer_mix",
+ "kind": "table",
+ "dataset": {
+  "key": "nvda_dc_customer_mix",
+  "series": [
+   "Share of revenue",
+   "Growth on a year ago",
+   "Revenue"
+  ]
+ },
+ "units": {
+  "Revenue": "USD bn"
+ }
+}

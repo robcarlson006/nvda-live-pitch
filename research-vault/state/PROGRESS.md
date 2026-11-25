@@ -1,0 +1,5 @@
+- Wed 01:46 · loop started · research until 07:46, visuals until 09:46
+- Wed 01:48 · T001 · 15 facts, 3 qa, 1 visuals · IEA projects 945 TWh data-centre electricity use in 2030 versus 415 TWh in 2024 · LBNL bot check; independent GPU comparisons outstanding
+- 01:48 · note: project files outside the vault changed during T001 (not by the sandboxed loop, which cannot write there)
+- Wed 01:52 · T002 · 13 facts, 3 qa, 1 visuals · Bloomberg reports FY26 Scope 3 at 10,700.9 thousand tonnes CO2e · primary report, SBTi, electricity share and NVIDIA CDP score unverified; search malfunction
+- 01:51 · note: project files outside the vault changed during T002 (not by the sandboxed loop, which cannot write there)

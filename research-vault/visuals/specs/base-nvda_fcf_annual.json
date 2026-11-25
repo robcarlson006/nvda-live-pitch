@@ -1,0 +1,11 @@
+{
+ "title": "NVIDIA free cash flow",
+ "subtitle": "Our data \u00b7 nvda_fcf_annual",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_fcf_annual",
+  "series": [
+   "Free cash flow"
+  ]
+ }
+}

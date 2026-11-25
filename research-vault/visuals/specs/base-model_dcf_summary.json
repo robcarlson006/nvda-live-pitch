@@ -1,0 +1,31 @@
+{
+ "title": "The DCF on one page (base case, 10.55% WACC)",
+ "subtitle": "Our data \u00b7 model_dcf_summary",
+ "kind": "table",
+ "dataset": {
+  "key": "model_dcf_summary",
+  "series": [
+   "Forecast period",
+   "Revenue CAGR, FY27\u201332",
+   "EBIT margin, FY26",
+   "Free-cash-flow margin",
+   "PV of FCFs"
+  ]
+ },
+ "units": {
+  "Forecast period": "years",
+  "Revenue CAGR, FY27\u201332": "%",
+  "EBIT margin, FY26": "%",
+  "Free-cash-flow margin": "%",
+  "PV of FCFs": "USD tn",
+  "PV of terminal value": "USD tn",
+  "Terminal value share of EV": "%",
+  "Enterprise value": "USD tn",
+  "Net debt": "USD bn",
+  "Equity value": "USD tn",
+  "Diluted shares": "bn",
+  "Implied share price": "USD",
+  "Share price": "USD",
+  "Upside": "%"
+ }
+}

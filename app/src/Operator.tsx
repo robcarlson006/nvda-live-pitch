@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { elementCount, isUnverified, resolveText, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { LivePanel } from './LivePanel.tsx';
+import { ChartLibrary } from './ChartLibrary.tsx';
 import { Teleprompter } from './Teleprompter.tsx';
+import { Prompter, type Feed } from './Prompter.tsx';
 import { demoSlides } from './demoSlides.ts';
 import { useSpeech, type Engine } from './useSpeech.ts';
 import { useDatasets, useNavKeys, useShow } from './useShow.ts';
@@ -74,7 +76,16 @@ export function Operator() {
   const { state, spine, spineError, connected, clients, error, notice, send, ai, bank, answers } = useShow();
   const datasets = useDatasets();
   const [said, setSaid] = useState('');
-  const mic = useSpeech((text, final) => send({ type: 'transcript', text, final, receivedAt: Date.now() }));
+  // Two tabs: the controls, and a full-screen teleprompter. Both stay mounted so the mic and the prompter keep running.
+  const [tab, setTab] = useState<'controls' | 'prompter'>(() => (location.hash === '#prompter' ? 'prompter' : 'controls'));
+  useEffect(() => { history.replaceState(null, '', tab === 'prompter' ? '#prompter' : location.pathname); }, [tab]);
+  // Every word heard here (or typed to test) also drives the prompter.
+  const [feed, setFeed] = useState<Feed | null>(null);
+  const hear = useCallback((text: string, final: boolean) => setFeed((f) => ({ text, final, seq: (f?.seq ?? 0) + 1 })), []);
+  const mic = useSpeech((text, final) => {
+    send({ type: 'transcript', text, final, receivedAt: Date.now() });
+    hear(text, final);
+  });
   useNavKeys(send, state, true);
   useEffect(() => {
     const backupKey = (e: KeyboardEvent) => {
@@ -89,13 +100,22 @@ export function Operator() {
     return () => window.removeEventListener('keydown', backupKey);
   }, [send, state?.backup]);
 
+  const heardBefore = useRef('');
+  useEffect(() => {
+    const now = state?.heard ?? '';
+    const was = heardBefore.current;
+    heardBefore.current = now;
+    if (mic.on || !now || now === was) return;
+    hear(now.startsWith(was) ? now.slice(was.length) : now, true);
+  }, [state?.heard, mic.on, hear]);
+
   const cur = state && state.index >= 0 ? spine[state.index] : undefined;
   const total = state?.live ? elementCount(state.live) : 0;
   const onScript = cur && state?.live?.id === cur.id;
   const waitingFor = onScript && state && state.reveal < total ? cur.elementCues[state.reveal - 1] : null;
   const skipped = state?.skipped ?? [];
   const upNext = state ? spine.slice(state.index + 1).find((s) => !skipped.includes(s.id)) : undefined;
-  const text = (t: string) => resolveText(t, datasets);
+  const text = useCallback((t: string) => resolveText(t, datasets), [datasets]);
   const unverified = (s: SpineSlide) => isUnverified(s, datasets);
   const qaPaused = state?.mode === 'question' || Boolean(state?.live?.answer)
     || Boolean(state?.live?.id.startsWith('qa-')) || Boolean(state?.drafts.some((d) => d.kind === 'answer'))
@@ -122,7 +142,15 @@ export function Operator() {
       {spineError && <div className="op-error">Script not reloaded: {spineError}</div>}
       {notice && <div className="op-notice">{notice}</div>}
 
-      <div className="op-workspace">
+      <div className="op-tabs" role="tablist">
+        <button type="button" role="tab" aria-selected={tab === 'controls'} onClick={() => setTab('controls')}>Controls</button>
+        <button type="button" role="tab" aria-selected={tab === 'prompter'} onClick={() => setTab('prompter')}>Teleprompter</button>
+      </div>
+      <div className={tab === 'prompter' ? '' : 'op-tab-hidden'}>
+        <Prompter spine={spine} index={state?.index ?? -1} skipped={skipped} paused={qaPaused} resolve={text} feed={feed} micOn={mic.listening} />
+      </div>
+
+      <div className={`op-workspace${tab === 'controls' ? '' : ' op-tab-hidden'}`}>
       <div className="op-controls">
       <section className="op-now">
         <div className="op-now-main">
@@ -153,6 +181,7 @@ export function Operator() {
       </section>
 
       <LivePanel state={state} ai={ai} connected={connected} bank={bank} answers={answers} datasets={datasets} send={send} />
+      <ChartLibrary spine={spine} datasets={datasets} connected={connected} send={send} />
 
       <Timer state={state} spine={spine} send={send} />
 
@@ -202,7 +231,10 @@ export function Operator() {
           className="op-sim"
           onSubmit={(e) => {
             e.preventDefault();
-            if (said.trim()) send({ type: 'transcript', text: said, final: true, receivedAt: Date.now() });
+            if (said.trim()) {
+              send({ type: 'transcript', text: said, final: true, receivedAt: Date.now() });
+              if (mic.on) hear(said, true); // with the mic off, the server's echo feeds the prompter
+            }
             setSaid('');
           }}
         >

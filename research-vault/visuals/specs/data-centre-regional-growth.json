@@ -1,0 +1,27 @@
+{
+  "title": "Data-centre demand growth is geographically concentrated",
+  "subtitle": "IEA base-case change in annual electricity use, 2024\u20132030; Europe exceeds the shown lower bound",
+  "kind": "bar",
+  "unit": "TWh",
+  "x": [
+    "United States",
+    "China",
+    "Europe: more than"
+  ],
+  "series": [
+    {
+      "name": "Increase in electricity use",
+      "values": [
+        240,
+        175,
+        45
+      ],
+      "facts": [
+        "F0013",
+        "F0014",
+        "F0015"
+      ]
+    }
+  ],
+  "source": "IEA Energy and AI, 2025; projections, not AI-only demand"
+}

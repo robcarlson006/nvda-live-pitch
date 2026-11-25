@@ -229,11 +229,14 @@ export type ShowState = {
 };
 
 /** What the operator panel shows about Claude. Not saved with the show. */
-export type AiInfo = { follow: { text: string; ms: number; error: string | null }; busy: 'answer' | 'riff' | 'research' | 'visual' | null; note: string | null; spent: number; cap: number; model: string; hasKey: boolean; bankError: string | null; activeDraftId?: string; activeQuestion?: string };
+export type AiInfo = { follow: { text: string; ms: number; error: string | null }; busy: 'answer' | 'riff' | 'research' | 'visual' | null; note: string | null; spent: number; cap: number; model: string; hasKey: boolean; bankError: string | null; activeDraftId?: string; activeQuestion?: string; stuck?: Stuck | null };
+/** The AI could not answer a board question: shown as an alert on the operator panel until dismissed or a new question starts. */
+export type Stuck = { question: string; reason: string; kind: 'unclear' | 'no-data' | 'failed'; at: number };
 
 export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('push'), slide: Slide }),
   z.object({ type: z.literal('clear') }),
+  z.object({ type: z.literal('dismissStuck') }), // handled by the server before apply(): clears the operator's "couldn't answer" alert
   z.object({ type: z.literal('backup'), on: z.boolean() }),
   z.object({ type: z.literal('next') }),
   z.object({ type: z.literal('back') }),

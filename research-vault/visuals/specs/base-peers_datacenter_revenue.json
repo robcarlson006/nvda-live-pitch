@@ -1,0 +1,15 @@
+{
+ "title": "Data centre revenue, latest full year",
+ "subtitle": "Our data \u00b7 peers_datacenter_revenue",
+ "kind": "bar",
+ "dataset": {
+  "key": "peers_datacenter_revenue",
+  "series": [
+   "Data centre revenue"
+  ]
+ },
+ "units": {
+  "Multiple of AMD": "x"
+ },
+ "highlight": "NVIDIA"
+}

@@ -1,0 +1,11 @@
+{
+ "title": "ImageNet 2012: top-5 error rate (lower is better)",
+ "subtitle": "Our data \u00b7 research_alexnet",
+ "kind": "bar",
+ "dataset": {
+  "key": "research_alexnet",
+  "series": [
+   "Top-5 error"
+  ]
+ }
+}

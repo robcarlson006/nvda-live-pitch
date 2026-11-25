@@ -1,0 +1,34 @@
+{
+  "key": "nvda_dc_customers",
+  "title": "Data Center revenue by type of customer",
+  "unit": "USD bn",
+  "source": "Bloomberg FA (By Measure, Revenue by End User, Data Center supplemental breakdown), NVDA US, quarters. FY27 Q3 is preliminary",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "FY25 Q4",
+    "FY26 Q1",
+    "FY26 Q4",
+    "FY27 Q1",
+    "FY27 Q2",
+    "FY27 Q3"
+  ],
+  "series": {
+    "Hyperscalers": [
+      19.948,
+      22.26,
+      42.213,
+      43.05,
+      48.71,
+      60.136
+    ],
+    "AI clouds, industrial & enterprise": [
+      15.632,
+      16.852,
+      20.101,
+      32.196,
+      40.313,
+      47.474
+    ]
+  }
+}

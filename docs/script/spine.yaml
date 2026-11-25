@@ -314,10 +314,10 @@
   bullets:
     - text: Forward P/E on the fiscal year ending around January 2027
     - { zoom: NVIDIA, cue: expected }
-    - text: "On earnings already reported over the last year it is {{research_market | P/E ratio, trailing | value}}"
+    - text: "On the last twelve months' reported earnings it is {{research_market | P/E ratio, trailing | value}}: a touch higher, because earnings are still growing"
       cue: reported
   chart: { type: bar, datasetKey: peers_pe, series: [Forward P/E], highlight: NVIDIA }
-  say: "Is it expensive? This is the forward P/E: the share price divided by this year's forecast earnings. Against four other big chip companies, on expected earnings NVIDIA is the cheapest of the five. On earnings already reported over the last year, it trades at {{research_market | P/E ratio, trailing | value}}."
+  say: "Is it expensive? This is the forward P/E: the share price divided by this year's forecast earnings. Against four other big chip companies, on expected earnings NVIDIA is the cheapest of the five. On earnings already reported over the last twelve months, it trades at {{research_market | P/E ratio, trailing | value}}: a touch higher, because earnings are still growing."
   sources: [Bloomberg, 20 Nov 2026 for the peers; NVIDIA re-priced at the 24 Nov 2026 share price]
 
 # ---- The DCF, one step at a time (v2, 24 Nov 2026). Every figure is from data/clean/model_*.json. ----
@@ -573,14 +573,17 @@
   speaker: Mi'kael
   cues: [demand extends, demand beyond hyperscalers, beyond hyperscalers, beyond the hyperscalers, demand beyond the giants]
   layout: statement
-  title: Demand beyond the hyperscalers
+  title: Nearly half of sales are beyond the hyperscalers
   bullets:
+    - text: "AI clouds, industry & enterprise: {{nvda_dc_customer_mix | Share of revenue | AI clouds, industrial & enterprise}} of revenue last quarter, up {{nvda_dc_customer_mix | Growth on a year ago | AI clouds, industrial & enterprise}} in a year"
+      cue: industry and enterprise
     - text: "Public compute: Isambard-AI is operating in Bristol"
       cue: public
     - text: "Specialist cloud: Nscale has announced NVIDIA-powered capacity"
       cue: capacity
-  say: "Demand extends beyond the hyperscalers. Public compute: Isambard-AI, the UK's AI supercomputer, is already operating in Bristol. And specialist clouds: Nscale has announced NVIDIA-powered capacity. They give universities and smaller firms access, so demand doesn't rest on the giants alone."
+  say: "Demand extends beyond the hyperscalers. The giants were {{nvda_dc_customer_mix | Share of revenue | Hyperscalers}} of revenue last quarter. **AI clouds, industry and enterprise** were {{nvda_dc_customer_mix | Share of revenue | AI clouds, industrial & enterprise}}, and that part grew {{nvda_dc_customer_mix | Growth on a year ago | AI clouds, industrial & enterprise}} in a year, against {{nvda_dc_customer_mix | Growth on a year ago | Hyperscalers}} for the giants. Public compute: Isambard-AI, the UK's AI supercomputer, is already operating in Bristol. And specialist clouds: Nscale has announced NVIDIA-powered capacity. So demand doesn't rest on the giants alone."
   sources:
+    - "Bloomberg FA, NVDA quarterly, Data Center revenue by customer type, FY27 Q3 (preliminary), 20 Nov 2026"
     - "UK DSIT, AIRR advanced supercomputers for the UK; NVIDIA UK infrastructure announcement (Nscale deployment plans)"
 
 # ---------------- Part four: responsibility (governance, people, the planet) ----------------

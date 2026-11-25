@@ -1,0 +1,11 @@
+{
+ "title": "Our values against analysts\u2019 12-month price targets",
+ "subtitle": "Our data \u00b7 model_vs_analysts",
+ "kind": "bar",
+ "dataset": {
+  "key": "model_vs_analysts",
+  "series": [
+   "Value per share"
+  ]
+ }
+}

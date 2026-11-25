@@ -14,3 +14,9 @@ app/public/media/
 # Local-only handoff material
 NVDA readiness handoff/
 *.zip
+
+# Overnight research loop: page snapshots, logs and build outputs stay local (third-party text; large)
+research-vault/cache/
+research-vault/state/logs/
+research-vault/state/snapshots/
+research-vault/vault.sqlite

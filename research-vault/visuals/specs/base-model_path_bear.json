@@ -1,0 +1,12 @@
+{
+ "title": "Bear case: rivals take share, a year of paused spending",
+ "subtitle": "Our data \u00b7 model_path_bear",
+ "kind": "line",
+ "dataset": {
+  "key": "model_path_bear",
+  "series": [
+   "Base case",
+   "Bear case"
+  ]
+ }
+}

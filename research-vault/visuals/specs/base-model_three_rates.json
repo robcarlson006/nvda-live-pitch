@@ -1,0 +1,16 @@
+{
+ "title": "Base-case value per share at three discount rates",
+ "subtitle": "Our data \u00b7 model_three_rates",
+ "kind": "bar",
+ "dataset": {
+  "key": "model_three_rates",
+  "series": [
+   "Value per share"
+  ]
+ },
+ "units": {
+  "Enterprise value": "USD tn",
+  "Above reference price": "%",
+  "Terminal value share of EV": "%"
+ }
+}

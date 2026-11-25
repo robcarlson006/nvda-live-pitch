@@ -1,0 +1,13 @@
+{
+ "title": "NVIDIA greenhouse gas emissions",
+ "subtitle": "Our data \u00b7 nvda_emissions",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_emissions",
+  "series": [
+   "Scope 1",
+   "Scope 2 (market-based)",
+   "Scope 3"
+  ]
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "title": "Expected EPS growth next year (consensus)",
+ "subtitle": "Our data \u00b7 peers_growth",
+ "kind": "bar",
+ "dataset": {
+  "key": "peers_growth",
+  "series": [
+   "EPS growth"
+  ]
+ },
+ "highlight": "NVIDIA"
+}

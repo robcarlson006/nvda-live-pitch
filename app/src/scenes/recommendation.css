@@ -39,6 +39,7 @@
 .s3 .rec-risk, .s4 .rec-risk { opacity: 1; transition-delay: 0.2s; }
 .rec-note.risk text { fill: #ff8a8d; paint-order: stroke; stroke: #0b0d0a; stroke-width: 10px; }
 .s3 .rec-note.risk, .s4 .rec-note.risk { opacity: 1; transition-delay: 0.6s; }
+.rec-note.risk .rec-risk-sub { fill: #f4f6f1; font-size: 22px; font-weight: 600; }
 
 /* 4 — room to add, if the signals hold. */
 .s4 .rec-grid rect.room { fill: rgba(118, 185, 0, 0.18); stroke: #4e7a00; transition-delay: calc(var(--k) * 0.08s); }

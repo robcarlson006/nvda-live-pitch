@@ -1,0 +1,11 @@
+{
+ "title": "NVIDIA price/earnings at each fiscal year end",
+ "subtitle": "Our data \u00b7 nvda_pe_history",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_pe_history",
+  "series": [
+   "P/E"
+  ]
+ }
+}

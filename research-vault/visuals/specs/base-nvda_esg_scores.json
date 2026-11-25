@@ -1,0 +1,18 @@
+{
+ "title": "Bloomberg ESG pillar scores, out of 10",
+ "subtitle": "Our data \u00b7 nvda_esg_scores",
+ "kind": "table",
+ "dataset": {
+  "key": "nvda_esg_scores",
+  "series": [
+   "Social",
+   "Environmental",
+   "Governance",
+   "Overall ESG score",
+   "Social disclosure score"
+  ]
+ },
+ "units": {
+  "Social disclosure score": ""
+ }
+}

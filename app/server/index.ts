@@ -6,7 +6,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { Ai, env, MODEL } from './ai.ts';
 import { findAnswer, loadBank, type BankEntry } from './bank.ts';
 import { Budget } from './budget.ts';
-import { resolveText, slideSources, SourceLink, type AiInfo, type ClientMsg, type Draft, type ServerMsg, type SpineSlide } from '../shared/schema.ts';
+import { resolveText, slideSources, SourceLink, type AiInfo, type ClientMsg, type Draft, type ServerMsg, type SpineSlide, type Stuck } from '../shared/schema.ts';
 import { deepgramKey, deepgramUrl, relay } from './deepgram.ts';
 import { accept, Director } from './director.ts';
 import { addDraft, answerOnDeck, apply, isCovered, isIgnoringUtterance, liveGo, livePoints, logMove, offScript, loadDatasets, loadSpine, loadState, relocate, runReport, saveState, SPINE_FILE } from './state.ts';
@@ -54,7 +54,10 @@ let note: string | null = null;
 let lastRiff = 0;
 const RIFF_GAP = 25_000; // at most one reaction per 25 s: keeps the stage calm and the bill small
 const director = new Director(ai.budget);
-const aiInfo = (): AiInfo => ({ follow: { text: director.recent(14), ms: director.ms, error: director.error }, busy: job?.kind ?? null, note, spent: ai.budget.spent, cap: ai.budget.cap, model: MODEL, hasKey: ai.hasKey(), bankError, activeDraftId: job?.draftId, activeQuestion: job?.question });
+/** The last board question the AI could not answer, for the operator's alert. Cleared by a new question or Dismiss. */
+let stuck: Stuck | null = null;
+const getStuck = (question: string, kind: Stuck['kind'], reason: string): Stuck => ({ question: question.slice(-400), kind, reason, at: Date.now() });
+const aiInfo = (): AiInfo => ({ follow: { text: director.recent(14), ms: director.ms, error: director.error }, busy: job?.kind ?? null, note, spent: ai.budget.spent, cap: ai.budget.cap, model: MODEL, hasKey: ai.hasKey(), bankError, activeDraftId: job?.draftId, activeQuestion: job?.question, stuck });
 
 function draft(kind: Draft['kind'], heard: string, slide: Draft['slide'], from: Draft['from'], links?: Draft['links'], evidenceGap = false): Draft {
   const citations = new Map((links ?? []).map((l) => [l.url, l]));
@@ -129,6 +132,7 @@ function usePrepared(entry: BankEntry, heard: string) {
 async function build(kind: 'answer' | 'riff', heard: string, previous?: string) {
   stopJob(); // a new question always takes priority
   note = null;
+  if (kind === 'answer') stuck = null;
   if (kind === 'answer' && !previous) {
     const hit = findAnswer(bank, heard);
     if (hit) return usePrepared(hit, heard);
@@ -145,9 +149,15 @@ async function build(kind: 'answer' | 'riff', heard: string, previous?: string) 
   }
   if (job !== mine) return;
   job = null;
+  if ('clarify' in r) {
+    // Confused by what was heard: no slide is queued. The operator asks the board member to clarify, then re-asks or types it.
+    stuck = getStuck(heard, 'unclear', r.clarify);
+    return broadcast();
+  }
   if ('error' in r) {
     note = r.error;
     if (kind === 'answer') {
+      stuck = getStuck(heard, 'failed', `The AI did not answer (${r.error}). A holding slide is queued${ai.hasKey() ? ' and web research is running' : ''}.`);
       const fallback = draft('answer', heard, {
         id: `gen-${Date.now()}`, layout: 'statement', answer: true, title: 'We need to check that',
         bullets: ['We would verify it before drawing an investment conclusion.'],
@@ -160,6 +170,7 @@ async function build(kind: 'answer' | 'riff', heard: string, previous?: string) 
   }
   if (!('slide' in r) || (kind === 'riff' && (state.index !== place || state.mode !== 'script'))) return broadcast();
   const d = draft(kind, heard, r.slide, 'claude', r.links, kind === 'answer' && !r.answered);
+  if (kind === 'answer' && !r.answered) stuck = getStuck(heard, 'no-data', `Our data does not answer this. A holding slide ("We need to check that") is queued${ai.hasKey() ? ' and web research is running' : ''}.`);
   submitDraft(d);
   if (kind === 'answer' && !r.answered) void research(heard, d.id, previous);
   else void visualise(d);
@@ -185,6 +196,7 @@ async function research(heard: string, replaces: string, previous?: string) {
   if ('error' in r) note = `Web research: ${r.error}`;
   else if ('slide' in r) {
     const d = draft('answer', heard, { ...r.slide, answer: true }, 'web', r.links);
+    if (stuck?.question === heard.slice(-400)) stuck = null; // web research found an answer after all
     if (replaceDraft(fallback, d)) {
       void visualise(d);
       return;
@@ -323,6 +335,10 @@ wss.on('connection', (ws) => {
       raw = JSON.parse(String(data));
     } catch {
       return send(ws, { type: 'error', message: 'Bad JSON' });
+    }
+    if ((raw as { type?: string })?.type === 'dismissStuck') {
+      stuck = null;
+      return broadcast();
     }
     const before = state;
     const pauseCues = job?.kind === 'answer' || job?.kind === 'research';

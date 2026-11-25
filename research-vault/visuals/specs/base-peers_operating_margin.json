@@ -1,0 +1,12 @@
+{
+ "title": "Operating margin, this fiscal year (consensus)",
+ "subtitle": "Our data \u00b7 peers_operating_margin",
+ "kind": "bar",
+ "dataset": {
+  "key": "peers_operating_margin",
+  "series": [
+   "Operating margin"
+  ]
+ },
+ "highlight": "NVIDIA"
+}

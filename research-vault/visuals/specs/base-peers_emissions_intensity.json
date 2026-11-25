@@ -1,0 +1,12 @@
+{
+ "title": "Carbon per $1m of sales, from each company's own buildings and power (Scope 1 + 2)",
+ "subtitle": "Our data \u00b7 peers_emissions_intensity",
+ "kind": "bar",
+ "dataset": {
+  "key": "peers_emissions_intensity",
+  "series": [
+   "Emissions intensity"
+  ]
+ },
+ "highlight": "NVIDIA"
+}

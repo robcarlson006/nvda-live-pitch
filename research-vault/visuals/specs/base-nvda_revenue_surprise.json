@@ -1,0 +1,11 @@
+{
+ "title": "How far revenue beat consensus",
+ "subtitle": "Our data \u00b7 nvda_revenue_surprise",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_revenue_surprise",
+  "series": [
+   "Revenue surprise"
+  ]
+ }
+}

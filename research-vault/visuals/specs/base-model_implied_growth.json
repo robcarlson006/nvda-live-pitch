@@ -1,0 +1,11 @@
+{
+ "title": "Yearly revenue growth FY28\u2013FY32",
+ "subtitle": "Our data \u00b7 model_implied_growth",
+ "kind": "bar",
+ "dataset": {
+  "key": "model_implied_growth",
+  "series": [
+   "Growth per year"
+  ]
+ }
+}

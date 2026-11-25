@@ -1,0 +1,12 @@
+{
+ "title": "If AI ended for good: revenue",
+ "subtitle": "Our data \u00b7 model_path_ai_ended",
+ "kind": "line",
+ "dataset": {
+  "key": "model_path_ai_ended",
+  "series": [
+   "Base case",
+   "If AI ended for good"
+  ]
+ }
+}

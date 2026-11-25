@@ -1,0 +1,12 @@
+{
+ "title": "Data Center revenue by type of customer",
+ "subtitle": "Our data \u00b7 nvda_dc_customers",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_dc_customers",
+  "series": [
+   "Hyperscalers",
+   "AI clouds, industrial & enterprise"
+  ]
+ }
+}

@@ -1,0 +1,12 @@
+{
+ "title": "NVIDIA margins",
+ "subtitle": "Our data \u00b7 nvda_margins_annual",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_margins_annual",
+  "series": [
+   "Gross margin",
+   "Operating margin"
+  ]
+ }
+}

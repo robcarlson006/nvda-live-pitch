@@ -1,0 +1,11 @@
+{
+ "title": "Staff turnover: NVIDIA versus a dated tech-sector benchmark",
+ "subtitle": "Our data \u00b7 research_people_turnover",
+ "kind": "bar",
+ "dataset": {
+  "key": "research_people_turnover",
+  "series": [
+   "Staff turnover"
+  ]
+ }
+}

@@ -43,6 +43,8 @@ const Reply = z.object({
   icons: z.array(z.enum(ICON_NAMES)),
   diagram: Diagram.nullable().optional(),
   sourceKeys: z.array(z.string()).max(3).optional(),
+  /** Board answers only: set when the heard question is too garbled, cut off or ambiguous to answer. A note for the operator. */
+  clarify: z.string().nullable().optional(),
 });
 export type Reply = z.infer<typeof Reply>;
 
@@ -350,13 +352,13 @@ export class Ai {
   }
 
   /** One slide. At most two calls: a rejected slide gets one chance to be corrected. */
-  async build(job: Job, datasets: Map<string, Dataset>, spine: SpineSlide[], stop: AbortSignal): Promise<Result> {
+  async build(job: Job, datasets: Map<string, Dataset>, spine: SpineSlide[], stop: AbortSignal): Promise<Result | { clarify: string }> {
     if (!this.hasKey()) return { error: 'No Anthropic key in app/.env' };
     const signal = job.kind === 'answer' ? AbortSignal.any([stop, AbortSignal.timeout(12_000)]) : stop;
     const system = systemPrompt(datasets, spine);
     const ask =
       job.kind === 'answer'
-        ? `A board member asked the question below. Build the slide that answers it; set show to true. For separate questions in one turn, use a distinct evidence bullet for each part.`
+        ? `A board member asked the question below. Build the slide that answers it; set show to true. For separate questions in one turn, use a distinct evidence bullet for each part. The words come from speech-to-text and may be garbled or cut off. If you cannot tell what is being asked (a fragment, two readings that need different answers, or words that make no sense for this pitch), do not guess: set clarify to one short sentence for our operator saying what was unclear and what to ask the board member, e.g. 'Only heard "what happens to the…"; ask them to finish the question.' Otherwise set clarify to null.`
         : `A presenter has gone off script and said the words below. Build the slide that belongs behind them, as if it had always been in the deck: the same confident, plain voice as the SCRIPT titles, no reference to a tangent, the app, data you lack, or the presenter. Title = their point, sharpened to under 45 characters. At most two bullets, each under 60 characters, each something they said or that DATA shows; add no facts of your own, and nothing they did not say about a named person. If DATA really bears on their point, use a chart or number; otherwise a statement with icons that picture it. Set show to true, unless it is small talk, filler, stumbling, or already covered by the slide on screen; then false.`;
     const messages: Anthropic.MessageParam[] = [{ role: 'user', content: `${ask}\n\nOn screen now: ${job.onScreen}\n\n${discussion(job.heard, job.previous)}` }];
     const parts = questionPartCount(job.heard);
@@ -389,6 +391,7 @@ export class Ai {
       }
       const reply = Reply.safeParse(json);
       if (reply.success && !reply.data.show && job.kind === 'riff') return { skip: true };
+      if (reply.success && job.kind === 'answer' && reply.data.clarify?.trim()) return { clarify: reply.data.clarify.trim().slice(0, 240) };
       const slide = reply.success ? toSlide(reply.data, datasets, `gen-${Date.now()}`) : 'The reply was not complete JSON';
       if (typeof slide !== 'string' && reply.success) return finalise(slide, job.kind, complete(reply.data, slide));
       problem = typeof slide === 'string' ? slide : 'The reply was not complete JSON';

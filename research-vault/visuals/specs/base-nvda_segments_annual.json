@@ -1,0 +1,13 @@
+{
+ "title": "NVIDIA revenue by market",
+ "subtitle": "Our data \u00b7 nvda_segments_annual",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_segments_annual",
+  "series": [
+   "Data Center",
+   "Gaming",
+   "Pro Visualization"
+  ]
+ }
+}

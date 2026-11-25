@@ -1,0 +1,13 @@
+{
+ "title": "Base-case value per share by discount rate",
+ "subtitle": "Our data \u00b7 model_sensitivity",
+ "kind": "table",
+ "dataset": {
+  "key": "model_sensitivity",
+  "series": [
+   "Terminal growth 2%",
+   "Terminal growth 3%",
+   "Terminal growth 4%"
+  ]
+ }
+}

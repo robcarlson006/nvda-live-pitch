@@ -1,0 +1,12 @@
+{
+ "title": "Free cash flow: actual, then our base case",
+ "subtitle": "Our data \u00b7 model_fcf_forecast",
+ "kind": "line",
+ "dataset": {
+  "key": "model_fcf_forecast",
+  "series": [
+   "Actual",
+   "Base-case forecast"
+  ]
+ }
+}

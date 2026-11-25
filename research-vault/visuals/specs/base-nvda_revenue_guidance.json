@@ -1,0 +1,11 @@
+{
+ "title": "Revenue by quarter, with NVIDIA\u2019s own guide for the next one",
+ "subtitle": "Our data \u00b7 nvda_revenue_guidance",
+ "kind": "bar",
+ "dataset": {
+  "key": "nvda_revenue_guidance",
+  "series": [
+   "Revenue"
+  ]
+ }
+}

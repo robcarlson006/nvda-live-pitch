@@ -1,0 +1,15 @@
+{
+ "title": "Base-case cash flows, USD billions",
+ "subtitle": "Our data \u00b7 model_dcf_detail",
+ "kind": "table",
+ "dataset": {
+  "key": "model_dcf_detail",
+  "series": [
+   "FY28",
+   "FY29",
+   "FY30",
+   "FY31",
+   "FY32"
+  ]
+ }
+}

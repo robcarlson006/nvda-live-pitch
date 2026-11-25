@@ -260,3 +260,22 @@ button.danger { background: #3a1214; border-color: #e5484d; color: #ff8a8f; font
 /* Researched answers carry longer, sourced sentences */
 .is-web .statement { font-size: calc(6 * var(--u)) !important; max-width: 26ch !important; }
 .is-web .point { font-size: calc(2.7 * var(--u)) !important; max-width: 58ch !important; }
+
+/* Operator: the AI couldn't answer a board question. Loud on purpose: the operator must act. */
+.op-stuck { padding: 12px 14px; border-radius: 10px; border: 2px solid #e8b04a; background: #2a2008; color: #f4e3bd; animation: op-stuck-in 0.3s ease both, op-stuck-pulse 1.6s ease 0.3s 3; }
+.op-stuck.failed { border-color: #e5484d; background: #2e1012; color: #ffd0d2; }
+.op-stuck p { margin: 6px 0 0; line-height: 1.35; }
+.op-stuck-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.op-stuck-head strong { font-size: 1.05rem; }
+.op-stuck-heard { font-style: italic; opacity: 0.85; }
+.op-stuck-say { font-weight: 650; color: #fff; }
+.op-stuck > button { margin-top: 8px; }
+@keyframes op-stuck-in { from { opacity: 0; transform: translateY(-6px); } }
+@keyframes op-stuck-pulse { 50% { box-shadow: 0 0 0 6px rgba(232, 176, 74, 0.25); } }
+
+/* Operator: chart library */
+.op-library input { width: 100%; margin: 8px 0; padding: 8px 10px; }
+.op-library ul { list-style: none; margin: 0; padding: 0; max-height: 360px; overflow-y: auto; display: grid; gap: 4px; }
+.op-library li { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center; padding: 6px 8px; border-radius: 6px; background: #111419; }
+.op-library li .op-meta { grid-column: 2; margin: 0; font-size: 12px; }
+.op-library li button { grid-row: span 2; padding: 4px 10px; }

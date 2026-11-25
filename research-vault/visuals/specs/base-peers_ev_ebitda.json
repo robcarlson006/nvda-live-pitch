@@ -1,0 +1,12 @@
+{
+ "title": "Enterprise value / EBITDA, forward",
+ "subtitle": "Our data \u00b7 peers_ev_ebitda",
+ "kind": "bar",
+ "dataset": {
+  "key": "peers_ev_ebitda",
+  "series": [
+   "EV/EBITDA"
+  ]
+ },
+ "highlight": "NVIDIA"
+}

@@ -1,0 +1,28 @@
+{
+  "title": "Supply-chain emissions are rising",
+  "subtitle": "Scope 3 includes supply chain and other value-chain emissions; values rounded",
+  "kind": "bar",
+  "unit": "thousand tonnes CO2e",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Scope 3",
+      "values": [
+        3638.43,
+        6912.58,
+        10700.9
+      ],
+      "facts": [
+        "F0022",
+        "F0023",
+        "F0024"
+      ]
+    }
+  ],
+  "highlight": "FY26",
+  "source": "Bloomberg FA, ESG Environmental, 20 November 2026; scope and methodology need primary-source verification"
+}

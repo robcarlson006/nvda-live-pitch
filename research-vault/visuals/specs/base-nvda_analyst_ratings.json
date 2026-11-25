@@ -1,0 +1,11 @@
+{
+ "title": "What 44 Wall Street analysts rate NVIDIA",
+ "subtitle": "Our data \u00b7 nvda_analyst_ratings",
+ "kind": "bar",
+ "dataset": {
+  "key": "nvda_analyst_ratings",
+  "series": [
+   "Analysts"
+  ]
+ }
+}

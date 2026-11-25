@@ -1,0 +1,34 @@
+{
+ "title": "Share price, valuation and analyst figures (Google Finance)",
+ "subtitle": "Our data \u00b7 research_market",
+ "kind": "table",
+ "dataset": {
+  "key": "research_market",
+  "series": [
+   "Share price",
+   "P/E ratio, trailing",
+   "EPS, trailing",
+   "Beta",
+   "52-week high"
+  ]
+ },
+ "units": {
+  "Share price": "USD",
+  "P/E ratio, trailing": "x",
+  "EPS, trailing": "USD",
+  "Beta": "",
+  "52-week high": "USD",
+  "52-week low": "USD",
+  "WACC, Google Finance": "%",
+  "Cost of equity, Google Finance": "%",
+  "WACC, US semiconductor industry average (Damodaran)": "%",
+  "WACC, Bloomberg Q3 2026": "%",
+  "Analysts rating NVDA": "",
+  "Analysts: buy": "",
+  "Analysts: hold": "",
+  "Analysts: sell": "",
+  "Analyst target, average": "USD",
+  "Analyst target, highest": "USD",
+  "Analyst target, lowest": "USD"
+ }
+}

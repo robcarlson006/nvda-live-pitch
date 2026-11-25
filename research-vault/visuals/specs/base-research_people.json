@@ -1,0 +1,27 @@
+{
+ "title": "NVIDIA as an employer: outside rankings and Bloomberg people data",
+ "subtitle": "Our data \u00b7 research_people",
+ "kind": "table",
+ "dataset": {
+  "key": "research_people",
+  "series": [
+   "Glassdoor Best Places to Work 2026, US rank",
+   "Fortune 100 Best Companies to Work For 2026, rank",
+   "Fortune 100 Best, lowest rank 2022\u20132026",
+   "TIME Sustainable Growth 2026, world rank",
+   "Corporate Knights Global 100 2026, rank"
+  ]
+ },
+ "units": {
+  "Glassdoor Best Places to Work 2026, US rank": "",
+  "Fortune 100 Best Companies to Work For 2026, rank": "",
+  "Fortune 100 Best, lowest rank 2022\u20132026": "",
+  "TIME Sustainable Growth 2026, world rank": "",
+  "Corporate Knights Global 100 2026, rank": "",
+  "Staff turnover, FY26": "%",
+  "Employees, FY26": "",
+  "Employees, FY22": "",
+  "Employee fatalities, FY26": "",
+  "Women in the workforce, FY26": "%"
+ }
+}

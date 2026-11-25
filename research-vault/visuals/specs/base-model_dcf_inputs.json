@@ -1,0 +1,29 @@
+{
+ "title": "Every input to our DCF, and where it comes from",
+ "subtitle": "Our data \u00b7 model_dcf_inputs",
+ "kind": "table",
+ "dataset": {
+  "key": "model_dcf_inputs",
+  "series": [
+   "FY26 revenue",
+   "FY27 revenue, analyst consensus",
+   "FY28 revenue, analyst consensus",
+   "Free-cash-flow margin, FY24\u201326 average",
+   "Diluted shares"
+  ]
+ },
+ "units": {
+  "FY26 revenue": "USD bn",
+  "FY27 revenue, analyst consensus": "USD bn",
+  "FY28 revenue, analyst consensus": "USD bn",
+  "Free-cash-flow margin, FY24\u201326 average": "%",
+  "Diluted shares": "bn",
+  "Net cash": "USD bn",
+  "WACC, Bloomberg": "%",
+  "Share price": "USD",
+  "WACC, Google Finance": "%",
+  "WACC, US semiconductor industry average": "%",
+  "Terminal growth (our choice)": "%",
+  "Growth fades in a straight line to terminal growth by (our choice)": "year"
+ }
+}

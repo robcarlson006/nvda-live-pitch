@@ -1,0 +1,11 @@
+{
+ "title": "Average yearly spend during each build-out, share of US GDP",
+ "subtitle": "Our data \u00b7 research_infra_gdp",
+ "kind": "bar",
+ "dataset": {
+  "key": "research_infra_gdp",
+  "series": [
+   "Average yearly spend"
+  ]
+ }
+}

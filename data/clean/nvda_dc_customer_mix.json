@@ -1,0 +1,33 @@
+{
+  "key": "nvda_dc_customer_mix",
+  "title": "Who NVIDIA sold to last quarter (FY27 Q3, to Oct 2026)",
+  "unit": "%",
+  "units": {
+    "Revenue": "USD bn"
+  },
+  "source": "Bloomberg FA (By Measure, Revenue by End User, Data Center supplemental breakdown), NVDA US, quarters. FY27 Q3 is preliminary. Share = customer type ÷ total revenue; growth is on the same quarter a year earlier",
+  "asOf": "2026-11-20",
+  "placeholder": false,
+  "x": [
+    "Hyperscalers",
+    "AI clouds, industrial & enterprise",
+    "Beyond the hyperscalers"
+  ],
+  "series": {
+    "Share of revenue": [
+      51.9,
+      41,
+      48.1
+    ],
+    "Growth on a year ago": [
+      71,
+      195,
+      null
+    ],
+    "Revenue": [
+      60.136,
+      47.474,
+      55.708
+    ]
+  }
+}

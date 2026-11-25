@@ -1,0 +1,11 @@
+{
+ "title": "NVIDIA Data Center revenue by quarter",
+ "subtitle": "Our data \u00b7 nvda_datacenter_quarterly",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_datacenter_quarterly",
+  "series": [
+   "Data Center"
+  ]
+ }
+}

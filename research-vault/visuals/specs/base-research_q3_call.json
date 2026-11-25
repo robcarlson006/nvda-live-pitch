@@ -1,0 +1,42 @@
+{
+ "title": "Q3 FY27 earnings call: results, outlook, capital and commitments",
+ "subtitle": "Our data \u00b7 research_q3_call",
+ "kind": "table",
+ "dataset": {
+  "key": "research_q3_call",
+  "series": [
+   "Q4 FY27 revenue guide",
+   "Q4 FY27 revenue guide, range plus or minus",
+   "FY28 revenue growth outlook",
+   "FY28 revenue growth outlook, previous",
+   "Vera Rubin revenue, first quarter of shipments"
+  ]
+ },
+ "units": {
+  "Q4 FY27 revenue guide": "USD bn",
+  "Q4 FY27 revenue guide, range plus or minus": "%",
+  "FY28 revenue growth outlook": "%",
+  "FY28 revenue growth outlook, previous": "%",
+  "Vera Rubin revenue, first quarter of shipments": "USD bn",
+  "Data Center revenue growth, year on year, Q3 FY27": "%",
+  "Hyperscale revenue, Q3 FY27": "USD bn",
+  "Networking revenue, Q3 FY27": "USD bn",
+  "Gross margin, Q3 FY27": "%",
+  "Gross margin guide, Q4 FY27, low": "%",
+  "Gross margin guide, Q4 FY27, high": "%",
+  "Gross margin outlook, FY28, low": "%",
+  "Gross margin outlook, FY28, high": "%",
+  "Share buybacks, Q3 FY27": "USD bn",
+  "Dividends, Q3 FY27": "USD bn",
+  "Cash returned to shareholders, Q3 FY27": "USD bn",
+  "Share of free cash flow returned, year to date": "%",
+  "Buyback authorization added": "USD bn",
+  "Buyback authorization remaining": "USD bn",
+  "Purchase commitments": "USD bn",
+  "Guarantees": "USD bn",
+  "Neocloud commitments": "USD bn",
+  "Cloud industry backlog": "USD tn",
+  "Frontier labs share of Data Center revenue, FY27": "%",
+  "Licensed Hopper sales to China, Q3 FY27": "USD bn"
+ }
+}

@@ -182,6 +182,8 @@ function SlideView({ slide, reveal, datasets, figure, motion }: { slide: Slide; 
     return reveal > lastStep ? null : best as [number, number] | null; // fully built: everything settles to white
   })();
   const sources = slide.sources; // already includes every dataset the slide uses (withFigures)
+  // The last line of the show ("Our recommendation is to buy.") zooms to the centre and the deck ends on it.
+  const finalBuy = slide.id === 'close' && slide.bullets.length > 0 && shown(bulletIdx(slide.bullets.length - 1));
 
   const title = slide.layout === 'statement' ? (
     <h1 className="statement">
@@ -271,7 +273,7 @@ function SlideView({ slide, reveal, datasets, figure, motion }: { slide: Slide; 
   );
 
   return (
-    <main className={`slide layout-${slide.layout}${isDcfWorksheet ? ' has-dcf-worksheet' : ''}${slide.video ? ' has-video' : ''}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect && !Scene ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}${hasDiagram ? ' has-diagram' : ''}${slide.answer ? ' is-answer' : ''}${Scene ? ` has-scene scene-${slide.id}` : ''}`}>
+    <main className={`slide layout-${slide.layout}${isDcfWorksheet ? ' has-dcf-worksheet' : ''}${slide.video ? ' has-video' : ''}${slide.bullets.length ? ' has-points' : ''}${slide.bullets.length >= 3 ? ' many-points' : ''}${slide.bullets.length >= 4 ? ' four-points' : ''}${slide.effect && !Scene ? ' has-effect' : ''}${slide.id.startsWith('gen-web') ? ' is-web' : ''}${hasDiagram ? ' has-diagram' : ''}${slide.answer ? ' is-answer' : ''}${Scene ? ` has-scene scene-${slide.id}` : ''}${finalBuy ? ' is-final-buy' : ''}`}>
       {(slide.layout === 'statement' || slide.layout === 'timeline') && (
         <>
           {title}
@@ -333,6 +335,11 @@ function SlideView({ slide, reveal, datasets, figure, motion }: { slide: Slide; 
       {scene}
       {diagram}
       {video}
+      {finalBuy && (
+        <div className="final-buy">
+          <p>{slide.bullets[slide.bullets.length - 1]}</p>
+        </div>
+      )}
       {sources.length > 0 && (
         <Reveal className="sources" at={2.2}>
           Source: {sources.join('; ')}

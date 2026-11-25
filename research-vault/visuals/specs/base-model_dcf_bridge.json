@@ -1,0 +1,15 @@
+{
+ "title": "From cash flow to value per share (base case)",
+ "subtitle": "Our data \u00b7 model_dcf_bridge",
+ "kind": "waterfall",
+ "dataset": {
+  "key": "model_dcf_bridge",
+  "series": [
+   "10.55%"
+  ]
+ },
+ "units": {
+  "Value per share": "USD"
+ },
+ "total": true
+}

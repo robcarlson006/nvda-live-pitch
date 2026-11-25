@@ -34,3 +34,9 @@
 
 .no-motion .dm * { animation: none !important; }
 .no-motion .dm-stream, .no-motion .dm-ring { stroke-dashoffset: 0; }
+
+/* Streams drawn to scale (share of last quarter's revenue, Bloomberg) read as solid bands, not wires. */
+.dm-stream.sized { stroke: #3f6b05; stroke-linecap: round; opacity: 0.9; }
+.dm-stream.first.sized { stroke: #4a5444; }
+.dm-buyer { padding: calc(1.2 * var(--u)) calc(1.8 * var(--u)); }
+.dm-detail { font-size: calc(2.2 * var(--u)); }

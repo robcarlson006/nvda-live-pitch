@@ -1,0 +1,12 @@
+{
+ "title": "NVIDIA revenue: actual and analyst consensus",
+ "subtitle": "Our data \u00b7 nvda_revenue_forecast",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_revenue_forecast",
+  "series": [
+   "Actual",
+   "Consensus estimate"
+  ]
+ }
+}

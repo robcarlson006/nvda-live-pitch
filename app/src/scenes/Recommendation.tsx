@@ -8,7 +8,8 @@ import './recommendation.css';
  *   title                — a 10 × 10 grid builds: the portfolio, one square per percent
  *   1 "three percent"    — three squares light green (our NVDA position) inside a dashed row of ten: our limit for one stock
  *   2 "all three rates"  — value per share at each discount rate, as bars to scale, against a dashed line at today's price
- *   3 "bear case"        — a red outline round the three squares: the most the portfolio can lose is this position
+ *   3 "bear case"        — a red outline round the three squares: even at zero the portfolio loses at most 3%, and the
+ *                          bear-case and AI-ended costs (model_downside) are printed beneath it
  *   4 "we would add"     — the rest of the limit row glows faintly (room to add, if the signals hold), with a way out to sell
  * The 3 and 10 are the slide's own words (a 3% position; a 10% single-stock limit): they are the board's sizing, not
  * market data. The markers in step 2 sit at an equal height on purpose: the picture says "above", the points give the
@@ -63,7 +64,10 @@ export function Recommendation({ stage, datasets = {} }: SceneProps) {
       {/* Step 3: the most at risk. */}
       <rect className="rec-risk" x={GRID.x - 5} y={GRID.y - 5} width={POSITION * PX - 2} height={PX - 2} rx="6" />
       <g className="rec-note risk">
-        <text x={GRID.x - 4} y={GRID.y + PX + 34}>the most we can lose: this position</text>
+        <text x={GRID.x - 4} y={GRID.y + PX + 34}>even if NVDA went to zero: at most these 3%</text>
+        <text className="rec-risk-sub" x={GRID.x - 4} y={GRID.y + PX + 72}>
+          bear case: {lookup(datasets, 'model_downside', 'Cost to the portfolio', 'Bear case')} · AI ended: {lookup(datasets, 'model_downside', 'Cost to the portfolio', 'If AI ended for good')}
+        </text>
       </g>
 
       {/* Step 2: value per share at each discount rate, to scale, against a dashed line at today's price. */}

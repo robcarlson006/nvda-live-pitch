@@ -49,6 +49,14 @@ test('a rejected board claim needs research; a riff can keep its valid bullet', 
   assert.ok('error' in (await go(new Ai(new Budget(tmp(), 4), async () => message(reply({ title: 'Up 55%' })), () => true))), 'a bad title is never shown');
 });
 
+test('a garbled board question asks the operator to clarify instead of guessing; a riff ignores clarify', async () => {
+  const confused = reply({ answered: false, clarify: 'Only heard "what about the"; ask them to finish the question.' });
+  const r = await go(new Ai(new Budget(tmp(), 4), async () => message(confused), () => true));
+  assert.deepEqual(r, { clarify: 'Only heard "what about the"; ask them to finish the question.' });
+  const riff = await go(new Ai(new Budget(tmp(), 4), async () => message(confused), () => true), { ...job, kind: 'riff' });
+  assert.ok('slide' in riff, 'clarify only applies to board questions');
+});
+
 test('a line chart drops series too small to see', () => {
   const s = toSlide(reply({ chart: { ...reply().chart!, series: ['Scope 1', 'Scope 3'] } }), datasets, 'gen-1') as Slide;
   assert.deepEqual(s.chart!.series, ['Scope 3']);

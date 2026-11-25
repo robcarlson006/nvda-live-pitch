@@ -1,0 +1,15 @@
+{
+ "title": "From our round-one target to today's base case",
+ "subtitle": "Our data \u00b7 model_target_bridge",
+ "kind": "waterfall",
+ "dataset": {
+  "key": "model_target_bridge",
+  "series": [
+   "Value per share"
+  ]
+ },
+ "units": {
+  "Discount rate": "%"
+ },
+ "total": true
+}

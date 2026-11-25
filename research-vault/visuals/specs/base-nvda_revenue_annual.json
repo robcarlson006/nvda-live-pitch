@@ -1,0 +1,11 @@
+{
+ "title": "NVIDIA annual revenue",
+ "subtitle": "Our data \u00b7 nvda_revenue_annual",
+ "kind": "line",
+ "dataset": {
+  "key": "nvda_revenue_annual",
+  "series": [
+   "Revenue"
+  ]
+ }
+}
