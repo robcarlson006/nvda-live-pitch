@@ -38,10 +38,10 @@ test('zoom steps: the chart builds where it is told, zooms follow cues, and bad 
   assert.deepEqual(e.chart?.exclude, ['TSMC']);
   assert.equal(datasets.get('peers_emissions_intensity')?.x.includes('TSMC'), true, 'the underlying dataset stays complete');
   // A zoom without a cue lands together with the point before it; "all" zooms back out.
-  const v = spine[idx('dcf-bridge')];
-  let t = run(emptyState(), { type: 'goto', index: idx('dcf-bridge') }, say('the cash of the next five years'), say('everything after that'), say('three quarters of the value'), say('an enterprise value of'), say('add sixty billion of net cash'));
-  assert.equal(zoomAt(v, t.reveal), 'Equity value');
-  t = run(t, say('it holds more cash than debt'), say('divide by twenty four billion shares'));
+  const v = spine[idx('three-rates')];
+  let t = run(emptyState(), { type: 'goto', index: idx('three-rates') }, say('at the us chip industry rate'), say('at google finance'), say('at bloomberg'));
+  assert.equal(zoomAt(v, t.reveal), '15.4% Bloomberg');
+  t = run(t, say('all three are above our reference price'));
   assert.equal(zoomAt(v, t.reveal), null);
   const base = { id: 't', layout: 'split' as const, title: 'T', bullets: ['a'], sources: [], chart: { type: 'bar' as const, datasetKey: 'peers_pe', series: ['Forward P/E'] } };
   assert.match(checkSlide({ ...base, steps: [{ bullet: 0 }, { zoom: 'NVIDIA' }, { chart: true }] }, datasets)!, /before the chart/);

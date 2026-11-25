@@ -43,8 +43,11 @@ export function Stage() {
   const decidedFor = useRef(0);
   const cardFor = useRef(0); // liveSince of the slide whose opener card is playing (0 = none)
   const [cardDone, setCardDone] = useState(0);
+  // Seen the stage idle (no slide yet): then the very first slide counts as moving forward, so Part one gets its card.
+  const sawIdle = useRef(false);
+  if (state && !slide) sawIdle.current = true;
   if (state && decidedFor.current !== state.liveSince) {
-    const forward = lastIndex.current >= 0 && state.index > lastIndex.current;
+    const forward = (lastIndex.current >= 0 || sawIdle.current) && state.index > lastIndex.current;
     cardFor.current = motion && forward && slide && !slide.answer && SECTIONS[slide.id] ? state.liveSince : 0;
     decidedFor.current = state.liveSince;
     lastIndex.current = state.index;

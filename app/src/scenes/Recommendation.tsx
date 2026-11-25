@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { lookup } from '../../shared/schema.ts';
 import type { SceneProps } from './index.tsx';
 import './recommendation.css';
 
@@ -6,7 +7,7 @@ import './recommendation.css';
  * "Our recommendation: Buy." The position, sized on a picture of the whole portfolio:
  *   title                — a 10 × 10 grid builds: the portfolio, one square per percent
  *   1 "three percent"    — three squares light green (our NVDA position) inside a dashed row of ten: our limit for one stock
- *   2 "all three rates"  — three markers rise above a line marked today's price: the base case is above it at every rate
+ *   2 "all three rates"  — value per share at each discount rate, as bars to scale, against a dashed line at today's price
  *   3 "bear case"        — a red outline round the three squares: the most the portfolio can lose is this position
  *   4 "we would add"     — the rest of the limit row glows faintly (room to add, if the signals hold), with a way out to sell
  * The 3 and 10 are the slide's own words (a 3% position; a 10% single-stock limit): they are the board's sizing, not
@@ -20,7 +21,15 @@ const GRID = { x: 170, y: 170 };
 const POSITION = 3;
 const LIMIT = 10;
 
-export function Recommendation({ stage }: SceneProps) {
+const RATE_X = ['10.55% industry (Damodaran)', '14.45% Google Finance', '15.4% Bloomberg'];
+const BARS = { x: 290, y: 700, gap: 64, h: 40, w: 400 };
+
+export function Recommendation({ stage, datasets = {} }: SceneProps) {
+  const rates = datasets.model_three_rates;
+  const raw = (x: string) => rates?.series['Value per share']?.[rates.x.indexOf(x)] ?? null;
+  const price = datasets.model_dcf_inputs?.series['Share price']?.[0] ?? null;
+  const top = Math.max(...RATE_X.map((x) => raw(x) ?? 0)) || 1;
+  const scale = (v: number) => (v / top) * BARS.w;
   const cellX = (i: number) => GRID.x + (i % N) * PX;
   const cellY = (i: number) => GRID.y + Math.floor(i / N) * PX;
   return (
@@ -57,21 +66,25 @@ export function Recommendation({ stage }: SceneProps) {
         <text x={GRID.x - 4} y={GRID.y + PX + 34}>the most we can lose: this position</text>
       </g>
 
-      {/* Step 2: above today's price, at all three rates. Equal heights: this shows "above", not by how much. */}
-      <g className="rec-rates">
-        <line className="rec-price" x1={GRID.x} y1="860" x2={GRID.x + N * PX - 6} y2="860" />
-        <text className="rec-price-label" x={GRID.x + N * PX - 6} y="896">today's price</text>
-        {[0, 1, 2].map((k) => {
-          const x = GRID.x + 70 + k * 150;
-          return (
-            <g key={k} className="rec-rate" style={{ '--k': k } as CSSProperties}>
-              <line x1={x} y1="860" x2={x} y2="762" />
-              <path d={`M ${x - 16} 778 L ${x} 756 L ${x + 16} 778`} />
-            </g>
-          );
-        })}
-        <text className="rec-rates-label" x={GRID.x} y="728">our base case, at each discount rate</text>
-      </g>
+      {/* Step 2: value per share at each discount rate, to scale, against a dashed line at today's price. */}
+      {price != null && (
+        <g className="rec-rates">
+          <text className="rec-rates-label" x={GRID.x} y={BARS.y - 30}>Value per share at each discount rate</text>
+          {RATE_X.map((x, k) => {
+            const v = raw(x) ?? 0;
+            const y = BARS.y + k * BARS.gap;
+            return (
+              <g key={x} className="rec-rate" style={{ '--k': k } as CSSProperties}>
+                <text className="rec-rate-name" x={GRID.x} y={y + 26}>{x.split(' ')[0]}</text>
+                <rect x={BARS.x} y={y} width={scale(v)} height={BARS.h} rx="4" style={{ '--k': k } as CSSProperties} />
+                <text className="rec-rate-val" x={BARS.x + scale(v) + 12} y={y + 28}>{lookup(datasets, 'model_three_rates', 'Value per share', x)}</text>
+              </g>
+            );
+          })}
+          <line className="rec-price" x1={BARS.x + scale(price)} y1={BARS.y - 14} x2={BARS.x + scale(price)} y2={BARS.y + 3 * BARS.gap} />
+          <text className="rec-price-label" x={BARS.x + scale(price)} y={BARS.y + 3 * BARS.gap + 30}>today {lookup(datasets, 'model_dcf_inputs', 'Share price', 'value')}</text>
+        </g>
+      )}
 
       {/* Step 4: room to add, and a way out. */}
       <g className="rec-note add">

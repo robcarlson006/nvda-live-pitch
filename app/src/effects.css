@@ -4,7 +4,7 @@
   background: radial-gradient(ellipse at 30% 55%, rgba(18, 30, 6, 0.9), rgba(0, 0, 0, 0.96) 70%);
 }
 .sc-kicker { margin: 0 0 calc(2 * var(--u)); font-size: calc(2.4 * var(--u)); letter-spacing: 0.16em; text-transform: uppercase; color: var(--green); font-weight: 650; animation: sc-fade 0.7s ease 0.1s both; }
-.sc-word { margin: 0; font-size: calc(24 * var(--u)); line-height: 0.95; font-weight: 820; font-stretch: 125%; letter-spacing: -0.02em; color: var(--white); }
+.sc-word { margin: 0; font-size: min(calc(24 * var(--u)), calc(108vw / var(--len, 8))); line-height: 0.95; font-weight: 820; font-stretch: 125%; letter-spacing: -0.02em; color: var(--white); }
 .sc-word span { display: inline-block; animation: sc-letter 0.9s cubic-bezier(0.16, 1, 0.3, 1) calc(0.15s + var(--i) * 0.045s) both; }
 @keyframes sc-letter { from { opacity: 0; transform: translateY(0.35em); filter: blur(12px); } to { opacity: 1; transform: none; filter: none; } }
 .sc-rule { display: block; height: calc(0.7 * var(--u)); width: 38vw; margin: calc(3 * var(--u)) 0 calc(2.4 * var(--u)); background: var(--green); transform-origin: left; animation: sc-rule 1s cubic-bezier(0.65, 0, 0.35, 1) 0.45s both; box-shadow: 0 0 calc(2 * var(--u)) rgba(118, 185, 0, 0.5); }

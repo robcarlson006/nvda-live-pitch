@@ -61,9 +61,10 @@ export function DcfDrivers({ stage, datasets = {} }: SceneProps) {
           <text className="dd-val" x={cx(0)} y={top(0) - 14}>{lookup(datasets, 'model_revenue_paths', 'Base', 'FY27')}</text>
           <text className="dd-val hi" x={cx(5)} y={top(5) - 14}>{lookup(datasets, 'model_revenue_paths', 'Base', 'FY32')}</text>
           <path className="dd-arc" pathLength={1} d={`M ${cx(0)} ${top(0) - 46} Q ${cx(1)} ${top(5) - 150} ${cx(5) - 10} ${top(5) - 48}`} />
+          {/* Top left, above where the arc starts low: the label never touches the line. */}
           <g className="dd-cagr">
-            <text className="dd-cagr-num" x={cx(1) + 10} y={top(5) - 84}>{L('Revenue CAGR, FY27–32')}</text>
-            <text className="dd-cagr-cap" x={cx(1) + 10} y={top(5) - 50}>a year, compounded</text>
+            <text className="dd-cagr-num" x={X0 - 20} y={top(5) - 118}>{L('Revenue CAGR, FY27–32')}</text>
+            <text className="dd-cagr-cap" x={X0 - 20} y={top(5) - 84}>a year, compounded</text>
           </g>
         </g>
       )}

@@ -7,17 +7,24 @@ import './effects.css';
  * section's first slide builds. Keyed by spine slide id (the section's first slide), so the script needs no change.
  * Only plays moving forward into the section, and never with motion off.
  */
+// One card per part of the pitch, keyed by that part's first slide. The spine keeps each part's slides together:
+// story (founding → handoff), numbers (last-quarter → ai-ended), future (space-race → beyond-hyperscalers),
+// responsibility (governance → emissions-peers), verdict (recommendation → close).
 export const SECTIONS: Record<string, { kicker: string; word: string; line: string }> = {
-  'last-quarter': { kicker: 'Part two · Panshul', word: 'Numbers.', line: 'Do the numbers agree?' },
-  'space-race': { kicker: 'Part three · Mi’kael', word: 'Future.', line: 'Responsibility, and our recommendation' },
+  founding: { kicker: 'Part one', word: 'Story.', line: 'Why NVIDIA is the gold standard' },
+  'last-quarter': { kicker: 'Part two', word: 'Numbers.', line: 'Do the numbers agree?' },
+  'space-race': { kicker: 'Part three', word: 'Future.', line: 'What AI is already doing, and who it reaches' },
+  governance: { kicker: 'Part four', word: 'Responsibility.', line: 'Governance, people and the planet' },
+  recommendation: { kicker: 'Part five', word: 'Verdict.', line: 'Our recommendation' },
 };
-export const CARD_MS = 1900;
+// Long enough to read the card: the letters land by about 1.2 s, then it holds before the slide builds.
+export const CARD_MS = 2800;
 
 export function SectionCard({ kicker, word, line }: { kicker: string; word: string; line: string }) {
   return (
     <div className="section-card">
       <p className="sc-kicker">{kicker}</p>
-      <h1 className="sc-word" aria-label={word}>
+      <h1 className="sc-word" aria-label={word} style={{ '--len': word.length } as CSSProperties}>
         {[...word].map((ch, i) => (
           <span key={i} style={{ '--i': i } as CSSProperties}>{ch}</span>
         ))}

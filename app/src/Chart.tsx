@@ -164,7 +164,8 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
             type: 'bar',
             stack: 'fall',
             barCategoryGap: '28%',
-            animationDuration: 1200,
+            animationDuration: 1300,
+            animationEasing: 'cubicOut',
             animationDelay: (j: number) => j * 220,
             data: values.map((v, j) => ({
               value: v == null ? null : Math.abs(v),
@@ -213,7 +214,8 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
           })),
           barCategoryGap: '28%',
           itemStyle: { color },
-          animationDuration: 1600,
+          animationDuration: 1500,
+          animationEasing: 'cubicOut',
           animationDelay: (j: number) => j * stagger,
         };
       }
@@ -229,11 +231,12 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
           symbolClip: true,
           barCategoryGap: '28%',
           markLine: i === 0 ? refLine : undefined,
-          animationDuration: 1600,
+          animationDuration: 1500,
+          animationEasing: 'cubicOut',
           animationDelay: (j: number) => j * stagger,
           data: values.map((v, j) => ({
             value: v,
-            itemStyle: { color: spec.series.length > 1 ? (i === 0 ? GREEN : OTHERS[i - 1]) : j === hiIdx ? GREEN : DIM_GREEN },
+            itemStyle: { color: spec.series.length > 1 ? (i === 0 ? GREEN : OTHERS[i - 1]) : j === hiIdx ? GREEN : DIM_GREEN, ...(spec.series.length === 1 && j === hiIdx ? { shadowBlur: vh * 2.2, shadowColor: 'rgba(118, 185, 0, 0.55)' } : {}) },
             label: {
               show: spec.series.length === 1 && (n <= 8 || j === hiIdx), // long series: label only the highlight
               position: 'top',
@@ -255,7 +258,8 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
         symbol: 'none',
         lineStyle: { width: i === 0 ? vh * 0.45 : vh * 0.2, color, type: i === 0 ? 'solid' : [vh * 0.8, vh * 0.6] },
         animationDuration: 2400,
-        animationEasing: 'linear',
+        animationEasing: 'cubicInOut',
+        areaStyle: i === 0 ? { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: spec.muted ? 'rgba(217, 220, 207, 0.16)' : 'rgba(118, 185, 0, 0.28)' }, { offset: 1, color: 'rgba(118, 185, 0, 0)' }]) } : undefined,
         // Direct labels at the line ends instead of a legend.
         endLabel: { show: true, formatter: '{a}', color, fontSize: vh * 2.8, fontFamily: FONT, fontWeight: i === 0 ? 650 : 450, distance: vh },
         markPoint:
@@ -278,7 +282,7 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
     chart.setOption({
       backgroundColor: 'transparent',
       textStyle: { fontFamily: FONT },
-      grid: { left: isBar ? vh * (n > 8 ? 8 : 3) : 0, right: isBar ? vh * (n > 8 ? 8 : 3) : vh * Math.max(18, Math.max(...spec.series.map((x) => x.length)) * 1.7 + 2), top: vh * 6, bottom: 0, containLabel: true }, // bars: room for a label wider than its bar
+      grid: { left: isBar ? vh * (n > 8 ? 8 : 3) : 0, right: isBar ? vh * (n > 8 ? 8 : 3) : vh * Math.max(18, Math.max(...spec.series.map((x) => x.length)) * 1.7 + 2), top: vh * 10, bottom: 0, containLabel: true }, // bars: room for a label wider than its bar
       legend: isBar && spec.series.length > 1 ? { top: 0, left: 0, textStyle: { color: '#b4b9ae', fontSize: vh * 2.6 }, icon: 'rect' } : undefined,
       xAxis: {
         type: 'category',

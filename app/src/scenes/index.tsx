@@ -2,6 +2,9 @@ import type { ComponentType } from 'react';
 import type { Dataset } from '../../shared/schema.ts';
 import { DcfDrivers } from './DcfDrivers.tsx';
 import { DcfSummary } from './DcfSummary.tsx';
+import { BridgeStack } from './BridgeStack.tsx';
+import { Workers } from './Workers.tsx';
+import { Connections } from './Connections.tsx';
 import { AiIndustries } from './AiIndustries.tsx';
 import { SpaceRace } from './SpaceRace.tsx';
 import { WallStreet } from './WallStreet.tsx';
@@ -49,6 +52,9 @@ const scenes: Record<string, ComponentType<SceneProps>> = {
   'beyond-hyperscalers': Demand,
   'dcf-drivers': DcfDrivers,
   'dcf-summary': DcfSummary,
+  'dcf-bridge': BridgeStack,
+  cuda: Workers,
+  connections: Connections,
 };
 
 export function sceneFor(id: string): ComponentType<SceneProps> | undefined {
