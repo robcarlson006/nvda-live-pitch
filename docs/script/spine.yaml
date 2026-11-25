@@ -200,7 +200,7 @@
   layout: statement
   title: The best chips, software, connections and supply.
   bullets:
-    - text: "Panshul: do the numbers agree?"
+    - text: Do the numbers agree?
       cue: panshul
   say: "So NVIDIA leads in all four layers. Panshul: do the numbers agree?"
 

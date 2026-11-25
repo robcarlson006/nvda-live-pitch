@@ -115,7 +115,7 @@ Has anyone caught up? Google came closest: it has built its own chips since 2015
 
 So NVIDIA leads in all four layers. Panshul: do the numbers agree?
 
-▸ Panshul: do the numbers agree? (on “panshul”)
+▸ Do the numbers agree? (on “panshul”)
 
 ---
 

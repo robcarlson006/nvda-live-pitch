@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { elementCount, formatValue, isUnverified, stepsOf, zoomAt, type ShowState, type SpineSlide } from '../shared/schema.ts';
+import { elementCount, formatValue, isUnverified, slideTexts, stepsOf, zoomAt, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { cueScore, findCue, words } from './cues.ts';
 import { addDraft, apply, checkSlide, emptyState, isIgnoringUtterance, loadDatasets, loadSpine, relocate, runReport, sectionLastIndex, type Ctx } from './state.ts';
+import { loadBank } from './bank.ts';
 
 const datasets = loadDatasets();
 const spine = loadSpine(datasets); // also proves docs/script/spine.yaml is valid against the real data
@@ -350,4 +351,11 @@ test('static backup switches the stage to full pages and advances whole slides',
   assert.equal(s.reveal, elementCount(spine[s.index]));
   s = run(s, { type: 'backup', on: false });
   assert.equal(s.backup, false);
+});
+
+test('no presenter names on any slide or prepared answer (they can be spoken, never shown)', () => {
+  const NAMES = /\b(rob|robert|panshul|mi'?kael|mikael|carlson|aeron)\b/i;
+  const shown = (s: Parameters<typeof slideTexts>[0]) => [...slideTexts(s), ...(s.groups ?? []).map((g) => g.tag), ...(s.diagram?.nodes ?? [])];
+  for (const s of spine) for (const t of shown(s)) assert.doesNotMatch(String(t), NAMES, `${s.id}: "${t}"`);
+  for (const e of loadBank(datasets)) for (const t of shown(e.slide)) assert.doesNotMatch(String(t), NAMES, `${e.id}: "${t}"`);
 });

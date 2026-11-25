@@ -337,7 +337,7 @@ def dcf_summary_grid(c: canvas.Canvas, box: tuple[float, float, float, float]) -
 
 def page(c: canvas.Canvas, slide: dict, index: int, header: str | None = None) -> None:
     c.setFillColor(HexColor("#000000")); c.rect(0,0,W,H,fill=1,stroke=0)
-    c.setFont("Pitch", 8); c.setFillColor(FAINT); c.drawString(52,H-30,header or f"{index:02d}  /  {slide.get('speaker','')}  /  STATIC BACKUP")
+    c.setFont("Pitch", 8); c.setFillColor(FAINT); c.drawString(52,H-30,header or f"{index:02d}  /  STATIC BACKUP")
     layout=slide.get("layout","split")
     has_chart=bool(slide.get("chart"))
     full_width_table=layout == "chart" and slide.get("chart", {}).get("display") == "table"
