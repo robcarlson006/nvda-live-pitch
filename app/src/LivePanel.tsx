@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { resolveText, slideSources, type AiInfo, type ClientMsg, type Dataset, type Draft, type ServerMsg, type ShowState } from '../shared/schema.ts';
+import { resolveText, slideSources, type AiInfo, type ClientMsg, type Dataset, type Draft, type ServerMsg, type ShowState, type SpineSlide } from '../shared/schema.ts';
+import { findSlide } from '../shared/router.ts';
 import './live-panel.css';
 
 type BankIndex = Extract<ServerMsg, { type: 'state' }>['bank'];
@@ -12,9 +13,11 @@ type Props = {
   answers: Draft[];
   datasets: Record<string, Dataset>;
   send: (m: ClientMsg) => void;
+  spine: SpineSlide[];
+  thumb: (id: string) => string | null;
 };
 
-const route = { prepared: 'Prepared answer', web: 'Scoped web research', claude: 'Local evidence check' };
+const route = { prepared: 'Prepared answer', web: 'Scoped web research', claude: 'Local evidence check', slide: 'One of our slides' };
 const answerStatus = (draft: Draft) => draft.evidenceGap ? 'Evidence gap' : route[draft.from];
 const threadId = (draft: Draft) => draft.threadId ?? draft.id;
 
@@ -110,7 +113,7 @@ function PreparedBank({ bank, connected, send }: Pick<Props, 'bank' | 'connected
 }
 
 /** Board questions, operator-only conversation and slides awaiting stage approval. */
-export function LivePanel({ state, ai, connected, bank, answers, datasets, send }: Props) {
+export function LivePanel({ state, ai, connected, bank, answers, datasets, send, spine, thumb }: Props) {
   const [typed, setTyped] = useState('');
   const [followupId, setFollowupId] = useState<string>();
   const composer = useRef<HTMLInputElement>(null);
@@ -124,6 +127,10 @@ export function LivePanel({ state, ai, connected, bank, answers, datasets, send 
   const pendingIds = new Set(drafts.map((draft) => draft.id));
   const past = answers.filter((answer) => !pendingIds.has(answer.id)).reverse();
   const covered = Boolean(state?.live && (state.live.answer || /^(gen|qa)-/.test(state.live.id)));
+  // As the operator types, our own slides that fit: one click shows that slide, fully built. Enter on a clear
+  // request ("show the DCF again", "slide 20") jumps there too, with no AI.
+  const jump = typed.trim() && !followupId ? findSlide(typed, spine) : null;
+  const jumpTo = jump ? [jump.index, ...jump.alternatives] : [];
 
   function selectFollowup(answer: Draft) {
     setFollowupId(threadId(answer));
@@ -187,13 +194,18 @@ export function LivePanel({ state, ai, connected, bank, answers, datasets, send 
         <article key={draft.id} className="op-draft">
           <div className="label">Awaiting approval · {draft.kind === 'answer' ? answerStatus(draft) : 'Off-script reaction'}</div>
           <p className="op-answer-question">{draft.heard}</p>
-          <AnswerBody draft={draft} ai={ai} datasets={datasets} />
+          {draft.goto !== undefined ? (
+            <div className="op-slide-card">
+              {thumb(draft.slide.id) && <img src={thumb(draft.slide.id)!} alt="" />}
+              <div className="live-title">Slide {draft.goto + 1}: {resolveText(draft.slide.title, datasets)}</div>
+            </div>
+          ) : <AnswerBody draft={draft} ai={ai} datasets={datasets} />}
           <div className="op-mic op-answer-actions">
             <button className="primary" disabled={!connected} onClick={() => send({ type: 'draft', action: 'show', id: draft.id })}>
-              Approve and show{index === 0 ? ' (A)' : ''}
+              {draft.goto !== undefined ? 'Show this slide' : 'Approve and show'}{index === 0 ? ' (A)' : ''}
             </button>
             <button disabled={!connected} onClick={() => send({ type: 'draft', action: 'reject', id: draft.id })}>Reject{index === 0 ? ' (X)' : ''}</button>
-            {draft.kind === 'answer' && <button disabled={!connected || asking} onClick={() => selectFollowup(draft)}>Ask a follow-up</button>}
+            {draft.kind === 'answer' && draft.goto === undefined && <button disabled={!connected || asking} onClick={() => selectFollowup(draft)}>Ask a follow-up</button>}
           </div>
         </article>
       ))}
@@ -218,8 +230,25 @@ export function LivePanel({ state, ai, connected, bank, answers, datasets, send 
         )}
         <div className="op-chat-input">
           <input ref={composer} id="op-question" value={typed} maxLength={1500} onChange={(event) => setTyped(event.target.value)} />
-          <button type="submit" disabled={!connectedToState || asking || !typed.trim() || Boolean(followupId && !followup)}>Ask</button>
+          <button type="submit" disabled={!connectedToState || asking || !typed.trim() || Boolean(followupId && !followup)}>{jump?.explicit ? 'Show slide' : 'Ask'}</button>
         </div>
+        {jumpTo.length > 0 && (
+          <div className="op-jump" role="group" aria-label="Show one of our slides">
+            <span className="op-meta">{jump!.explicit ? 'Enter shows slide' : 'Or show our slide'}:</span>
+            {jumpTo.map((i) => (
+              <button
+                key={spine[i].id}
+                type="button"
+                className={i === jump!.index ? 'primary' : undefined}
+                disabled={!connectedToState}
+                onClick={() => { send({ type: 'goto', index: i, full: true }); setTyped(''); }}
+              >
+                {thumb(spine[i].id) && <img src={thumb(spine[i].id)!} alt="" />}
+                <span>{i + 1}. {resolveText(spine[i].title, datasets)}</span>
+              </button>
+            ))}
+          </div>
+        )}
       </form>
 
       {past.length > 0 && (

@@ -7,7 +7,8 @@ import { findCue, findInterimCue, words, type Candidate } from './cues.ts';
 
 export const DATA_DIR = path.resolve(import.meta.dirname, '../../data/clean');
 export const SPINE_FILE = path.resolve(import.meta.dirname, '../../docs/script/spine.yaml');
-const STATE_FILE = path.resolve(import.meta.dirname, '../state.json');
+// STATE_FILE lets a second copy of the app (a test run beside the real one) keep its own show state.
+const STATE_FILE = process.env.STATE_FILE || path.resolve(import.meta.dirname, '../state.json');
 
 export type Ctx = { datasets: Map<string, Dataset>; spine: SpineSlide[]; pauseCues?: boolean };
 
@@ -87,27 +88,30 @@ export function checkSlide(slide: Slide, datasets: Map<string, Dataset>): string
  * Build order from the YAML. Items in `bullets` are text ({ text, cue } or a plain string) or chart zooms ({ zoom, cue }).
  * The chart builds straight after the title with `chartFirst: true`, otherwise right after the last text bullet.
  */
-function spineSteps(r: any): { bullets: string[]; steps: Step[] | undefined; cues: (string | null)[] } {
+/** A YAML cue: one phrase or a list of them (any one builds the point). */
+const cueList = (c: unknown): string[] | null => (c == null ? null : (Array.isArray(c) ? c : [c]).map(String).filter(Boolean));
+
+function spineSteps(r: any): { bullets: string[]; steps: Step[] | undefined; cues: (string[] | null)[] } {
   const items: any[] = (r.bullets ?? []).map((b: any) => (typeof b === 'string' ? { text: b } : b));
   const isZoom = (b: any) => b && 'zoom' in b;
   const lastText = items.map((b) => !isZoom(b)).lastIndexOf(true);
   const steps: Step[] = [];
-  const cues: (string | null)[] = [];
-  const chart = () => (steps.push({ chart: true }), cues.push(r.chartCue ?? null));
+  const cues: (string[] | null)[] = [];
+  const chart = () => (steps.push({ chart: true }), cues.push(cueList(r.chartCue)));
   if (r.chart && (r.chartFirst || lastText < 0)) chart();
   let n = 0;
   items.forEach((b, k) => {
     steps.push(isZoom(b) ? { zoom: String(b.zoom) } : { bullet: n++ });
-    cues.push(b.cue == null ? null : String(b.cue));
+    cues.push(cueList(b.cue));
     if (r.chart && !r.chartFirst && k === lastText) chart();
   });
   // Input groups (layout: inputs) build first, one item at a time: { tag, items: [ text | { text, cue } ] }
   const groupSteps: Step[] = [];
-  const groupCues: (string | null)[] = [];
+  const groupCues: (string[] | null)[] = [];
   (r.groups ?? []).forEach((g: any, gi: number) =>
     (g?.items ?? []).forEach((it: any, ii: number) => {
       groupSteps.push({ item: [gi, ii] });
-      groupCues.push(typeof it === 'object' && it?.cue != null ? String(it.cue) : null);
+      groupCues.push(typeof it === 'object' ? cueList(it?.cue) : null);
     }),
   );
   const plain = !r.chartFirst && !items.some(isZoom) && !groupSteps.length; // the default order: no need to spell it out
@@ -221,7 +225,14 @@ function revealFrom(slide: SpineSlide | Slide, from: number): number {
 
 function show(state: ShowState, slide: Slide, index: number): ShowState {
   // liveSince always moves on, even within the same millisecond, so the stage rebuilds and the log sees every change.
-  return { ...state, index, live: slide, reveal: revealFrom(slide, 0), liveSince: Math.max(Date.now(), state.liveSince + 1), history: [...state.history, slide].slice(-50), heard: '', stray: '', seen: /^(gen|qa)-/.test(slide.id) || state.seen.includes(slide.id) ? state.seen : [...state.seen, slide.id] };
+  // A quick slide (the DCF run) arrives fully built, so its numbers are on screen at once.
+  return { ...state, index, live: slide, reveal: slide.quick ? elementCount(slide) : revealFrom(slide, 0), instant: false, liveSince: Math.max(Date.now(), state.liveSince + 1), history: [...state.history, slide].slice(-50), heard: '', stray: '', seen: /^(gen|qa)-/.test(slide.id) || state.seen.includes(slide.id) ? state.seen : [...state.seen, slide.id] };
+}
+
+/** A script slide called up in Q&A: fully built at once, with the stage's short animations. */
+export function showFull(state: ShowState, spine: SpineSlide[], index: number): ShowState {
+  const s = spine[index];
+  return { ...show(state, s, index), reveal: elementCount(s), instant: true };
 }
 
 /** Live mode: go to a script slide (or back to the one under a tangent) with that many of its points built. */
@@ -268,8 +279,7 @@ function candidates(state: ShowState, spine: SpineSlide[], final: boolean): Cand
   if (live && state.live?.id === live.id && state.reveal < elementCount(live)) {
     // Nearest first, so the next point wins when two could match. A later one builds the points before it too.
     for (let ahead = 0; ahead < LOOKAHEAD && state.reveal + ahead < elementCount(live); ahead++) {
-      const c = live.elementCues[state.reveal - 1 + ahead];
-      if (c) out.push({ cue: c, target: { kind: 'element', ahead } });
+      for (const cue of live.elementCues[state.reveal - 1 + ahead] ?? []) out.push({ cue, target: { kind: 'element', ahead } });
     }
   }
   const a = step(spine, state.skipped, state.index, 1);
@@ -284,7 +294,8 @@ function candidates(state: ShowState, spine: SpineSlide[], final: boolean): Cand
  * After a cue fires, the words after it carry on, so a bullet said in the same breath as its slide still lands.
  */
 function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[], paused: boolean, receivedAt?: number): ShowState {
-  if (paused || state.backup || answerOnDeck(state) || isIgnoringUtterance(state)) {
+  // A slide called up in Q&A (instant) is being discussed, not presented: its words must not move the deck on.
+  if (paused || state.backup || state.instant || answerOnDeck(state) || isIgnoringUtterance(state)) {
     // The final may arrive after Q&A closes. Keep the whole utterance out of the script follower.
     const consumed = final ? 0 : IGNORE_UTTERANCE;
     if (state.consumed === consumed && !state.heard && !state.stray) return state;
@@ -369,6 +380,7 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
     }
     case 'goto':
       if (msg.index < 0 || msg.index >= spine.length) return `No slide ${msg.index + 1}`;
+      if (msg.full) return showFull(state, spine, msg.index);
       return state.backup ? { ...show(state, spine[msg.index], msg.index), reveal: elementCount(spine[msg.index]) } : show(state, spine[msg.index], msg.index); // explicit jumps may land on a skipped slide
     case 'autoCue':
       return { ...state, autoCue: msg.on, heard: '', stray: '' };
@@ -392,7 +404,8 @@ function reduce(state: ShowState, msg: z.output<typeof ClientMsg>, { datasets, s
       const d = state.drafts.find((x) => x.id === msg.id);
       if (!d) return 'That slide is no longer in the queue';
       const rest = { ...state, drafts: state.drafts.filter((x) => x !== d) };
-      return msg.action === 'show' ? cover(rest, d.slide) : rest;
+      if (msg.action !== 'show') return rest;
+      return d.goto !== undefined && spine[d.goto] ? showFull(rest, spine, d.goto) : cover(rest, d.slide);
     }
     case 'resume':
       return resume(state, spine);

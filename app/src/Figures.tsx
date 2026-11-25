@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type CSSProperties } from 'react';
 
 /**
  * Figures in a point ("$441.2bn", "-33.55%", "1.01%", "3.7x") count up to their value as the point lands, and settle on
@@ -28,7 +28,11 @@ export function splitFigures(text: string): Part[] {
   return out;
 }
 
+/** True on a quick slide (the DCF run, or a slide called up in Q&A): figures count up in a blink instead of a second. */
+export const QuickContext = createContext(false);
+
 function CountUp({ text, figure, at, motion }: { text: string; figure: NonNullable<Part['figure']>; at: number; motion: boolean }) {
+  const quick = useContext(QuickContext);
   const [shown, setShown] = useState(motion ? format(0) : text);
   const done = useRef(!motion);
   function format(v: number) {
@@ -40,8 +44,8 @@ function CountUp({ text, figure, at, motion }: { text: string; figure: NonNullab
   useEffect(() => {
     if (done.current) return;
     let raf = 0;
-    const start = performance.now() + at * 1000 + 150;
-    const dur = 1100;
+    const start = performance.now() + (quick ? 0 : at * 1000 + 150);
+    const dur = quick ? 300 : 1100;
     const tick = (now: number) => {
       const t = Math.min(1, Math.max(0, (now - start) / dur));
       const eased = 1 - Math.pow(1 - t, 4);
@@ -59,7 +63,7 @@ function CountUp({ text, figure, at, motion }: { text: string; figure: NonNullab
   return (
     // The final text sits invisibly underneath, so the line keeps its width while the digits run and nothing reflows.
     // --mark-at: the highlighter sweeps under the figure once it has finished counting.
-    <span className="fig" style={{ '--mark-at': `${at + 1.15}s` } as CSSProperties}>
+    <span className="fig" style={{ '--mark-at': quick ? '0.3s' : `${at + 1.15}s` } as CSSProperties}>
       <span className="fig-final" aria-hidden="true">{text}</span>
       <span className="fig-live">{shown}</span>
     </span>

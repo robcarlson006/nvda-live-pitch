@@ -2,7 +2,7 @@ import { AnswerVisual } from './AnswerVisual.tsx';
 import { AnimatePresence, motion as m } from 'framer-motion';
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { CARD_MS, ChapterRail, chapterFor, SECTIONS, SectionCard } from './Effects.tsx';
-import { Figures } from './Figures.tsx';
+import { Figures, QuickContext } from './Figures.tsx';
 import { sceneFor } from './scenes/index.tsx';
 import { lookup, resolveText, slideSources, stepsOf, zoomAt, type Dataset, type Slide } from '../shared/schema.ts';
 import { Chart, DataTable } from './Chart.tsx';
@@ -37,6 +37,8 @@ export function Stage() {
   const datasets = useDatasets();
   useNavKeys(send, state);
   const slide = state?.live ?? null;
+  // The DCF run, or a slide called up in Q&A: everything appears at once, with short animations.
+  const quick = !!slide?.quick || !!state?.instant;
 
   // Section opener: decided once per slide change, and only moving forward into a section's first slide.
   const lastIndex = useRef(-1);
@@ -48,7 +50,7 @@ export function Stage() {
   if (state && !slide) sawIdle.current = true;
   if (state && decidedFor.current !== state.liveSince) {
     const forward = (lastIndex.current >= 0 || sawIdle.current) && state.index > lastIndex.current;
-    cardFor.current = motion && forward && slide && !slide.answer && SECTIONS[slide.id] ? state.liveSince : 0;
+    cardFor.current = motion && forward && slide && !slide.answer && !state.instant && SECTIONS[slide.id] ? state.liveSince : 0;
     decidedFor.current = state.liveSince;
     lastIndex.current = state.index;
   }
@@ -77,7 +79,7 @@ export function Stage() {
   }
 
   return (
-    <div className={`stage${motion ? ' motion' : ' no-motion'}${slide?.effect === 'dark' && (state?.reveal ?? 0) > 1 ? ' fx-dark' : ''}`}>
+    <div className={`stage${motion ? ' motion' : ' no-motion'}${quick ? ' quick' : ''}${slide?.effect === 'dark' && (state?.reveal ?? 0) > 1 ? ' fx-dark' : ''}`}>
       <CoreArray buildKey={carding ? -1 : state?.liveSince ?? 0} glyph={glyph} compact={!!slide?.bullets.length || !!slide?.groups} effect={slide?.effect === 'dark' || (slide && sceneFor(slide.id)) ? undefined : slide?.effect} reveal={state?.reveal ?? 0} />
       {/* Slide to slide: the old slide flies past the camera, then the new one settles in from just behind it.
           "wait" keeps the two from overlapping (two sets of text on screen at once read as a glitch). */}
@@ -87,10 +89,10 @@ export function Stage() {
             key={carding ? `card-${state!.liveSince}` : state!.liveSince}
             className="slide-shell"
             initial={motion ? { opacity: 0, scale: 0.94 } : false}
-            animate={{ opacity: 1, scale: 1, transition: { duration: motion ? 0.9 : 0, ease: [0.16, 1, 0.3, 1] } }}
-            exit={{ opacity: 0, scale: motion ? 1.06 : 1, transition: { duration: motion ? 0.38 : 0, ease: [0.7, 0, 0.84, 0] } }}
+            animate={{ opacity: 1, scale: 1, transition: { duration: motion ? (quick ? 0.25 : 0.9) : 0, ease: [0.16, 1, 0.3, 1] } }}
+            exit={{ opacity: 0, scale: motion ? 1.06 : 1, transition: { duration: motion ? (quick ? 0.12 : 0.38) : 0, ease: [0.7, 0, 0.84, 0] } }}
           >
-            {carding ? <SectionCard {...SECTIONS[slide.id]} /> : <SlideView slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} motion={motion} />}
+            {carding ? <SectionCard {...SECTIONS[slide.id]} /> : <QuickContext.Provider value={quick}><SlideView slide={withFigures(slide, datasets)} reveal={state!.reveal} datasets={datasets} figure={glyph} motion={motion} quick={quick} /></QuickContext.Provider>}
           </m.div>
         )}
       </AnimatePresence>
@@ -149,14 +151,15 @@ function Delayed({ at, children }: { at: number; children: ReactNode }) {
   return ready ? <>{children}</> : null;
 }
 
-function SlideView({ slide, reveal, datasets, figure, motion }: { slide: Slide; reveal: number; datasets: Record<string, Dataset>; figure?: string; motion: boolean }) {
+function SlideView({ slide, reveal, datasets, figure, motion, quick = false }: { slide: Slide; reveal: number; datasets: Record<string, Dataset>; figure?: string; motion: boolean; quick?: boolean }) {
   // Elements: 0 = title, then one per step (by default the bullets, then the chart). Those revealed together are staggered.
   const prev = useRef(0);
   const batchStart = prev.current;
   useEffect(() => {
     prev.current = reveal;
   });
-  const at = (k: number) => (batchStart === 0 ? (k === 0 ? TITLE_AT : 0.5 + k * GAP) : 0.1 + (k - batchStart) * GAP);
+  // Quick slides: everything lands within a fraction of a second, so the numbers can be read while we talk.
+  const at = (k: number) => quick ? k * 0.04 : batchStart === 0 ? (k === 0 ? TITLE_AT : 0.5 + k * GAP) : 0.1 + (k - batchStart) * GAP;
   const shown = (k: number) => k < reveal;
 
   const isDcfWorksheet = slide.chart?.datasetKey === 'model_dcf_detail';
@@ -189,14 +192,14 @@ function SlideView({ slide, reveal, datasets, figure, motion }: { slide: Slide; 
     <h1 className="statement">
       {slide.title.split(' ').map((w, i) => (
         <span key={i}>
-          <span className="word" style={{ '--at': `${TITLE_AT + i * 0.09}s` } as CSSProperties}>
+          <span className="word" style={{ '--at': quick ? '0s' : `${TITLE_AT + i * 0.09}s` } as CSSProperties}>
             {w}
           </span>{' '}
         </span>
       ))}
     </h1>
   ) : (
-    <Reveal as="h1" at={slide.layout === 'number' ? 1.3 : TITLE_AT}>
+    <Reveal as="h1" at={quick ? 0 : slide.layout === 'number' ? 1.3 : TITLE_AT}>
       {slide.title}
     </Reveal>
   );
@@ -247,7 +250,7 @@ function SlideView({ slide, reveal, datasets, figure, motion }: { slide: Slide; 
               {dataset.placeholder && <span className="placeholder">Placeholder data</span>}
             </figcaption>
             <div className="chart-body">
-              {slide.chart.display === 'table' ? <DataTable spec={slide.chart} dataset={dataset} zoom={zoom} /> : <Chart spec={slide.chart} dataset={dataset} zoom={zoom} ring={!slide.answer} />}
+              {slide.chart.display === 'table' ? <DataTable spec={slide.chart} dataset={dataset} zoom={zoom} /> : <Chart spec={slide.chart} dataset={dataset} zoom={zoom} ring={!slide.answer} quick={quick} />}
             </div>
           </Delayed>
         ) : (

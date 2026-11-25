@@ -78,6 +78,8 @@ export const Slide = z.object({
   // A muted, looping clip beside the text: a file in app/public/media (kept out of git), credited on screen. Hidden if missing.
   video: z.object({ file: z.string().regex(/^[\w.-]+\.(mp4|webm|mov)$/i), credit: z.string().min(1).max(120) }).optional(),
   sources: z.array(z.string()).default([]),
+  // Builds all at once with short animations (the DCF run), so the numbers are readable as soon as the slide is up.
+  quick: z.boolean().optional(),
 });
 export type Slide = z.infer<typeof Slide>;
 
@@ -187,8 +189,9 @@ export const SpineSlide = Slide.extend({
   cues: z.array(z.coerce.string().min(1)).min(1),
   say: z.string().optional(),
   optional: z.boolean().default(false), // can be skipped from the operator panel
-  // One per element after the title, in build order (see stepsOf). null = builds straight after the previous one.
-  elementCues: z.array(z.string().nullable()).default([]),
+  // One per element after the title, in build order (see stepsOf): the phrases that build it (any one will do).
+  // null = builds straight after the previous one.
+  elementCues: z.array(z.array(z.string()).nullable()).default([]),
 });
 export type SpineSlide = z.infer<typeof SpineSlide>;
 
@@ -199,7 +202,8 @@ export type RunEntry = { id: string; index: number; at: number; via: 'cue' | 'ne
 export type Rehearsal = { startedAt: number; entries: RunEntry[] };
 
 /** A slide built live, waiting for the operator. */
-export type Draft = { id: string; kind: 'answer' | 'riff'; heard: string; slide: Slide; from: 'prepared' | 'claude' | 'web'; at: number; links?: SourceLink[]; threadId?: string; evidenceGap?: boolean };
+/** `goto`: the card is one of our own script slides (from: 'slide'); showing it jumps the deck there, fully built. */
+export type Draft = { id: string; kind: 'answer' | 'riff'; heard: string; slide: Slide; from: 'prepared' | 'claude' | 'web' | 'slide'; goto?: number; at: number; links?: SourceLink[]; threadId?: string; evidenceGap?: boolean };
 
 export type ShowState = {
   index: number; // position in the spine; -1 = standby or an ad-hoc slide
@@ -225,6 +229,7 @@ export type ShowState = {
   seen: string[]; // ids of the script slides shown so far
   approveTangents: boolean; // live mode: wait for a tap before a tangent slide goes up
   backup: boolean; // show static, locally bundled slide images on the stage
+  instant?: boolean; // the live slide was called up in Q&A: it is fully built and the stage skips the long animations
   motion: boolean; // camera moves and slide morphs. false = the plain pre-v2 behaviour (kill-switch: operator toggle, key m, or ?motion=off on the stage)
 };
 
@@ -240,7 +245,7 @@ export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('backup'), on: z.boolean() }),
   z.object({ type: z.literal('next') }),
   z.object({ type: z.literal('back') }),
-  z.object({ type: z.literal('goto'), index: z.number().int() }),
+  z.object({ type: z.literal('goto'), index: z.number().int(), full: z.boolean().optional() }), // full: fully built at once (Q&A)
   z.object({ type: z.literal('transcript'), text: z.string().max(20000) /* one long unbroken stretch of speech must never be refused */, final: z.boolean(), receivedAt: z.number().int().optional() }),
   z.object({ type: z.literal('autoCue'), on: z.boolean() }),
   z.object({ type: z.literal('skip'), id: z.string(), on: z.boolean() }),

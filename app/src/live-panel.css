@@ -18,3 +18,10 @@
 .op-bank-results { display: grid; gap: 6px; margin-top: 8px; max-height: 260px; overflow-y: auto; }
 .op-bank-results button { text-align: left; }
 .op-live-settings .op-mic { margin: 8px 0 0; }
+
+/* Our own slides: one-click jumps under the question box, and slide cards in the queue. */
+.op-jump { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+.op-jump button { display: inline-flex; align-items: center; gap: 8px; padding: 4px 10px 4px 4px; font-size: 13px; text-align: left; }
+.op-jump img { width: 64px; height: 36px; object-fit: cover; border-radius: 4px; background: #000; }
+.op-slide-card { display: flex; align-items: center; gap: 14px; }
+.op-slide-card img { width: 192px; height: 108px; object-fit: cover; border-radius: 6px; border: 1px solid #333840; background: #000; }

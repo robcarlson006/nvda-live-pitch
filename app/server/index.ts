@@ -10,7 +10,8 @@ import { Evidence, loadVault } from './evidence.ts';
 import { resolveText, slideSources, SourceLink, type AiInfo, type ClientMsg, type Draft, type ServerMsg, type SpineSlide, type Stuck } from '../shared/schema.ts';
 import { deepgramKey, deepgramUrl, relay } from './deepgram.ts';
 import { accept, Director } from './director.ts';
-import { addDraft, answerOnDeck, apply, isCovered, isIgnoringUtterance, liveGo, livePoints, logMove, offScript, loadDatasets, loadSpine, loadState, relocate, runReport, saveState, SPINE_FILE } from './state.ts';
+import { addDraft, answerOnDeck, apply, isCovered, isIgnoringUtterance, liveGo, livePoints, logMove, offScript, loadDatasets, loadSpine, loadState, relocate, runReport, saveState, showFull, SPINE_FILE } from './state.ts';
+import { findSlide } from '../shared/router.ts';
 
 const PORT = Number(process.env.PORT ?? 5173);
 const prod = process.env.NODE_ENV === 'production';
@@ -83,7 +84,7 @@ function draft(kind: Draft['kind'], heard: string, slide: Draft['slide'], from: 
 }
 
 function remember(d: Draft) {
-  if (d.kind !== 'answer') return;
+  if (d.kind !== 'answer' || d.from === 'slide') return;
   recentAnswers.set(d.threadId ?? d.id, d);
   if (recentAnswers.size > 12) recentAnswers.delete(recentAnswers.keys().next().value!);
 }
@@ -185,6 +186,45 @@ async function build(kind: 'answer' | 'riff', heard: string, previous?: string) 
   else void visualise(d);
 }
 
+/** A card for one of our own script slides: approving it jumps the deck there, fully built. */
+function offerSlide(index: number, heard: string) {
+  const s = spine[index];
+  if (!s || state.drafts.some((d) => d.goto === index) || (state.index === index && !isCovered(state))) return;
+  submitDraft({ id: randomUUID(), kind: 'answer', heard, slide: s, from: 'slide', goto: index, at: Date.now(), links: [] });
+}
+
+let askSeq = 0;
+/**
+ * A board question, fastest route first:
+ *   1. our own slide, found locally in a millisecond ("can we see the DCF again?"). A clear request to see a slide,
+ *      typed by the operator, jumps straight there; anything else becomes a one-key card;
+ *   2. a prepared answer (inside build(), also local);
+ *   3. beside the full answer, a fast model's second opinion on which slide or prepared answer fits;
+ *   4. the full answer, built from our evidence.
+ */
+function answerQuestion(question: string, opts: { typed: boolean; previous?: string }) {
+  const seq = ++askSeq;
+  const hit = opts.previous ? null : findSlide(question, spine);
+  if (hit?.explicit && opts.typed) {
+    stopJob();
+    state = showFull(state, spine, hit.index);
+    note = `Showing slide ${hit.index + 1}: ${resolveText(spine[hit.index].title, datasets)}`;
+    return;
+  }
+  if (hit) offerSlide(hit.index, question);
+  if (hit?.explicit) return; // "show me the DCF": a card is the answer; nothing to write
+  void build('answer', question, opts.previous);
+  if (!opts.previous) void secondOpinion(question, seq);
+}
+
+async function secondOpinion(question: string, seq: number) {
+  const r = await ai.route(question, spine, bank, AbortSignal.timeout(4_000)).catch(() => ({ slide: null, bank: null }));
+  if (seq !== askSeq) return; // a newer question has started
+  if (r.slide) offerSlide(spine.findIndex((s) => s.id === r.slide), question);
+  const entry = r.bank ? bank.find((b) => b.id === r.bank) : undefined;
+  if (entry && !state.drafts.some((d) => d.slide.id === entry.slide.id) && state.live?.id !== entry.slide.id) submitDraft(draft('answer', question, entry.slide, 'prepared', entry.links));
+}
+
 /** The evidence-gap answer stays available if research takes too long or fails. */
 async function research(heard: string, replaces: string, previous?: string) {
   const fallback = state.drafts.find((item) => item.id === replaces);
@@ -230,7 +270,7 @@ function maybeRiff() {
  * so if the AI is slow, wrong or unreachable the deck still moves. Its verdicts only ever choose among our own slides.
  */
 function canFollow() {
-  return state.follow === 'live' && state.autoCue && state.mode === 'script' && !state.backup && !isCovered(state) && !answerOnDeck(state) && job?.kind !== 'answer' && job?.kind !== 'research';
+  return state.follow === 'live' && state.autoCue && state.mode === 'script' && !state.backup && !state.instant && !isCovered(state) && !answerOnDeck(state) && job?.kind !== 'answer' && job?.kind !== 'research';
 }
 
 async function followSpeech() {
@@ -270,9 +310,12 @@ function handleAi(msg: ClientMsg, before: typeof state): void {
     if (msg.action === 'answer') {
       const q = `${before.question} ${before.questionTail}`.trim();
       if (before.mode !== 'question') return;
-      if (q) void build('answer', q);
+      if (q) answerQuestion(q, { typed: false });
       else note = 'No question was heard. Type it instead, or try again.';
-    } else stopJob();
+    } else {
+      stopJob();
+      if (msg.action === 'start') ai.warm(datasets, spine); // while they are still asking
+    }
   } else if (msg.type === 'ask') {
     const prior = msg.followup ? recentAnswers.get(msg.followup) : undefined;
     const previous = prior ? [prior.heard, prior.slide.title, ...prior.slide.bullets.map((b) => resolveText(b, datasets))].join(' / ') : undefined;
@@ -281,7 +324,8 @@ function handleAi(msg: ClientMsg, before: typeof state): void {
       return;
     }
     const question = msg.text.trim();
-    if (question) void build(msg.kind ?? 'answer', question, previous);
+    if (question && (msg.kind ?? 'answer') === 'answer') answerQuestion(question, { typed: true, previous });
+    else if (question) void build('riff', question, previous);
   } else if ((msg.type === 'backup' && msg.on) || msg.type === 'clear' || (msg.type === 'draft' && job?.draftId === msg.id)) stopJob();
   else if (msg.type === 'bank') {
     const e = bank.find((b) => b.id === msg.id);

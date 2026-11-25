@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { elementCount, isUnverified, resolveText, type ShowState, type SpineSlide } from '../shared/schema.ts';
 import { LivePanel } from './LivePanel.tsx';
 import { ChartLibrary } from './ChartLibrary.tsx';
 import { Teleprompter } from './Teleprompter.tsx';
-import { Prompter, type Feed } from './Prompter.tsx';
+import { useThumbs } from './thumbs.ts';
 import { demoSlides } from './demoSlides.ts';
 import { useSpeech, type Engine } from './useSpeech.ts';
 import { useDatasets, useNavKeys, useShow } from './useShow.ts';
@@ -76,15 +76,9 @@ export function Operator() {
   const { state, spine, spineError, connected, clients, error, notice, send, ai, bank, answers } = useShow();
   const datasets = useDatasets();
   const [said, setSaid] = useState('');
-  // Two tabs: the controls, and a full-screen teleprompter. Both stay mounted so the mic and the prompter keep running.
-  const [tab, setTab] = useState<'controls' | 'prompter'>(() => (location.hash === '#prompter' ? 'prompter' : 'controls'));
-  useEffect(() => { history.replaceState(null, '', tab === 'prompter' ? '#prompter' : location.pathname); }, [tab]);
-  // Every word heard here (or typed to test) also drives the prompter.
-  const [feed, setFeed] = useState<Feed | null>(null);
-  const hear = useCallback((text: string, final: boolean) => setFeed((f) => ({ text, final, seq: (f?.seq ?? 0) + 1 })), []);
+  const thumb = useThumbs();
   const mic = useSpeech((text, final) => {
     send({ type: 'transcript', text, final, receivedAt: Date.now() });
-    hear(text, final);
   });
   useNavKeys(send, state, true);
   useEffect(() => {
@@ -100,19 +94,10 @@ export function Operator() {
     return () => window.removeEventListener('keydown', backupKey);
   }, [send, state?.backup]);
 
-  const heardBefore = useRef('');
-  useEffect(() => {
-    const now = state?.heard ?? '';
-    const was = heardBefore.current;
-    heardBefore.current = now;
-    if (mic.on || !now || now === was) return;
-    hear(now.startsWith(was) ? now.slice(was.length) : now, true);
-  }, [state?.heard, mic.on, hear]);
-
   const cur = state && state.index >= 0 ? spine[state.index] : undefined;
   const total = state?.live ? elementCount(state.live) : 0;
   const onScript = cur && state?.live?.id === cur.id;
-  const waitingFor = onScript && state && state.reveal < total ? cur.elementCues[state.reveal - 1] : null;
+  const waitingFor = onScript && state && state.reveal < total ? cur.elementCues[state.reveal - 1]?.join('” or “') : null;
   const skipped = state?.skipped ?? [];
   const upNext = state ? spine.slice(state.index + 1).find((s) => !skipped.includes(s.id)) : undefined;
   const text = useCallback((t: string) => resolveText(t, datasets), [datasets]);
@@ -142,15 +127,7 @@ export function Operator() {
       {spineError && <div className="op-error">Script not reloaded: {spineError}</div>}
       {notice && <div className="op-notice">{notice}</div>}
 
-      <div className="op-tabs" role="tablist">
-        <button type="button" role="tab" aria-selected={tab === 'controls'} onClick={() => setTab('controls')}>Controls</button>
-        <button type="button" role="tab" aria-selected={tab === 'prompter'} onClick={() => setTab('prompter')}>Teleprompter</button>
-      </div>
-      <div className={tab === 'prompter' ? '' : 'op-tab-hidden'}>
-        <Prompter spine={spine} index={state?.index ?? -1} skipped={skipped} paused={qaPaused} resolve={text} feed={feed} micOn={mic.listening} />
-      </div>
-
-      <div className={`op-workspace${tab === 'controls' ? '' : ' op-tab-hidden'}`}>
+      <div className="op-workspace">
       <div className="op-controls">
       <section className="op-now">
         <div className="op-now-main">
@@ -176,11 +153,11 @@ export function Operator() {
           <button className={state?.backup ? 'primary' : 'danger'} onClick={() => send({ type: 'backup', on: !state?.backup })}>{state?.backup ? 'Resume live deck (B)' : 'Backup deck (B)'}</button>
           <a className="pill link" href="/fallback/spine.pdf" target="_blank" rel="noreferrer">Open deck PDF</a>
           <a className="pill link" href="/fallback/qa-bank.pdf" target="_blank" rel="noreferrer">Open Q&amp;A PDF</a>
-          <div className="op-meta">Keys: → or Space next, ← back</div>
+          <div className="op-meta">Keys: → or Space next, ← back. Speech still moves the deck too.</div>
         </div>
       </section>
 
-      <LivePanel state={state} ai={ai} connected={connected} bank={bank} answers={answers} datasets={datasets} send={send} />
+      <LivePanel state={state} ai={ai} connected={connected} bank={bank} answers={answers} datasets={datasets} send={send} spine={spine} thumb={thumb} />
       <ChartLibrary spine={spine} datasets={datasets} connected={connected} send={send} />
 
       <Timer state={state} spine={spine} send={send} />
@@ -231,10 +208,7 @@ export function Operator() {
           className="op-sim"
           onSubmit={(e) => {
             e.preventDefault();
-            if (said.trim()) {
-              send({ type: 'transcript', text: said, final: true, receivedAt: Date.now() });
-              if (mic.on) hear(said, true); // with the mic off, the server's echo feeds the prompter
-            }
+            if (said.trim()) send({ type: 'transcript', text: said, final: true, receivedAt: Date.now() });
             setSaid('');
           }}
         >
@@ -244,13 +218,16 @@ export function Operator() {
 
       <section>
         <div className="label">
-          Script ({spine.length} slides). Untick ✂ slides to skip them.
+          Script ({spine.length} slides). Click a row to go there; click a picture to show that slide fully built (for Q&amp;A). Untick ✂ slides to skip them.
         </div>
         <ol className="op-spine">
           {spine.map((s, i) => {
             const off = skipped.includes(s.id);
             return (
               <li key={s.id} className={`${i === state?.index ? 'active' : ''} ${off ? 'skipped' : ''}`} onClick={() => send({ type: 'goto', index: i })}>
+                <button type="button" className="op-thumb" title={`Show slide ${i + 1} fully built`} onClick={(e) => { e.stopPropagation(); send({ type: 'goto', index: i, full: true }); }}>
+                  {thumb(s.id) ? <img src={thumb(s.id)!} alt="" loading="lazy" /> : <span>{i + 1}</span>}
+                </button>
                 <span className="op-spine-speaker">
                   {i + 1}. {s.speaker}
                 </span>
@@ -284,7 +261,7 @@ export function Operator() {
         </div>
       </details>
       </div>
-      <Teleprompter spine={spine} index={state?.index ?? -1} skipped={skipped} paused={qaPaused} resolve={text} />
+      <Teleprompter spine={spine} index={state?.index ?? -1} reveal={state?.reveal ?? 0} onScript={Boolean(onScript)} skipped={skipped} paused={qaPaused} resolve={text} send={send} />
       </div>
     </div>
   );

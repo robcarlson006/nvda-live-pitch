@@ -267,3 +267,21 @@ cd app && npm install && npm run dev
 - Triggers: every slide now fires from its first dozen words (new test), with several short, paraphrase-friendly phrases each; the next three points are listened for, so a missed one no longer stalls the slide; a phrase with all its key words fires mid-sentence instead of waiting for the end; the cue said first wins.
 - Teleprompter never jumps more than one slide ahead on a common word pair; one long unbroken stretch of speech is no longer refused (it was capped at 2,000 characters).
 - Deepgram run-through at 2x speed: 22–23/32 slides built by speech alone, live 0.6–2 s into their opening; the tail failed only because the harness closed the stream early. The real-time run was skipped for practice time. 132 tests pass.
+
+## 25 Nov, after the second rehearsal: teleprompter, last-third triggers, faster Q&A, quick DCF
+
+- **Teleprompter:** the separate Teleprompter tab is gone (its voice-following prompter didn't work well). The teleprompter beside the controls now has **Full screen** (fills the window; true browser full screen where allowed; Esc leaves). In full screen it has ← Back / Next → buttons, ←/→ and the clicker's PageUp/PageDown move slides (PageUp/Down were being swallowed before), and clicking any slide's script jumps there. Cue listening carries on whatever is pressed.
+- **Trigger words highlighted** in the teleprompter: the phrase that brings each slide up is outlined, each point's phrase underlined, and the one the deck is listening for right now glows (`shared/cueMarks.ts`).
+- **Last-third triggers:** a point can listen for several phrases (`cue: [john deere, deere, …]`). "John Deere" and "Ecolab" now build their points on their own (they waited for "weeds" and "cooling"). `ai-ended`'s downside bullet no longer fires early on "margins". The read-aloud test now covers the whole script, all three speakers.
+- **Script:** Isambard/Nscale sentence and the "board investigation … remain open" sentence cut (with their bullets). Rankings back on `people` (Glassdoor #3, Fortune top 6 every year since 2022, TIME #6 for sustainable growth). **Space race back** as the Part three opener, now arguing that the US keeps racing (Sputnik → Moon → AI as national policy; source: White House, *Winning the Race: America's AI Action Plan*, 23 Jul 2025). **33 slides, 9:10** (Rob 2:56 · Mi'kael 2:46 · Panshul 3:29).
+- **Quick DCF:** `quick: true` on `dcf-worksheet`, `three-rates`, `dcf-summary`, `reverse-dcf`: each arrives fully built, every animation done within 0.3 s (checked on stage).
+- **Q&A, fastest route first:**
+  - our own slide, found locally in under 1 ms (`shared/router.ts`): typed "show the DCF again" / "slide 20" jumps straight there, fully built; a spoken question that touches a slide gets a one-key "Show this slide" card; chips with thumbnails appear under the question box as you type.
+  - a second opinion from Haiku 5.5 beside the full answer (about 1 s once cached): it found the prepared answers for the AI-energy and Scope 3 questions that the word matcher missed.
+  - the full answer (Sonnet 5.5, unchanged): answer prompt now cached for an hour and warmed when Q is pressed; a slide with one rule-breaking line keeps its other lines instead of a second 3 s call. Measured: 3.2–3.6 s warm, 3.6 s cold.
+  - Haiku 5.5 as the answer model was tried and rejected: no faster per call, and most answers broke the slide rules. Opus fast mode not tried (Opus can't switch thinking off). Timing probe: `ANTHROPIC_MODEL=… npx tsx scripts/qa-speed.ts`.
+- A slide called up in Q&A (`instant`) pauses cue listening until the next Next/Back, so discussing the DCF doesn't fire "three rates".
+- **Operator script list** has a thumbnail per slide; clicking it shows that slide fully built (for Q&A); clicking the row works as before.
+- Stage fix: reloading the stage while a slide was live could leave the standby "NVIDIA" letters over it.
+- Backup deck rebuilt (33 spine pages, 42 Q&A pages). 135 tests pass; typecheck and build clean.
+- **Not done / risks:** no mic rehearsal of these changes; Panshul's part is now ~30 s longer than the others; the stage was checked with the browser pane hidden, so on-screen timing was confirmed from the animation schedule, not by eye.

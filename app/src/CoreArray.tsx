@@ -227,9 +227,14 @@ export function CoreArray({ buildKey, glyph, compact, effect, reveal = 0 }: Prop
     }
   };
 
+  const builds = useRef(0);
   const build = async (text: string | undefined, keepPrev: boolean) => {
+    // Builds wait for the font, so two in quick succession (the stage loading straight onto a live slide) can finish
+    // out of order and leave the standby "NVIDIA" over the slide. Only the newest build may draw.
+    const mine = ++builds.current;
     const cv = canvas.current!;
     await document.fonts.load("800 100px 'Archivo Variable'");
+    if (mine !== builds.current || !canvas.current) return;
     const dpr = window.devicePixelRatio || 1;
     cv.width = innerWidth * dpr;
     cv.height = innerHeight * dpr;

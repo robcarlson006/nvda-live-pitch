@@ -117,7 +117,7 @@ const ZOOM_MS = 1300;
  * `zoom` (an x value) magnifies the chart around that bar or point and makes it the highlight, as the presenter talks about it.
  * `ring: false` leaves out the hand-drawn red ring (Q&A answer slides: it sometimes landed on the wrong spot there).
  */
-export function Chart({ spec, dataset: full, zoom = null, ring: showRing = true }: { spec: NonNullable<Slide['chart']>; dataset: Dataset; zoom?: string | null; ring?: boolean }) {
+export function Chart({ spec, dataset: full, zoom = null, ring: showRing = true, quick = false }: { spec: NonNullable<Slide['chart']>; dataset: Dataset; zoom?: string | null; ring?: boolean; quick?: boolean }) {
   const el = useRef<HTMLDivElement>(null);
   const live = useRef<{ chart: echarts.ECharts; restyle: (hi: number) => void; point: (i: number) => [number, number] | null; slot: number; born: number } | null>(null);
   const box = useRef<HTMLDivElement>(null);
@@ -135,7 +135,9 @@ export function Chart({ spec, dataset: full, zoom = null, ring: showRing = true 
     const baseHi = spec.highlight ? dataset.x.indexOf(spec.highlight) : isBar ? dataset.x.length - 1 : -1;
     const cell = Math.round(vh * 0.9);
     const n = dataset.x.length;
-    const stagger = Math.min(160, 1000 / n); // the whole chart builds in about a second, however many bars
+    // The whole chart builds in about a second, however many bars; a quick slide (the DCF run) in about a third of one.
+    const stagger = quick ? 0 : Math.min(160, 1000 / n);
+    const dur = (ms: number) => (quick ? Math.min(ms, 320) : ms);
 
     const refValue = spec.refLine ? dataset.series[spec.refLine.series]?.find((v) => v != null) ?? null : null;
     const refLine =
@@ -146,7 +148,7 @@ export function Chart({ spec, dataset: full, zoom = null, ring: showRing = true 
             lineStyle: { color: '#f4f6f1', width: Math.max(1, vh * 0.22), type: [vh * 0.9, vh * 0.6] },
             label: { position: 'insideEndTop', color: '#f4f6f1', fontSize: vh * 2.5, fontFamily: FONT, formatter: () => `${spec.refLine!.series}: ${fmt(refValue, spec.refLine!.series)}` },
             data: [{ yAxis: refValue }],
-            animationDuration: 900,
+            animationDuration: dur(900),
           }
         : undefined;
 
@@ -165,9 +167,9 @@ export function Chart({ spec, dataset: full, zoom = null, ring: showRing = true 
             type: 'bar',
             stack: 'fall',
             barCategoryGap: '28%',
-            animationDuration: 1300,
+            animationDuration: dur(1300),
             animationEasing: 'cubicOut',
-            animationDelay: (j: number) => j * 220,
+            animationDelay: (j: number) => (quick ? 0 : j * 220),
             data: values.map((v, j) => ({
               value: v == null ? null : Math.abs(v),
               itemStyle: {
@@ -215,7 +217,7 @@ export function Chart({ spec, dataset: full, zoom = null, ring: showRing = true 
           })),
           barCategoryGap: '28%',
           itemStyle: { color },
-          animationDuration: 1500,
+          animationDuration: dur(1500),
           animationEasing: 'cubicOut',
           animationDelay: (j: number) => j * stagger,
         };
@@ -232,7 +234,7 @@ export function Chart({ spec, dataset: full, zoom = null, ring: showRing = true 
           symbolClip: true,
           barCategoryGap: '28%',
           markLine: i === 0 ? refLine : undefined,
-          animationDuration: 1500,
+          animationDuration: dur(1500),
           animationEasing: 'cubicOut',
           animationDelay: (j: number) => j * stagger,
           data: values.map((v, j) => ({
@@ -258,7 +260,7 @@ export function Chart({ spec, dataset: full, zoom = null, ring: showRing = true 
         data: values,
         symbol: 'none',
         lineStyle: { width: i === 0 ? vh * 0.45 : vh * 0.2, color, type: i === 0 ? 'solid' : [vh * 0.8, vh * 0.6] },
-        animationDuration: 2400,
+        animationDuration: dur(2400),
         animationEasing: 'cubicInOut',
         areaStyle: i === 0 ? { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: spec.muted ? 'rgba(217, 220, 207, 0.16)' : 'rgba(118, 185, 0, 0.28)' }, { offset: 1, color: 'rgba(118, 185, 0, 0)' }]) } : undefined,
         // Direct labels at the line ends instead of a legend.

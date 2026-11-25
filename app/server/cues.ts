@@ -2,21 +2,9 @@
  * Fuzzy cue matching. A cue fires when (nearly) all of its meaningful words appear close together in what was just said.
  * Speech-to-text slips by a letter are tolerated on longer words ("Blackwel" still matches "Blackwell").
  */
-const STOP = new Set('a an the and of to is it in that this we our you on for at as so be are was its i us with by from'.split(' '));
-// Deepgram writes US spellings even in en-GB mode ("fiber", "tons"), so UK spellings in cues are mapped to them.
-const SPELLING: Record<string, string> = {
-  centre: 'center', centres: 'centers', colour: 'color', fibre: 'fiber', fibres: 'fibers', tonne: 'ton', tonnes: 'tons',
-  grey: 'gray', programme: 'program', programmes: 'programs', analyse: 'analyze', modelling: 'modeling', labour: 'labor', defence: 'defense',
-};
+import { STOP, words } from '../shared/words.ts';
 
-export function words(s: string): string[] {
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((w) => SPELLING[w] ?? w);
-}
+export { words };
 
 function lev(a: string, b: string): number {
   const d = Array.from({ length: b.length + 1 }, (_, i) => i);

@@ -379,3 +379,25 @@ test('private lives and gossip are never shown', async () => {
   assert.notEqual(typeof (await web([found, line("NVIDIA's relationship with TSMC is long-standing")])), 'string');
 
 });
+
+test('a slide card in the Q&A queue jumps the deck to our own slide, fully built, and pauses cues', () => {
+  const i = idx('dcf-worksheet');
+  const queued = addDraft(run(emptyState(), { type: 'goto', index: idx('close') }), { id: 'c', kind: 'answer', heard: 'can we see the dcf again', slide: spine[i], from: 'slide', goto: i, at: 0 });
+  const s = run(queued, { type: 'draft', action: 'show', id: 'c' });
+  assert.equal(s.index, i);
+  assert.equal(s.live?.id, 'dcf-worksheet');
+  assert.equal(s.reveal, s.live && 1 + s.live.bullets.length + 1);
+  assert.equal(s.instant, true);
+  assert.equal(isCovered(s), false, 'a real script slide, not a Q&A cover');
+  assert.equal(run(s, say('we didnt invent a discount rate we tested three')).index, i, 'talking about it in Q&A moves nothing');
+});
+
+test('the fast router only ever returns our own slide and prepared-answer ids', async () => {
+  const bank = loadBank(datasets).map(({ id, question }) => ({ id, question }));
+  const ask = (r: unknown) => new Ai(new Budget(tmp(), 1), async () => message(r), () => true).route('can we see the dcf', spine, bank, new AbortController().signal);
+  assert.deepEqual(await ask({ slide: 'dcf-worksheet', bank: null }), { slide: 'dcf-worksheet', bank: null });
+  assert.deepEqual(await ask({ slide: 'made-up-slide', bank: bank[0].id }), { slide: null, bank: bank[0].id });
+  assert.deepEqual(await ask({ slide: null, bank: 'no-such-answer' }), { slide: null, bank: null });
+  const failing = new Ai(new Budget(tmp(), 1), async () => { throw new Error('down'); }, () => true);
+  assert.deepEqual(await failing.route('anything', spine, bank, new AbortController().signal), { slide: null, bank: null }, 'an error means no opinion');
+});

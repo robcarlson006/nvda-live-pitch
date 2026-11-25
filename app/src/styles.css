@@ -213,12 +213,15 @@ button.big { padding: 18px 24px; font-size: 20px; }
 .op-heard { font-size: 18px; min-height: 1.5em; }
 .op-sim input { width: 100%; margin-top: 12px; padding: 10px 12px; border-radius: 8px; border: 1px solid #333840; background: #0c0e11; color: var(--white); font: inherit; }
 .op-spine { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; counter-reset: s; }
-.op-spine li { display: grid; grid-template-columns: 70px 1fr; gap: 2px 12px; padding: 8px 12px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; }
+.op-spine li { display: grid; grid-template-columns: 112px 70px 1fr; align-items: start; gap: 2px 12px; padding: 8px 12px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; }
 .op-spine li:hover { background: #12151a; }
 .op-spine li.active { border-color: var(--green); background: #10140b; }
 .op-spine-speaker { color: var(--detail); font-size: 13px; }
 .op-spine-title { font-weight: 600; }
-.op-spine .op-meta { grid-column: 2; margin: 0; }
+.op-spine .op-meta { grid-column: 3; margin: 0; }
+.op-thumb { grid-row: span 2; width: 112px; height: 63px; padding: 0; border: 1px solid #333840; border-radius: 6px; overflow: hidden; background: #000; color: var(--detail); cursor: zoom-in; }
+.op-thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.op-thumb:hover, .op-thumb:focus-visible { border-color: var(--green); box-shadow: 0 0 0 2px rgba(118, 185, 0, 0.35); }
 details summary { cursor: pointer; }
 @media (max-width: 640px) { .op-now { grid-template-columns: 1fr; } }
 
@@ -279,3 +282,8 @@ button.danger { background: #3a1214; border-color: #e5484d; color: #ff8a8f; font
 .op-library li { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: center; padding: 6px 8px; border-radius: 6px; background: #111419; }
 .op-library li .op-meta { grid-column: 2; margin: 0; font-size: 12px; }
 .op-library li button { grid-row: span 2; padding: 4px 10px; }
+
+/* Quick slides (the DCF run, or a slide called up in Q&A): every element lands at once with a short animation, so
+   the board can read the numbers while we talk. Nothing on these slides loops, so a blanket override is safe. */
+.stage.quick .slide-shell *, .stage.quick .slide-shell *::before, .stage.quick .slide-shell *::after { animation-duration: 0.3s !important; animation-delay: 0s !important; }
+.stage.quick .slide-shell .chart-canvas, .stage.quick .slide-shell .data-table th, .stage.quick .slide-shell .data-table td { transition-duration: 0.25s !important; }

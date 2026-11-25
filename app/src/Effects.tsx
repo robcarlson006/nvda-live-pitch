@@ -8,12 +8,12 @@ import './effects.css';
  * Only plays moving forward into the section, and never with motion off.
  */
 // One card per part of the pitch, keyed by that part's first slide. The spine keeps each part's slides together:
-// story (founding → handoff), numbers (last-quarter → ai-ended), future (already-doing → beyond-hyperscalers),
+// story (founding → handoff), numbers (last-quarter → ai-ended), future (space-race → beyond-hyperscalers),
 // responsibility (governance → emissions-peers), verdict (recommendation → close).
 export const SECTIONS: Record<string, { kicker: string; word: string; line: string }> = {
   founding: { kicker: 'Part one', word: 'Story.', line: 'Why NVIDIA is the gold standard' },
   'last-quarter': { kicker: 'Part two', word: 'Numbers.', line: 'Do the numbers agree?' },
-  'already-doing': { kicker: 'Part three', word: 'Future.', line: 'What AI is already doing, and who it reaches' },
+  'space-race': { kicker: 'Part three', word: 'Future.', line: 'A race that keeps building, and what AI already does' },
   governance: { kicker: 'Part four', word: 'Responsibility.', line: 'Governance, people and the planet' },
   recommendation: { kicker: 'Part five', word: 'Verdict.', line: 'Our recommendation' },
 };

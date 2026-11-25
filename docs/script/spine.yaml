@@ -300,6 +300,7 @@
 - id: dcf-worksheet
   speaker: "Mi'kael"
   cues: [five year, worksheet, dcf worksheet, year by year]
+  quick: true # the DCF run builds at once, with short animations, so the board can read it while we talk
   layout: chart
   title: The five-year DCF
   chartFirst: true
@@ -316,6 +317,7 @@
 - id: three-rates
   speaker: "Mi'kael"
   cues: [invent a discount rate, discount rate, tested three, three rates, three discount]
+  quick: true
   layout: split
   title: Base-case value per share at three discount rates
   chartFirst: true
@@ -335,6 +337,7 @@
 - id: dcf-summary
   speaker: "Mi'kael"
   cues: [one page, whole dcf, dcf on one]
+  quick: true
   layout: statement
   title: The DCF on one page.
   bullets:
@@ -353,6 +356,7 @@
 - id: reverse-dcf
   speaker: "Mi'kael"
   cues: [turn it around, price assume, todays price assume, what does todays price]
+  quick: true
   layout: split
   title: "Today's price assumes {{model_implied_growth | Growth per year | Priced in today}} growth a year"
   chartFirst: true
@@ -395,15 +399,36 @@
     - text: Revenue falls a fifth. Growth stays flat and margins fall
       cue: revenue
     - text: "Stock downside: {{model_downside | Change from today | If AI ended for good}}, to {{model_downside | Value per share | If AI ended for good}} per share"
-      cue: margins
+      cue: [stock, would fall]
     - text: "Portfolio loss: only {{model_downside | Cost to the portfolio | If AI ended for good}} at a {{model_downside | Position size | If AI ended for good}} position"
       cue: position
   chart: { type: line, datasetKey: model_path_ai_ended, series: [If AI ended for good, Base case], muted: true, highlight: FY29 }
   say: "Second, if AI ended for good: revenue falls by a fifth and margins fall. The stock would fall {{model_downside | Change from today | If AI ended for good}}, to {{model_downside | Value per share | If AI ended for good}} a share. Even then, at a {{model_downside | Position size | If AI ended for good}} position, the portfolio would lose **only {{model_downside | Cost to the portfolio | If AI ended for good}}**."
 
-# Opens Part three (Future). The space-race slide was cut on 25 Nov (now in the Q&A bank); this slide stands on its own.
+# Opens Part three (Future). Cut on 25 Nov, back the same evening with a new point: the US is a competitive country,
+# it kept racing in space until it reached the Moon, and it is racing in AI the same way. Four points, one per stage
+# of the SpaceRace scene. "National policy" = the White House's "Winning the Race: America's AI Action Plan", 23 Jul 2025.
+- id: space-race
+  speaker: Panshul
+  cues: [space race, the space race, think of the space race, sputnik]
+  layout: timeline
+  effect: spread
+  title: "A race can change the world."
+  bullets:
+    - text: "1957: Sputnik starts the space race"
+      cue: [sputnik, soviet union, nineteen fifty seven, 1957]
+    - text: "1969: America lands people on the Moon"
+      cue: [moon, nineteen sixty nine, 1969]
+    - text: "The by-product: satellites that now track climate and forests"
+      cue: [satellites, climate, forests]
+    - text: "AI is the new race, and the US means to lead it again"
+      cue: [new race, ai race, lead it]
+  say: "Think of the **space race**. In 1957 the Soviet Union launched Sputnik. America answered, and kept racing until, in 1969, it put people on the Moon. It left us satellites that now track our climate and forests. AI is the **new race**. The United States has made winning it national policy, and a competitive country doesn't stop racing: that means years of building, on NVIDIA's chips."
+  sources: ["NASA, The Dawn of the Space Age; NASA, Apollo 11; NASA Earth Observatory, Space-based Observations of the Earth", "The White House, Winning the Race: America's AI Action Plan, 23 Jul 2025"]
+
 # One industry per point, so all four panels of the AiIndustries scene zoom (it matches on keywords, not position).
-# Only Deere and Ecolab claim NVIDIA involvement; keep it that way.
+# Each point listens for the company or field as well as the sentence's last word, so saying "John Deere" or
+# "Ecolab" is enough. Only Deere and Ecolab claim NVIDIA involvement; keep it that way.
 - id: already-doing
   speaker: Panshul
   cues: [delivering results, already delivering, nobel, chemistry nobel]
@@ -411,14 +436,14 @@
   title: AI is already delivering results.
   bullets:
     - text: "Science: the 2024 Nobel Prize in Chemistry, for AI that predicts and designs proteins"
-      cue: chemistry
+      cue: [science, chemistry, proteins]
     - text: "Healthcare: a lung drug in trials within {{research_facts | Drug: idea to trials, months | value}} months"
-      cue: lung
+      cue: [healthcare, lung]
     - text: "Farming: John Deere's See & Spray runs on NVIDIA GPUs and sprays only the weeds"
-      cue: weeds
+      cue: [john deere, deere, see and spray, on farms, weeds]
     - text: "Data centres: Ecolab worked with NVIDIA engineers on coolant and monitoring for liquid cooling"
-      cue: cooling
-  say: "AI is already **delivering results**. In science, the 2024 Chemistry Nobel went to AI that designs proteins. In healthcare, a lung-disease drug reached trials in under {{research_facts | Drug: idea to trials, months | value}} months. On farms, John Deere's See and Spray runs on NVIDIA GPUs and sprays only the weeds. And in data centres, Ecolab worked with NVIDIA engineers on liquid cooling."
+      cue: [ecolab, eco lab, echo lab, liquid cooling, cooling]
+  say: "And AI is already **delivering results**. In science, the 2024 Chemistry Nobel went to AI that designs proteins. In healthcare, a lung-disease drug reached trials in under {{research_facts | Drug: idea to trials, months | value}} months. On farms, John Deere's See and Spray runs on NVIDIA GPUs and sprays only the weeds. And in data centres, Ecolab worked with NVIDIA engineers on liquid cooling."
   sources: ["Nobel Prize in Chemistry 2024", "NVIDIA Developer blog and TechTarget (John Deere See & Spray)", "Ecolab press releases, 2 Jul and 16 Nov 2026"]
 
 - id: beyond-hyperscalers
@@ -428,15 +453,10 @@
   title: Nearly half of sales are beyond the hyperscalers
   bullets:
     - text: "AI clouds, industry & enterprise: {{nvda_dc_customer_mix | Share of revenue | AI clouds, industrial & enterprise}} of revenue last quarter, up {{nvda_dc_customer_mix | Growth on a year ago | AI clouds, industrial & enterprise}} in a year"
-      cue: industry and enterprise
-    - text: "Public compute: Isambard-AI is operating in Bristol"
-      cue: public
-    - text: "Specialist cloud: Nscale has announced NVIDIA-powered capacity"
-      cue: capacity
-  say: "Demand extends beyond the hyperscalers. **AI clouds, industry and enterprise** were {{nvda_dc_customer_mix | Share of revenue | AI clouds, industrial & enterprise}} of revenue last quarter, and grew {{nvda_dc_customer_mix | Growth on a year ago | AI clouds, industrial & enterprise}} in a year. Public compute: Isambard-AI, the UK's AI supercomputer, is operating in Bristol. Specialist clouds: Nscale has announced NVIDIA-powered capacity. So demand doesn't rest on the giants alone."
+      cue: [industry and enterprise, ai clouds]
+  say: "Demand extends beyond the hyperscalers. **AI clouds, industry and enterprise** were {{nvda_dc_customer_mix | Share of revenue | AI clouds, industrial & enterprise}} of revenue last quarter, and grew {{nvda_dc_customer_mix | Growth on a year ago | AI clouds, industrial & enterprise}} in a year. So demand doesn't rest on the giants alone."
   sources:
     - "Bloomberg FA, NVDA quarterly, Data Center revenue by customer type, FY27 Q3 (preliminary), 20 Nov 2026"
-    - "UK DSIT, AIRR advanced supercomputers for the UK; NVIDIA UK infrastructure announcement (Nscale deployment plans)"
 
 # ---------------- Part four: responsibility (governance, people, the planet) ----------------
 
@@ -450,10 +470,8 @@
     - text: Jensen Huang resigned as CEO on 12 November 2026, and the board reinstated him days later
       cue: jensen
     - text: The board created an independent committee for national security and export control
-      cue: independent
-    - text: The board investigation and government inquiries remain open
-      cue: board
-  say: "Now responsibility: governance. Jensen Huang resigned as CEO on 12 November, and the board reinstated him days later, with a new independent committee for national security and export control. The board investigation and government inquiries remain open; we won't pretend that risk has gone."
+      cue: [independent, committee]
+  say: "Now responsibility: governance. Jensen Huang resigned as CEO on 12 November, and the board reinstated him days later, with a new independent committee for national security and export control."
   video: { file: jensen-reinstated.mp4, credit: The Wall Street Journal } # muted and looping; the file lives in app/public/media (not in git)
   sources: [NVIDIA press releases, 12 and 23 Nov 2026; NVIDIA Form 8-K, 23 Nov 2026]
 
@@ -462,15 +480,19 @@
   speaker: Panshul
   cues: [staff turnover, turnover, people stay, staff]
   layout: split
-  title: "Staff stay: low turnover is a strength."
+  title: "Staff stay, and NVIDIA ranks among the best places to work."
   chartFirst: true
   bullets:
     - { zoom: NVIDIA FY26, cue: staff }
     - text: "Only {{research_people | Staff turnover, FY26 | value}} of NVIDIA staff left in FY26, against {{research_people_turnover | Staff turnover | Tech and media 2022}} in tech and media (2022). Lower is better: people stay"
       cue: tech and
     - { zoom: all }
+    - text: "Glassdoor Best Places to Work 2026: #{{research_people | Glassdoor Best Places to Work 2026, US rank | value}} in the US"
+      cue: [glassdoor, best places, place to work]
+    - text: "Fortune: top {{research_people | Fortune 100 Best, lowest rank 2022–2026 | value}} every year since 2022; TIME sustainable-growth rank: #{{research_people | TIME Sustainable Growth 2026, world rank | value}} in the world"
+      cue: [fortune, sustainable growth]
   chart: { type: bar, datasetKey: research_people_turnover, series: [Staff turnover], highlight: NVIDIA FY26 }
-  say: "Staff turnover is low, and that is a good thing: NVIDIA's people stay. Only {{research_people | Staff turnover, FY26 | value}} of staff left last year, against {{research_people_turnover | Staff turnover | Tech and media 2022}} for tech and media in 2022."
+  say: "Staff turnover is low, and that is a good thing: NVIDIA's people stay. Only {{research_people | Staff turnover, FY26 | value}} of staff left last year, against {{research_people_turnover | Staff turnover | Tech and media 2022}} for tech and media in 2022. **Glassdoor** ranks NVIDIA number {{research_people | Glassdoor Best Places to Work 2026, US rank | value}} in America to work for. **Fortune** has kept it in its top {{research_people | Fortune 100 Best, lowest rank 2022–2026 | value}} every year since 2022, and TIME ranks it number {{research_people | TIME Sustainable Growth 2026, world rank | value}} in the world for sustainable growth."
 
 - id: renewables
   speaker: Panshul

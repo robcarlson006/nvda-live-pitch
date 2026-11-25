@@ -110,7 +110,7 @@ for (const [i, s] of spine.entries()) {
   const lag = move ? move.at - starts[i].at : NaN;
   const fine = !!move && got === want;
   if (fine) ok++;
-  else problems.push(`${s.id}: ${move ? `built ${got} of ${want}; stuck waiting for "${s.elementCues[got - 1]}"` : 'never went live'}`);
+  else problems.push(`${s.id}: ${move ? `built ${got} of ${want}; stuck waiting for "${s.elementCues[got - 1]?.join(" / ")}"` : 'never went live'}`);
   console.log(`${fine ? '✓' : '✗'} ${s.id.padEnd(16)} ${mmss(starts[i].at).padStart(5)}  ${move ? `live ${lag.toFixed(1)}s into its script, on "${move.via}"` : '—'}  ${got}/${want} built`);
 }
 const order = moves.map((m) => spine.findIndex((s) => s.id === m.id));

@@ -38,12 +38,16 @@ test('zoom steps: the chart builds where it is told, zooms follow cues, and bad 
   assert.equal(zoomAt(e, s.reveal), 'NVIDIA');
   assert.deepEqual(e.chart?.exclude, ['TSMC']);
   assert.equal(datasets.get('peers_emissions_intensity')?.x.includes('TSMC'), true, 'the underlying dataset stays complete');
-  // A zoom without a cue lands together with the point before it; "all" zooms back out.
+  // A zoom without a cue lands together with the point before it.
+  const b = spine[idx('bear-case')];
+  const t = run(emptyState(), { type: 'goto', index: idx('bear-case') }, say('revenue falls in twenty twenty nine'));
+  assert.equal(zoomAt(b, t.reveal), 'FY29');
+  // A quick slide (the DCF run) arrives fully built, so its zooms have already settled back out ("all").
   const v = spine[idx('three-rates')];
-  let t = run(emptyState(), { type: 'goto', index: idx('three-rates') }, say('at the us chip industry rate'), say('at google finance'), say('at bloomberg'));
-  assert.equal(zoomAt(v, t.reveal), '15.4% Bloomberg');
-  t = run(t, say('all three are above our reference price'));
-  assert.equal(zoomAt(v, t.reveal), null);
+  assert.equal(v.quick, true);
+  const q = run(emptyState(), { type: 'goto', index: idx('three-rates') });
+  assert.equal(q.reveal, elementCount(v));
+  assert.equal(zoomAt(v, q.reveal), null);
   const base = { id: 't', layout: 'split' as const, title: 'T', bullets: ['a'], sources: [], chart: { type: 'bar' as const, datasetKey: 'peers_pe', series: ['Forward P/E'] } };
   assert.match(checkSlide({ ...base, steps: [{ bullet: 0 }, { zoom: 'NVIDIA' }, { chart: true }] }, datasets)!, /before the chart/);
   assert.match(checkSlide({ ...base, steps: [{ chart: true }, { bullet: 0 }, { zoom: 'Nvidia Corp' }] }, datasets)!, /not an x value/);
@@ -263,7 +267,7 @@ test('no cue is shared by a slide and either of the next two slides', () => {
   for (const [name, order] of orders)
     order.forEach((a, i) => {
       for (const b of order.slice(i + 1, i + 3))
-        for (const ca of [...a.cues, ...a.elementCues.filter((c): c is string => !!c)])
+        for (const ca of [...a.cues, ...a.elementCues.flatMap((c) => c ?? [])])
           for (const cb of b.cues)
             assert.ok(cueScore(cb, words(ca)) < 0.75 && cueScore(ca, words(cb)) < 0.75, `${name}: "${a.id}" cue "${ca}" overlaps "${b.id}" cue "${cb}"`);
     });
@@ -303,7 +307,7 @@ const spellOut = (text: string) =>
 
 const sentences = (text: string) => text.match(/[^.?!]+[.?!]*/g)!.map((t) => t.trim()).filter(Boolean);
 
-/** Read Rob's script out loud, one sentence per speech-to-text result, and check every slide builds in order. */
+/** Read the script out loud, one sentence per speech-to-text result, and check every slide builds in order. */
 function readAloud(order: SpineSlide[], from: number, to: number, mode: 'final' | 'interim', start: ShowState, read = (t: string) => t) {
   let s = start;
   for (const slide of order.slice(from, to + 1)) {
@@ -315,20 +319,16 @@ function readAloud(order: SpineSlide[], from: number, to: number, mode: 'final' 
       s = run(s, say(sentence));
     }
     assert.equal(spine[s.index]?.id, slide.id, `after reading "${slide.id}" the deck is on "${spine[s.index]?.id}"`);
-    assert.equal(s.reveal, elementCount(slide), `"${slide.id}" built ${s.reveal} of ${elementCount(slide)} elements: waiting for "${slide.elementCues[s.reveal - 1]}"`);
+    assert.equal(s.reveal, elementCount(slide), `"${slide.id}" built ${s.reveal} of ${elementCount(slide)} elements: waiting for "${slide.elementCues[s.reveal - 1]?.join(' / ')}"`);
   }
 }
 
 for (const [name, order] of orders)
   for (const mode of ['final', 'interim'] as const)
     for (const [how, read] of [['as digits', (t: string) => t], ['as words', spellOut]] as const)
-    test(`reading Rob's script aloud builds every slide in order (${name}, ${mode} results, numbers ${how})`, () => {
+    test(`reading the whole script aloud builds every slide in order, all three speakers (${name}, ${mode} results, numbers ${how})`, () => {
       const skipped = name === 'full script' ? [] : optional;
-      const base = { ...emptyState(), skipped };
-      readAloud(order, 0, order.findIndex((s) => s.id === 'handoff'), mode, base, read);
-      // The close, picking up after Mi'kael's last slide.
-      const before = order.findIndex((s) => s.id === 'close') - 1;
-      readAloud(order, before + 1, order.length - 1, mode, run(base, { type: 'goto', index: idx(order[before].id) }), read);
+      readAloud(order, 0, order.length - 1, mode, { ...emptyState(), skipped }, read);
     });
 
 test('after a script edit the live slide is found again by id', () => {
@@ -372,10 +372,10 @@ test('every slide fires from its first dozen spoken words', () => {
 });
 
 test('a paraphrased point does not stall the points after it', () => {
-  // dcf-summary: points on "assumptions", "worth today", "one share", "the answer". Skip the second, say the third.
-  let s = run(emptyState(), { type: 'goto', index: idx('dcf-summary') }, say('here are the assumptions'));
+  // already-doing: science, healthcare, farming, data centres. Skip healthcare, go straight to farming.
+  let s = run(emptyState(), { type: 'goto', index: idx('already-doing') }, say('in science the chemistry nobel went to AI'));
   const before = s.reveal;
-  s = run(s, say('and that takes us from enterprise value to one share'));
+  s = run(s, say('on farms, John Deere uses it'));
   assert.equal(s.reveal, before + 2, 'the skipped point builds with the one after it');
 });
 
@@ -390,4 +390,38 @@ test('a garbled point: the next one said still builds, and never spills into the
   s = run(s, say('it also raised next years revenue growth outlook'));
   assert.equal(spine[s.index].id, 'guidance', 'still on guidance');
   assert.ok(s.reveal >= 4, `built through "raised" (reveal ${s.reveal})`);
+});
+
+test('saying "John Deere" or "Ecolab" builds that point on its own, without the last word of the sentence', () => {
+  const slide = spine[idx('already-doing')];
+  const start = run(emptyState(), { type: 'goto', index: idx('already-doing') });
+  assert.equal(start.reveal, 1, 'title only');
+  const deere = run(start, say('and John Deere'));
+  assert.equal(deere.reveal, 4, 'the farming point (and the two before it) built');
+  const eco = run(deere, interim('then Ecolab'));
+  assert.equal(eco.reveal, elementCount(slide), 'Ecolab builds the last point from an interim result');
+  assert.equal(spine[eco.index].id, 'already-doing');
+});
+
+test('quick slides (the DCF run) arrive fully built, by cue or by Next', () => {
+  const quick = spine.filter((s) => s.quick).map((s) => s.id);
+  assert.deepEqual(quick, ['dcf-worksheet', 'three-rates', 'dcf-summary', 'reverse-dcf']);
+  let s = run(emptyState(), { type: 'goto', index: idx('dcf-inputs') }, say("here's the five year DCF"));
+  for (const id of quick) {
+    assert.equal(spine[s.index].id, id);
+    assert.equal(s.reveal, elementCount(spine[s.index]), `${id} fully built`);
+    s = run(s, { type: 'next' });
+  }
+  assert.equal(spine[s.index].id, 'bear-case');
+});
+
+test('a slide called up in Q&A is fully built, marked instant, and its talk does not move the deck', () => {
+  let s = run(emptyState(), { type: 'goto', index: idx('dcf-inputs'), full: true });
+  assert.equal(s.reveal, elementCount(spine[idx('dcf-inputs')]));
+  assert.equal(s.instant, true);
+  s = run(s, say('the five year dcf worksheet'));
+  assert.equal(spine[s.index].id, 'dcf-inputs', 'discussing it in Q&A does not fire the next slide');
+  s = run(s, { type: 'next' });
+  assert.equal(spine[s.index].id, 'dcf-worksheet');
+  assert.equal(s.instant, false, 'moving on returns to normal');
 });
