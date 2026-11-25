@@ -38,7 +38,7 @@ export function ChartLibrary({ spine, datasets, connected, send }: { spine: Spin
     }
     const used = new Set(out.map((i) => i.chart.datasetKey));
     for (const d of Object.values(datasets).sort((a, b) => a.key.localeCompare(b.key))) {
-      if (used.has(d.key) || !d.x.length || !Object.keys(d.series).length) continue;
+      if (used.has(d.key) || d.key === 'vault_facts' || !d.x.length || !Object.keys(d.series).length) continue;
       out.push({ key: `lib-${d.key}`, title: libTitle(d.title), chart: generic(d), from: d.key });
     }
     return out;

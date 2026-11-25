@@ -250,3 +250,13 @@ cd app && npm install && npm run dev
 - Backup deck rebuilt: 32 spine pages, 42 Q&A pages. 118 tests pass; typecheck clean. Checked on `/stage` at 1600×900.
 - **Not done:** a timed run with the real mic; the cue changes (alexnet, handoff, wall-street, close) are proven only by the read-aloud tests.
 
+## 25 Nov, afternoon: live Q&A searches the whole evidence base
+
+- **One searchable evidence base.** `npm run evidence` (also in `npm run data`) turns the research vault into data the app can use: `data/clean/vault/` holds every sourced figure as one dataset (`vault_facts`, 641 figures, each quoted word for word from a saved page), 180 vault charts the stage can draw, and a search index (1,091 facts, 537 research Q&As). Low-confidence facts and any rate above 15.4% are left out.
+- **How an answer is built now** (`server/evidence.ts`, `server/ai.ts`): a board question is searched locally (about 1 ms, BM25 with finance/ESG synonyms) across our datasets, the vault facts, charts and Q&As, and the prepared answers. The best matches go to Claude in the same single call, so it can pick a chart (ours or a vault one), show figures as `{{vault_facts | F0123 | value}}` lookups (never typed), and list the facts it relied on. Those facts become the slide's sources and the operator's links. Prepared answers still come back instantly.
+- **Measured with the real API (Sonnet 5.5):** 3.2–3.8 s from question to a finished, cited slide with a graphic, in one call; about 1–2 cents a question; prepared answers 0.1 s. Before this, questions our datasets didn't cover went to an 8–10 s web search or "We need to check that".
+- **Framing:** Claude answers for the team (direct answer, strongest evidence, at most one line of risk with what offsets it; the title states the team's position). A partial answer that says what we lack is shown instead of a holding slide. Twenty prepared answers had concession-first titles; they now state the team's position (bullets unchanged). `taiwan` reframed with sourced US-production facts.
+- **Teleprompter** checked: it reads the live script (draft 10), and a new test follows the whole script to its last word, with figures spoken as words.
+- Tests: 127 pass (new `server/evidence.test.ts`). Live probe: `npx tsx scripts/qa-live.ts "question"` (real API, ~1–2 cents each).
+- **Not done:** a rehearsal with real board-style questions through the mic; the vault's 80 tables and 5 waterfalls are searchable as facts but not drawn as charts.
+

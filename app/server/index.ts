@@ -6,6 +6,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { Ai, env, MODEL } from './ai.ts';
 import { findAnswer, loadBank, type BankEntry } from './bank.ts';
 import { Budget } from './budget.ts';
+import { Evidence, loadVault } from './evidence.ts';
 import { resolveText, slideSources, SourceLink, type AiInfo, type ClientMsg, type Draft, type ServerMsg, type SpineSlide, type Stuck } from '../shared/schema.ts';
 import { deepgramKey, deepgramUrl, relay } from './deepgram.ts';
 import { accept, Director } from './director.ts';
@@ -17,6 +18,9 @@ const root = path.resolve(import.meta.dirname, '..');
 const REHEARSAL_DIR = path.resolve(root, '../rehearsal');
 
 const datasets = loadDatasets();
+// The research vault's sourced facts and charts (data/clean/vault): searchable, chartable and citable in live Q&A.
+const vault = loadVault();
+for (const [key, d] of vault.datasets) if (!datasets.has(key)) datasets.set(key, d);
 const sourceDatasets = Object.fromEntries(datasets);
 let spine: SpineSlide[] = [];
 let spineError: string | null = null;
@@ -46,6 +50,11 @@ try {
 } catch (e) {
   bankError = (e as Error).message;
   console.warn(`[q&a] ${bankError}`);
+}
+const evidence = new Evidence(vault.index, datasets, bank);
+{
+  const n = evidence.size;
+  console.log(`[evidence] searchable: ${n.facts} sourced facts, ${n.charts} charts, ${n.qa} research Q&As, ${n.bank} prepared answers`);
 }
 let job: { kind: NonNullable<AiInfo['busy']>; abort: AbortController; draftId?: string; question?: string } | null = null;
 const recentAnswers = new Map<string, Draft>();
@@ -143,7 +152,7 @@ async function build(kind: 'answer' | 'riff', heard: string, previous?: string) 
   const place = state.index;
   let r: Awaited<ReturnType<Ai['build']>>;
   try {
-    r = await ai.build({ kind, heard, previous, onScreen: state.live ? [state.live.title, ...state.live.bullets].join(' / ') : 'nothing' }, datasets, spine, mine.abort.signal);
+    r = await ai.build({ kind, heard, previous, onScreen: state.live ? [state.live.title, ...state.live.bullets].join(' / ') : 'nothing' }, datasets, spine, mine.abort.signal, evidence);
   } catch (e) {
     r = { error: (e as Error).message };
   }

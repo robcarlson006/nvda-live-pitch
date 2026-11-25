@@ -10,7 +10,7 @@
     - environmental disaster
   slide:
     layout: split
-    title: The footprint is real
+    title: "We would judge AI by energy per useful workload, not headlines"
     bullets:
       - We have no measured energy figure for this presentation.
       - NVIDIA's supply-chain emissions rose to {{nvda_emissions | Scope 3 | FY26}} in FY26.
@@ -40,7 +40,7 @@
     - energy does the company
   slide:
     layout: split
-    title: NVIDIA's own energy use rose
+    title: "Renewables supply {{nvda_renewable_share | Renewable | FY26}} of NVIDIA's own energy"
     bullets:
       - NVIDIA used {{nvda_energy | Total energy | FY26}} in FY26.
       - Renewables supplied {{nvda_renewable_share | Renewable | FY26}} of the reported total.
@@ -71,7 +71,7 @@
     - their carbon footprint
   slide:
     layout: split
-    title: Supply-chain emissions are the weak point
+    title: "Most of the footprint is in suppliers' factories, not NVIDIA's own operations"
     bullets:
       - Scope 3 rose from {{nvda_emissions | Scope 3 | FY24}} in FY24 to {{nvda_emissions | Scope 3 | FY26}} in FY26.
       - Chip fabrication sits outside its direct operations.
@@ -98,7 +98,7 @@
     - water does the company
   slide:
     layout: statement
-    title: Water use spans the whole supply chain
+    title: "Water sits across the supply chain, and we track it site by site"
     bullets:
       - Bloomberg shows rising withdrawals. We are checking the units.
       - Factories and customers' data centres have separate water footprints.
@@ -148,7 +148,7 @@
     - the s in esg
   slide:
     layout: split
-    title: Bloomberg’s social disclosure score fell
+    title: "Staff stay, with {{research_people | Staff turnover, FY26 | value}} turnover; it is disclosure that fell"
     bullets:
       - Disclosure fell from {{nvda_esg_scores | Social disclosure score | FY22}} to {{nvda_esg_scores | Social disclosure score | FY25}}.
       - Bloomberg reports {{research_people | Staff turnover, FY26 | value}} FY26 staff turnover.
@@ -175,7 +175,7 @@
     - who runs nvidia
   slide:
     layout: statement
-    title: The founder is back and the risk remains
+    title: "The board acted: the founder is back, with new independent oversight"
     bullets:
       - Huang resigned on 12 November. The board reinstated him on 22 November.
       - A new committee of independent directors oversees national security and export control.
@@ -207,23 +207,27 @@
     - tsmc risk
   slide:
     layout: statement
-    title: Taiwan remains a major supply risk
+    title: A Taiwan shock would hit every chip maker, and NVIDIA is already building in the US
     bullets:
-      - A prolonged manufacturing interruption could delay shipments.
-      - Rivals share much of the same supplier exposure.
-      - Our DCF does not price a conflict. We would review the position immediately.
-    diagram:
-      kind: flow
-      nodes:
-        - Fab disruption
-        - Fewer chip shipments
-        - Reassess sales and position
+      - Rivals share the same supplier exposure, so a shock would not hand them NVIDIA's lead.
+      - NVIDIA made its first US Blackwell wafer at TSMC Arizona in October 2025, and is funding Amkor packaging in Arizona.
+      - Our DCF does not price a conflict; we would review the small position immediately.
     sources:
-      - Team DCF scenario assumptions
-      - NVIDIA, Q3 FY27 supplemental financial information
+      - NVIDIA Blog, first US-made Blackwell wafer at TSMC Arizona, October 2025
+      - NVIDIA Newsroom, commitments with supply-chain partners (Amkor packaging)
+      - Team supply-chain research
+    diagram:
+      kind: comparison
+      nodes:
+        - Rivals share the same supplier exposure
+        - first US Blackwell wafer at TSMC Arizona
   links:
     - title: NVIDIA, Q3 FY27 supplemental financial information
       url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000088/supplementalfinancialinfor.htm
+    - title: NVIDIA Blog, first US-made Blackwell wafer at TSMC Arizona
+      url: https://blogs.nvidia.com/blog/tsmc-blackwell-manufacturing/
+    - title: NVIDIA Newsroom, commitments with supply-chain partners
+      url: https://nvidianews.nvidia.com/news/nvidia-expands-commitments-with-supply-chain-partners-to-support-ai-infrastructure-buildout
 - id: bubble
   question: Isn't this an AI bubble?
   ask:
@@ -341,7 +345,7 @@
     - congress data centers
   slide:
     layout: statement
-    title: Congress could change the pace of US builds
+    title: "The bills sit in committee, and the bipartisan one asks for reporting, not a halt"
     bullets:
       - Moratorium bills were introduced in the Senate in March 2026 and the House in June 2026. Both sit in committee.
       - A bipartisan Senate bill from September 2026 asks for reporting on power and water, not a halt.
@@ -376,7 +380,7 @@
     - chinese market
   slide:
     layout: statement
-    title: Export controls limit the China outlook
+    title: "NVIDIA's guidance already assumes no China data-centre revenue"
     bullets:
       - NVIDIA’s latest guidance assumes no data-centre compute revenue from China.
       - Licensing changes could shift sales or strengthen local alternatives.
@@ -404,7 +408,7 @@
     - customer pulls back
   slide:
     layout: split
-    title: A few direct buyers account for substantial sales
+    title: "A few direct buyers are large, and demand is spreading beyond them"
     bullets:
       - Three direct customers made up {{nvda_customer_concentration | Top three direct customers | Q3 FY27}} of Q3 FY27 sales.
       - Those are unnamed direct buyers, including possible distributors or integrators.
@@ -438,7 +442,7 @@
     - neocloud
   slide:
     layout: statement
-    title: Customer financing can make demand look stronger
+    title: "We separate outside-funded orders from NVIDIA-backed ones"
     bullets:
       - NVIDIA discloses financing commitments and guarantees.
       - We would distinguish outside-funded orders from purchases relying on NVIDIA’s backing.
@@ -470,7 +474,7 @@
     - gpu lifespan
   slide:
     layout: statement
-    title: Replacement demand depends on utilisation
+    title: "Older chips keep earning: they still serve useful workloads"
     bullets:
       - New chips can improve performance while older chips still serve useful workloads.
       - If rental prices fall, customers may stretch replacement cycles.
@@ -500,7 +504,7 @@
     - competition
   slide:
     layout: statement
-    title: Custom chips can take some workloads
+    title: "CUDA and networking make switching hard, even where custom chips fit"
     bullets:
       - Large buyers can design chips for recurring workloads.
       - NVIDIA’s software and networking make switching harder for some users.
@@ -529,7 +533,7 @@
     - position size
   slide:
     layout: split
-    title: Our recommendation is a measured position
+    title: "Buy: a three percent position with a small downside"
     bullets:
       - Start with a three percent position and review the thesis as evidence changes.
       - The base case clears the model price at all three rates. The bear case costs the portfolio {{model_downside | Cost to the portfolio | Bear case}}.
@@ -554,7 +558,7 @@
     - margins under pressure
   slide:
     layout: split
-    title: A margin dip is in the forecast
+    title: "Margins remain strong, and our bear case already tests a dip"
     bullets:
       - October-quarter gross margin was {{research_q3_call | Gross margin, Q3 FY27 | value}}.
       - Guidance puts next quarter at {{research_q3_call | Gross margin guide, Q4 FY27, low | value}} to {{research_q3_call | Gross margin guide, Q4 FY27, high | value}}. Guidance can change.
@@ -616,7 +620,7 @@
     - what do analysts think
   slide:
     layout: split
-    title: Our valuation is sensitive to the discount rate
+    title: "The value holds above today's price even at a higher discount rate"
     bullets:
       - Our base case is {{model_valuation | Value per share | Base case}} using the industry rate.
       - At the higher Google Finance rate, it is {{model_sensitivity | Terminal growth 3% | 14.45%}}.
@@ -642,7 +646,7 @@
     - how risky
   slide:
     layout: split
-    title: The market prices NVIDIA as a higher-risk stock
+    title: "Strong margins and a small position: we price the risk in"
     bullets:
       - Its margins are strong. Concentration and sentiment still matter.
       - Higher risk calls for a higher discount rate.
@@ -809,7 +813,7 @@
     - uk law
   slide:
     layout: statement
-    title: Which law or conduct are we discussing?
+    title: "NVIDIA publishes its UK compliance statements; which law do you mean?"
     bullets:
       - NVIDIA publishes UK supply-chain and tax disclosures.
       - The CMA’s Arm inquiry ended when the deal was abandoned.
@@ -899,7 +903,7 @@
     - uk unfair trading
   slide:
     layout: statement
-    title: UK privacy and consumer rules depend on the activity
+    title: "NVIDIA publishes its privacy notice; the rules depend on the service"
     bullets:
       - NVIDIA publishes a privacy notice. The relevant controller depends on the service.
       - Consumer rules apply to the trader and the specific practice.
@@ -988,7 +992,7 @@
     - trade controls in the uk
   slide:
     layout: statement
-    title: UK export rules depend on the specific transfer
+    title: "UK export rules apply transfer by transfer, and we would check the licence"
     bullets:
       - Start with the exporter, item, destination and end user.
       - UK and US rules can apply to different parts of the same supply chain.
@@ -1018,7 +1022,7 @@
     - competitors on the lists
   slide:
     layout: statement
-    title: Rankings measure different things
+    title: "NVIDIA ranks highly on four separate employer and growth lists"
     bullets:
       - "Glassdoor Best Places to Work 2026: #{{research_people | Glassdoor Best Places to Work 2026, US rank | value}} in the US. Fortune 100 Best: #{{research_people | Fortune 100 Best Companies to Work For 2026, rank | value}} in 2026."
       - "TIME sustainable growth 2026: #{{research_people | TIME Sustainable Growth 2026, world rank | value}}. Corporate Knights Global 100: #{{research_people | Corporate Knights Global 100 2026, rank | value}}, its first year on the list."

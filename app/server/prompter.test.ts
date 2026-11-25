@@ -41,3 +41,32 @@ test('speech-to-text spellings still match', () => {
   assert.ok(same('nvidias', norm("NVIDIA's")));
   assert.ok(!same('chips', 'ships'), 'short words must match exactly');
 });
+
+// ---- The whole current script, as the operator's teleprompter shows it ----
+import { resolveText } from '../shared/schema.ts';
+import { loadDatasets, loadSpine } from './state.ts';
+
+const datasets = loadDatasets();
+const spine = loadSpine(datasets);
+const full: Word[] = spine.flatMap((s, si) =>
+  resolveText(s.say ?? '', datasets).replace(/\*/g, '').split(/\s+/).filter(Boolean)
+    .map((t, i) => ({ text: t, norm: norm(t), slide: si, style: '' as const, eos: /[.?!]["”’)]?$/.test(t), first: i === 0 })),
+);
+// Speech-to-text with number formatting off writes figures as words ("one hundred and fifteen point eight billion").
+const spoken = (t: string) => (/\d/.test(t) ? 'one hundred and fifteen point eight billion' : t);
+
+for (const [how, say] of [['as written', (t: string) => t], ['figures as words', spoken]] as const)
+  test(`the teleprompter follows the whole current script to its last word (${how})`, () => {
+    let at = -1, prev: string | null = null, lastSlide = 0;
+    for (const w of full) {
+      for (const h of say(w.text).split(/\s+/)) {
+        const next = advance(full, at, h, prev);
+        assert.ok(next >= at, 'never moves backwards');
+        at = next;
+        prev = h;
+      }
+      if (at >= 0) lastSlide = Math.max(lastSlide, full[at].slide);
+    }
+    assert.equal(at, full.length - 1, `ends on the last word, "${full.at(-1)!.text}"`);
+    assert.equal(lastSlide, spine.length - 1);
+  });
