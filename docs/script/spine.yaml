@@ -413,11 +413,11 @@
   bullets:
     - text: "Five years of cash, in today's money: {{model_dcf_summary | PV of FCFs | value}}"
       cue: next five
-    - text: "Everything after FY32: {{model_dcf_summary | PV of terminal value | value}}. Enterprise value: {{model_dcf_summary | Enterprise value | value}}"
+    - text: "Everything after FY32: {{model_dcf_summary | PV of terminal value | value}}"
       cue: everything
-    - text: "No net debt: {{model_dcf_inputs | Net cash | value}} of net cash is added, for {{model_dcf_summary | Equity value | value}} of equity"
+    - text: "No net debt: {{model_dcf_inputs | Net cash | value}} of net cash is added"
       cue: more cash than debt
-    - text: "÷ {{model_dcf_inputs | Diluted shares | value}} diluted shares = {{model_three_rates | Value per share | 10.55% industry (Damodaran)}} a share, against {{model_dcf_inputs | Share price | value}}"
+    - text: "÷ {{model_dcf_inputs | Diluted shares | value}} diluted shares = {{model_three_rates | Value per share | 10.55% industry (Damodaran)}} a share"
       cue: divide
   say: "Now we add it up. The next five years of cash, discounted at the industry rate, are worth {{model_dcf_summary | PV of FCFs | value}} today. Everything after 2032, the terminal value, is worth {{model_dcf_summary | PV of terminal value | value}}: about three quarters of the total. Together that is the enterprise value, {{model_dcf_summary | Enterprise value | value}}. NVIDIA has no net debt: it holds more cash than debt, {{model_dcf_inputs | Net cash | value}}, so that is added, for {{model_dcf_summary | Equity value | value}} of equity. Then we divide by the {{model_dcf_inputs | Diluted shares | value}} diluted shares, and get {{model_three_rates | Value per share | 10.55% industry (Damodaran)}} a share, against a share price of {{model_dcf_inputs | Share price | value}}."
 

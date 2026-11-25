@@ -244,9 +244,9 @@ Here is the five-year DCF worksheet. For each year we take revenue, times that m
 Now we add it up. The next five years of cash, discounted at the industry rate, are worth $2.29tn today. Everything after 2032, the terminal value, is worth $7.08tn: about three quarters of the total. Together that is the enterprise value, $9.37tn. NVIDIA has no net debt: it holds more cash than debt, $59.6bn, so that is added, for $9.43tn of equity. Then we divide by the 24.186bn diluted shares, and get $389.99 a share, against a share price of $152.85.
 
 ▸ Five years of cash, in today's money: $2.29tn (on “next five”)
-▸ Everything after FY32: $7.08tn. Enterprise value: $9.37tn (on “everything”)
-▸ No net debt: $59.6bn of net cash is added, for $9.43tn of equity (on “more cash than debt”)
-▸ ÷ 24.186bn diluted shares = $389.99 a share, against $152.85 (on “divide”)
+▸ Everything after FY32: $7.08tn (on “everything”)
+▸ No net debt: $59.6bn of net cash is added (on “more cash than debt”)
+▸ ÷ 24.186bn diluted shares = $389.99 a share (on “divide”)
 
 ### three-rates: Base-case value per share at three discount rates
 *Panshul · starts on “we didn't”*

@@ -78,11 +78,11 @@ export function BridgeStack({ stage, datasets = {} }: SceneProps) {
       )}
       {stage >= 4 && implied != null && price != null && (
         <g className="bs-share">
-          <rect className="bs-share-box" x={lx - 10} y={540} width={440} height={200} rx="10" />
+          <rect className="bs-share-box" x={lx - 10} y={540} width={440} height={212} rx="10" />
           <text className="bs-lab" x={lx + 10} y={578}>÷ {S('Diluted shares')} diluted shares</text>
           <text className="bs-per" x={lx + 10} y={642}>{S('Implied share price')}</text>
-          <text className="bs-up" x={lx + 260} y={642}>+{S('Upside')}</text>
-          <text className="bs-lab" x={lx + 10} y={690}>a share, against {S('Share price')} today</text>
+          <text className="bs-lab" x={lx + 10} y={684}>a share, against {S('Share price')} today</text>
+          <text className="bs-up" x={lx + 10} y={726}>+{S('Upside')} upside</text>
         </g>
       )}
     </svg>
