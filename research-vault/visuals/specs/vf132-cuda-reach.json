@@ -1,0 +1,46 @@
+{
+  "kind": "hbar",
+  "title": "NVIDIA’s software reaches millions of developers",
+  "subtitle": "Millions of developers in NVIDIA filings and CUDA downloads in its 2024 review",
+  "source": "NVIDIA annual filings, FY2023–FY2026, and annual review, 2024",
+  "x": [
+    "FY2023",
+    "FY2024",
+    "FY2026",
+    "CUDA downloads"
+  ],
+  "series": [
+    {
+      "name": "Million developers",
+      "values": [
+        3.8,
+        4.7,
+        7.5,
+        null
+      ],
+      "facts": [
+        "F0926",
+        "F0927",
+        "F0928",
+        null
+      ]
+    },
+    {
+      "name": "Million downloads (more than)",
+      "values": [
+        null,
+        null,
+        null,
+        48
+      ],
+      "facts": [
+        null,
+        null,
+        null,
+        "F0931"
+      ]
+    }
+  ],
+  "highlight": "FY2026",
+  "custom_svg": "visuals/custom/vf132-cuda-reach.svg"
+}

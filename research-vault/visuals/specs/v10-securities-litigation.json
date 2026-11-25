@@ -1,0 +1,29 @@
+{
+  "title": "The securities case returned to district court",
+  "subtitle": "Selected court milestones and accounting status disclosed in NVIDIA’s FY26 annual report",
+  "kind": "table",
+  "unit": "",
+  "x": [
+    "Dec 2024",
+    "Feb 2025",
+    "Jan 2026"
+  ],
+  "series": [
+    {
+      "name": "Calendar year",
+      "values": [
+        2024,
+        2025,
+        2026
+      ],
+      "facts": [
+        "F0249",
+        "F0246",
+        "F0250"
+      ]
+    }
+  ],
+  "highlight": "Feb 2025",
+  "source": "NVIDIA FY26 annual report, Feb 2026",
+  "custom_svg": "visuals/custom/v10-securities-litigation.svg"
+}

@@ -1,0 +1,15 @@
+{
+  "title": "NVIDIA’s year-end P/E fell after its FY23 peak",
+  "subtitle": "Price to earnings at each fiscal year-end (×) · FY15–FY26",
+  "kind": "line",
+  "unit": "x",
+  "dataset": {
+    "key": "nvda_pe_history",
+    "series": [
+      "P/E"
+    ]
+  },
+  "highlight": "FY26",
+  "source": "Bloomberg FA annual multiples · pulled Nov 2026",
+  "custom_svg": "visuals/custom/v08-pe-history.svg"
+}

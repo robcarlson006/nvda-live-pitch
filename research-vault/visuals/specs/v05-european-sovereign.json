@@ -1,0 +1,53 @@
+{
+  "title": "European projects select NVIDIA and AMD hardware",
+  "subtitle": "Selected supercomputers · announced hardware and project milestones · 2025 to 2027",
+  "kind": "table",
+  "source": "University of Bristol · Jun 2026 | EuroHPC JU · Aug–Nov 2026",
+  "custom_svg": "visuals/custom/v05-european-sovereign.svg",
+  "unit": "superchips",
+  "x": [
+    "Isambard-AI",
+    "DAEDALUS"
+  ],
+  "series": [
+    {
+      "name": "NVIDIA superchips",
+      "values": [
+        5448.0,
+        2000.0
+      ],
+      "facts": [
+        "F0091",
+        "F0751"
+      ]
+    }
+  ],
+  "project_status": [
+    {
+      "project": "Isambard-AI",
+      "status": "Users from August 2025",
+      "fact": "F0092"
+    },
+    {
+      "project": "DAEDALUS",
+      "status": "Inaugurated October 2026",
+      "fact": "F0751"
+    },
+    {
+      "project": "Alice Recoque",
+      "status": "AMD hardware selected, first racks expected in 2027",
+      "facts": [
+        "F0743",
+        "F0744"
+      ]
+    },
+    {
+      "project": "LUMI-AI",
+      "status": "AMD hardware selected, installation expected in 2027",
+      "facts": [
+        "F0756",
+        "F0745"
+      ]
+    }
+  ]
+}

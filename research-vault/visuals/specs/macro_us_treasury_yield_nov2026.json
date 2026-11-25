@@ -1,0 +1,33 @@
+{
+  "title": "US Treasury yield: recent daily observations",
+  "subtitle": "10-year constant maturity, percent; November 2026",
+  "kind": "bar",
+  "unit": "%",
+  "x": [
+    "17 Nov",
+    "18 Nov",
+    "19 Nov",
+    "20 Nov",
+    "23 Nov"
+  ],
+  "series": [
+    {
+      "name": "Yield",
+      "values": [
+        5.1,
+        5.07,
+        5.04,
+        4.92,
+        4.92
+      ],
+      "facts": [
+        "F0419",
+        "F0418",
+        "F0417",
+        "F0416",
+        "F0415"
+      ]
+    }
+  ],
+  "source": "Federal Reserve Board H.15 via FRED; observations as dated, accessed 25 Nov 2026"
+}

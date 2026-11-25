@@ -1,0 +1,26 @@
+{
+  "title": "NVIDIA disclosed $25bn in ecosystem equity commitments",
+  "subtitle": "NVIDIA ecosystem equity investments and commitments · USD billions · 26 Jul 2026",
+  "kind": "hbar",
+  "unit": "USD bn",
+  "x": [
+    "Equity investments",
+    "Equity investment commitments"
+  ],
+  "series": [
+    {
+      "name": "USD bn",
+      "values": [
+        99,
+        25
+      ],
+      "facts": [
+        "F0612",
+        "F0613"
+      ]
+    }
+  ],
+  "highlight": "Equity investment commitments",
+  "source": "NVIDIA Q2 FY27 Form 10-Q · Aug 2026",
+  "custom_svg": "visuals/custom/vf142-ecosystem-equity.svg"
+}

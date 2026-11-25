@@ -1,0 +1,39 @@
+{
+  "title": "NVIDIA adds permanent export oversight",
+  "subtitle": "Board and compliance changes announced in November 2026",
+  "source": "NVIDIA Newsroom, 17 and 23 Nov 2026",
+  "x": [
+    "Committee announced",
+    "Counsel and search update",
+    "Investigation update"
+  ],
+  "series": [
+    {
+      "name": "Day of November",
+      "values": [
+        17,
+        23,
+        23
+      ],
+      "facts": [
+        "F1016",
+        "F0398",
+        "F0398"
+      ]
+    }
+  ],
+  "highlight": "Committee announced",
+  "kind": "table",
+  "unit": "day of month",
+  "custom_svg": "visuals/custom/vf137-board-oversight.svg",
+  "annotations": {
+    "committee_facts": [
+      "F0074",
+      "F0075",
+      "F0078"
+    ],
+    "counsel_fact": "F0577",
+    "compliance_search_fact": "F0073",
+    "investigation_fact": "F0071"
+  }
+}

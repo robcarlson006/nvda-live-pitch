@@ -1,0 +1,25 @@
+{
+  "title": "China chip restrictions triggered inventory charges",
+  "subtitle": "Reported excess inventory and purchase-obligation charges · USD billions",
+  "source": "NVIDIA Q1 FY26 results, May 2025 · NVIDIA Q2 FY27 10-Q, August 2026",
+  "kind": "bar",
+  "unit": "USD bn",
+  "x": [
+    "H20 · Q1 FY26",
+    "H200 · H1 FY27"
+  ],
+  "series": [
+    {
+      "name": "Actual accounting charge",
+      "values": [
+        4.5,
+        0.4
+      ],
+      "facts": [
+        "F0204",
+        "F0598"
+      ]
+    }
+  ],
+  "highlight": "H20 · Q1 FY26"
+}

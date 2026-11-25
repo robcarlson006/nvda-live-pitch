@@ -1,0 +1,28 @@
+{
+  "title": "Global index exposure to leading companies",
+  "subtitle": "MSCI World index weights, 30 October 2026",
+  "kind": "hbar",
+  "unit": "%",
+  "x": [
+    "NVIDIA",
+    "Apple",
+    "Microsoft"
+  ],
+  "series": [
+    {
+      "name": "Index weight",
+      "values": [
+        5.25,
+        5.65,
+        4.11
+      ],
+      "facts": [
+        "F0439",
+        "F0440",
+        "F0432"
+      ]
+    }
+  ],
+  "highlight": "NVIDIA",
+  "source": "MSCI World Index, 30 October 2026; weights vary over time"
+}

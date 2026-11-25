@@ -13,6 +13,7 @@ import json
 import os
 import re
 import sys
+from decimal import Decimal
 from collections import Counter
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -22,8 +23,10 @@ TRIVIAL = {0, 1, 2, 3, 4, 5, 10, 100}
 
 
 def decimals(v):
-    s = repr(float(v))
-    return 0 if s.endswith('.0') else min(4, len(s.split('.')[1]))
+    # Decimal(str(...)) handles reprs such as 1e-07, which have no decimal
+    # point for split('.') to inspect.  Keep the existing four-place cap.
+    exponent = Decimal(str(float(v))).as_tuple().exponent
+    return 0 if exponent >= 0 else min(4, -exponent)
 
 
 def close(a, b):

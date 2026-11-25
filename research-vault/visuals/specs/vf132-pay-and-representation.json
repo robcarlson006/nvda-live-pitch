@@ -1,0 +1,67 @@
+{
+  "kind": "bar",
+  "title": "Women’s representation rose at NVIDIA",
+  "subtitle": "Share of workforce and technical roles (%) · global women-to-men pay ratio · FY24–FY26",
+  "source": "NVIDIA Sustainability Report, FY26",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Workforce (%)",
+      "values": [
+        19.7,
+        21.2,
+        21.6
+      ],
+      "facts": [
+        "F0643",
+        "F0644",
+        "F0645"
+      ]
+    },
+    {
+      "name": "Technical roles (%)",
+      "values": [
+        15.2,
+        16.8,
+        17.4
+      ],
+      "facts": [
+        "F0646",
+        "F0647",
+        "F0648"
+      ]
+    },
+    {
+      "name": "Global pay ratio (women)",
+      "values": [
+        null,
+        null,
+        99.5
+      ],
+      "facts": [
+        null,
+        null,
+        "F0652"
+      ]
+    },
+    {
+      "name": "Global pay ratio (men, basis)",
+      "values": [
+        null,
+        null,
+        100
+      ],
+      "facts": [
+        null,
+        null,
+        "F0652"
+      ]
+    }
+  ],
+  "highlight": "FY26",
+  "custom_svg": "visuals/custom/vf132-pay-and-representation.svg"
+}

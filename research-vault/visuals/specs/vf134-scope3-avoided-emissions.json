@@ -1,0 +1,26 @@
+{
+  "title": "Avoided emissions belong in a separate disclosure",
+  "subtitle": "Corporate greenhouse gas accounting · NVIDIA FY26 Scope 3 inventory",
+  "kind": "kpi",
+  "unit": "million metric tonnes CO₂e",
+  "x": [
+    "Reported Scope 3",
+    "Avoided emissions"
+  ],
+  "series": [
+    {
+      "name": "Million metric tonnes CO₂e",
+      "values": [
+        10.7,
+        null
+      ],
+      "facts": [
+        "F0024",
+        ""
+      ]
+    }
+  ],
+  "highlight": "Reported Scope 3",
+  "source": "Bloomberg, NVIDIA FY26 · GHG Protocol Scope 3 guidance, accessed Nov 2026",
+  "custom_svg": "visuals/custom/vf134-scope3-avoided-emissions.svg"
+}

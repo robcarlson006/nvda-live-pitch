@@ -1,0 +1,30 @@
+{
+  "title": "MSCI World has no ESG objective",
+  "subtitle": "Benchmark mandate and NVIDIA index weight, October 2026",
+  "source": "MSCI World Index, Nov 2026",
+  "x": [
+    "NVIDIA weight"
+  ],
+  "series": [
+    {
+      "name": "Index weight",
+      "values": [
+        5.25
+      ],
+      "facts": [
+        "F0439"
+      ]
+    }
+  ],
+  "highlight": "NVIDIA weight",
+  "kind": "kpi",
+  "unit": "%",
+  "custom_svg": "visuals/custom/vf137-msci-mandate.svg",
+  "annotations": {
+    "mandate": {
+      "text": "MSCI World does not pursue ESG objectives",
+      "fact": "F0436"
+    },
+    "weight_date": "30 October 2026"
+  }
+}

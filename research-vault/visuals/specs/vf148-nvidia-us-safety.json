@@ -1,0 +1,28 @@
+{
+  "title": "NVIDIA’s U.S. workplace incident rate fell",
+  "subtitle": "OSHA-recordable cases per 200,000 employee hours, FY24–FY26",
+  "kind": "bar",
+  "source": "NVIDIA Sustainability Report, FY26",
+  "unit": "",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "U.S. recordable incident rate",
+      "values": [
+        0.11,
+        0.08,
+        0.07
+      ],
+      "facts": [
+        "F1077",
+        "F1078",
+        "F1079"
+      ]
+    }
+  ],
+  "highlight": "FY26"
+}

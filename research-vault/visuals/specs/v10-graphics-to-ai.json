@@ -1,0 +1,32 @@
+{
+  "title": "NVIDIA went from graphics to AI",
+  "subtitle": "Selected milestones in NVIDIA’s corporate timeline · 1993–2012",
+  "kind": "table",
+  "unit": "",
+  "x": [
+    "Founding",
+    "GPU milestone",
+    "CUDA",
+    "AlexNet"
+  ],
+  "series": [
+    {
+      "name": "Calendar year",
+      "values": [
+        1993,
+        1999,
+        2006,
+        2012
+      ],
+      "facts": [
+        "F0371",
+        "F0374",
+        "F0375",
+        "F0376"
+      ]
+    }
+  ],
+  "highlight": "AlexNet",
+  "source": "NVIDIA corporate timeline, accessed Nov 2026",
+  "custom_svg": "visuals/custom/v10-graphics-to-ai.svg"
+}

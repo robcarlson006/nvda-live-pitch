@@ -1,0 +1,25 @@
+{
+  "title": "AMD lists more memory per chip than AWS",
+  "subtitle": "High-bandwidth memory capacity per accelerator · vendor specs accessed November 2026",
+  "kind": "bar",
+  "unit": "GB",
+  "x": [
+    "AWS Trainium3",
+    "AMD Instinct MI350 series"
+  ],
+  "series": [
+    {
+      "name": "HBM capacity per accelerator",
+      "values": [
+        144,
+        288
+      ],
+      "facts": [
+        "F0151",
+        "F0908"
+      ]
+    }
+  ],
+  "highlight": "AMD Instinct MI350 series",
+  "source": "AWS and AMD product specifications · accessed 25 Nov 2026"
+}

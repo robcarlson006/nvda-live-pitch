@@ -1,0 +1,18 @@
+{
+  "title": "Social is NVIDIA’s lowest Bloomberg pillar score",
+  "subtitle": "Bloomberg Financial Materiality scores · out of 10 · FY25",
+  "kind": "hbar",
+  "source": "Bloomberg FA · Nov 2026 extract · FY25 scores",
+  "highlight": "Social",
+  "unit": "",
+  "dataset": {
+    "key": "nvda_esg_scores",
+    "series": [
+      "Environmental",
+      "Governance",
+      "Social",
+      "Overall ESG score"
+    ]
+  },
+  "custom_svg": "visuals/custom/v04-bloomberg-pillars.svg"
+}

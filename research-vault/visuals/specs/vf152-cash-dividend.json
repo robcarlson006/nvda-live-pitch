@@ -1,0 +1,25 @@
+{
+  "title": "NVIDIA raised its quarterly dividend",
+  "subtitle": "Quarterly cash dividend · USD per common share · May 2026 announcement",
+  "kind": "bar",
+  "unit": "USD",
+  "x": [
+    "Before the increase",
+    "After the increase"
+  ],
+  "series": [
+    {
+      "name": "Dividend per share",
+      "values": [
+        0.01,
+        0.25
+      ],
+      "facts": [
+        "F1093",
+        "F0317"
+      ]
+    }
+  ],
+  "highlight": "After the increase",
+  "source": "NVIDIA earnings releases · 27 May and 17 Nov 2026"
+}

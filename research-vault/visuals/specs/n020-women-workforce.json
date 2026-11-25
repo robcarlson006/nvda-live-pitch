@@ -1,0 +1,53 @@
+{
+  "title": "Women at NVIDIA: progress and gaps",
+  "subtitle": "Share of workforce, technical roles and leadership \u00b7 fiscal years",
+  "kind": "line",
+  "unit": "%",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Workforce",
+      "values": [
+        19.7,
+        21.2,
+        21.6
+      ],
+      "facts": [
+        "F0643",
+        "F0644",
+        "F0645"
+      ]
+    },
+    {
+      "name": "Technical roles",
+      "values": [
+        15.2,
+        16.8,
+        17.4
+      ],
+      "facts": [
+        "F0646",
+        "F0647",
+        "F0648"
+      ]
+    },
+    {
+      "name": "Leaders",
+      "values": [
+        13.1,
+        13.5,
+        14.8
+      ],
+      "facts": [
+        "F0649",
+        "F0650",
+        "F0651"
+      ]
+    }
+  ],
+  "source": "NVIDIA FY26 Sustainability Report, workforce data; company-reported"
+}

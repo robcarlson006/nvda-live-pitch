@@ -1,0 +1,14 @@
+{
+  "title": "Data Center revenue by customer type",
+  "subtitle": "Quarterly revenue; latest quarter preliminary",
+  "kind": "line",
+  "unit": "USD bn",
+  "dataset": {
+    "key": "nvda_dc_customers",
+    "series": [
+      "Hyperscalers",
+      "AI clouds, industrial & enterprise"
+    ]
+  },
+  "source": "Bloomberg FA via project data; as of 20 Nov 2026; Q3 FY27 preliminary"
+}

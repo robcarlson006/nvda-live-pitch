@@ -1,0 +1,23 @@
+{
+  "title": "Data Center networking revenue surged",
+  "subtitle": "NVIDIA reported revenue growth · year on year · FY26",
+  "kind": "kpi",
+  "unit": "%",
+  "x": [
+    "Data Center networking"
+  ],
+  "series": [
+    {
+      "name": "FY26 year-on-year growth",
+      "values": [
+        142
+      ],
+      "facts": [
+        "F0964"
+      ]
+    }
+  ],
+  "highlight": "Data Center networking",
+  "source": "NVIDIA FY26 10-K, Feb 2026 · Q2 FY27 10-Q, Aug 2026 · earnings call via Google Finance, Nov 2026",
+  "custom_svg": "visuals/custom/v10-networking-growth.svg"
+}

@@ -1,0 +1,42 @@
+{
+  "title": "NVIDIA’s remaining buyback authority rose",
+  "subtitle": "Approximate unused repurchase authority at quarter-end · USD billions · FY27",
+  "kind": "table",
+  "unit": "USD bn",
+  "source": "NVIDIA earnings releases, August and November 2026",
+  "x": [
+    "Q2 FY27",
+    "Q3 FY27",
+    "September board approval"
+  ],
+  "series": [
+    {
+      "name": "Unused repurchase authority",
+      "values": [
+        99,
+        227.3,
+        null
+      ],
+      "facts": [
+        "F0319",
+        "F0316",
+        null
+      ]
+    },
+    {
+      "name": "Additional authority approved",
+      "values": [
+        null,
+        null,
+        150
+      ],
+      "facts": [
+        null,
+        null,
+        "F0314"
+      ]
+    }
+  ],
+  "highlight": "Q3 FY27",
+  "custom_svg": "visuals/custom/vf147-repurchase-capacity.svg"
+}

@@ -1,0 +1,14 @@
+{
+  "kind": "hbar",
+  "title": "NVIDIA leads estimated TSMC packaging bookings",
+  "subtitle": "Estimated share of TSMC CoWoS capacity booked for 2026 · % · selected customers",
+  "dataset": {
+    "key": "research_cowos_share",
+    "series": [
+      "Share of CoWoS"
+    ]
+  },
+  "highlight": "NVIDIA",
+  "source": "Morgan Stanley, TrendForce and Silicon Analysts via team research | NVIDIA · Nov 2026",
+  "custom_svg": "visuals/custom/v06-tsmc-cowos.svg"
+}

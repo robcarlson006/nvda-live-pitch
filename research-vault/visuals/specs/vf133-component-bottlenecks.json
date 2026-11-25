@@ -1,0 +1,29 @@
+{
+  "title": "Capacity plans extend beyond packaging",
+  "subtitle": "NVIDIA and supplier capacity targets · October 2026 announcement",
+  "kind": "table",
+  "source": "NVIDIA Newsroom · Oct 2026",
+  "x": [
+    "Package substrates",
+    "Semiconductor testing",
+    "Optical engines in Taiwan"
+  ],
+  "series": [
+    {
+      "name": "Target multiplier",
+      "values": [
+        2.5,
+        2,
+        15
+      ],
+      "facts": [
+        "F0196",
+        "F0197",
+        "F0199"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf133-component-bottlenecks.svg",
+  "highlight": "Optical engines in Taiwan",
+  "unit": "x"
+}

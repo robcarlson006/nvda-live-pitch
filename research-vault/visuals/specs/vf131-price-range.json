@@ -1,0 +1,29 @@
+{
+  "title": "NVIDIA closed near the low end of its annual range",
+  "subtitle": "NVDA price in USD per share · Stock Analysis snapshot on 24 Nov 2026",
+  "kind": "kpi",
+  "unit": "USD",
+  "source": "Stock Analysis, 24 Nov 2026",
+  "x": [
+    "Range low",
+    "Reported close",
+    "Range high"
+  ],
+  "series": [
+    {
+      "name": "Share price",
+      "values": [
+        124.5,
+        155.38,
+        243.37
+      ],
+      "facts": [
+        "F0427",
+        "F0437",
+        "F0428"
+      ]
+    }
+  ],
+  "highlight": "Reported close",
+  "custom_svg": "visuals/custom/vf131-price-range.svg"
+}

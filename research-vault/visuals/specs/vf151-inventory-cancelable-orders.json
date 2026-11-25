@@ -1,0 +1,40 @@
+{
+  "title": "Inventory rose while orders could still change",
+  "subtitle": "NVIDIA inventory balances · USD millions · January and October 2026",
+  "kind": "hbar",
+  "unit": "USD m",
+  "x": [
+    "Jan 2026 · fiscal year-end",
+    "Oct 2026 · quarter-end"
+  ],
+  "series": [
+    {
+      "name": "USD m",
+      "values": [
+        21403,
+        39724
+      ],
+      "facts": [
+        "F0334",
+        "F0334"
+      ]
+    }
+  ],
+  "highlight": "Oct 2026 · quarter-end",
+  "source": "NVIDIA FY26 10-K · Feb 2026 | Q3 FY27 results · Nov 2026",
+  "annotations": [
+    {
+      "text": "Purchase-order cancellation terms",
+      "facts": [
+        "F0715"
+      ]
+    },
+    {
+      "text": "Inventory balances",
+      "facts": [
+        "F0334"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf151-inventory-cancelable-orders.svg"
+}

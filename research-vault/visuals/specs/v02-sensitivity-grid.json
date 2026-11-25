@@ -1,0 +1,31 @@
+{
+  "kind": "table",
+  "title": "Higher discount rates cut the DCF value",
+  "subtitle": "Implied USD per NVDA share · Discount rate and perpetual growth · November 2026",
+  "source": "Team DCF sensitivity grid, Nov 2026",
+  "highlight": "10.55% discount rate and 3% terminal growth",
+  "custom_svg": "visuals/custom/v02-sensitivity-grid.svg",
+  "dataset": {
+    "key": "model_sensitivity",
+    "series": [
+      "Terminal growth 2%",
+      "Terminal growth 3%",
+      "Terminal growth 4%"
+    ]
+  },
+  "series": [
+    {
+      "name": "Discount rates",
+      "values": [
+        10.55,
+        14.45,
+        15.4
+      ],
+      "facts": [
+        "F0868",
+        "F0977",
+        "F0876"
+      ]
+    }
+  ]
+}

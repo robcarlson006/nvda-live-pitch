@@ -1,0 +1,43 @@
+{
+  "title": "NVIDIA targets more chip testing in early 2027",
+  "subtitle": "High-volume semiconductor testing targets · calendar 2027 · advance in USD billions",
+  "kind": "kpi",
+  "unit": "USD bn",
+  "x": [
+    "KYEC capacity reservation advance"
+  ],
+  "series": [
+    {
+      "name": "USD bn",
+      "values": [
+        1.1
+      ],
+      "facts": [
+        "F0198"
+      ]
+    }
+  ],
+  "highlight": "KYEC capacity reservation advance",
+  "source": "NVIDIA Newsroom · Oct 2026",
+  "annotations": [
+    {
+      "text": "February 2027 Singapore high-volume testing target",
+      "facts": [
+        "F0769"
+      ]
+    },
+    {
+      "text": "April 2027 US high-volume testing target",
+      "facts": [
+        "F0198"
+      ]
+    },
+    {
+      "text": "Expected doubling of testing capacity from calendar 2026 to 2027",
+      "facts": [
+        "F0197"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf151-testing-capacity-milestones.svg"
+}

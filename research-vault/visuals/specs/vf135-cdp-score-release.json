@@ -1,0 +1,37 @@
+{
+  "title": "NVIDIA’s CDP climate grade is unverified",
+  "subtitle": "CDP corporate scoring cycles · reviewed 25 November 2026",
+  "kind": "table",
+  "unit": "",
+  "source": "CDP Scores and A Lists, accessed 25 November 2026",
+  "x": [
+    "Latest published score set",
+    "Next scheduled score set"
+  ],
+  "series": [
+    {
+      "name": "CDP disclosure cycle",
+      "values": [
+        2025,
+        2026
+      ],
+      "facts": [
+        "F0529",
+        "F0530"
+      ]
+    },
+    {
+      "name": "Scheduled day of December",
+      "values": [
+        null,
+        2
+      ],
+      "facts": [
+        null,
+        "F0530"
+      ]
+    }
+  ],
+  "highlight": "Next scheduled score set",
+  "custom_svg": "visuals/custom/vf135-cdp-score-release.svg"
+}

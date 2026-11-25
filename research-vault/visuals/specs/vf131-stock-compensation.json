@@ -1,0 +1,23 @@
+{
+  "title": "NVIDIA now includes stock pay in adjusted results",
+  "subtitle": "Treatment of stock-based compensation and Q3 FY27 expense · USD millions",
+  "kind": "kpi",
+  "unit": "USD m",
+  "source": "NVIDIA earnings release, Nov 2026",
+  "x": [
+    "Q3 FY27 compensation expense"
+  ],
+  "series": [
+    {
+      "name": "Reported stock compensation expense",
+      "values": [
+        2088.0
+      ],
+      "facts": [
+        "F0327"
+      ]
+    }
+  ],
+  "highlight": "Q3 FY27 compensation expense",
+  "custom_svg": "visuals/custom/vf131-stock-compensation.svg"
+}

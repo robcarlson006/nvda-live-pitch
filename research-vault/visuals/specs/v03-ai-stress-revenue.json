@@ -1,0 +1,15 @@
+{
+  "title": "If AI demand collapses, sales barely recover",
+  "subtitle": "NVIDIA annual revenue (USD billions) · FY26 actual through FY32 scenario",
+  "kind": "line",
+  "dataset": {
+    "key": "model_path_ai_ended",
+    "series": [
+      "Base case",
+      "If AI ended for good"
+    ]
+  },
+  "highlight": "If AI ended for good",
+  "source": "Bloomberg FA consensus, 20 Nov 2026; Team DCF model, Nov 2026",
+  "custom_svg": "visuals/custom/v03-ai-stress-revenue.svg"
+}

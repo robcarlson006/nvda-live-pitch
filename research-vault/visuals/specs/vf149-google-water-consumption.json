@@ -1,0 +1,23 @@
+{
+  "title": "Google consumed most of the water it withdrew",
+  "subtitle": "Average water consumption as a share of withdrawal · Google data centres · 2025 study",
+  "kind": "kpi",
+  "unit": "%",
+  "x": [
+    "Water consumed"
+  ],
+  "series": [
+    {
+      "name": "Share of withdrawn water consumed",
+      "values": [
+        80
+      ],
+      "facts": [
+        "F0556"
+      ]
+    }
+  ],
+  "highlight": "Water consumed",
+  "source": "Google Research · August 2025",
+  "custom_svg": "visuals/custom/vf149-google-water-consumption.svg"
+}

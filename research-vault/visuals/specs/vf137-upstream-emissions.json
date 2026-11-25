@@ -1,0 +1,47 @@
+{
+  "title": "Purchased goods drove reported upstream emissions",
+  "subtitle": "NVIDIA Scope 3 categories, million metric tonnes CO₂e, FY24–FY26",
+  "source": "NVIDIA FY26 Sustainability Report, accessed Nov 2026",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Purchased goods and services",
+      "values": [
+        3216144.0,
+        6036105.0,
+        9301735.0
+      ],
+      "facts": [
+        "F1044",
+        "F1045",
+        "F0835"
+      ]
+    },
+    {
+      "name": "Capital goods",
+      "values": [
+        200483.0,
+        570175.0,
+        954865.0
+      ],
+      "facts": [
+        "F1046",
+        "F1047",
+        "F0836"
+      ]
+    }
+  ],
+  "highlight": "FY26",
+  "kind": "bar",
+  "unit": "metric tonnes CO₂e",
+  "custom_svg": "visuals/custom/vf137-upstream-emissions.svg",
+  "annotations": {
+    "display_unit": "million metric tonnes CO₂e",
+    "display_decimal_places": 2,
+    "inventory_boundary_fact": "F1002"
+  }
+}

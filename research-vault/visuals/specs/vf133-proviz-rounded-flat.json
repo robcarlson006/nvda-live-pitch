@@ -1,0 +1,26 @@
+{
+  "title": "Pro Viz was roughly flat across the year-end",
+  "subtitle": "Professional Visualization revenue (USD millions) · Q4 FY25 and Q1 FY26",
+  "kind": "table",
+  "source": "NVIDIA earnings releases · Feb & May 2025",
+  "x": [
+    "Q4 FY25",
+    "Q1 FY26"
+  ],
+  "series": [
+    {
+      "name": "As reported (USD m)",
+      "values": [
+        511,
+        509
+      ],
+      "facts": [
+        "F0885",
+        "F0888"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf133-proviz-rounded-flat.svg",
+  "highlight": "Q1 FY26",
+  "unit": "USD m"
+}

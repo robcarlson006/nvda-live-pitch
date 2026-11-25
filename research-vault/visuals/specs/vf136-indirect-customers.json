@@ -1,0 +1,26 @@
+{
+  "title": "Buyer categories can hide customer concentration",
+  "subtitle": "Preliminary Data Center revenue estimate and indirect customers’ share of total revenue",
+  "kind": "kpi",
+  "source": "Bloomberg FA · Nov 2026 | NVIDIA Form 10-Q · Aug 2026",
+  "unit": "",
+  "x": [
+    "Combined AI cloud, industrial and enterprise (USD bn)",
+    "Individual indirect customers (share threshold in %)"
+  ],
+  "series": [
+    {
+      "name": "Different definitions and periods",
+      "values": [
+        47.474,
+        10
+      ],
+      "facts": [
+        "F0090",
+        "F0712"
+      ]
+    }
+  ],
+  "highlight": "Individual indirect customers (share threshold in %)",
+  "custom_svg": "visuals/custom/vf136-indirect-customers.svg"
+}

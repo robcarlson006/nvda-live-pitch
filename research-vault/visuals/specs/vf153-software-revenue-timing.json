@@ -1,0 +1,28 @@
+{
+  "title": "Software licences and support book at different times",
+  "subtitle": "Revenue recognition and remaining contract obligations · FY24 policy and July 2026 balance",
+  "kind": "kpi",
+  "unit": "USD bn",
+  "x": [
+    "Remaining performance obligations from contracts longer than one year"
+  ],
+  "series": [
+    {
+      "name": "Revenue recognition and remaining contract obligations",
+      "values": [
+        3.2
+      ],
+      "facts": [
+        "F0942"
+      ]
+    }
+  ],
+  "highlight": "Remaining performance obligations from contracts longer than one year",
+  "source": "NVIDIA FY24 10-K and Q2 FY27 10-Q, Feb 2024 and Aug 2026",
+  "custom_svg": "visuals/custom/vf153-software-revenue-timing.svg",
+  "display": {
+    "licence": "Upfront",
+    "support": "Over time",
+    "mixed_contract_balance_usd_bn": 3.2
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "kind": "bar",
+  "title": "Grid-based emissions rose as market-based emissions fell",
+  "subtitle": "NVIDIA Scope 2 emissions · metric tonnes CO₂e · FY24–FY26",
+  "source": "NVIDIA FY26 Sustainability Report · fiscal year ended Jan 2026",
+  "unit": "t CO2e",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Location-based",
+      "values": [
+        178087.0,
+        228378.0,
+        308891.0
+      ],
+      "facts": [
+        "F1059",
+        "F1060",
+        "F0838"
+      ]
+    },
+    {
+      "name": "Market-based",
+      "values": [
+        40555.0,
+        0.0,
+        568.0
+      ],
+      "facts": [
+        "F1061",
+        "F1062",
+        "F1001"
+      ]
+    }
+  ],
+  "highlight": "FY26",
+  "custom_svg": "visuals/custom/vf141-scope2-methods.svg"
+}

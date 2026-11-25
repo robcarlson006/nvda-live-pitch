@@ -1,0 +1,36 @@
+{
+  "kind": "table",
+  "title": "Microsoft found paying customers for Copilot",
+  "subtitle": "Paid Copilot seats and Microsoft Cloud gross margin · Microsoft FY2026",
+  "source": "Microsoft FY2026 earnings and annual report, 2026",
+  "x": [
+    "Paid Microsoft 365 Copilot seats",
+    "Microsoft Cloud gross margin"
+  ],
+  "series": [
+    {
+      "name": "Million paid seats (more than)",
+      "values": [
+        30,
+        null
+      ],
+      "facts": [
+        "F0271",
+        null
+      ]
+    },
+    {
+      "name": "Cloud gross margin (%)",
+      "values": [
+        null,
+        66
+      ],
+      "facts": [
+        null,
+        "F0860"
+      ]
+    }
+  ],
+  "highlight": "Paid Microsoft 365 Copilot seats",
+  "custom_svg": "visuals/custom/vf132-paid-ai-adoption.svg"
+}

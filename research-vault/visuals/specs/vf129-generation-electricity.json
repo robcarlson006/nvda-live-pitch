@@ -1,0 +1,26 @@
+{
+  "title": "Images used more electricity in this benchmark",
+  "subtitle": "Median electricity use · kWh per 1,000 inferences · 2023 benchmark",
+  "kind": "hbar",
+  "unit": "kWh",
+  "x": [
+    "Image generation",
+    "Text generation"
+  ],
+  "series": [
+    {
+      "name": "Median energy per 1,000 inferences",
+      "values": [
+        1.35,
+        0.042
+      ],
+      "facts": [
+        "F0041",
+        "F0042"
+      ]
+    }
+  ],
+  "highlight": "Image generation",
+  "source": "Luccioni et al. (Hugging Face and CMU), Nov 2023",
+  "custom_svg": "visuals/custom/vf129-generation-electricity.svg"
+}

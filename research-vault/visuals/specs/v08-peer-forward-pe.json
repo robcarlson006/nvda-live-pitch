@@ -1,0 +1,15 @@
+{
+  "title": "NVIDIA has the lowest forward P/E in this group",
+  "subtitle": "Price to forecast earnings (×) · fiscal years ending around Dec 2026 or Jan 2027",
+  "kind": "hbar",
+  "unit": "x",
+  "dataset": {
+    "key": "peers_pe",
+    "series": [
+      "Forward P/E"
+    ]
+  },
+  "highlight": "NVIDIA",
+  "source": "Bloomberg FA · peer prices on 20 Nov 2026",
+  "custom_svg": "visuals/custom/v08-peer-forward-pe.svg"
+}

@@ -1,0 +1,28 @@
+{
+  "title": "NVIDIA’s direct emissions rose each year",
+  "subtitle": "Scope 1 emissions · thousand metric tonnes CO₂e · FY24–FY26",
+  "kind": "bar",
+  "unit": "kt CO₂e",
+  "source": "Bloomberg, NVIDIA emissions series · through FY26",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Direct emissions",
+      "values": [
+        8.89,
+        9.05,
+        9.82
+      ],
+      "facts": [
+        "F0016",
+        "F0017",
+        "F0018"
+      ]
+    }
+  ],
+  "highlight": "FY26"
+}

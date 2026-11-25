@@ -1,0 +1,54 @@
+{
+  "title": "AI spending could outrun end-user revenue",
+  "subtitle": "Sequoia model estimates · USD billions · June 2024",
+  "source": "Sequoia Capital, David Cahn, June 2024",
+  "kind": "kpi",
+  "unit": "USD bn",
+  "x": [
+    "Estimated AI ecosystem revenue hurdle",
+    "Estimated gap"
+  ],
+  "series": [
+    {
+      "name": "USD billions",
+      "values": [
+        600,
+        500
+      ],
+      "facts": [
+        "F0251",
+        "F0252"
+      ]
+    }
+  ],
+  "highlight": "Estimated gap",
+  "custom_svg": "visuals/custom/v07-ai-revenue-gap.svg",
+  "annotations": {
+    "cards": [
+      {
+        "label": "SEQUOIA ESTIMATE",
+        "display": "$600bn",
+        "metric": "AI ecosystem revenue needed",
+        "context": "Based on assumptions about costs and margins.",
+        "facts": [
+          "F0251"
+        ]
+      },
+      {
+        "label": "SEQUOIA ESTIMATE",
+        "display": "$500bn",
+        "metric": "AI ecosystem revenue gap",
+        "context": "Calculated using assumed AI revenues.",
+        "facts": [
+          "F0252"
+        ]
+      }
+    ],
+    "note": "The bear case is that GPU orders could slow if end-user revenue fails to catch up.",
+    "note_facts": [
+      "F0251",
+      "F0252",
+      "F0253"
+    ]
+  }
+}

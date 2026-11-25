@@ -1,0 +1,28 @@
+{
+  "title": "Morningstar kept its lower value after reinstatement",
+  "subtitle": "Morningstar fair-value estimate · USD per share · November 2026",
+  "kind": "bar",
+  "unit": "USD",
+  "x": [
+    "Before 12 Nov cut",
+    "12 Nov cut",
+    "23 Nov reaffirmation"
+  ],
+  "series": [
+    {
+      "name": "USD",
+      "values": [
+        310,
+        250,
+        250
+      ],
+      "facts": [
+        "F0475",
+        "F0475",
+        "F0474"
+      ]
+    }
+  ],
+  "highlight": "23 Nov reaffirmation",
+  "source": "Morningstar · 12 and 23 Nov 2026"
+}

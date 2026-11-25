@@ -1,0 +1,18 @@
+{
+  "title": "Revenue kept beating consensus, by varying amounts",
+  "subtitle": "Quarterly revenue above Bloomberg consensus · percent · FY24 Q3–FY27 Q3",
+  "kind": "bar",
+  "unit": "%",
+  "dataset": {
+    "key": "nvda_revenue_surprise",
+    "series": [
+      "Revenue surprise"
+    ]
+  },
+  "highlight": "FY27 Q3",
+  "axis_baseline": 0,
+  "source": "Bloomberg FA · Nov 2026",
+  "as_of": "2026-11-20",
+  "custom_svg": "visuals/custom/v09-quarterly-revenue-beats.svg",
+  "note": "FY27 Q3 was preliminary in the Bloomberg export."
+}

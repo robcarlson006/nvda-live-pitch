@@ -1,0 +1,26 @@
+{
+  "kind": "hbar",
+  "title": "AMD’s data-centre revenue nearly doubled",
+  "subtitle": "AMD Data Center segment · USD millions · third quarter of 2025 and 2026",
+  "unit": "USD m",
+  "x": [
+    "Q3 2025",
+    "Q3 2026"
+  ],
+  "highlight": "Q3 2026",
+  "series": [
+    {
+      "name": "AMD Data Center revenue",
+      "values": [
+        4341,
+        8546
+      ],
+      "facts": [
+        "F1010",
+        "F0925"
+      ]
+    }
+  ],
+  "source": "AMD results · 3 Nov 2026",
+  "custom_svg": "visuals/custom/v06-amd-momentum.svg"
+}

@@ -1,0 +1,23 @@
+{
+  "title": "Supply can falter without conflict",
+  "subtitle": "Production dependency and historical lead times · FY2026 annual report",
+  "kind": "kpi",
+  "unit": "months",
+  "x": [
+    "Historical lead-time threshold"
+  ],
+  "series": [
+    {
+      "name": "Threshold NVIDIA says past lead times exceeded",
+      "values": [
+        12
+      ],
+      "facts": [
+        "F0589"
+      ]
+    }
+  ],
+  "source": "NVIDIA annual report · February 2026",
+  "highlight": "Historical lead-time threshold",
+  "custom_svg": "visuals/custom/vf139-supply-interruption.svg"
+}

@@ -1,0 +1,55 @@
+{
+  "title": "Blackwell Ultra raises rated compute",
+  "subtitle": "NVIDIA rack configuration and compute specifications · 2024–2026",
+  "kind": "table",
+  "unit": "",
+  "source": "NVIDIA Blackwell launch, March 2024 · Blackwell architecture, November 2026 snapshot · Rubin launch, January 2026",
+  "x": [
+    "Blackwell",
+    "Blackwell Ultra",
+    "Rubin"
+  ],
+  "series": [
+    {
+      "name": "Blackwell GPUs in the GB200 rack",
+      "values": [
+        72,
+        null,
+        null
+      ],
+      "facts": [
+        "F0360",
+        null,
+        null
+      ]
+    },
+    {
+      "name": "Relative AI compute FLOPS versus Blackwell GPUs",
+      "values": [
+        null,
+        1.5,
+        null
+      ],
+      "facts": [
+        null,
+        "F0363",
+        null
+      ]
+    },
+    {
+      "name": "Rubin NVFP4 inference petaflops per GPU",
+      "values": [
+        null,
+        null,
+        50
+      ],
+      "facts": [
+        null,
+        null,
+        "F0367"
+      ]
+    }
+  ],
+  "highlight": "Rubin",
+  "custom_svg": "visuals/custom/vf135-blackwell-ultra-rubin.svg"
+}

@@ -1,0 +1,37 @@
+{
+  "title": "Grid bottlenecks could delay data centres",
+  "subtitle": "Project delay risk and US clustering · share of projects · IEA 2025 assessment",
+  "kind": "kpi",
+  "source": "IEA, Energy and AI · Apr 2025",
+  "unit": "%",
+  "x": [
+    "Planned projects at risk of delay",
+    "US developments in existing clusters"
+  ],
+  "series": [
+    {
+      "name": "Share of projects",
+      "values": [
+        20,
+        50
+      ],
+      "facts": [
+        "F0007",
+        "F0457"
+      ]
+    }
+  ],
+  "highlight": "Planned projects at risk of delay",
+  "custom_svg": "visuals/custom/vf136-power-grid.svg",
+  "annotations": [
+    {
+      "label": "Time to build new transmission lines in advanced economies",
+      "range": [
+        4,
+        8
+      ],
+      "unit": "years",
+      "fact": "F0471"
+    }
+  ]
+}

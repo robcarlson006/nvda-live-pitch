@@ -1,0 +1,14 @@
+{
+  "title": "Consensus anchors our forecast through FY28",
+  "subtitle": "NVIDIA annual revenue (USD billions) · FY26 actual through FY32 scenario",
+  "kind": "line",
+  "dataset": {
+    "key": "model_revenue_paths",
+    "series": [
+      "Base"
+    ]
+  },
+  "highlight": "Base",
+  "source": "Bloomberg FA consensus, 20 Nov 2026; Team DCF model, Nov 2026",
+  "custom_svg": "visuals/custom/v03-consensus-to-base.svg"
+}

@@ -1,0 +1,26 @@
+{
+  "title": "UK compute funding leaves NVIDIA’s share unknown",
+  "subtitle": "UK government programme amounts · GBP millions · June and September 2026",
+  "kind": "table",
+  "unit": "GBP million",
+  "x": [
+    "Sovereign AI programme funding",
+    "Additional UK compute commitment"
+  ],
+  "series": [
+    {
+      "name": "GBP million",
+      "values": [
+        500,
+        1000
+      ],
+      "facts": [
+        "F0098",
+        "F0094"
+      ]
+    }
+  ],
+  "highlight": "Sovereign AI programme funding",
+  "source": "University of Bristol, Jun 2026 · UK Government, Sep 2026",
+  "custom_svg": "visuals/custom/vf134-uk-sovereign-funding.svg"
+}

@@ -1,0 +1,42 @@
+{
+  "title": "UK public AI compute uses several suppliers",
+  "subtitle": "Selected AI Research Resource systems · hardware and delivery partners · 2026",
+  "kind": "table",
+  "source": "University of Bristol · Jun 2026 | UK Government · accessed Nov 2026",
+  "unit": "",
+  "x": [
+    "Isambard-AI",
+    "Dawn",
+    "Zenith"
+  ],
+  "series": [
+    {
+      "name": "Superchips",
+      "values": [
+        5448,
+        null,
+        null
+      ],
+      "facts": [
+        "F0091",
+        null,
+        null
+      ]
+    },
+    {
+      "name": "GPUs",
+      "values": [
+        null,
+        1024,
+        null
+      ],
+      "facts": [
+        null,
+        "F0096",
+        null
+      ]
+    }
+  ],
+  "highlight": "Isambard-AI",
+  "custom_svg": "visuals/custom/vf146-uk-compute-suppliers.svg"
+}

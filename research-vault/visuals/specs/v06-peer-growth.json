@@ -1,0 +1,14 @@
+{
+  "kind": "hbar",
+  "title": "Consensus expects faster EPS growth at AMD",
+  "subtitle": "Expected earnings-per-share growth · % · next fiscal year versus current year",
+  "dataset": {
+    "key": "peers_growth",
+    "series": [
+      "EPS growth"
+    ]
+  },
+  "highlight": "AMD",
+  "source": "Bloomberg FA consensus · Nov 2026",
+  "custom_svg": "visuals/custom/v06-peer-growth.svg"
+}

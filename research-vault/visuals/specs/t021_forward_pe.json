@@ -1,0 +1,31 @@
+{
+  "title": "Forward earnings multiples: chip peers",
+  "subtitle": "Stock Analysis snapshot at November 24, 2026 close; estimates vary",
+  "kind": "bar",
+  "unit": "x",
+  "x": [
+    "NVIDIA",
+    "AMD",
+    "Broadcom",
+    "TSMC"
+  ],
+  "series": [
+    {
+      "name": "Forward P/E",
+      "values": [
+        10.71,
+        27.45,
+        17.33,
+        16.73
+      ],
+      "facts": [
+        "F0277",
+        "F0281",
+        "F0285",
+        "F0289"
+      ]
+    }
+  ],
+  "highlight": "NVIDIA",
+  "source": "Stock Analysis / S&P Global Market Intelligence; Nov 24, 2026 close"
+}

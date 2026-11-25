@@ -1,0 +1,22 @@
+{
+  "kind": "kpi",
+  "title": "Google measured electricity per text prompt",
+  "subtitle": "Median electricity per Gemini Apps text prompt (Wh) · May 2025",
+  "source": "Google Research, Aug 2025",
+  "x": [
+    "Gemini Apps text prompt"
+  ],
+  "series": [
+    {
+      "name": "Electricity (Wh)",
+      "values": [
+        0.24
+      ],
+      "facts": [
+        "F0037"
+      ]
+    }
+  ],
+  "highlight": "Gemini Apps text prompt",
+  "custom_svg": "visuals/custom/vf132-text-prompt-electricity.svg"
+}

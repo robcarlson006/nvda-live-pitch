@@ -1,0 +1,23 @@
+{
+  "title": "Employee surveys determine workplace list placement",
+  "subtitle": "Fortune workplace rankings · US survey responses and ranking criteria · 2026 edition",
+  "kind": "kpi",
+  "source": "Great Place To Work · Apr 2026",
+  "unit": "responses",
+  "x": [
+    "Employee survey responses across employers (more than)"
+  ],
+  "series": [
+    {
+      "name": "Response count lower bound",
+      "values": [
+        1300000
+      ],
+      "facts": [
+        "F0684"
+      ]
+    }
+  ],
+  "highlight": "Employee survey responses across employers (more than)",
+  "custom_svg": "visuals/custom/vf136-workplace-survey.svg"
+}

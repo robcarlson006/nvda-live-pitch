@@ -1,0 +1,32 @@
+{
+  "title": "Rivals target both training and inference",
+  "subtitle": "Selected accelerator workloads · vendor documentation reviewed November 2026",
+  "kind": "table",
+  "unit": "",
+  "x": [
+    "AWS Trainium",
+    "Google Ironwood TPU",
+    "Intel Gaudi PCIe",
+    "Meta MTIA"
+  ],
+  "series": [
+    {
+      "name": "Ironwood generation and year of Meta’s first design",
+      "values": [
+        null,
+        7,
+        null,
+        2020
+      ],
+      "facts": [
+        "F0150",
+        "F0155",
+        "F0161",
+        "F0157"
+      ]
+    }
+  ],
+  "source": "AWS, Google Cloud, Intel and Meta · accessed November 2026",
+  "highlight": "Google Ironwood TPU",
+  "custom_svg": "visuals/custom/vf139-rival-workloads.svg"
+}

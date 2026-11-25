@@ -1,0 +1,29 @@
+{
+  "title": "NVIDIA ties CEO equity grants to performance",
+  "subtitle": "CEO compensation and advisory vote  ·  FY26 and June 2026",
+  "kind": "kpi",
+  "unit": "",
+  "x": [
+    "FY26 compensation",
+    "CEO-to-median-employee pay ratio",
+    "Performance-based share of equity grants"
+  ],
+  "series": [
+    {
+      "name": "Disclosed amount",
+      "values": [
+        36343830,
+        129,
+        100
+      ],
+      "facts": [
+        "F0693",
+        "F0694",
+        "F0696"
+      ]
+    }
+  ],
+  "highlight": "FY26 compensation",
+  "source": "NVIDIA proxy and voting results, May and Jun 2026",
+  "custom_svg": "visuals/custom/vf130-ceo-pay.svg"
+}

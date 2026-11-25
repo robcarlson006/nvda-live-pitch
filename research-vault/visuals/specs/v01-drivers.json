@@ -1,0 +1,59 @@
+{
+  "kind": "table",
+  "title": "Revenue becomes cash flow, then present value",
+  "subtitle": "NVDA base case · USD billions except discount factors · FY28–FY32",
+  "source": "Team DCF · Bloomberg FA and consensus · Nov 2026",
+  "dataset": {
+    "key": "model_dcf_detail",
+    "series": [
+      "FY28",
+      "FY29",
+      "FY30",
+      "FY31",
+      "FY32"
+    ]
+  },
+  "highlight": "Present value of cash flow",
+  "custom_svg": "visuals/custom/v01-drivers.svg",
+  "x": [
+    "value"
+  ],
+  "series": [
+    {
+      "name": "Free-cash-flow margin",
+      "values": [
+        45.25
+      ],
+      "facts": [
+        "F0968"
+      ]
+    },
+    {
+      "name": "Base discount rate",
+      "values": [
+        10.55
+      ],
+      "facts": [
+        "F0868"
+      ]
+    },
+    {
+      "name": "Terminal growth",
+      "values": [
+        3
+      ],
+      "facts": [
+        "F0969"
+      ]
+    },
+    {
+      "name": "Terminal fade year",
+      "values": [
+        2032
+      ],
+      "facts": [
+        "F0970"
+      ]
+    }
+  ]
+}

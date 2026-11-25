@@ -1,0 +1,50 @@
+{
+  "title": "Adjustments did not lift NVIDIA’s earnings per share",
+  "subtitle": "Reported and adjusted profitability · Q3 FY27",
+  "kind": "table",
+  "x": [
+    "GAAP",
+    "Non-GAAP"
+  ],
+  "series": [
+    {
+      "name": "Gross margin",
+      "values": [
+        74.8,
+        74.9
+      ],
+      "facts": [
+        "F0104",
+        "F0105"
+      ]
+    },
+    {
+      "name": "Operating expenses",
+      "values": [
+        9.2,
+        8.8
+      ],
+      "facts": [
+        "F0123",
+        "F0124"
+      ]
+    },
+    {
+      "name": "Diluted EPS",
+      "values": [
+        2.7,
+        2.68
+      ],
+      "facts": [
+        "F0106",
+        "F0107"
+      ]
+    }
+  ],
+  "source": "NVIDIA quarterly results · Nov 17, 2026",
+  "units": {
+    "Gross margin": "%",
+    "Operating expenses": "USD bn",
+    "Diluted EPS": "USD"
+  }
+}

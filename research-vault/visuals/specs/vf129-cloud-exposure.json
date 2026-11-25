@@ -1,0 +1,26 @@
+{
+  "title": "Cloud commitments and guarantees carry distinct risks",
+  "subtitle": "Disclosed amounts in USD billions · August 2026 filing",
+  "kind": "kpi",
+  "unit": "USD bn",
+  "x": [
+    "Cloud service commitments",
+    "OpenAI-related guarantee cap"
+  ],
+  "series": [
+    {
+      "name": "Disclosed amounts",
+      "values": [
+        36,
+        105
+      ],
+      "facts": [
+        "F0615",
+        "F0618"
+      ]
+    }
+  ],
+  "highlight": "OpenAI-related guarantee cap",
+  "source": "NVIDIA Form 10-Q, Aug 2026",
+  "custom_svg": "visuals/custom/vf129-cloud-exposure.svg"
+}

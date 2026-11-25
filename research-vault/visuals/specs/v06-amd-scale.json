@@ -1,0 +1,14 @@
+{
+  "kind": "hbar",
+  "title": "NVIDIA’s data-centre segment is much larger",
+  "subtitle": "Reported full-year segment revenue · USD billions · fiscal years ending Dec 2025 and Jan 2026",
+  "dataset": {
+    "key": "peers_datacenter_revenue",
+    "series": [
+      "Data centre revenue"
+    ]
+  },
+  "highlight": "NVIDIA",
+  "source": "Bloomberg FA segment data · Nov 2026",
+  "custom_svg": "visuals/custom/v06-amd-scale.svg"
+}

@@ -1,0 +1,32 @@
+{
+  "title": "InfiniBand was common in top supercomputers",
+  "subtitle": "Systems connected by InfiniBand · top 100 on the June 2023 TOP500 list",
+  "kind": "hbar",
+  "unit": "systems",
+  "x": [
+    "InfiniBand-connected systems"
+  ],
+  "series": [
+    {
+      "name": "System count",
+      "values": [
+        63
+      ],
+      "facts": [
+        "F0963"
+      ]
+    },
+    {
+      "name": "Systems in comparison group",
+      "values": [
+        100
+      ],
+      "facts": [
+        "F0963"
+      ]
+    }
+  ],
+  "highlight": "InfiniBand-connected systems",
+  "source": "InfiniBand Trade Association, Jun 2023 count · Canonical, Jun 2026 · Broadcom, Nov 2026 snapshot",
+  "custom_svg": "visuals/custom/vf134-infiniband-evidence.svg"
+}

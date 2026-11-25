@@ -1,0 +1,35 @@
+{
+  "title": "Amkor plans more packaging capacity",
+  "subtitle": "NVIDIA’s announced agreements and Amkor’s end-of-2028 capacity target",
+  "source": "NVIDIA supply-chain announcements · Oct and Nov 2026",
+  "kind": "table",
+  "units": {
+    "Multiyear agreements": "USD bn",
+    "South Korea capacity target": "%"
+  },
+  "x": [
+    "Amkor expansion"
+  ],
+  "highlight": "Amkor expansion",
+  "series": [
+    {
+      "name": "Multiyear agreements",
+      "values": [
+        3
+      ],
+      "facts": [
+        "F0192"
+      ]
+    },
+    {
+      "name": "South Korea capacity target",
+      "values": [
+        300
+      ],
+      "facts": [
+        "F0768"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf155-amkor-target.svg"
+}

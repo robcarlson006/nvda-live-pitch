@@ -1,0 +1,27 @@
+{
+  "title": "One inference workload: cost per token",
+  "subtitle": "DeepInfra example reported by NVIDIA; not a universal benchmark",
+  "kind": "bar",
+  "unit": "cents / million tokens",
+  "x": [
+    "Hopper",
+    "Blackwell",
+    "Blackwell + NVFP4"
+  ],
+  "series": [
+    {
+      "name": "Cost",
+      "values": [
+        20,
+        10,
+        5
+      ],
+      "facts": [
+        "F0268",
+        "F0277",
+        "F0269"
+      ]
+    }
+  ],
+  "source": "NVIDIA Blog, DeepInfra case study (2026); model and configuration specific"
+}

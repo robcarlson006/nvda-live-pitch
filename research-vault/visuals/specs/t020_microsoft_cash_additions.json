@@ -1,0 +1,30 @@
+{
+  "title": "Microsoft infrastructure spending accelerated",
+  "subtitle": "Cash additions to property and equipment; fiscal years ended June \u00b7 All assets, not AI alone",
+  "kind": "bar",
+  "unit": "USD m",
+  "x": [
+    "FY2023",
+    "FY2024",
+    "FY2025",
+    "FY2026"
+  ],
+  "series": [
+    {
+      "name": "Cash additions",
+      "values": [
+        28107,
+        44477,
+        64551,
+        115948
+      ],
+      "facts": [
+        "F0265",
+        "F0266",
+        "F0267",
+        "F0268"
+      ]
+    }
+  ],
+  "source": "Microsoft FY2024 and FY2026 Q4 earnings cash flow statements"
+}

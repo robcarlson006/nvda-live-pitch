@@ -1,0 +1,29 @@
+{
+  "title": "Analyst target averages differ by source",
+  "subtitle": "NVIDIA share price and average analyst targets (USD per share) · 24 Nov 2026",
+  "kind": "kpi",
+  "unit": "USD",
+  "x": [
+    "Stock Analysis average target",
+    "Google Finance average target",
+    "Reported regular-session close"
+  ],
+  "series": [
+    {
+      "name": "USD per share",
+      "values": [
+        244.71,
+        233.36,
+        155.38
+      ],
+      "facts": [
+        "F0291",
+        "F0993",
+        "F0473"
+      ]
+    }
+  ],
+  "highlight": "Stock Analysis average target",
+  "source": "Stock Analysis and team Google Finance capture · 24 Nov 2026",
+  "custom_svg": "visuals/custom/v08-analyst-targets.svg"
+}

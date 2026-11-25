@@ -1,0 +1,29 @@
+{
+  "title": "NVIDIA last published the old split in Q1 FY27",
+  "subtitle": "Data Center product revenue and networking franchise commentary · USD billions · FY27",
+  "kind": "kpi",
+  "unit": "USD bn",
+  "source": "NVIDIA earnings release, May 2026 · Google Finance call transcript, Nov 2026",
+  "x": [
+    "Q1 compute",
+    "Q1 networking",
+    "Q3 call lower bound"
+  ],
+  "series": [
+    {
+      "name": "Revenue under the stated definition",
+      "values": [
+        60.4,
+        14.8,
+        21.0
+      ],
+      "facts": [
+        "F0135",
+        "F0136",
+        "F0967"
+      ]
+    }
+  ],
+  "highlight": "Q1 networking",
+  "custom_svg": "visuals/custom/vf131-networking-scope.svg"
+}

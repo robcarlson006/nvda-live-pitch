@@ -1,0 +1,47 @@
+{
+  "title": "Gulf AI projects name NVIDIA as a supplier",
+  "subtitle": "Selected Saudi and UAE announcements · hardware counts and cluster capacity · May 2025",
+  "kind": "table",
+  "source": "NVIDIA · May 2025 | G42 · May 2025",
+  "custom_svg": "visuals/custom/v05-gulf-sovereign.svg",
+  "x": [
+    "HUMAIN",
+    "SDAIA",
+    "Stargate UAE"
+  ],
+  "series": [
+    {
+      "name": "Announced scale",
+      "values": [
+        18000,
+        5000,
+        200
+      ],
+      "facts": [
+        "F0732",
+        "F0733",
+        "F0736"
+      ]
+    }
+  ],
+  "project_status": [
+    {
+      "project": "HUMAIN",
+      "status": "First phase planned",
+      "fact": "F0732"
+    },
+    {
+      "project": "SDAIA",
+      "status": "Deployment announced",
+      "fact": "F0733"
+    },
+    {
+      "project": "Stargate UAE",
+      "status": "First cluster expected to go live in 2026",
+      "facts": [
+        "F0736",
+        "F0737"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "title": "AI Enterprise offers a trial and paid licences",
+  "subtitle": "Production trial length in days · NVIDIA offer as viewed in November 2026",
+  "kind": "kpi",
+  "unit": "days",
+  "x": [
+    "AI Enterprise production trial"
+  ],
+  "series": [
+    {
+      "name": "days",
+      "values": [
+        90
+      ],
+      "facts": [
+        "F0176"
+      ]
+    }
+  ],
+  "highlight": "AI Enterprise production trial",
+  "source": "NVIDIA AI Enterprise · Nov 2026 | NVIDIA FY26 10-K · Feb 2026",
+  "annotations": [
+    {
+      "text": "Paid licences and combined segment reporting",
+      "facts": [
+        "F0937",
+        "F0938"
+      ]
+    },
+    {
+      "text": "Standalone software sales uncertainty",
+      "facts": [
+        "F0939"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf151-ai-enterprise-trial.svg"
+}

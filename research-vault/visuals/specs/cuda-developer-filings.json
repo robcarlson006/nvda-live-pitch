@@ -1,0 +1,27 @@
+{
+  "title": "Developers using CUDA and other NVIDIA tools",
+  "subtitle": "Worldwide, millions; FY2024 and FY2026 are lower bounds; FY2025 not verified",
+  "kind": "bar",
+  "unit": "million",
+  "x": [
+    "FY2023",
+    "FY2024 (> )",
+    "FY2026 (> )"
+  ],
+  "series": [
+    {
+      "name": "Developers",
+      "values": [
+        3.8,
+        4.7,
+        7.5
+      ],
+      "facts": [
+        "F0926",
+        "F0927",
+        "F0928"
+      ]
+    }
+  ],
+  "source": "NVIDIA Form 10-K filings, FY2023, FY2024 and FY2026; company-reported, methodology not specified"
+}

@@ -1,0 +1,25 @@
+{
+  "title": "Data Center networking sales rose quarter on quarter",
+  "subtitle": "Growth in NVIDIA Data Center networking revenue · Q1 FY27 · previous reporting definition",
+  "kind": "bar",
+  "unit": "%",
+  "x": [
+    "vs previous quarter",
+    "vs same quarter a year earlier"
+  ],
+  "series": [
+    {
+      "name": "Reported revenue growth",
+      "values": [
+        35,
+        199
+      ],
+      "facts": [
+        "F0965",
+        "F0136"
+      ]
+    }
+  ],
+  "highlight": "vs previous quarter",
+  "source": "NVIDIA earnings commentary · 27 May 2026"
+}

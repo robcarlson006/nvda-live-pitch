@@ -1,0 +1,37 @@
+{
+  "title": "NVIDIA backs some cloud partners’ leases",
+  "subtitle": "Land, power and shell guarantees for selected AI cloud partners · July 2026",
+  "kind": "kpi",
+  "source": "NVIDIA quarterly filing · Aug 2026",
+  "unit": "USD bn",
+  "x": [
+    "Gross exposure",
+    "Escrow"
+  ],
+  "series": [
+    {
+      "name": "Gross exposure, USD bn",
+      "values": [
+        3.5,
+        null
+      ],
+      "facts": [
+        "F0621",
+        null
+      ]
+    },
+    {
+      "name": "Partner escrow, USD m",
+      "values": [
+        null,
+        712
+      ],
+      "facts": [
+        null,
+        "F1072"
+      ]
+    }
+  ],
+  "highlight": "Gross exposure",
+  "custom_svg": "visuals/custom/vf146-cloud-partner-guarantees.svg"
+}

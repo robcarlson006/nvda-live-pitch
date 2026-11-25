@@ -1,0 +1,22 @@
+{
+  "title": "Microsoft signed a long-term nuclear power deal",
+  "subtitle": "Power purchase agreement duration · Crane Clean Energy Center · September 2024 announcement",
+  "kind": "kpi",
+  "unit": "years",
+  "x": [
+    "Microsoft’s power purchase agreement"
+  ],
+  "series": [
+    {
+      "name": "Contract duration",
+      "values": [
+        20
+      ],
+      "facts": [
+        "F0463"
+      ]
+    }
+  ],
+  "highlight": "Microsoft’s power purchase agreement",
+  "source": "Constellation · 20 Sep 2024"
+}

@@ -1,0 +1,26 @@
+{
+  "title": "Mellanox brought networking into NVIDIA",
+  "subtitle": "Acquisition terms in USD billions · announcement and closing",
+  "kind": "kpi",
+  "unit": "USD bn",
+  "source": "NVIDIA Newsroom, March 2019 and April 2020",
+  "x": [
+    "Announced enterprise value (approximate)",
+    "Closing transaction value"
+  ],
+  "series": [
+    {
+      "name": "Reported deal values",
+      "values": [
+        6.9,
+        7
+      ],
+      "facts": [
+        "F0378",
+        "F0179"
+      ]
+    }
+  ],
+  "highlight": "Closing transaction value",
+  "custom_svg": "visuals/custom/vf135-mellanox-deal.svg"
+}

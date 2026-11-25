@@ -1,0 +1,22 @@
+{
+  "title": "Reopening a fab is only one step to recovery",
+  "subtitle": "Historical supply lead times (months) and production dependencies · FY26 filing",
+  "kind": "kpi",
+  "source": "NVIDIA Form 10-K · Feb 2026",
+  "x": [
+    "Historical supply lead time exceeded"
+  ],
+  "series": [
+    {
+      "name": "Threshold (months)",
+      "values": [
+        12
+      ],
+      "facts": [
+        "F0589"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf133-taiwan-recovery-lead-time.svg",
+  "highlight": "Historical supply lead time exceeded"
+}

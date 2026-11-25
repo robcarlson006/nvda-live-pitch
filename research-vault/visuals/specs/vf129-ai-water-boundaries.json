@@ -1,0 +1,26 @@
+{
+  "title": "AI water estimates count different things",
+  "subtitle": "Reported water consumption per text prompt or response · 2025 studies",
+  "kind": "kpi",
+  "unit": "mL",
+  "x": [
+    "Google Gemini Apps, direct cooling",
+    "Mistral Le Chat, lifecycle"
+  ],
+  "series": [
+    {
+      "name": "Study estimate",
+      "values": [
+        0.26,
+        45
+      ],
+      "facts": [
+        "F0559",
+        "F0555"
+      ]
+    }
+  ],
+  "highlight": "Mistral Le Chat, lifecycle",
+  "source": "Google, Aug 2025, citing Mistral AI’s 2025 assessment",
+  "custom_svg": "visuals/custom/vf129-ai-water-boundaries.svg"
+}

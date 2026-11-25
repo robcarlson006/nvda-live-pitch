@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="54" font-weight="800" letter-spacing="-0.5">AMD’s data-centre revenue nearly doubled</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">AMD Data Center segment · USD millions · third quarter of 2025 and 2026</text>
+<line x1="570" y1="261" x2="570" y2="509" stroke="#26331d" stroke-width="2"/><text x="544" y="314.5" fill="#9aa094" font-size="29" font-weight="540" text-anchor="end">Q3 2025</text><rect x="570" y="280" width="355.39" height="51" rx="7" fill="#4d6140"/><text x="946.39" y="315.5" fill="#f4f6f1" font-size="31" font-weight="780" text-anchor="start">$4,341m</text><text x="544" y="473.5" fill="#f4f6f1" font-size="29" font-weight="730" text-anchor="end">Q3 2026</text><rect x="570" y="439" width="699.65" height="54" rx="7" fill="#76b900"/><text x="1290.65" y="474.5" fill="#b7f04a" font-size="31" font-weight="780" text-anchor="start">$8,546m</text><rect x="80" y="741" width="1440" height="70" rx="10" fill="#10150d" stroke="#26331d" stroke-width="2"/><rect x="80" y="741" width="5" height="70" rx="2" fill="#e8b04a"/><text x="111" y="784" fill="#f4f6f1" font-size="25" font-weight="500" text-anchor="start">The segment includes EPYC CPUs and Instinct accelerators.</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: AMD results · 3 Nov 2026</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

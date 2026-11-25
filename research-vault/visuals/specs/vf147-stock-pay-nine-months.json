@@ -1,0 +1,25 @@
+{
+  "title": "NVIDIA’s stock compensation expense rose",
+  "subtitle": "Stock-based compensation expense · USD millions · first nine months of each fiscal year",
+  "kind": "bar",
+  "unit": "USD m",
+  "source": "NVIDIA earnings release, November 2026",
+  "x": [
+    "FY26",
+    "FY27"
+  ],
+  "series": [
+    {
+      "name": "Stock-based compensation expense",
+      "values": [
+        4753,
+        6042
+      ],
+      "facts": [
+        "F1075",
+        "F1076"
+      ]
+    }
+  ],
+  "highlight": "FY27"
+}

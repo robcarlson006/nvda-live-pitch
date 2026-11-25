@@ -1,0 +1,18 @@
+{
+  "title": "Margins climbed, then eased in FY26",
+  "subtitle": "Gross and operating margin · percent of revenue · FY15–FY26",
+  "kind": "line",
+  "unit": "%",
+  "dataset": {
+    "key": "nvda_margins_annual",
+    "series": [
+      "Gross margin",
+      "Operating margin"
+    ]
+  },
+  "highlight": "FY26",
+  "axis_range": [0, 100],
+  "source": "Bloomberg FA · Nov 2026",
+  "as_of": "2026-11-20",
+  "custom_svg": "visuals/custom/v09-annual-margins.svg"
+}

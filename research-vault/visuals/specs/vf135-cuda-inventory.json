@@ -1,0 +1,29 @@
+{
+  "title": "NVIDIA reported more than 300 CUDA libraries",
+  "subtitle": "Company-reported inventory by category · 2024 annual review",
+  "kind": "kpi",
+  "unit": "",
+  "source": "NVIDIA annual review, 2024",
+  "x": [
+    "Libraries (more than)",
+    "AI models",
+    "GPU-accelerated applications"
+  ],
+  "series": [
+    {
+      "name": "Reported inventory count",
+      "values": [
+        300,
+        600,
+        3500
+      ],
+      "facts": [
+        "F0930",
+        "F0932",
+        "F0933"
+      ]
+    }
+  ],
+  "highlight": "Libraries (more than)",
+  "custom_svg": "visuals/custom/vf135-cuda-inventory.svg"
+}

@@ -1,0 +1,39 @@
+{
+  "kind": "table",
+  "title": "Cloud providers design chips for specific workloads",
+  "subtitle": "Selected custom AI chips and intended uses · vendor disclosures reviewed Nov 2026",
+  "unit": "%",
+  "x": [
+    "Stockmark training cost reduction"
+  ],
+  "highlight": "AWS Trainium",
+  "series": [
+    {
+      "name": "AWS Trainium customer example",
+      "values": [
+        20
+      ],
+      "facts": [
+        "F0854"
+      ]
+    }
+  ],
+  "source": "AWS, Google Cloud, Microsoft and Meta · disclosures reviewed Nov 2026",
+  "evidence": {
+    "AWS Trainium": [
+      "F0150",
+      "F0854"
+    ],
+    "Google Ironwood TPU": [
+      "F0155"
+    ],
+    "Microsoft Maia": [
+      "F0892",
+      "F0893"
+    ],
+    "Meta MTIA": [
+      "F0158"
+    ]
+  },
+  "custom_svg": "visuals/custom/v06-cloud-chips.svg"
+}

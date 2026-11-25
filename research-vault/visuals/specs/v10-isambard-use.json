@@ -1,0 +1,26 @@
+{
+  "title": "UK researchers are using Isambard-AI",
+  "subtitle": "Research projects and users · first year to July 2026",
+  "kind": "kpi",
+  "unit": "",
+  "x": [
+    "Research projects, about",
+    "Users, more than"
+  ],
+  "series": [
+    {
+      "name": "Reported first-year counts",
+      "values": [
+        1000,
+        4000
+      ],
+      "facts": [
+        "F0400",
+        "F0401"
+      ]
+    }
+  ],
+  "highlight": "Users, more than",
+  "source": "University of Bristol, Jul 2026",
+  "custom_svg": "visuals/custom/v10-isambard-use.svg"
+}

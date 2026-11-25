@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="54" font-weight="800" letter-spacing="-0.5">The model uses a different reference price</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">USD per NVDA share · 24 Nov 2026</text>
+<rect x="80" y="239" width="710" height="450" rx="12" fill="#172212" stroke="#76b900" stroke-width="2"/>
+<text x="120" y="320" fill="#b7f04a" font-size="24" font-weight="760" text-anchor="start">REPORTED MARKET CLOSE</text>
+<text x="120" y="468" fill="#f4f6f1" font-size="108" font-weight="790" text-anchor="start">$155.38</text>
+<line x1="120" y1="512" x2="750" y2="512" stroke="#303b2a" stroke-width="2" stroke-dasharray="none"/>
+<text x="120" y="568" fill="#b3b9ad" font-size="27" font-weight="600" text-anchor="start">Stock Analysis · US regular session</text>
+<text x="120" y="612" fill="#f4f6f1" font-size="25" font-weight="560" text-anchor="start">Benchmark for these charts.</text>
+<rect x="810" y="239" width="710" height="450" rx="12" fill="#11160e" stroke="#303b2a" stroke-width="2"/>
+<text x="850" y="320" fill="#e8b04a" font-size="24" font-weight="760" text-anchor="start">TEAM MODEL REFERENCE</text>
+<text x="850" y="468" fill="#f4f6f1" font-size="108" font-weight="790" text-anchor="start">$152.85</text>
+<line x1="850" y1="512" x2="1480" y2="512" stroke="#303b2a" stroke-width="2" stroke-dasharray="none"/>
+<text x="850" y="568" fill="#b3b9ad" font-size="27" font-weight="600" text-anchor="start">Team DCF export · Timestamp unverified</text>
+<text x="850" y="612" fill="#f4f6f1" font-size="25" font-weight="560" text-anchor="start">Basis for the model’s upside percentages.</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: Stock Analysis and Team DCF, 24 Nov 2026</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

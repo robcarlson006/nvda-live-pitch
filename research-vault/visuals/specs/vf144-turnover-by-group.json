@@ -1,0 +1,55 @@
+{
+  "title": "Turnover kept rising for Hispanic or Latino US staff",
+  "subtitle": "NVIDIA-reported employee turnover · percent · FY24–FY26",
+  "kind": "bar",
+  "unit": "%",
+  "source": "NVIDIA FY26 Sustainability Report · fiscal year ended Jan 2026",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Black or African American (US)",
+      "values": [
+        3.1,
+        6.4,
+        6.3
+      ],
+      "facts": [
+        "F0659",
+        "F0659",
+        "F0659"
+      ]
+    },
+    {
+      "name": "Hispanic or Latino (US)",
+      "values": [
+        1.6,
+        2.7,
+        4.4
+      ],
+      "facts": [
+        "F0660",
+        "F0660",
+        "F0660"
+      ]
+    },
+    {
+      "name": "Overall (global)",
+      "values": [
+        2.7,
+        2.5,
+        3.7
+      ],
+      "facts": [
+        "F0656",
+        "F0657",
+        "F0658"
+      ]
+    }
+  ],
+  "highlight": "FY26",
+  "custom_svg": "visuals/custom/vf144-turnover-by-group.svg"
+}

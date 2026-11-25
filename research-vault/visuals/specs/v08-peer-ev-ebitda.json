@@ -1,0 +1,15 @@
+{
+  "title": "NVIDIA and TSMC are close on EV/EBITDA",
+  "subtitle": "Enterprise value to forecast EBITDA (×) · 20 Nov 2026",
+  "kind": "hbar",
+  "unit": "x",
+  "dataset": {
+    "key": "peers_ev_ebitda",
+    "series": [
+      "EV/EBITDA"
+    ]
+  },
+  "highlight": "NVIDIA",
+  "source": "Bloomberg FA · 20 Nov 2026",
+  "custom_svg": "visuals/custom/v08-peer-ev-ebitda.svg"
+}

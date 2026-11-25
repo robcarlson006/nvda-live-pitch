@@ -1,0 +1,31 @@
+{
+  "title": "NVIDIA in the MSCI World Index",
+  "subtitle": "Constituent weights, 30 October 2026; developed markets",
+  "kind": "bar",
+  "unit": "%",
+  "x": [
+    "Apple",
+    "NVIDIA",
+    "Microsoft",
+    "Broadcom"
+  ],
+  "series": [
+    {
+      "name": "Index weight",
+      "values": [
+        5.65,
+        5.25,
+        4.11,
+        1.64
+      ],
+      "facts": [
+        "F0440",
+        "F0439",
+        "F0432",
+        "F0433"
+      ]
+    }
+  ],
+  "highlight": "NVIDIA",
+  "source": "MSCI World Index, data as of 30 October 2026"
+}

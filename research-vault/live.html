@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NVDA Vault Live</title>
+<!-- Live view of the research vault. Reads db/*.jsonl straight from disk every 8 s, so it shows what GPT has added
+     moments after it is added. Serve this folder locally (see README) and open /live.html. Read-only. -->
+<style>
+:root { --bg:#0b0d0a; --panel:#10150c; --panel2:#151b11; --line:#253020; --text:#f4f6f1; --muted:#9aa094; --dim:#5d6358;
+  --green:#76b900; --lime:#b7f04a; --amber:#e8b04a; --red:#e5484d; }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:15px/1.45 'Archivo', system-ui, -apple-system, sans-serif;
+  background-image: radial-gradient(#141a10 1.2px, transparent 1.3px); background-size: 14px 14px; }
+header { position:sticky; top:0; z-index:5; background:rgba(11,13,10,.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--line); padding:14px 22px 10px; }
+.top { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+h1 { margin:0; font-size:20px; letter-spacing:.02em; } h1 b { color:var(--green); }
+.live { display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--muted); }
+.dot { width:9px; height:9px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 1.6s infinite; }
+.dot.off { background:var(--red); box-shadow:none; animation:none; }
+@keyframes pulse { 50% { opacity:.35; } }
+.stats { display:flex; gap:14px; margin-left:auto; font-size:13px; color:var(--muted); }
+.stats b { color:var(--text); font-size:17px; margin-right:3px; }
+.phase { display:flex; gap:18px; align-items:center; margin-top:10px; font-size:13px; color:var(--muted); flex-wrap:wrap; }
+.bar { width:200px; height:8px; border-radius:4px; background:#1b2217; overflow:hidden; display:inline-block; vertical-align:middle; margin-left:6px; }
+.bar i { display:block; height:100%; background:linear-gradient(90deg,var(--green),var(--lime)); transition:width 1s; }
+.now { flex:1; min-width:240px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--dim); }
+.controls { display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; align-items:center; }
+input[type=search] { flex:1; min-width:240px; padding:10px 14px; border-radius:9px; border:1px solid #39452f; background:var(--panel); color:#fff; font-size:15px; }
+.tabs button, .chip { background:var(--panel); border:1px solid var(--line); color:var(--muted); padding:7px 13px; border-radius:8px; cursor:pointer; font:inherit; font-size:14px; }
+.tabs button[aria-selected=true] { background:var(--green); border-color:var(--green); color:#0b0d0a; font-weight:700; }
+.chips { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.chip { padding:3px 9px; font-size:12px; } .chip.on { color:#0b0d0a; background:var(--lime); border-color:var(--lime); }
+main { padding:18px 22px 60px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(380px,1fr)); gap:16px; }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px; cursor:pointer; transition:border-color .2s, transform .2s; }
+.card:hover { border-color:var(--green); transform:translateY(-2px); }
+.card img { width:100%; aspect-ratio:16/9; object-fit:contain; background:#0b0d0a; border-radius:8px; display:block; }
+.card h3 { margin:10px 0 4px; font-size:15px; } .card p { margin:2px 0; color:#c9cdc4; font-size:13px; }
+.meta { color:var(--dim); font-size:12px; }
+.new { animation:glow 2.5s ease 3; } @keyframes glow { 50% { box-shadow:0 0 0 3px rgba(183,240,74,.45); } }
+.badge { display:inline-block; font-size:11px; padding:1px 7px; border-radius:99px; border:1px solid var(--line); color:var(--muted); margin-right:4px; }
+.badge.high { color:var(--lime); border-color:#4e7a00; } .badge.low { color:var(--amber); border-color:#6b5420; }
+.badge.risk { color:#ff8a8d; border-color:#6b2224; } .badge.strength { color:var(--lime); border-color:#4e7a00; }
+.list { display:grid; gap:10px; }
+.row { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+.row h3 { margin:0 0 6px; font-size:15px; } .row ul { margin:4px 0 6px; padding-left:20px; }
+blockquote { margin:6px 0; padding:6px 10px; border-left:3px solid var(--green); background:var(--panel2); color:#c9cdc4; font-size:13px; }
+a { color:var(--lime); } a:hover { color:#fff; }
+.empty { color:var(--muted); padding:40px; text-align:center; }
+dialog { width:min(1200px,94vw); max-height:92vh; background:var(--panel); color:var(--text); border:1px solid var(--green); border-radius:14px; padding:0; }
+dialog::backdrop { background:rgba(0,0,0,.75); }
+.dlg { padding:18px 20px; overflow:auto; max-height:92vh; } .dlg img { width:100%; border-radius:8px; }
+.close { float:right; background:none; border:1px solid var(--line); color:var(--muted); border-radius:8px; padding:4px 10px; cursor:pointer; }
+@media (max-width:600px) { header, main { padding-left:16px; padding-right:16px; } .grid { grid-template-columns:1fr; } .stats { margin-left:0; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <h1><b>NVDA</b> research vault · live</h1>
+    <span class="live"><span class="dot" id="dot"></span><span id="ago">loading…</span></span>
+    <div class="stats" id="stats"></div>
+  </div>
+  <div class="phase" id="phase"></div>
+  <div class="controls">
+    <input type="search" id="q" placeholder="Search everything: china, scope 3, water, dcf, customers, Ecolab…" autofocus>
+    <div class="tabs" role="tablist" id="tabs">
+      <button data-t="visuals" aria-selected="true">Visuals</button>
+      <button data-t="qa" aria-selected="false">Board Q&amp;A</button>
+      <button data-t="facts" aria-selected="false">Facts</button>
+      <button data-t="sources" aria-selected="false">Sources</button>
+    </div>
+  </div>
+  <div class="chips" id="chips"></div>
+</header>
+<main id="main"><p class="empty">Loading the vault…</p></main>
+<dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+let db = { sources: [], facts: [], qa: [], visuals: [] }, seen = null, fresh = new Set(), tab = 'visuals', topic = null, lastOk = 0, logTail = '';
+try { tab = localStorage.getItem('vault-tab') || 'visuals'; } catch {}
+
+async function jsonl(name) {
+  const r = await fetch(`db/${name}.jsonl?t=${Date.now()}`, { cache: 'no-store' });
+  if (!r.ok) throw new Error(name);
+  return (await r.text()).split('\n').filter(Boolean).flatMap((l) => { try { return [JSON.parse(l)]; } catch { return []; } });
+}
+async function refresh() {
+  try {
+    const [sources, facts, qa, visuals] = await Promise.all(['sources', 'facts', 'qa', 'visuals'].map(jsonl));
+    const ids = new Set([...sources, ...facts, ...qa, ...visuals].map((r) => r.id));
+    if (seen) ids.forEach((i) => { if (!seen.has(i)) fresh.add(i); });
+    const changed = !seen || ids.size !== seen.size;
+    seen = ids; db = { sources, facts, qa, visuals }; lastOk = Date.now();
+    try { logTail = await (await fetch(`state/logs/loop.log?t=${Date.now()}`, { cache: 'no-store' })).text(); } catch {}
+    if (changed) render();
+    header();
+  } catch { $('#dot').classList.add('off'); }
+}
+const src = (id) => db.sources.find((s) => s.id === id);
+const fact = (id) => db.facts.find((f) => f.id === id);
+function cite(f) {
+  if (!f) return '';
+  if (String(f.source).startsWith('local:')) return `<span class="meta">our data · ${esc(f.source.slice(6))}</span>`;
+  const s = src(f.source); if (!s) return '';
+  return `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.publisher || s.title)}</a> <span class="meta">${esc(s.published || s.accessed)} · ${esc(s.kind)} · <a href="${esc(s.cache_file)}" target="_blank">saved copy</a></span>`;
+}
+function header() {
+  const secs = Math.round((Date.now() - lastOk) / 1000);
+  $('#dot').classList.toggle('off', secs > 30);
+  $('#ago').textContent = secs < 3 ? 'updated just now' : `updated ${secs}s ago`;
+  $('#stats').innerHTML = [['sources', db.sources.length], ['facts', db.facts.length], ['answers', db.qa.length], ['visuals', db.visuals.length]].map(([k, n]) => `<span><b>${n}</b>${k}</span>`).join('');
+  const lines = logTail.trim().split('\n');
+  const start = lines.find((l) => l.includes(' start · '));
+  const until = (re) => { const m = start?.match(re); return m ? m[1] : null; };
+  const rEnd = until(/research until (\d\d:\d\d)/), vEnd = until(/visuals until (\d\d:\d\d)/), sAt = start?.match(/\] /) ? start.match(/(\d\d:\d\d):\d\d\]/)?.[1] : null;
+  const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+  const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
+  const pct = (a, b) => { if (!a || !b) return 0; let A = toMin(a), B = toMin(b), N = nowMin; if (B < A) B += 1440; if (N < A) N += 1440; return Math.max(0, Math.min(100, Math.round(((N - A) / (B - A)) * 100))); };
+  const iter = [...lines].reverse().find((l) => / iteration \d+ · /.test(l)) || '';
+  $('#phase').innerHTML = rEnd ? `<span>Research → ${rEnd}<span class="bar"><i style="width:${pct(sAt, rEnd)}%"></i></span></span><span>Visuals → ${vEnd}<span class="bar"><i style="width:${pct(rEnd, vEnd)}%"></i></span></span><span class="now" title="${esc(iter)}">${esc(iter.replace(/^\[[^\]]*\]\s*/, 'Now: '))}</span>` : '';
+}
+setInterval(header, 1000);
+
+function matches(text) {
+  const words = $('#q').value.toLowerCase().split(/\s+/).filter(Boolean);
+  const t = text.toLowerCase();
+  return words.every((w) => t.includes(w));
+}
+const newCls = (id) => (fresh.has(id) ? ' new' : '');
+function chips() {
+  const counts = {};
+  db.facts.forEach((f) => (counts[f.topic] = (counts[f.topic] || 0) + 1));
+  $('#chips').innerHTML = ['all', ...Object.keys(counts).sort((a, b) => counts[b] - counts[a])].map((t) => `<button class="chip${(topic ?? 'all') === t ? ' on' : ''}" data-topic="${esc(t)}">${esc(t)}${t !== 'all' ? ` ${counts[t]}` : ''}</button>`).join('');
+}
+const factTopics = (ids) => (ids || []).map((i) => fact(i)?.topic).filter(Boolean);
+const inTopic = (topics) => !topic || topics.includes(topic);
+
+function render() {
+  chips();
+  document.querySelectorAll('#tabs button').forEach((b) => b.setAttribute('aria-selected', b.dataset.t === tab));
+  const main = $('#main');
+  let html = '';
+  if (tab === 'visuals') {
+    const rows = [...db.visuals].reverse().filter((v) => {
+      const fs = (v.facts || []).map(fact).filter(Boolean);
+      return inTopic(factTopics(v.facts).concat(v.dataset ? ['dcf', 'financials'] : [])) && matches([v.id, v.title, v.caption, v.dataset, ...fs.map((f) => f.claim)].join(' '));
+    });
+    html = rows.length ? `<div class="grid">${rows.map((v) => `<article class="card${newCls(v.id)}" data-v="${esc(v.id)}"><img loading="lazy" src="${esc(v.svg_file)}?v=${esc(v.added)}" alt="${esc(v.title)}"><h3>${esc(v.title)}</h3><p>${esc(v.caption)}</p><p class="meta">${esc(v.id)} · ${esc(v.kind)} · ${v.baseline ? 'baseline from our data' : `${(v.facts || []).length} linked facts`}${v.dataset ? ` · ${esc(v.dataset)}` : ''}</p></article>`).join('')}</div>` : '<p class="empty">No visuals match.</p>';
+  } else if (tab === 'qa') {
+    const rows = [...db.qa].reverse().filter((q) => inTopic(factTopics(q.facts)) && matches([q.id, q.question, ...(q.variants || []), ...q.answer, ...(q.facts || []).map((i) => fact(i)?.claim)].join(' ')));
+    html = rows.length ? `<div class="list">${rows.map((q) => `<div class="row${newCls(q.id)}"><h3>${esc(q.question)} <span class="badge ${esc(q.stance)}">${esc(q.stance)}</span></h3><ul>${q.answer.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>
+      <details><summary class="meta">${(q.facts || []).length} facts${(q.visuals || []).length ? ` · visuals ${esc(q.visuals.join(', '))}` : ''}</summary>${(q.facts || []).map((i) => { const f = fact(i); return f ? `<p><b>${esc(f.id)}</b> ${esc(f.claim)}<br>${cite(f)}</p>` : ''; }).join('')}</details></div>`).join('')}</div>` : '<p class="empty">No answers match.</p>';
+  } else if (tab === 'facts') {
+    const rows = [...db.facts].reverse().filter((f) => inTopic([f.topic]) && matches([f.id, f.topic, f.claim, f.quote, f.period, (src(f.source) || {}).publisher, ...(f.tags || [])].join(' ')));
+    html = rows.length ? `<div class="list">${rows.slice(0, 400).map((f) => `<div class="row${newCls(f.id)}"><h3>${esc(f.claim)}</h3><span class="badge">${esc(f.topic)}</span><span class="badge ${esc(f.confidence)}">${esc(f.confidence)}</span><span class="meta">${esc(f.id)} · ${esc(f.period || f.as_of || '')}</span>${f.quote ? `<blockquote>“${esc(f.quote)}”</blockquote>` : ''}${cite(f)}</div>`).join('')}</div>` : '<p class="empty">No facts match.</p>';
+  } else {
+    const used = {};
+    db.facts.forEach((f) => (used[f.source] = (used[f.source] || 0) + 1));
+    const rows = [...db.sources].reverse().filter((s) => matches([s.id, s.title, s.publisher, s.url, s.kind].join(' ')));
+    html = rows.length ? `<div class="list">${rows.map((s) => `<div class="row${newCls(s.id)}"><h3><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a></h3><span class="badge">${esc(s.kind)}</span><span class="meta">${esc(s.id)} · ${esc(s.publisher)} · published ${esc(s.published || '?')} · read ${esc(s.accessed)} · ${used[s.id] || 0} facts · <a href="${esc(s.cache_file)}" target="_blank">saved copy</a></span></div>`).join('')}</div>` : '<p class="empty">No sources match.</p>';
+  }
+  main.innerHTML = html;
+}
+
+function openVisual(id) {
+  const v = db.visuals.find((x) => x.id === id);
+  if (!v) return;
+  const fs = (v.facts || []).map(fact).filter(Boolean);
+  const qas = db.qa.filter((q) => (q.visuals || []).includes(id) || (v.qa || []).includes(q.id));
+  $('#dlgBody').innerHTML = `<button class="close" onclick="dlg.close()">Close (Esc)</button><h2>${esc(v.title)}</h2><img src="${esc(v.svg_file)}?v=${esc(v.added)}" alt="${esc(v.title)}">
+    <p>${esc(v.caption)}</p><p class="meta">${esc(v.id)} · ${esc(v.kind)} · <a href="${esc(v.svg_file)}" target="_blank">open image</a> · <a href="${esc(v.spec_file)}" target="_blank">data spec</a>${v.dataset ? ` · our dataset data/clean/${esc(v.dataset)}.json` : ''}</p>
+    ${fs.length ? `<h3>Facts behind it</h3>${fs.map((f) => `<div class="row"><b>${esc(f.id)}</b> ${esc(f.claim)}${f.quote ? `<blockquote>“${esc(f.quote)}”</blockquote>` : ''}${cite(f)}</div>`).join('')}` : ''}
+    ${qas.length ? `<h3>Answers it supports</h3>${qas.map((q) => `<div class="row"><b>${esc(q.question)}</b><ul>${q.answer.map((b) => `<li>${esc(b)}</li>`).join('')}</ul></div>`).join('')}` : ''}`;
+  $('#dlg').showModal();
+}
+
+$('#q').addEventListener('input', render);
+$('#tabs').addEventListener('click', (e) => { const t = e.target.closest('button')?.dataset.t; if (t) { tab = t; try { localStorage.setItem('vault-tab', t); } catch {} render(); } });
+$('#chips').addEventListener('click', (e) => { const t = e.target.closest('.chip')?.dataset.topic; if (t) { topic = t === 'all' ? null : t; render(); } });
+$('#main').addEventListener('click', (e) => { const c = e.target.closest('[data-v]'); if (c) openVisual(c.dataset.v); });
+refresh();
+setInterval(refresh, 8000);
+</script>
+</body>
+</html>

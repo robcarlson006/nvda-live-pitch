@@ -1,0 +1,23 @@
+{
+  "title": "CUDA can be ported to AMD with rework",
+  "subtitle": "Library footprint in NVIDIA’s 2024 review · AMD porting guidance accessed November 2026",
+  "kind": "kpi",
+  "unit": "libraries",
+  "x": [
+    "CUDA libraries reported by NVIDIA"
+  ],
+  "series": [
+    {
+      "name": "Reported lower bound",
+      "values": [
+        300
+      ],
+      "facts": [
+        "F0930"
+      ]
+    }
+  ],
+  "highlight": "CUDA libraries reported by NVIDIA",
+  "source": "NVIDIA annual review, 2024 · AMD ROCm and HIPIFY documentation, accessed Nov 2026",
+  "custom_svg": "visuals/custom/vf134-cuda-porting.svg"
+}

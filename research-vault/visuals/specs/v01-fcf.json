@@ -1,0 +1,15 @@
+{
+  "kind": "bar",
+  "title": "The base case projects a step-up in free cash flow",
+  "subtitle": "NVDA free cash flow in USD billions · FY20–FY26 reported, FY28–FY32 projected",
+  "source": "Team DCF · Bloomberg FA and consensus · Nov 2026",
+  "dataset": {
+    "key": "model_fcf_forecast",
+    "series": [
+      "Actual",
+      "Base-case forecast"
+    ]
+  },
+  "highlight": "FY32",
+  "custom_svg": "visuals/custom/v01-fcf.svg"
+}

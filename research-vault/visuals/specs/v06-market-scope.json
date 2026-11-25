@@ -1,0 +1,37 @@
+{
+  "kind": "table",
+  "title": "AI chip share depends on what gets counted",
+  "subtitle": "Market definitions and submitted systems · evidence reviewed Nov 2026",
+  "unit": "systems",
+  "x": [
+    "Systems submitted"
+  ],
+  "highlight": "All AI accelerators",
+  "series": [
+    {
+      "name": "MLPerf Training",
+      "values": [
+        153
+      ],
+      "facts": [
+        "F0845"
+      ]
+    }
+  ],
+  "source": "MLCommons · MLPerf Training, accessed Nov 2026 | AWS and Meta chip disclosures",
+  "evidence": {
+    "Merchant GPUs": [
+      "F0150",
+      "F0158"
+    ],
+    "All AI accelerators": [
+      "F0150",
+      "F0158"
+    ],
+    "Benchmark submissions": [
+      "F0845",
+      "F0846"
+    ]
+  },
+  "custom_svg": "visuals/custom/v06-market-scope.svg"
+}

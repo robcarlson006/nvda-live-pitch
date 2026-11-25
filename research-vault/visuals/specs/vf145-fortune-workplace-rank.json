@@ -1,0 +1,26 @@
+{
+  "title": "Employees put NVIDIA near the top of the Fortune list",
+  "subtitle": "Fortune Best Companies to Work For · US employee survey · 2026",
+  "kind": "kpi",
+  "unit": "",
+  "x": [
+    "NVIDIA rank",
+    "Eligible-company employee responses"
+  ],
+  "series": [
+    {
+      "name": "Rank and survey participation",
+      "values": [
+        6,
+        640000
+      ],
+      "facts": [
+        "F0683",
+        "F0682"
+      ]
+    }
+  ],
+  "highlight": "NVIDIA rank",
+  "source": "Great Place To Work · April 2026",
+  "custom_svg": "visuals/custom/vf145-fortune-workplace-rank.svg"
+}

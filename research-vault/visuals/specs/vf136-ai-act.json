@@ -1,0 +1,26 @@
+{
+  "title": "The EU AI Act applies by role and use",
+  "subtitle": "European Commission guidance · model and transparency milestones · 2025–2026",
+  "kind": "kpi",
+  "source": "European Commission, AI Act guidance · accessed Nov 2026",
+  "unit": "",
+  "x": [
+    "General-purpose AI rules (August)",
+    "Transparency rules (August)"
+  ],
+  "series": [
+    {
+      "name": "Effective year",
+      "values": [
+        2025,
+        2026
+      ],
+      "facts": [
+        "F0227",
+        "F0231"
+      ]
+    }
+  ],
+  "highlight": "Transparency rules (August)",
+  "custom_svg": "visuals/custom/vf136-ai-act.svg"
+}

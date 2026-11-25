@@ -1,0 +1,28 @@
+{
+  "title": "Three direct buyers each drove a large share of sales",
+  "subtitle": "Share of NVIDIA total revenue · percent · first half of FY27",
+  "kind": "hbar",
+  "source": "NVIDIA quarterly filing · Aug 2026",
+  "unit": "%",
+  "x": [
+    "Largest direct customer",
+    "Next-largest direct customer",
+    "Third-largest direct customer"
+  ],
+  "series": [
+    {
+      "name": "Revenue share",
+      "values": [
+        16,
+        15,
+        13
+      ],
+      "facts": [
+        "F0707",
+        "F1070",
+        "F1071"
+      ]
+    }
+  ],
+  "highlight": "Largest direct customer"
+}

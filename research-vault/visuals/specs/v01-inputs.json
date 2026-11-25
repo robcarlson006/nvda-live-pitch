@@ -1,0 +1,25 @@
+{
+  "kind": "table",
+  "title": "Consensus anchors the base case through FY28",
+  "subtitle": "NVDA DCF inputs · USD, shares and rates · November model snapshot",
+  "source": "Bloomberg FA/DES and Google Finance, Nov 2026 · Damodaran, Jan 2026 · Team DCF",
+  "dataset": {
+    "key": "model_dcf_inputs",
+    "series": [
+      "FY26 revenue",
+      "FY27 revenue, analyst consensus",
+      "FY28 revenue, analyst consensus",
+      "Free-cash-flow margin, FY24–26 average",
+      "Diluted shares",
+      "Net cash",
+      "WACC, Bloomberg",
+      "Share price",
+      "WACC, Google Finance",
+      "WACC, US semiconductor industry average",
+      "Terminal growth (our choice)",
+      "Growth fades in a straight line to terminal growth by (our choice)"
+    ]
+  },
+  "highlight": "Base discount rate (WACC)",
+  "custom_svg": "visuals/custom/v01-inputs.svg"
+}

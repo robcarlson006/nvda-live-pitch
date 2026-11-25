@@ -1,0 +1,23 @@
+{
+  "title": "New GPUs can erode the value of older ones",
+  "subtitle": "Economic depreciation risk · published thesis and vendor workload claim",
+  "kind": "kpi",
+  "unit": "x",
+  "x": [
+    "Rubin versus Blackwell throughput per megawatt"
+  ],
+  "series": [
+    {
+      "name": "Vendor upper bound on workload-specific throughput per megawatt",
+      "values": [
+        10
+      ],
+      "facts": [
+        "F0012"
+      ]
+    }
+  ],
+  "source": "Sequoia Capital · June 2024 | NVIDIA product claim · January 2026",
+  "highlight": "Rubin versus Blackwell throughput per megawatt",
+  "custom_svg": "visuals/custom/vf139-gpu-obsolescence.svg"
+}

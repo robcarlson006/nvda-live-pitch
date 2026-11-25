@@ -1,0 +1,35 @@
+{
+  "kind": "stacked",
+  "title": "India’s AI compute programme has several suppliers",
+  "subtitle": "Empanelled GPUs (count) · May 2025 announcement · IndiaAI portal supplier options",
+  "source": "Government of India PIB, May 2025 · IndiaAI portal, accessed Nov 2026",
+  "x": [
+    "May 2025 announcement"
+  ],
+  "series": [
+    {
+      "name": "Previously approved GPUs",
+      "values": [
+        18417
+      ],
+      "facts": [
+        "F0755"
+      ]
+    },
+    {
+      "name": "Additional GPUs",
+      "values": [
+        15916
+      ],
+      "facts": [
+        "F0755"
+      ]
+    }
+  ],
+  "highlight": "May 2025 announcement",
+  "custom_svg": "visuals/custom/vf132-india-compute-suppliers.svg",
+  "reported_total": {
+    "value": 34333,
+    "fact": "F0755"
+  }
+}

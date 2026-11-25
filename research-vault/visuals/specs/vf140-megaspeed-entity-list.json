@@ -1,0 +1,38 @@
+{
+  "title": "BIS puts listed entities under tighter chip controls",
+  "subtitle": "US Entity List · public-inspection final rule · November 2026",
+  "kind": "table",
+  "unit": "entities",
+  "source": "US Bureau of Industry and Security, November 2026 · NVIDIA, November 2026",
+  "x": [
+    "Entity List additions"
+  ],
+  "series": [
+    {
+      "name": "Covered entities in the rule",
+      "values": [
+        7
+      ],
+      "facts": [
+        "F1054"
+      ]
+    }
+  ],
+  "highlight": "Entity List additions",
+  "custom_svg": "visuals/custom/vf140-megaspeed-entity-list.svg",
+  "notes": [
+    {
+      "label": "Licence scope and presumption of denial",
+      "facts": [
+        "F0583"
+      ]
+    },
+    {
+      "label": "BIS rationale and NVIDIA cooperation statement",
+      "facts": [
+        "F0582",
+        "F0072"
+      ]
+    }
+  ]
+}

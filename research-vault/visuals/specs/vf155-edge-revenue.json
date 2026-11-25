@@ -1,0 +1,28 @@
+{
+  "title": "Edge Computing sales climbed each quarter",
+  "subtitle": "NVIDIA Edge Computing platform revenue · USD billions · Q1–Q3 FY27",
+  "source": "NVIDIA results · 27 May, 26 Aug and 17 Nov 2026",
+  "kind": "bar",
+  "unit": "USD bn",
+  "x": [
+    "Q1 FY27",
+    "Q2 FY27",
+    "Q3 FY27"
+  ],
+  "highlight": "Q3 FY27",
+  "series": [
+    {
+      "name": "Edge Computing revenue",
+      "values": [
+        6.4,
+        7.2,
+        8.2
+      ],
+      "facts": [
+        "F0147",
+        "F0146",
+        "F0116"
+      ]
+    }
+  ]
+}

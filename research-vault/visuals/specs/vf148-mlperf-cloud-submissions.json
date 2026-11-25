@@ -1,0 +1,25 @@
+{
+  "title": "Cloud systems gained share in MLPerf training",
+  "subtitle": "Cloud-based systems as a share of submitted systems, MLPerf Training v6.0–v6.1",
+  "kind": "bar",
+  "source": "MLCommons, Nov 2026",
+  "unit": "%",
+  "x": [
+    "v6.0",
+    "v6.1"
+  ],
+  "series": [
+    {
+      "name": "Share of submitted systems",
+      "values": [
+        29.0,
+        37.0
+      ],
+      "facts": [
+        "F1082",
+        "F1083"
+      ]
+    }
+  ],
+  "highlight": "v6.1"
+}

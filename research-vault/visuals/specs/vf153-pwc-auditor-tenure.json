@@ -1,0 +1,28 @@
+{
+  "title": "PwC’s tenure outlasts any lead partner",
+  "subtitle": "External auditor appointment and lead-partner rotation · NVIDIA proxy and vote, 2026",
+  "kind": "kpi",
+  "unit": "year",
+  "x": [
+    "PwC began auditing NVIDIA"
+  ],
+  "series": [
+    {
+      "name": "External auditor appointment and lead-partner rotation",
+      "values": [
+        2004
+      ],
+      "facts": [
+        "F0692"
+      ]
+    }
+  ],
+  "highlight": "PwC began auditing NVIDIA",
+  "source": "NVIDIA SEC proxy and shareholder vote filings, May and Jun 2026",
+  "custom_svg": "visuals/custom/vf153-pwc-auditor-tenure.svg",
+  "display": {
+    "audit_firm_start": 2004,
+    "ratified_for": "FY2027",
+    "lead_partner_limit": "Five consecutive years"
+  }
+}

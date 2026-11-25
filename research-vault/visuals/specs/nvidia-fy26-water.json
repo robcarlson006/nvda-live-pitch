@@ -1,0 +1,27 @@
+{
+  "title": "NVIDIA operational water accounting",
+  "subtitle": "FY26 \u00b7 withdrawal, consumption and discharge \u00b7 cubic metres",
+  "kind": "bar",
+  "unit": "m\u00b3",
+  "x": [
+    "Withdrawal",
+    "Consumption",
+    "Discharge"
+  ],
+  "series": [
+    {
+      "name": "Water",
+      "values": [
+        451297,
+        105531,
+        345766
+      ],
+      "facts": [
+        "F0537",
+        "F0538",
+        "F0539"
+      ]
+    }
+  ],
+  "source": "NVIDIA Sustainability Report FY26, p. 32; water data not comparable to prior years"
+}

@@ -1,0 +1,32 @@
+{
+  "title": "NVIDIA’s reporting change breaks the water trend",
+  "subtitle": "Water withdrawal and consumption at NVIDIA operations · Cubic metres · FY25 and FY26",
+  "kind": "table",
+  "unit": "m³",
+  "x": [
+    "FY25 withdrawal",
+    "FY25 consumption",
+    "FY26 withdrawal",
+    "FY26 consumption"
+  ],
+  "series": [
+    {
+      "name": "Reported volumes",
+      "values": [
+        409814,
+        141772,
+        451297,
+        105531
+      ],
+      "facts": [
+        "F0545",
+        "F0546",
+        "F0537",
+        "F0538"
+      ]
+    }
+  ],
+  "highlight": "FY26 withdrawal",
+  "source": "NVIDIA Sustainability Reports · FY25 and FY26",
+  "custom_svg": "visuals/custom/vf145-operational-water-method-break.svg"
+}

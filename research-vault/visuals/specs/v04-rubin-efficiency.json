@@ -1,0 +1,23 @@
+{
+  "title": "Rubin’s efficiency claim is workload-specific",
+  "subtitle": "Tokens per megawatt · Vera Rubin NVL72 vs Blackwell GB200 NVL72 · January 2026",
+  "kind": "kpi",
+  "source": "NVIDIA Technical Blog · 5 Jan 2026 • MLCommons, MLPerf Inference power methodology",
+  "highlight": "Vera Rubin NVL72",
+  "unit": "x",
+  "x": [
+    "Vera Rubin NVL72"
+  ],
+  "series": [
+    {
+      "name": "Maximum claimed relative token throughput per megawatt",
+      "values": [
+        10.0
+      ],
+      "facts": [
+        "F0012"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/v04-rubin-efficiency.svg"
+}

@@ -1,0 +1,25 @@
+{
+  "title": "Taiwan disruption: conditional scenarios",
+  "subtitle": "Illustrative outcomes; timing and replacement volume unknown",
+  "kind": "bar",
+  "unit": "",
+  "x": [
+    "Amkor Korea interposer increase",
+    "IBIDEN Japan substrate target"
+  ],
+  "series": [
+    {
+      "name": "Published targets, not interchangeable",
+      "values": [
+        300,
+        3
+      ],
+      "facts": [
+        "F0768",
+        "F0767"
+      ]
+    }
+  ],
+  "source": "NVIDIA announcements and FY2026 filing",
+  "custom_svg": "visuals/svg/taiwan-scenarios.svg"
+}

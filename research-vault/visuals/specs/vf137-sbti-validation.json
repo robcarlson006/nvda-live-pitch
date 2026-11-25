@@ -1,0 +1,33 @@
+{
+  "title": "A disclosed target leaves validation open",
+  "subtitle": "NVIDIA’s operational emissions goal and SBTi’s validation rules",
+  "source": "NVIDIA FY26 Sustainability Report and SBTi target dashboard, accessed Nov 2026",
+  "x": [
+    "Operational emissions cut by FY30"
+  ],
+  "series": [
+    {
+      "name": "Target reduction",
+      "values": [
+        50.0
+      ],
+      "facts": [
+        "F0833"
+      ]
+    }
+  ],
+  "highlight": "Operational emissions cut by FY30",
+  "kind": "table",
+  "unit": "%",
+  "custom_svg": "visuals/custom/vf137-sbti-validation.svg",
+  "annotations": {
+    "baseline": "FY23",
+    "target_basis": "Absolute Scope 1 and market-based Scope 2",
+    "validation": "Unverified in reviewed records",
+    "alignment_scope_numbers": [
+      1,
+      2
+    ],
+    "scope_definition_fact": "F0528"
+  }
+}

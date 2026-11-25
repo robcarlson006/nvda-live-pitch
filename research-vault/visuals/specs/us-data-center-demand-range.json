@@ -1,0 +1,30 @@
+{
+  "title": "US data-centre electricity demand",
+  "subtitle": "Berkeley Lab estimates; 2028 is a projection range, not observed demand",
+  "kind": "bar",
+  "unit": "TWh",
+  "x": [
+    "2014 estimate",
+    "2023 estimate",
+    "2028 low",
+    "2028 high"
+  ],
+  "series": [
+    {
+      "name": "Annual electricity use",
+      "values": [
+        58,
+        176,
+        325,
+        580
+      ],
+      "facts": [
+        "F0495",
+        "F0496",
+        "F0497",
+        "F0498"
+      ]
+    }
+  ],
+  "source": "US Department of Energy summarising Lawrence Berkeley National Laboratory, 20 December 2024"
+}

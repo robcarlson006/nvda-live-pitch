@@ -1,0 +1,23 @@
+{
+  "title": "NVIDIA has board oversight of supplier labour",
+  "subtitle": "Human rights governance and strategic-supplier audit coverage · FY26",
+  "kind": "kpi",
+  "unit": "%",
+  "x": [
+    "Strategic suppliers with VAP audits reviewed"
+  ],
+  "series": [
+    {
+      "name": "FY26 audit review coverage",
+      "values": [
+        45
+      ],
+      "facts": [
+        "F0632"
+      ]
+    }
+  ],
+  "highlight": "Strategic suppliers with VAP audits reviewed",
+  "source": "NVIDIA forced labour statement · FY26",
+  "custom_svg": "visuals/custom/vf134-supplier-rights-oversight.svg"
+}

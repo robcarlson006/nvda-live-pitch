@@ -1,0 +1,42 @@
+{
+  "title": "NVIDIA’s debt and inventory rose alongside cash",
+  "subtitle": "Selected NVIDIA balance-sheet items · USD millions · January and October 2026",
+  "kind": "hbar",
+  "unit": "USD m",
+  "x": [
+    "Inventories",
+    "Long-term debt",
+    "Cash and equivalents"
+  ],
+  "series": [
+    {
+      "name": "Jan 2026",
+      "values": [
+        21403,
+        7469,
+        10605
+      ],
+      "facts": [
+        "F0334",
+        "F0335",
+        "F0333"
+      ]
+    },
+    {
+      "name": "Oct 2026",
+      "values": [
+        39724,
+        32371,
+        29089
+      ],
+      "facts": [
+        "F0334",
+        "F0335",
+        "F0333"
+      ]
+    }
+  ],
+  "highlight": "Oct 2026",
+  "source": "NVIDIA Q3 FY27 earnings release, Nov 2026",
+  "custom_svg": "visuals/custom/vf129-balance-sheet.svg"
+}

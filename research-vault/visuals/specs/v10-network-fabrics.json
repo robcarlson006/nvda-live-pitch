@@ -1,0 +1,23 @@
+{
+  "title": "NVLink connects GPUs within a system",
+  "subtitle": "AI networking fabrics · NVIDIA product specifications · 2024–2026",
+  "kind": "kpi",
+  "unit": "TB/s per GPU",
+  "x": [
+    "NVLink in Vera Rubin NVL72"
+  ],
+  "series": [
+    {
+      "name": "Bidirectional bandwidth per GPU",
+      "values": [
+        3.6
+      ],
+      "facts": [
+        "F0182"
+      ]
+    }
+  ],
+  "highlight": "NVLink in Vera Rubin NVL72",
+  "source": "NVIDIA, Jul 2026 and Mar 2024",
+  "custom_svg": "visuals/custom/v10-network-fabrics.svg"
+}

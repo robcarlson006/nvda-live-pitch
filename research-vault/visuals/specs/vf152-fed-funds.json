@@ -1,0 +1,29 @@
+{
+  "title": "The US overnight rate rose into October",
+  "subtitle": "Effective federal funds rate · monthly average, % · Aug to Oct 2026",
+  "kind": "line",
+  "unit": "%",
+  "x": [
+    "Aug 2026",
+    "Sep 2026",
+    "Oct 2026"
+  ],
+  "series": [
+    {
+      "name": "Effective federal funds rate",
+      "values": [
+        3.63,
+        3.75,
+        3.88
+      ],
+      "facts": [
+        "F0422",
+        "F0421",
+        "F0420"
+      ]
+    }
+  ],
+  "highlight": "Oct 2026",
+  "source": "Federal Reserve via FRED · Nov 2026",
+  "custom_svg": "visuals/custom/vf152-fed-funds.svg"
+}

@@ -1,0 +1,31 @@
+{
+  "title": "US licensing was active as new rules were discussed",
+  "subtitle": "US export measures in NVIDIA’s August 2026 filing",
+  "kind": "table",
+  "unit": "calendar year",
+  "source": "NVIDIA Q2 FY27 10-Q · Aug 2026",
+  "x": [
+    "H200 licences began",
+    "AI Diffusion replacement announced"
+  ],
+  "series": [
+    {
+      "name": "calendar year",
+      "values": [
+        2026,
+        2025
+      ],
+      "facts": [
+        "F0597",
+        "F0611"
+      ]
+    }
+  ],
+  "highlight": "H200 licences began",
+  "custom_svg": "visuals/custom/vf138-us-export-rule-status.svg",
+  "annotations": {
+    "F0600": "H200 licences required US inspection",
+    "F0781": "Scope and timing of replacement were still uncertain",
+    "F0782": "Congress was considering cloud-service restrictions at time of filing"
+  }
+}

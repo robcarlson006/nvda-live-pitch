@@ -1,0 +1,16 @@
+{
+  "kind": "table",
+  "title": "The base discount rate is a sector average",
+  "subtitle": "Cost of capital used to discount NVIDIA cash flows · November 2026 model",
+  "source": "Damodaran, Jan 2026 · Team DCF and input reconciliation, Nov 2026",
+  "highlight": "10.55% industry rate",
+  "custom_svg": "visuals/custom/v02-rate-assumptions.svg",
+  "dataset": {
+    "key": "model_dcf_inputs",
+    "series": [
+      "WACC, US semiconductor industry average",
+      "WACC, Google Finance",
+      "WACC, Bloomberg"
+    ]
+  }
+}

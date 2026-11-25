@@ -1,0 +1,30 @@
+{
+  "title": "Trainium savings depend on the comparison",
+  "subtitle": "Reported reductions in training cost · AWS Trn1 claims, accessed Nov 2026",
+  "kind": "kpi",
+  "unit": "%",
+  "x": [
+    "AWS advertised maximum",
+    "Stockmark reported result"
+  ],
+  "series": [
+    {
+      "name": "Reported reductions in training cost",
+      "values": [
+        50,
+        20
+      ],
+      "facts": [
+        "F0853",
+        "F0854"
+      ]
+    }
+  ],
+  "highlight": "AWS advertised maximum",
+  "source": "AWS EC2 Trn1 product page and AWS-hosted Stockmark testimonial, accessed Nov 2026",
+  "custom_svg": "visuals/custom/vf153-trainium-training-cost.svg",
+  "display": {
+    "aws_advertised_max_pct": 50,
+    "stockmark_reported_pct": 20
+  }
+}

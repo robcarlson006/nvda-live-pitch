@@ -1,0 +1,36 @@
+{
+  "title": "Grid delays put Loughton’s plans in doubt",
+  "subtitle": "Proposed data centre in Essex · Project investment (GBP) and permanent jobs · October 2026",
+  "kind": "kpi",
+  "source": "BBC · Oct 2026",
+  "x": [
+    "Investment pledged",
+    "Permanent jobs projected"
+  ],
+  "series": [
+    {
+      "name": "Project investment (GBP bn)",
+      "values": [
+        2,
+        null
+      ],
+      "facts": [
+        "F0405",
+        ""
+      ]
+    },
+    {
+      "name": "Projected jobs",
+      "values": [
+        null,
+        250
+      ],
+      "facts": [
+        "",
+        "F0408"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf133-loughton-delivery.svg",
+  "highlight": "Investment pledged"
+}

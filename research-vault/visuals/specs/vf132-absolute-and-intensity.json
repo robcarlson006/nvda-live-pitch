@@ -1,0 +1,36 @@
+{
+  "kind": "table",
+  "title": "NVIDIA targets lower emissions per unit of compute",
+  "subtitle": "Targeted reductions (%) · FY30 goals relative to FY23",
+  "source": "NVIDIA Sustainability Report, FY26",
+  "x": [
+    "Use of sold GPUs",
+    "Own operations and purchased energy"
+  ],
+  "series": [
+    {
+      "name": "Intensity reduction (%)",
+      "values": [
+        75,
+        null
+      ],
+      "facts": [
+        "F0834",
+        null
+      ]
+    },
+    {
+      "name": "Absolute reduction (%)",
+      "values": [
+        null,
+        50
+      ],
+      "facts": [
+        null,
+        "F0833"
+      ]
+    }
+  ],
+  "highlight": "Use of sold GPUs",
+  "custom_svg": "visuals/custom/vf132-absolute-and-intensity.svg"
+}

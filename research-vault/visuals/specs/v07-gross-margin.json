@@ -1,0 +1,69 @@
+{
+  "title": "NVIDIA guided to a lower gross margin",
+  "subtitle": "Reported GAAP margin, guidance and management expectation · Percent",
+  "source": "NVIDIA Q3 FY27 results and earnings call, November 2026",
+  "kind": "table",
+  "unit": "%",
+  "x": [
+    "Q3 FY27",
+    "Q4 FY27",
+    "FY28"
+  ],
+  "series": [
+    {
+      "name": "Actual",
+      "values": [
+        74.8,
+        null,
+        null
+      ],
+      "facts": [
+        "F0264",
+        null,
+        null
+      ]
+    },
+    {
+      "name": "Lower bound",
+      "values": [
+        null,
+        71,
+        72
+      ],
+      "facts": [
+        null,
+        "F0111",
+        "F0126"
+      ]
+    },
+    {
+      "name": "Upper bound",
+      "values": [
+        null,
+        72,
+        73
+      ],
+      "facts": [
+        null,
+        "F0112",
+        "F0126"
+      ]
+    }
+  ],
+  "highlight": "Q4 FY27",
+  "custom_svg": "visuals/custom/v07-gross-margin.svg",
+  "annotations": {
+    "axis_ticks": [
+      71,
+      72,
+      73,
+      74.8
+    ],
+    "note": "Management cited supply costs and earlier purchase orders without quantifying each driver.",
+    "note_facts": [
+      "F0877",
+      "F0878",
+      "F0883"
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "title": "Packaging expansion leaves Taiwan exposure",
+  "subtitle": "Existing technology and announced packaging plans · November 2026",
+  "kind": "table",
+  "unit": "USD bn",
+  "source": "NVIDIA Newsroom · Nov 2026",
+  "x": [
+    "Amkor agreements, nearly"
+  ],
+  "series": [
+    {
+      "name": "USD bn",
+      "values": [
+        3
+      ],
+      "facts": [
+        "F0192"
+      ]
+    }
+  ],
+  "highlight": "Amkor agreements, nearly",
+  "custom_svg": "visuals/custom/vf138-packaging-dependence.svg",
+  "annotations": {
+    "F0191": "Rubin shipped with TSMC CoWoS",
+    "F0193": "SPIL expansion is within Taiwan",
+    "F0774": "Regional expansion depends on local supply reaching volume on time"
+  }
+}

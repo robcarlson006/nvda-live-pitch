@@ -1,0 +1,39 @@
+{
+  "kind": "waterfall",
+  "title": "How operating cash became free cash flow",
+  "subtitle": "NVIDIA cash flow reconciliation · USD millions · Q3 FY27",
+  "unit": "USD m",
+  "x": [
+    "Operating cash flow",
+    "Deduct equipment and intangible purchases",
+    "Deduct principal payments",
+    "Free cash flow"
+  ],
+  "series": [
+    {
+      "name": "NVIDIA free cash flow reconciliation",
+      "values": [
+        48253,
+        4422,
+        54,
+        43777
+      ],
+      "facts": [
+        "F1063",
+        "F0338",
+        "F1064",
+        "F0352"
+      ]
+    }
+  ],
+  "total": true,
+  "highlight": "Free cash flow",
+  "source": "NVIDIA Q3 FY27 results · Nov 2026",
+  "annotations": {
+    "deductions": [
+      "Deduct equipment and intangible purchases",
+      "Deduct principal payments"
+    ]
+  },
+  "custom_svg": "visuals/custom/vf143-cash-flow-reconciliation.svg"
+}

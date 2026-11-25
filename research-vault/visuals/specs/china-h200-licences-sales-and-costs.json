@@ -1,0 +1,28 @@
+{
+  "title": "US licences led to few H200 sales in China",
+  "subtitle": "NVIDIA’s licensed shipments, inventory charge and import tariff · FY27 filing",
+  "kind": "kpi",
+  "x": [
+    "Licensed shipment share (upper bound, %)",
+    "H200 charge (USD bn)",
+    "US import tariff (%)"
+  ],
+  "series": [
+    {
+      "name": "Filed figures",
+      "values": [
+        1,
+        0.4,
+        25
+      ],
+      "facts": [
+        "F0599",
+        "F0598",
+        "F0601"
+      ]
+    }
+  ],
+  "highlight": "Licensed shipment share (upper bound, %)",
+  "source": "NVIDIA Form 10-Q · August 2026",
+  "custom_svg": "visuals/custom/china-h200-licences-sales-and-costs.svg"
+}

@@ -1,0 +1,26 @@
+{
+  "title": "Bristol reports low power overhead at Isambard-AI",
+  "subtitle": "Power usage effectiveness (PUE) · Total facility electricity divided by IT electricity",
+  "kind": "hbar",
+  "unit": "",
+  "x": [
+    "Isambard-AI",
+    "Typical air-cooled supercomputer"
+  ],
+  "series": [
+    {
+      "name": "Power usage effectiveness",
+      "values": [
+        1.08,
+        2.0
+      ],
+      "facts": [
+        "F0759",
+        "F0764"
+      ]
+    }
+  ],
+  "highlight": "Isambard-AI",
+  "source": "University of Bristol · June 2026",
+  "custom_svg": "visuals/custom/vf145-isambard-pue-benchmark.svg"
+}

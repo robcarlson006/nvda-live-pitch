@@ -1,0 +1,29 @@
+{
+  "title": "An efficiency scenario can’t measure AI rebound",
+  "subtitle": "IEA high-efficiency scenario for global data centres · 2035 electricity, TWh",
+  "kind": "kpi",
+  "unit": "TWh",
+  "source": "IEA Energy and AI, Apr 2025 · Luccioni, Strubell and Crawford, Jun 2025",
+  "x": [
+    "High-efficiency scenario"
+  ],
+  "series": [
+    {
+      "name": "TWh",
+      "values": [
+        970
+      ],
+      "facts": [
+        "F0009"
+      ]
+    }
+  ],
+  "highlight": "High-efficiency scenario",
+  "custom_svg": "visuals/custom/vf138-ai-rebound.svg",
+  "annotations": {
+    "F0571": "Scenario holds digital service and AI demand constant",
+    "F0566": "Efficiency can stimulate additional usage",
+    "F0568": "Limits of applying Jevons’ paradox to AI",
+    "F0569": "Studies needed to measure actual behaviour"
+  }
+}

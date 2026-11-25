@@ -1,0 +1,25 @@
+{
+  "kind": "bar",
+  "title": "AI clouds, industrial and enterprise grew faster",
+  "subtitle": "NVIDIA revenue by end-user group · year-on-year growth (%) · Q3 FY27, preliminary",
+  "unit": "%",
+  "x": [
+    "Hyperscalers",
+    "AI clouds, industrial and enterprise"
+  ],
+  "series": [
+    {
+      "name": "Year-on-year revenue growth",
+      "values": [
+        71,
+        195
+      ],
+      "facts": [
+        "F0082",
+        "F0083"
+      ]
+    }
+  ],
+  "highlight": "AI clouds, industrial and enterprise",
+  "source": "Bloomberg FA · 20 Nov 2026"
+}

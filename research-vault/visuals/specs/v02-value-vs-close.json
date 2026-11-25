@@ -1,0 +1,25 @@
+{
+  "kind": "bar",
+  "title": "All three DCF values exceed the last close",
+  "subtitle": "USD per NVDA share · 3% terminal growth · 24 Nov 2026",
+  "source": "Team DCF and Stock Analysis, 24 Nov 2026",
+  "highlight": "US chip-sector average",
+  "custom_svg": "visuals/custom/v02-value-vs-close.svg",
+  "dataset": {
+    "key": "model_three_rates",
+    "series": [
+      "Value per share"
+    ]
+  },
+  "series": [
+    {
+      "name": "24 Nov regular-session close",
+      "values": [
+        155.38
+      ],
+      "facts": [
+        "F0473"
+      ]
+    }
+  ]
+}

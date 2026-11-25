@@ -1,0 +1,54 @@
+{
+  "title": "Some NVIDIA investees also buy its products",
+  "subtitle": "Private investments and contingent commitments · USD billions · FY26",
+  "source": "NVIDIA FY26 10-K, February 2026",
+  "kind": "kpi",
+  "unit": "USD bn",
+  "x": [
+    "Invested during FY26",
+    "Contingent commitments at FY26 year end"
+  ],
+  "series": [
+    {
+      "name": "USD billions",
+      "values": [
+        17.5,
+        11.4
+      ],
+      "facts": [
+        "F0259",
+        "F0260"
+      ]
+    }
+  ],
+  "highlight": "Contingent commitments at FY26 year end",
+  "custom_svg": "visuals/custom/v07-funding-risk.svg",
+  "annotations": {
+    "cards": [
+      {
+        "label": "INVESTED DURING FY26",
+        "display": "$17.5bn",
+        "metric": "Private companies and funds",
+        "context": "Primarily to support early-stage startups.",
+        "facts": [
+          "F0259"
+        ]
+      },
+      {
+        "label": "COMMITMENTS AT FY26 YEAR END",
+        "display": "$11.4bn",
+        "metric": "Contingent investment commitments",
+        "context": "Subject to conditions at January 2026 year end.",
+        "facts": [
+          "F0260"
+        ]
+      }
+    ],
+    "note": "Some investees buy NVIDIA products. The filing leaves the related sales amount unquantified.",
+    "note_facts": [
+      "F0258",
+      "F0259",
+      "F0260"
+    ]
+  }
+}

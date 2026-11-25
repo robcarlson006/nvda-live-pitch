@@ -1,0 +1,26 @@
+{
+  "title": "Diluted share count fell year over year",
+  "subtitle": "Quarterly diluted weighted-average shares (millions) · Q3 FY26 vs Q3 FY27",
+  "kind": "kpi",
+  "unit": "million shares",
+  "x": [
+    "Q3 FY26",
+    "Q3 FY27"
+  ],
+  "series": [
+    {
+      "name": "Diluted weighted-average shares",
+      "values": [
+        24483.0,
+        24186.0
+      ],
+      "facts": [
+        "F0329",
+        "F0325"
+      ]
+    }
+  ],
+  "highlight": "Q3 FY27",
+  "source": "NVIDIA Q3 FY27 results · quarter ended Oct 2026",
+  "custom_svg": "visuals/custom/v08-diluted-shares.svg"
+}

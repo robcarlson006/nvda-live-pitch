@@ -1,0 +1,25 @@
+{
+  "title": "NVIDIA sharply increased R&D spending",
+  "subtitle": "GAAP research and development expense · USD millions · fiscal third quarters",
+  "kind": "bar",
+  "unit": "USD m",
+  "x": [
+    "Q3 FY26",
+    "Q3 FY27"
+  ],
+  "series": [
+    {
+      "name": "USD m",
+      "values": [
+        4705,
+        7454
+      ],
+      "facts": [
+        "F0337",
+        "F0337"
+      ]
+    }
+  ],
+  "highlight": "Q3 FY27",
+  "source": "NVIDIA Q3 FY27 results · Nov 2026"
+}

@@ -1,0 +1,23 @@
+{
+  "title": "UK chip export controls depend on the item and use",
+  "subtitle": "China arms embargo and strategic export guidance · November 2026 snapshot",
+  "kind": "table",
+  "unit": "year",
+  "x": [
+    "China arms embargo start year"
+  ],
+  "series": [
+    {
+      "name": "Year UK began observing the China arms embargo",
+      "values": [
+        1989
+      ],
+      "facts": [
+        "F0608"
+      ]
+    }
+  ],
+  "source": "UK Department for Business and Trade · guidance accessed November 2026",
+  "highlight": "China arms embargo start year",
+  "custom_svg": "visuals/custom/vf139-uk-chip-export-controls.svg"
+}

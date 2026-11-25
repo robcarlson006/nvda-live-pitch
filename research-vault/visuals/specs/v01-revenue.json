@@ -1,0 +1,17 @@
+{
+  "kind": "line",
+  "title": "Revenue paths diverge after FY27",
+  "subtitle": "NVDA revenue in USD billions · FY26 actual, FY27 consensus, FY28–FY32 scenarios",
+  "source": "Team DCF · Bloomberg FA and consensus · Nov 2026",
+  "dataset": {
+    "key": "model_revenue_paths",
+    "series": [
+      "If AI ended for good",
+      "Bear",
+      "Base",
+      "Bull"
+    ]
+  },
+  "highlight": "Base",
+  "custom_svg": "visuals/custom/v01-revenue.svg"
+}

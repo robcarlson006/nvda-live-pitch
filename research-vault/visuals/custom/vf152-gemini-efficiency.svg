@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="54" font-weight="800" letter-spacing="-0.5">Google cut energy per Gemini text prompt</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">Fold reduction per median Gemini Apps text prompt · May 2024 to May 2025</text>
+<rect x="80" y="248" width="705" height="313" rx="14" fill="#10150c" stroke="#39452f" stroke-width="2"/><rect x="80" y="248" width="7" height="313" rx="4" fill="#76b900"/><text x="122" y="416" fill="#b7f04a" font-size="118" font-weight="800">33×</text><text x="125" y="489" fill="#f4f6f1" font-size="36" font-weight="700">Less energy per prompt</text><rect x="815" y="248" width="705" height="313" rx="14" fill="#10150c" stroke="#39452f" stroke-width="2"/><text x="857" y="416" fill="#f4f6f1" font-size="118" font-weight="800">44×</text><text x="860" y="489" fill="#f4f6f1" font-size="36" font-weight="700">Less CO₂e per prompt</text><line x1="80" y1="656" x2="1520" y2="656" stroke="#39452f" stroke-width="2"/><text x="80" y="690" fill="#9aa094" font-size="25" font-weight="600">The study tracks the median text prompt across Google’s serving stack.</text><text x="80" y="726" fill="#9aa094" font-size="25">Total electricity and emissions also depend on how much the service is used.</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: Google Research · Aug 2025</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

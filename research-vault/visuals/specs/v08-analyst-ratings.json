@@ -1,0 +1,15 @@
+{
+  "title": "The team’s ratings capture skews towards Buy",
+  "subtitle": "Number of analyst ratings over the prior three months · unverified capture",
+  "kind": "bar",
+  "unit": "",
+  "dataset": {
+    "key": "nvda_analyst_ratings",
+    "series": [
+      "Analysts"
+    ]
+  },
+  "highlight": "Buy",
+  "source": "Team capture of Google Finance · 24 Nov 2026",
+  "custom_svg": "visuals/custom/v08-analyst-ratings.svg"
+}

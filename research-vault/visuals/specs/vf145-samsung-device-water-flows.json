@@ -1,0 +1,48 @@
+{
+  "title": "Samsung’s device sites discharged most water they withdrew",
+  "subtitle": "Samsung Device eXperience division · Thousand tonnes of water · Calendar 2025",
+  "kind": "stacked",
+  "unit": "thousand tonnes",
+  "x": [
+    "Total withdrawal",
+    "Where the water went"
+  ],
+  "series": [
+    {
+      "name": "Consumed",
+      "values": [
+        null,
+        3512
+      ],
+      "facts": [
+        null,
+        "F0816"
+      ]
+    },
+    {
+      "name": "Total withdrawal",
+      "values": [
+        18710,
+        null
+      ],
+      "facts": [
+        "F0815",
+        null
+      ]
+    },
+    {
+      "name": "Discharged",
+      "values": [
+        null,
+        15198
+      ],
+      "facts": [
+        null,
+        "F0817"
+      ]
+    }
+  ],
+  "highlight": "Where the water went",
+  "source": "Samsung Electronics Sustainability Report · June 2026",
+  "custom_svg": "visuals/custom/vf145-samsung-device-water-flows.svg"
+}

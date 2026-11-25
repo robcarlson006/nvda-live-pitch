@@ -1,0 +1,31 @@
+{
+  "title": "A strong chip forecast leaves room for a downturn",
+  "subtitle": "Global semiconductor sales · US dollars · 2026 industry forecast",
+  "kind": "kpi",
+  "unit": "USD tn",
+  "source": "Semiconductor Industry Association, 2026 State of the U.S. Semiconductor Industry",
+  "x": [
+    "2026 forecast threshold"
+  ],
+  "series": [
+    {
+      "name": "Projected sales above threshold",
+      "values": [
+        1.5
+      ],
+      "facts": [
+        "F0426"
+      ]
+    }
+  ],
+  "highlight": "2026 forecast threshold",
+  "custom_svg": "visuals/custom/vf140-chip-sales-forecast.svg",
+  "notes": [
+    {
+      "label": "Forecast threshold, rather than a point estimate",
+      "facts": [
+        "F0426"
+      ]
+    }
+  ]
+}

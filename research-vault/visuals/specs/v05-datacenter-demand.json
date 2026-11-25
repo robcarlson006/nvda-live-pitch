@@ -1,0 +1,16 @@
+{
+  "title": "Revenue rose across both Data Center customer groups",
+  "subtitle": "NVIDIA Data Center revenue · USD bn · latest quarter preliminary",
+  "kind": "bar",
+  "source": "Bloomberg FA · Nov 2026",
+  "custom_svg": "visuals/custom/v05-datacenter-demand.svg",
+  "unit": "USD bn",
+  "highlight": "FY27 Q3",
+  "dataset": {
+    "key": "nvda_dc_customers",
+    "series": [
+      "Hyperscalers",
+      "AI clouds, industrial & enterprise"
+    ]
+  }
+}

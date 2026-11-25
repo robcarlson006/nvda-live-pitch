@@ -1,0 +1,23 @@
+{
+  "title": "Bristol’s cooling claim covers one part of the site",
+  "subtitle": "Isambard-AI direct liquid cooling · claimed maximum reduction in cooling power",
+  "kind": "kpi",
+  "unit": "%",
+  "x": [
+    "Maximum claimed cooling power reduction"
+  ],
+  "series": [
+    {
+      "name": "Maximum claimed reduction",
+      "values": [
+        90
+      ],
+      "facts": [
+        "F0763"
+      ]
+    }
+  ],
+  "highlight": "Maximum claimed cooling power reduction",
+  "source": "University of Bristol launch announcement · July 2025",
+  "custom_svg": "visuals/custom/isambard-liquid-cooling-power-claim.svg"
+}

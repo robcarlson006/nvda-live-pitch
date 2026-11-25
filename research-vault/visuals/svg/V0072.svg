@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="54" font-weight="800" letter-spacing="-0.5">Taiwan disruption: conditional scenarios</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">Illustrative outcomes; timing and replacement volume unknown</text>
+<line x1="140" x2="1520" y1="760.0" y2="760.0" stroke="#39452f" stroke-width="2"/><rect x="410.0" y="286.8" width="150.0" height="473.2" rx="6" fill="#76b900"/><text x="485.0" y="270.8" fill="#f4f6f1" font-size="30" font-weight="750" text-anchor="middle">300</text><text x="485.0" y="804.0" fill="#9aa094" font-size="22" text-anchor="middle">Amkor Korea interposer increase</text><rect x="1100.0" y="755.3" width="150.0" height="4.7" rx="6" fill="#76b900"/><text x="1175.0" y="739.3" fill="#f4f6f1" font-size="30" font-weight="750" text-anchor="middle">3</text><text x="1175.0" y="804.0" fill="#9aa094" font-size="22" text-anchor="middle">IBIDEN Japan substrate target</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: NVIDIA announcements and FY2026 filing</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

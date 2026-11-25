@@ -1,0 +1,29 @@
+{
+  "title": "Cloud commitments differ from product sales",
+  "subtitle": "NVIDIA’s revenue policy and cloud-service commitments as of July 2026",
+  "kind": "table",
+  "unit": "USD bn",
+  "source": "NVIDIA FY26 10-K, Feb 2026 · Q2 FY27 10-Q, Aug 2026",
+  "x": [
+    "Cloud service commitments"
+  ],
+  "series": [
+    {
+      "name": "USD bn",
+      "values": [
+        36
+      ],
+      "facts": [
+        "F0615"
+      ]
+    }
+  ],
+  "highlight": "Cloud service commitments",
+  "custom_svg": "visuals/custom/vf138-customer-revenue.svg",
+  "annotations": {
+    "F0614": "Partners buy infrastructure and NVIDIA commits to buying cloud services",
+    "F0616": "Purchase backstop",
+    "F0625": "Revenue on transfer of control",
+    "F0626": "Single-contract policy for closely related agreements"
+  }
+}

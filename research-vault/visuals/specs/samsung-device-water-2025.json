@@ -1,0 +1,27 @@
+{
+  "title": "Samsung device division water flows",
+  "subtitle": "2025, all 25 device sites; not NVIDIA-attributable",
+  "kind": "bar",
+  "unit": "1,000 tonnes",
+  "x": [
+    "Withdrawal",
+    "Discharge",
+    "Consumption"
+  ],
+  "series": [
+    {
+      "name": "Water",
+      "values": [
+        18710,
+        15198,
+        3512
+      ],
+      "facts": [
+        "F0815",
+        "F0817",
+        "F0816"
+      ]
+    }
+  ],
+  "source": "Samsung Electronics Sustainability Report 2026, p. 17; device division"
+}

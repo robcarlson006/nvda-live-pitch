@@ -1,0 +1,71 @@
+{
+  "title": "Huang returned while the investigation continued",
+  "subtitle": "Leadership changes and board oversight · November 2026",
+  "source": "NVIDIA SEC filings and company announcements, November 2026",
+  "kind": "table",
+  "unit": "",
+  "x": [
+    "12 Nov",
+    "17 Nov",
+    "22 Nov",
+    "23 Nov"
+  ],
+  "series": [
+    {
+      "name": "Day of November",
+      "values": [
+        12,
+        17,
+        22,
+        23
+      ],
+      "facts": [
+        "F0063",
+        "F1016",
+        "F0414",
+        "F0398"
+      ]
+    }
+  ],
+  "highlight": "23 Nov",
+  "custom_svg": "visuals/custom/v07-governance-timeline.svg",
+  "annotations": [
+    {
+      "date": "12 Nov",
+      "event": "Huang resigns and Kress becomes interim CEO",
+      "context": "Kress retains the CFO role. Harvey Jones becomes board chair.",
+      "facts": [
+        "F0063",
+        "F0064",
+        "F0065"
+      ]
+    },
+    {
+      "date": "17 Nov",
+      "event": "NVIDIA announces a standing oversight committee",
+      "context": "Its remit covers national security, export compliance and global trade risk.",
+      "facts": [
+        "F1016",
+        "F0074"
+      ]
+    },
+    {
+      "date": "22 Nov",
+      "event": "Huang’s reinstatement takes effect",
+      "context": "NVIDIA’s SEC filing gives this as the effective date.",
+      "facts": [
+        "F0414"
+      ]
+    },
+    {
+      "date": "23 Nov",
+      "event": "NVIDIA confirms the investigation will continue",
+      "context": "A committee of independent directors retained independent counsel.",
+      "facts": [
+        "F0398",
+        "F0070",
+        "F0071"
+      ]
+    }
+  ]
+}

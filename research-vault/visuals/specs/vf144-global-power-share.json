@@ -1,0 +1,26 @@
+{
+  "title": "Data centres could take a larger share of global power",
+  "subtitle": "Share of world electricity use · IEA estimate and base case",
+  "kind": "kpi",
+  "unit": "%",
+  "source": "IEA, Energy and AI · Apr 2025",
+  "x": [
+    "2024 estimate",
+    "2030 base case"
+  ],
+  "series": [
+    {
+      "name": "Global share (estimate; just-under bound for projection)",
+      "values": [
+        1.5,
+        3
+      ],
+      "facts": [
+        "F0002",
+        "F0004"
+      ]
+    }
+  ],
+  "highlight": "2030 base case",
+  "custom_svg": "visuals/custom/vf144-global-power-share.svg"
+}

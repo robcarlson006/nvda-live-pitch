@@ -1,0 +1,26 @@
+{
+  "title": "Data-centre electricity demand could double",
+  "subtitle": "Global annual electricity use · TWh · IEA estimate and base case",
+  "kind": "bar",
+  "source": "IEA, Energy and AI · April 2025",
+  "highlight": "2030 base case",
+  "unit": "TWh",
+  "x": [
+    "2024 estimate",
+    "2030 base case"
+  ],
+  "series": [
+    {
+      "name": "Electricity use",
+      "values": [
+        415.0,
+        945.0
+      ],
+      "facts": [
+        "F0001",
+        "F0003"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/v04-global-demand.svg"
+}

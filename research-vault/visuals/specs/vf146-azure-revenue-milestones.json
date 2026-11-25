@@ -1,0 +1,26 @@
+{
+  "title": "Azure passed a new revenue milestone",
+  "subtitle": "Microsoft Azure annual revenue milestones · USD billions · FY2025 and FY2026",
+  "kind": "kpi",
+  "source": "Microsoft earnings releases · Jul 2025 and Jul 2026",
+  "unit": "USD bn",
+  "x": [
+    "FY2025",
+    "FY2026"
+  ],
+  "series": [
+    {
+      "name": "Revenue exceeded",
+      "values": [
+        75,
+        100
+      ],
+      "facts": [
+        "F0269",
+        "F0270"
+      ]
+    }
+  ],
+  "highlight": "FY2026",
+  "custom_svg": "visuals/custom/vf146-azure-revenue-milestones.svg"
+}

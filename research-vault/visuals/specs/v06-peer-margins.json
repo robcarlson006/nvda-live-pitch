@@ -1,0 +1,14 @@
+{
+  "kind": "hbar",
+  "title": "NVIDIA and Broadcom lead on expected margins",
+  "subtitle": "Consensus company-wide operating margin · % · current fiscal year for each company",
+  "dataset": {
+    "key": "peers_operating_margin",
+    "series": [
+      "Operating margin"
+    ]
+  },
+  "highlight": "NVIDIA",
+  "source": "Bloomberg FA consensus · Nov 2026",
+  "custom_svg": "visuals/custom/v06-peer-margins.svg"
+}

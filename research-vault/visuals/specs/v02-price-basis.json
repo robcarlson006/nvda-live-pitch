@@ -1,0 +1,25 @@
+{
+  "kind": "kpi",
+  "title": "The model uses a different reference price",
+  "subtitle": "USD per NVDA share · 24 Nov 2026",
+  "source": "Stock Analysis and Team DCF, 24 Nov 2026",
+  "highlight": "Reported market close",
+  "custom_svg": "visuals/custom/v02-price-basis.svg",
+  "x": [
+    "Reported market close",
+    "Team model reference"
+  ],
+  "series": [
+    {
+      "name": "Share price",
+      "values": [
+        155.38,
+        152.85
+      ],
+      "facts": [
+        "F0473",
+        "F0982"
+      ]
+    }
+  ]
+}

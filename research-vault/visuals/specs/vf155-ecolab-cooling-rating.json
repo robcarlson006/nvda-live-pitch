@@ -1,0 +1,23 @@
+{
+  "title": "Cooling capacity alone tells us little about water",
+  "subtitle": "CoolIT coolant distribution unit · vendor-rated capacity · November 2026",
+  "source": "Ecolab · July and Nov 2026; Li et al. · Mar 2025",
+  "kind": "kpi",
+  "unit": "MW",
+  "x": [
+    "Coolant distribution unit"
+  ],
+  "highlight": "Coolant distribution unit",
+  "series": [
+    {
+      "name": "Rated thermal capacity",
+      "values": [
+        3
+      ],
+      "facts": [
+        "F0035"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf155-ecolab-cooling-rating.svg"
+}

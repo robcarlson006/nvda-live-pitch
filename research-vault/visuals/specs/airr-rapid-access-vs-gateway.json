@@ -1,0 +1,25 @@
+{
+  "title": "UK projects can apply for public GPU time",
+  "subtitle": "Maximum GPU hours per project · use within three months of project start",
+  "kind": "hbar",
+  "unit": "",
+  "x": [
+    "Rapid Access",
+    "Gateway"
+  ],
+  "series": [
+    {
+      "name": "GPU hours available",
+      "values": [
+        20000,
+        10000
+      ],
+      "facts": [
+        "F0102",
+        "F1084"
+      ]
+    }
+  ],
+  "highlight": "Rapid Access",
+  "source": "UK Government AIRR guidance · Sep 28, 2026"
+}

@@ -1,0 +1,29 @@
+{
+  "title": "NVIDIA expects operating costs to rise",
+  "subtitle": "GAAP operating expenses · USD billions · FY27",
+  "kind": "bar",
+  "unit": "USD bn",
+  "x": [
+    "Q2 FY27 reported",
+    "Q3 FY27 reported",
+    "Q4 FY27 guidance"
+  ],
+  "series": [
+    {
+      "name": "GAAP operating expenses (Q4 is guidance)",
+      "values": [
+        8.4,
+        9.2,
+        11.0
+      ],
+      "facts": [
+        "F1092",
+        "F0123",
+        "F0113"
+      ]
+    }
+  ],
+  "highlight": "Q4 FY27 guidance",
+  "source": "NVIDIA earnings release and call · Nov 2026",
+  "custom_svg": "visuals/custom/vf152-nvidia-opex.svg"
+}

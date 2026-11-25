@@ -3,6 +3,9 @@
 A sourced database of everything we could find on NVIDIA, with a ready chart for as much of it as possible, so we can
 answer any board question. Built overnight by GPT (Codex) in this folder only; nothing else in the project is touched.
 
+**Live view:** `python3 -m http.server 5195 --bind 127.0.0.1 --directory research-vault`, then open
+http://localhost:5195/live.html — updates every 8 s while GPT works (visuals, board Q&A, facts with quotes, sources).
+
 **Morning:** open `gallery.html` (every chart, searchable) and `INDEX.md` (every fact, with its source). The loop's own
 report is `state/MORNING_SUMMARY.md`.
 

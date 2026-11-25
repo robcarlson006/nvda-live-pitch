@@ -1,0 +1,17 @@
+{
+  "title": "Free cash flow rose sharply after the FY23 dip",
+  "subtitle": "Annual free cash flow · USD billions · FY15–FY26",
+  "kind": "bar",
+  "unit": "USD bn",
+  "dataset": {
+    "key": "nvda_fcf_annual",
+    "series": [
+      "Free cash flow"
+    ]
+  },
+  "highlight": "FY26",
+  "source": "Bloomberg FA · Nov 2026",
+  "as_of": "2026-11-20",
+  "custom_svg": "visuals/custom/v09-annual-free-cash-flow.svg",
+  "note": "Bloomberg’s FY26 figure differs from NVIDIA’s company-defined figure."
+}

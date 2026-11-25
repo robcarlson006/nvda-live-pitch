@@ -1,0 +1,26 @@
+{
+  "title": "Shareholders rejected the emissions proposal",
+  "subtitle": "Shares voted for and against the nonbinding report on use of sold products · June 2026",
+  "kind": "hbar",
+  "unit": "shares",
+  "source": "NVIDIA SEC filings, May and June 2026",
+  "x": [
+    "Against",
+    "For"
+  ],
+  "series": [
+    {
+      "name": "Shares voted",
+      "values": [
+        13789742126,
+        2939623603
+      ],
+      "facts": [
+        "F1039",
+        "F1038"
+      ]
+    }
+  ],
+  "highlight": "Against",
+  "custom_svg": "visuals/custom/vf135-product-emissions-vote.svg"
+}

@@ -1,0 +1,27 @@
+{
+  "title": "The emissions total leaves out product use",
+  "subtitle": "NVIDIA FY26 Scope 3 inventory · metric tonnes CO₂e",
+  "kind": "kpi",
+  "unit": "t CO₂e",
+  "x": [
+    "Reported Scope 3 total"
+  ],
+  "series": [
+    {
+      "name": "NVIDIA FY26 Scope 3 inventory",
+      "values": [
+        10700940
+      ],
+      "facts": [
+        "F1002"
+      ]
+    }
+  ],
+  "highlight": "Reported Scope 3 total",
+  "source": "NVIDIA FY26 sustainability report · GHG Protocol guidance, accessed Nov 2026",
+  "custom_svg": "visuals/custom/vf153-sold-product-use.svg",
+  "display": {
+    "scope_3_metric_tonnes": 10700940,
+    "accounting_category": "Use of sold products"
+  }
+}

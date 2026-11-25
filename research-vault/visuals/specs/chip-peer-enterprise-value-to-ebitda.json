@@ -1,0 +1,31 @@
+{
+  "title": "NVIDIA trades near TSMC on EV/EBITDA",
+  "subtitle": "Enterprise value relative to EBITDA · selected chip companies · trailing multiples",
+  "kind": "hbar",
+  "unit": "x",
+  "x": [
+    "AMD",
+    "Broadcom",
+    "NVIDIA",
+    "TSMC"
+  ],
+  "series": [
+    {
+      "name": "EV/EBITDA",
+      "values": [
+        60.84,
+        28.18,
+        14.89,
+        14.73
+      ],
+      "facts": [
+        "F0282",
+        "F0286",
+        "F0278",
+        "F0290"
+      ]
+    }
+  ],
+  "highlight": "NVIDIA",
+  "source": "Stock Analysis · Nov 24, 2026 close"
+}

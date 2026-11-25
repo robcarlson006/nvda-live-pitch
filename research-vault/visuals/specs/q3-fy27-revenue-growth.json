@@ -1,0 +1,9 @@
+{
+  "title": "Revenue growth remains uneven",
+  "subtitle": "Year-on-year growth, Q3 FY27",
+  "kind": "hbar",
+  "unit": "%",
+  "x": ["Data Center", "Total revenue", "Edge Computing"],
+  "series": [{"name": "Year-on-year growth", "values": [110, 103, 42], "facts": ["F0120", "F0122", "F0121"]}],
+  "source": "NVIDIA Q3 FY27 earnings release, 17 November 2026"
+}

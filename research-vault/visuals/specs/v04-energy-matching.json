@@ -1,0 +1,25 @@
+{
+  "title": "NVIDIA’s total energy use rose",
+  "subtitle": "NVIDIA operations · total energy in thousand MWh and renewable electricity share · FY24–FY26",
+  "kind": "bar",
+  "source": "Bloomberg FA · Nov 2026 • NVIDIA FY26 Sustainability Report",
+  "highlight": "FY26",
+  "dataset": {
+    "key": "nvda_energy",
+    "series": [
+      "Total energy"
+    ]
+  },
+  "series": [
+    {
+      "name": "FY26 renewable electricity share",
+      "values": [
+        100.0
+      ],
+      "facts": [
+        "F0998"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/v04-energy-matching.svg"
+}

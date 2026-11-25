@@ -1,0 +1,23 @@
+{
+  "title": "Longer payment terms delay cash",
+  "subtitle": "Selected investment-grade customers  ·  First-half FY27 filing",
+  "kind": "kpi",
+  "unit": "days",
+  "x": [
+    "90 days to one year"
+  ],
+  "series": [
+    {
+      "name": "Lower end in days",
+      "values": [
+        90
+      ],
+      "facts": [
+        "F0624"
+      ]
+    }
+  ],
+  "highlight": "90 days to one year",
+  "source": "NVIDIA annual and quarterly filings, Feb and Aug 2026",
+  "custom_svg": "visuals/custom/vf130-cash-collection.svg"
+}

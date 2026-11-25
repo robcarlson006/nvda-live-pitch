@@ -1,0 +1,22 @@
+{
+  "title": "A severe AI slump would cost the portfolio more",
+  "subtitle": "Modeled NVIDIA share value and portfolio impact · 24 Nov 2026",
+  "kind": "table",
+  "dataset": {
+    "key": "model_downside",
+    "series": [
+      "Value per share",
+      "Change from today",
+      "Cost to the portfolio",
+      "Position size"
+    ]
+  },
+  "highlight": "If AI ended for good",
+  "source": "Team DCF model, Nov 2026",
+  "units": {
+    "Change from today": "%",
+    "Cost to the portfolio": "%",
+    "Position size": "%"
+  },
+  "custom_svg": "visuals/custom/v03-portfolio-downside.svg"
+}

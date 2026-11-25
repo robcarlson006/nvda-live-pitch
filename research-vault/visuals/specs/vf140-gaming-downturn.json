@@ -1,0 +1,37 @@
+{
+  "title": "Gaming fell while Data Center grew",
+  "subtitle": "NVIDIA annual revenue by market platform · US$ billions · FY22–FY23",
+  "kind": "hbar",
+  "unit": "USD bn",
+  "source": "Bloomberg FA, NVIDIA annual market-platform revenue, November 2026",
+  "x": [
+    "Gaming",
+    "Data Center"
+  ],
+  "series": [
+    {
+      "name": "FY22",
+      "values": [
+        12.462,
+        10.613
+      ],
+      "facts": [
+        "F1029",
+        "F1028"
+      ]
+    },
+    {
+      "name": "FY23",
+      "values": [
+        9.067,
+        15.005
+      ],
+      "facts": [
+        "F1055",
+        "F1056"
+      ]
+    }
+  ],
+  "highlight": "FY23",
+  "custom_svg": "visuals/custom/vf140-gaming-downturn.svg"
+}

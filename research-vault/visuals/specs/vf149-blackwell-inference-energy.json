@@ -1,0 +1,23 @@
+{
+  "title": "NVIDIA claims lower inference energy for Blackwell",
+  "subtitle": "Maximum claimed energy reduction factor · same GPU count · 2024 launch",
+  "kind": "kpi",
+  "unit": "x",
+  "x": [
+    "GB200 NVL72 vs H100"
+  ],
+  "series": [
+    {
+      "name": "Claimed maximum energy reduction factor",
+      "values": [
+        25
+      ],
+      "facts": [
+        "F0011"
+      ]
+    }
+  ],
+  "highlight": "GB200 NVL72 vs H100",
+  "source": "NVIDIA launch announcement · March 2024",
+  "custom_svg": "visuals/custom/vf149-blackwell-inference-energy.svg"
+}

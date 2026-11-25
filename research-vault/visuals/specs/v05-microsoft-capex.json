@@ -1,0 +1,32 @@
+{
+  "title": "Microsoft’s cash capex climbed each year",
+  "subtitle": "Cash additions to property and equipment · USD bn · fiscal years ended June",
+  "kind": "bar",
+  "source": "Microsoft fiscal Q4 results · Jul 2024 and Jul 2026",
+  "custom_svg": "visuals/custom/v05-microsoft-capex.svg",
+  "unit": "USD bn",
+  "x": [
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Cash additions to property and equipment",
+      "values": [
+        28.107,
+        44.477,
+        64.551,
+        115.948
+      ],
+      "facts": [
+        "F0265",
+        "F0266",
+        "F0267",
+        "F0268"
+      ]
+    }
+  ],
+  "highlight": "FY26"
+}

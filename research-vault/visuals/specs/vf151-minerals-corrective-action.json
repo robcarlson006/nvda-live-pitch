@@ -1,0 +1,39 @@
+{
+  "title": "Smelters face a deadline to fix audit findings",
+  "subtitle": "Months from enrolment in the extended corrective action programme",
+  "kind": "kpi",
+  "unit": "months",
+  "x": [
+    "Deadline from enrolment"
+  ],
+  "series": [
+    {
+      "name": "months",
+      "values": [
+        12
+      ],
+      "facts": [
+        "F0672"
+      ]
+    }
+  ],
+  "highlight": "Deadline from enrolment",
+  "source": "Responsible Minerals Initiative · accessed Nov 2026",
+  "annotations": [
+    {
+      "text": "Warning and end of participation",
+      "facts": [
+        "F0672"
+      ]
+    },
+    {
+      "text": "Scope of independent assessments",
+      "facts": [
+        "F0668",
+        "F0669",
+        "F0670"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf151-minerals-corrective-action.svg"
+}

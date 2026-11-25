@@ -1,0 +1,32 @@
+{
+  "title": "Water reuse can coexist with water stress",
+  "subtitle": "Samsung’s Korean semiconductor sites · thousand tonnes of water · 2025",
+  "kind": "hbar",
+  "unit": "thousand tonnes",
+  "source": "Samsung Electronics Sustainability Report, Jun 2026 · WRI Aqueduct, accessed Nov 2026",
+  "x": [
+    "Surface-water supply",
+    "Water reused"
+  ],
+  "series": [
+    {
+      "name": "thousand tonnes",
+      "values": [
+        153238,
+        107967
+      ],
+      "facts": [
+        "F0825",
+        "F1051"
+      ]
+    }
+  ],
+  "highlight": "Water reused",
+  "custom_svg": "visuals/custom/vf138-fab-water-stress.svg",
+  "annotations": {
+    "F1052": "Water stress is medium-high",
+    "F0547": "Withdrawal definition",
+    "F0548": "Consumption definition",
+    "F0549": "WRI maps location-specific water risk"
+  }
+}

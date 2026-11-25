@@ -1,0 +1,36 @@
+{
+  "title": "Huang returned as CEO. Jones stayed chair.",
+  "subtitle": "NVIDIA leadership changes in November 2026",
+  "kind": "table",
+  "unit": "day of November",
+  "source": "NVIDIA SEC filings and Newsroom · 12–23 Nov 2026",
+  "x": [
+    "Resignation announced",
+    "Reinstatement effective",
+    "Reinstatement announced"
+  ],
+  "series": [
+    {
+      "name": "day of November",
+      "values": [
+        12,
+        22,
+        23
+      ],
+      "facts": [
+        "F0063",
+        "F0066",
+        "F0398"
+      ]
+    }
+  ],
+  "highlight": "Reinstatement effective",
+  "custom_svg": "visuals/custom/vf138-leadership-roles.svg",
+  "annotations": {
+    "F0064": "Interim CEO and CFO",
+    "F0065": "Jones appointed chair",
+    "F0069": "Jones remains chair",
+    "F0399": "Kress remains CFO",
+    "F0414": "Filing and press release give different effective-date cues"
+  }
+}

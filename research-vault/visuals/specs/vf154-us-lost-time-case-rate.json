@@ -1,0 +1,42 @@
+{
+  "title": "The U.S. lost-time case rate stayed flat",
+  "subtitle": "NVIDIA U.S. employees · cases per 200,000 labor hours · FY24–FY26",
+  "kind": "line",
+  "source": "NVIDIA FY26 Sustainability Report",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "OSHA-recordable incidents",
+      "values": [
+        0.11,
+        0.08,
+        0.07
+      ],
+      "facts": [
+        "F1077",
+        "F1078",
+        "F1079"
+      ]
+    },
+    {
+      "name": "Lost-time cases",
+      "values": [
+        0.01,
+        0.01,
+        0.01
+      ],
+      "facts": [
+        "F1097",
+        "F1097",
+        "F1097"
+      ]
+    }
+  ],
+  "unit": "",
+  "highlight": "Lost-time cases",
+  "custom_svg": "visuals/custom/vf154-us-lost-time-case-rate.svg"
+}

@@ -1,0 +1,15 @@
+{
+  "title": "NVIDIA has the lowest PEG in this snapshot",
+  "subtitle": "Forward P/E divided by expected EPS growth (×) · 20 Nov 2026",
+  "kind": "hbar",
+  "unit": "x",
+  "dataset": {
+    "key": "peers_peg",
+    "series": [
+      "PEG"
+    ]
+  },
+  "highlight": "NVIDIA",
+  "source": "Bloomberg FA · 20 Nov 2026",
+  "custom_svg": "visuals/custom/v08-peer-peg.svg"
+}

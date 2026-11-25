@@ -1,0 +1,34 @@
+{
+  "title": "Morningstar and our DCF use different margins",
+  "subtitle": "Gross margin outlook versus free-cash-flow margin input (%) · November 2026",
+  "kind": "table",
+  "unit": "%",
+  "x": [
+    "Morningstar FY27 gross margin: mid-70%",
+    "Morningstar long-run gross margin: high-60%",
+    "Team DCF FCF margin"
+  ],
+  "series": [
+    {
+      "name": "Exact free-cash-flow margin",
+      "values": [
+        null,
+        null,
+        45.25
+      ],
+      "facts": [
+        "F0477",
+        "F0478",
+        "F0968"
+      ],
+      "range_labels": [
+        "Mid-70%",
+        "High-60%",
+        null
+      ]
+    }
+  ],
+  "source": "Morningstar · November 2026 | Team DCF inputs · November 2026",
+  "highlight": "Team DCF FCF margin",
+  "custom_svg": "visuals/custom/vf139-margin-bases.svg"
+}

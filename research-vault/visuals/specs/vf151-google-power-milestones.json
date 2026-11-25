@@ -1,0 +1,40 @@
+{
+  "title": "Google has geothermal power on the grid",
+  "subtitle": "Google clean-power projects · reported start versus original target year",
+  "kind": "table",
+  "unit": "year",
+  "x": [
+    "Fervo geothermal · operational in 2023",
+    "Kairos first reactor"
+  ],
+  "series": [
+    {
+      "name": "year",
+      "values": [
+        null,
+        2030
+      ],
+      "facts": [
+        null,
+        "F0467"
+      ]
+    }
+  ],
+  "highlight": "Fervo geothermal · operational in 2023",
+  "source": "Google · Nov 2023 and Oct 2024",
+  "annotations": [
+    {
+      "text": "Fervo project reported operational in 2023",
+      "facts": [
+        "F0468"
+      ]
+    },
+    {
+      "text": "Initial Kairos reactor target announced in 2024",
+      "facts": [
+        "F0467"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf151-google-power-milestones.svg"
+}

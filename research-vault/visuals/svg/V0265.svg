@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="54" font-weight="800" letter-spacing="-0.5">Bristol reports low power overhead at Isambard-AI</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">Power usage effectiveness (PUE) · Total facility electricity divided by IT electricity</text>
+<text x="496" y="267.8" fill="#f4f6f1" font-size="26" text-anchor="end" font-weight="700">Isambard-AI</text><rect x="520" y="230.0" width="469.6" height="55.8" rx="6" fill="#76b900"/><text x="1005.6" y="270.5" fill="#f4f6f1" font-size="28" font-weight="750">1.08</text><text x="496" y="357.8" fill="#9aa094" font-size="26" text-anchor="end" font-weight="500">Typical air-cooled supercomputer</text><rect x="520" y="320.0" width="869.6" height="55.8" rx="6" fill="#39452f"/><text x="1405.6" y="360.5" fill="#f4f6f1" font-size="28" font-weight="750">2</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: University of Bristol · June 2026</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

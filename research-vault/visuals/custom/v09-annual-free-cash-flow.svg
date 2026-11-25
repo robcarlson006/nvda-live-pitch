@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="54" font-weight="800" letter-spacing="-0.5">Free cash flow rose sharply after the FY23 dip</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">Annual free cash flow · USD billions · FY15–FY26</text>
+<line x1="102.00" y1="360.00" x2="1498.00" y2="360.00" stroke="#293524" stroke-width="1.5"/>
+<line x1="102.00" y1="480.00" x2="1498.00" y2="480.00" stroke="#293524" stroke-width="1.5"/>
+<line x1="102.00" y1="600.00" x2="1498.00" y2="600.00" stroke="#293524" stroke-width="1.5"/>
+<line x1="102.00" y1="716.00" x2="1498.00" y2="716.00" stroke="#52624b" stroke-width="2"/>
+<rect x="129.17" y="712.22" width="62.00" height="3.78" rx="4" fill="#52624b" stroke="none"/>
+<text x="160.17" y="754.00" fill="#9aa094" font-size="22" text-anchor="middle" font-weight="500">FY15</text>
+<rect x="245.50" y="710.75" width="62.00" height="5.25" rx="4" fill="#52624b" stroke="none"/>
+<text x="276.50" y="754.00" fill="#9aa094" font-size="22" text-anchor="middle" font-weight="500">FY16</text>
+<rect x="361.83" y="708.79" width="62.00" height="7.21" rx="4" fill="#52624b" stroke="none"/>
+<text x="392.83" y="754.00" fill="#9aa094" font-size="22" text-anchor="middle" font-weight="500">FY17</text>
+<rect x="478.17" y="701.98" width="62.00" height="14.02" rx="4" fill="#52624b" stroke="none"/>
+<text x="509.17" y="754.00" fill="#9aa094" font-size="22" text-anchor="middle" font-weight="500">FY18</text>
+<rect x="594.50" y="700.85" width="62.00" height="15.15" rx="4" fill="#52624b" stroke="none"/>
+<text x="625.50" y="754.00" fill="#9aa094" font-size="22" text-anchor="middle" font-weight="500">FY19</text>
+<rect x="710.83" y="695.41" width="62.00" height="20.59" rx="4" fill="#52624b" stroke="none"/>
+<text x="741.83" y="754.00" fill="#9aa094" font-size="22" text-anchor="middle" font-weight="500">FY20</text>
+<rect x="827.17" y="693.37" width="62.00" height="22.63" rx="4" fill="#52624b" stroke="none"/>
+<text x="858.17" y="754.00" fill="#9aa094" font-size="22" text-anchor="middle" font-weight="500">FY21</text>
+<rect x="943.50" y="676.80" width="62.00" height="39.20" rx="4" fill="#52624b" stroke="none"/>
+<text x="974.50" y="754.00" fill="#9aa094" font-size="22" text-anchor="middle" font-weight="500">FY22</text>
+<text x="974.50" y="660.80" fill="#f4f6f1" font-size="26" text-anchor="middle" font-weight="750">$8.1B</text>
+<rect x="1059.83" y="697.64" width="62.00" height="18.36" rx="4" fill="#e8b04a" stroke="none"/>
+<text x="1090.83" y="754.00" fill="#9aa094" font-size="22" text-anchor="middle" font-weight="500">FY23</text>
+<text x="1090.83" y="681.64" fill="#e8b04a" font-size="26" text-anchor="middle" font-weight="750">$3.8B</text>
+<rect x="1176.17" y="585.75" width="62.00" height="130.25" rx="4" fill="#52624b" stroke="none"/>
+<text x="1207.17" y="754.00" fill="#9aa094" font-size="22" text-anchor="middle" font-weight="500">FY24</text>
+<text x="1207.17" y="569.75" fill="#f4f6f1" font-size="26" text-anchor="middle" font-weight="750">$27.0B</text>
+<rect x="1292.50" y="422.67" width="62.00" height="293.33" rx="4" fill="#52624b" stroke="none"/>
+<text x="1323.50" y="754.00" fill="#9aa094" font-size="22" text-anchor="middle" font-weight="500">FY25</text>
+<text x="1323.50" y="406.67" fill="#f4f6f1" font-size="26" text-anchor="middle" font-weight="750">$60.9B</text>
+<rect x="1408.83" y="250.00" width="62.00" height="466.00" rx="4" fill="#76b900" stroke="none"/>
+<text x="1439.83" y="754.00" fill="#b7f04a" font-size="22" text-anchor="middle" font-weight="700">FY26</text>
+<text x="1439.83" y="234.00" fill="#b7f04a" font-size="34" text-anchor="middle" font-weight="750">$96.7B</text>
+<text x="80.00" y="802.00" fill="#9aa094" font-size="23" text-anchor="start" font-weight="500">Bloomberg’s FY26 figure differs from NVIDIA’s company-defined figure.</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: Bloomberg FA · Nov 2026</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

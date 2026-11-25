@@ -1,0 +1,32 @@
+{
+  "title": "Shareholders backed simple-majority voting",
+  "subtitle": "Nonbinding proposal to replace supermajority rules · shares · June 2026 annual meeting",
+  "kind": "hbar",
+  "source": "NVIDIA SEC filing · June 2026",
+  "unit": "shares",
+  "x": [
+    "For",
+    "Against",
+    "Abstained",
+    "Broker non-votes"
+  ],
+  "series": [
+    {
+      "name": "Reported shares",
+      "values": [
+        14589671908,
+        2210282205,
+        56735273,
+        2829718733
+      ],
+      "facts": [
+        "F1040",
+        "F1041",
+        "F1042",
+        "F1043"
+      ]
+    }
+  ],
+  "highlight": "For",
+  "custom_svg": "visuals/custom/vf136-simple-majority.svg"
+}

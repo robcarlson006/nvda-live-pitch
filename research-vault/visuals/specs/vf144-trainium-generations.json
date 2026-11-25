@@ -1,0 +1,26 @@
+{
+  "title": "AWS reports higher throughput for Trainium3",
+  "subtitle": "AWS hardware ratings · multiples of Trainium2 · accessed Nov 2026",
+  "kind": "hbar",
+  "unit": "x",
+  "source": "Amazon Web Services, Trainium product page · accessed Nov 2026",
+  "x": [
+    "Memory bandwidth",
+    "MXFP8 compute throughput"
+  ],
+  "series": [
+    {
+      "name": "Generation-on-generation multiple; compute throughput is an upper bound",
+      "values": [
+        1.7,
+        2
+      ],
+      "facts": [
+        "F0152",
+        "F0153"
+      ]
+    }
+  ],
+  "highlight": "Memory bandwidth",
+  "custom_svg": "visuals/custom/vf144-trainium-generations.svg"
+}

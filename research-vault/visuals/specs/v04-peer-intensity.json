@@ -1,0 +1,14 @@
+{
+  "title": "NVIDIA has the lowest operational intensity shown",
+  "subtitle": "Scope 1 and 2 · tonnes CO₂ per US$1m of revenue · NVIDIA FY26, peers FY25",
+  "kind": "table",
+  "source": "Bloomberg FA, ESG Environmental Adjusted Highlights · Nov 2026",
+  "highlight": "NVIDIA",
+  "dataset": {
+    "key": "peers_emissions_intensity",
+    "series": [
+      "Emissions intensity"
+    ]
+  },
+  "custom_svg": "visuals/custom/v04-peer-intensity.svg"
+}

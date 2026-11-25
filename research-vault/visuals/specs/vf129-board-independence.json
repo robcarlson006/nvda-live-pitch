@@ -1,0 +1,26 @@
+{
+  "title": "Independent directors held most seats in June",
+  "subtitle": "Board elected in June 2026 · independence classifications from the May proxy",
+  "kind": "kpi",
+  "unit": "directors",
+  "x": [
+    "Independent nominees",
+    "Nominees elected"
+  ],
+  "series": [
+    {
+      "name": "Director count",
+      "values": [
+        9,
+        10
+      ],
+      "facts": [
+        "F0686",
+        "F0689"
+      ]
+    }
+  ],
+  "highlight": "Independent nominees",
+  "source": "NVIDIA proxy and shareholder vote filing, May–Jun 2026",
+  "custom_svg": "visuals/custom/vf129-board-independence.svg"
+}

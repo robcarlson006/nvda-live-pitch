@@ -1,0 +1,31 @@
+{
+  "title": "Text prompts use energy beyond the AI chip",
+  "subtitle": "Watt-hours for Google’s median Gemini Apps text prompt · 0.24 Wh total · May 2025",
+  "kind": "hbar",
+  "unit": "Wh",
+  "x": [
+    "Active AI accelerator",
+    "Host CPU and memory",
+    "Idle machine capacity",
+    "Data-centre overhead"
+  ],
+  "series": [
+    {
+      "name": "Energy per median text prompt",
+      "values": [
+        0.14,
+        0.06,
+        0.02,
+        0.02
+      ],
+      "facts": [
+        "F1085",
+        "F1086",
+        "F0038",
+        "F0038"
+      ]
+    }
+  ],
+  "highlight": "Active AI accelerator",
+  "source": "Google, Measuring the Environmental Impact of Delivering AI at Google Scale · Aug 21, 2025"
+}

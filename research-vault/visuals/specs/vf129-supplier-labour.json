@@ -1,0 +1,26 @@
+{
+  "title": "Supplier audits uncovered labour problems",
+  "subtitle": "Share of strategic suppliers covered by reviewed onsite audits · FY25–FY26",
+  "kind": "hbar",
+  "unit": "%",
+  "x": [
+    "Reviewed audit coverage",
+    "Biennial audit goal"
+  ],
+  "series": [
+    {
+      "name": "Strategic supplier coverage",
+      "values": [
+        93,
+        100
+      ],
+      "facts": [
+        "F0633",
+        "F0631"
+      ]
+    }
+  ],
+  "highlight": "Reviewed audit coverage",
+  "source": "NVIDIA forced labour statement, May 2026",
+  "custom_svg": "visuals/custom/vf129-supplier-labour.svg"
+}

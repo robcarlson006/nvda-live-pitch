@@ -1,0 +1,26 @@
+{
+  "title": "Hyperscalers account for just over half of sales",
+  "subtitle": "Share of total NVIDIA revenue · Q3 FY27 preliminary",
+  "kind": "hbar",
+  "source": "Bloomberg FA · Nov 2026",
+  "custom_svg": "visuals/custom/v05-revenue-mix.svg",
+  "unit": "%",
+  "x": [
+    "Hyperscalers",
+    "All other sales"
+  ],
+  "series": [
+    {
+      "name": "Share of total revenue",
+      "values": [
+        51.9,
+        48.1
+      ],
+      "facts": [
+        "F0079",
+        "F0081"
+      ]
+    }
+  ],
+  "highlight": "Hyperscalers"
+}

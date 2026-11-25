@@ -1,0 +1,62 @@
+{
+  "title": "Nuclear deals take years to deliver power",
+  "subtitle": "Original online targets for U.S. nuclear projects · announced in 2024",
+  "kind": "table",
+  "unit": "Mixed units",
+  "x": [
+    "Crane restart target",
+    "Kairos first reactor target",
+    "Kairos planned capacity",
+    "Coal and gas contribution"
+  ],
+  "series": [
+    {
+      "name": "Original target year",
+      "values": [
+        2028,
+        2030,
+        null,
+        null
+      ],
+      "facts": [
+        "F0464",
+        "F0467",
+        null,
+        null
+      ]
+    },
+    {
+      "name": "Maximum planned MW",
+      "values": [
+        null,
+        null,
+        500,
+        null
+      ],
+      "facts": [
+        null,
+        null,
+        "F0466",
+        null
+      ]
+    },
+    {
+      "name": "Share lower bound (%)",
+      "values": [
+        null,
+        null,
+        null,
+        40
+      ],
+      "facts": [
+        null,
+        null,
+        null,
+        "F0462"
+      ]
+    }
+  ],
+  "highlight": "Kairos first reactor target",
+  "source": "Constellation · Sep 2024 / Google · Oct 2024 / IEA · Apr 2025",
+  "custom_svg": "visuals/custom/vf142-nuclear-deal-targets.svg"
+}

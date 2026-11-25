@@ -1,0 +1,22 @@
+{
+  "title": "Data-centre electricity use was already growing fast",
+  "subtitle": "Estimated global electricity consumption growth, 2017–2024",
+  "kind": "kpi",
+  "source": "IEA Energy and AI, Apr 2025",
+  "unit": "%",
+  "x": [
+    "Approximate annual growth"
+  ],
+  "series": [
+    {
+      "name": "Estimated annual growth",
+      "values": [
+        12.0
+      ],
+      "facts": [
+        "F0005"
+      ]
+    }
+  ],
+  "highlight": "Approximate annual growth"
+}

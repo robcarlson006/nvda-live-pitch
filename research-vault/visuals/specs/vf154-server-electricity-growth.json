@@ -1,0 +1,25 @@
+{
+  "title": "Accelerated-server electricity use could grow faster",
+  "subtitle": "Projected annual growth in global server electricity use · % · IEA Base Case, 2024–2030",
+  "kind": "bar",
+  "source": "IEA Energy and AI · Apr 2025",
+  "x": [
+    "Conventional servers",
+    "Accelerated servers"
+  ],
+  "series": [
+    {
+      "name": "Projected annual growth",
+      "values": [
+        9,
+        30
+      ],
+      "facts": [
+        "F1094",
+        "F0006"
+      ]
+    }
+  ],
+  "unit": "%",
+  "highlight": "Accelerated servers"
+}

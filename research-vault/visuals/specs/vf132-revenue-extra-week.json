@@ -1,0 +1,36 @@
+{
+  "kind": "hbar",
+  "title": "NVIDIA’s revenue guide includes an extra week",
+  "subtitle": "Quarterly revenue (USD billions) · Q3 actual and Q4 guidance · FY27",
+  "source": "NVIDIA Q3 FY27 earnings release, Nov 2026",
+  "x": [
+    "Q3 FY27 actual",
+    "Q4 FY27 guidance"
+  ],
+  "series": [
+    {
+      "name": "Revenue (USD billions)",
+      "values": [
+        115.8,
+        130
+      ],
+      "facts": [
+        "F0103",
+        "F0108"
+      ]
+    },
+    {
+      "name": "Guidance variation (%)",
+      "values": [
+        null,
+        3
+      ],
+      "facts": [
+        null,
+        "F0108"
+      ]
+    }
+  ],
+  "highlight": "Q4 FY27 guidance",
+  "custom_svg": "visuals/custom/vf132-revenue-extra-week.svg"
+}

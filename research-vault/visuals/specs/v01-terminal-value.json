@@ -1,0 +1,57 @@
+{
+  "kind": "stacked",
+  "title": "Terminal value makes up most of enterprise value",
+  "subtitle": "NVDA base operating case · present value in USD trillions · forecast FY28–FY32",
+  "source": "Team DCF · Bloomberg FA and consensus · Nov 2026",
+  "dataset": {
+    "key": "model_dcf_bridge",
+    "series": [
+      "10.55%",
+      "14.45%",
+      "15.4%"
+    ]
+  },
+  "highlight": "10.55%",
+  "custom_svg": "visuals/custom/v01-terminal-value.svg",
+  "x": [
+    "value"
+  ],
+  "series": [
+    {
+      "name": "Terminal value share of EV",
+      "values": [
+        75.56
+      ],
+      "facts": [
+        "F0972"
+      ]
+    },
+    {
+      "name": "Industry WACC",
+      "values": [
+        10.55
+      ],
+      "facts": [
+        "F0868"
+      ]
+    },
+    {
+      "name": "Google Finance WACC",
+      "values": [
+        14.45
+      ],
+      "facts": [
+        "F0977"
+      ]
+    },
+    {
+      "name": "Team sensitivity WACC",
+      "values": [
+        15.4
+      ],
+      "facts": [
+        "F0876"
+      ]
+    }
+  ]
+}

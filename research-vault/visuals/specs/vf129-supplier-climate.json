@@ -1,0 +1,26 @@
+{
+  "title": "NVIDIA exceeded its supplier engagement goal",
+  "subtitle": "Share of Scope 3 purchased-goods and services emissions · FY25",
+  "kind": "hbar",
+  "unit": "%",
+  "x": [
+    "Engagement goal, minimum",
+    "Reported engagement, lower bound"
+  ],
+  "series": [
+    {
+      "name": "Emissions coverage",
+      "values": [
+        67,
+        80
+      ],
+      "facts": [
+        "F0840",
+        "F0839"
+      ]
+    }
+  ],
+  "highlight": "Reported engagement, lower bound",
+  "source": "NVIDIA FY25 Sustainability Report, Jun 2025",
+  "custom_svg": "visuals/custom/vf129-supplier-climate.svg"
+}

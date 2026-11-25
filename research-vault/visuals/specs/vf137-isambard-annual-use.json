@@ -1,0 +1,35 @@
+{
+  "title": "Isambard-AI’s annual resource use is unverified",
+  "subtitle": "Facility electricity, water and power usage effectiveness in Bristol’s disclosures",
+  "source": "University of Bristol Isambard-AI disclosures, accessed Nov 2026",
+  "x": [
+    "Power usage effectiveness"
+  ],
+  "series": [
+    {
+      "name": "Approximate PUE",
+      "values": [
+        1.08
+      ],
+      "facts": [
+        "F0759"
+      ]
+    }
+  ],
+  "highlight": "Power usage effectiveness",
+  "kind": "table",
+  "unit": "PUE",
+  "custom_svg": "visuals/custom/vf137-isambard-annual-use.svg",
+  "annotations": {
+    "electricity_fact": "F0757",
+    "cooling_fact": "F0762",
+    "annual_metered_electricity": null,
+    "annual_water_withdrawal": null,
+    "annual_water_consumption": null,
+    "value_chain_scope_facts": [
+      "F0543",
+      "F0517",
+      "F0519"
+    ]
+  }
+}

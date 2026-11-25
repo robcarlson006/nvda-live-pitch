@@ -1,0 +1,33 @@
+{
+  "title": "Free cash flow is volatile as well as large",
+  "subtitle": "NVIDIA company-defined annual free cash flow, fiscal years",
+  "kind": "bar",
+  "unit": "USD m",
+  "x": [
+    "FY22",
+    "FY23",
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Free cash flow",
+      "values": [
+        8049,
+        3750,
+        26947,
+        60724,
+        96575
+      ],
+      "facts": [
+        "F0331",
+        "F0332",
+        "F0353",
+        "F0354",
+        "F0355"
+      ]
+    }
+  ],
+  "source": "NVIDIA fiscal year earnings releases; company definition deducts principal payments"
+}

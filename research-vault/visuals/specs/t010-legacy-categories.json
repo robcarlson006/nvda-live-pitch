@@ -1,0 +1,30 @@
+{
+  "title": "Data Center dominates the legacy market categories",
+  "subtitle": "Q4 FY26 revenue; selected categories, excluding OEM and Other",
+  "kind": "hbar",
+  "unit": "USD bn",
+  "x": [
+    "Data Center",
+    "Gaming",
+    "Professional Visualization",
+    "Automotive"
+  ],
+  "series": [
+    {
+      "name": "Revenue",
+      "values": [
+        62.314,
+        3.7,
+        1.3,
+        0.604
+      ],
+      "facts": [
+        "F0132",
+        "F0137",
+        "F0138",
+        "F0139"
+      ]
+    }
+  ],
+  "source": "Bloomberg FA Data Center; NVIDIA Q4 FY26 results for other categories (rounded)"
+}

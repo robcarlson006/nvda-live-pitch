@@ -1,0 +1,26 @@
+{
+  "title": "Buyback spending and remaining authority",
+  "subtitle": "Cash payments and unused repurchase authority (USD billions) · Q3 FY27",
+  "kind": "kpi",
+  "unit": "USD bn",
+  "x": [
+    "Cash paid for buybacks",
+    "Buyback authority remaining"
+  ],
+  "series": [
+    {
+      "name": "USD bn",
+      "values": [
+        22.122,
+        227.3
+      ],
+      "facts": [
+        "F1023",
+        "F0316"
+      ]
+    }
+  ],
+  "highlight": "Cash paid for buybacks",
+  "source": "NVIDIA Q3 FY27 results · quarter ended Oct 2026",
+  "custom_svg": "visuals/custom/v08-buyback-authority.svg"
+}

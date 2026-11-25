@@ -1,0 +1,31 @@
+{
+  "title": "Google estimates cooling water from energy",
+  "subtitle": "Serving energy (Wh) and cooling water (mL) per median Gemini Apps text prompt · May 2025",
+  "kind": "kpi",
+  "unit": "",
+  "x": [
+    "Serving energy",
+    "Estimated direct cooling water"
+  ],
+  "series": [
+    {
+      "name": "Median Gemini Apps text prompt",
+      "values": [
+        0.24,
+        0.26
+      ],
+      "facts": [
+        "F0037",
+        "F0559"
+      ]
+    }
+  ],
+  "highlight": "Serving energy",
+  "source": "Google Research, Aug 2025",
+  "custom_svg": "visuals/custom/vf153-gemini-water-method.svg",
+  "display": {
+    "serving_energy": "0.24 Wh",
+    "water_factor": "Previous-year model-serving fleet average",
+    "estimated_water": "0.26 mL"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "title": "Triton supports several GPU platforms",
+  "subtitle": "Documented software requirements · November 2026 snapshot",
+  "kind": "table",
+  "source": "Triton project & Intel XPU backend · Nov 2026",
+  "x": [
+    "NVIDIA",
+    "AMD",
+    "Intel"
+  ],
+  "series": [
+    {
+      "name": "Compute capability minimum",
+      "values": [
+        8,
+        null,
+        null
+      ],
+      "facts": [
+        "F0946",
+        "",
+        ""
+      ]
+    },
+    {
+      "name": "ROCm minimum version",
+      "values": [
+        null,
+        6.2,
+        null
+      ],
+      "facts": [
+        "",
+        "F0947",
+        ""
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf133-triton-portability.svg",
+  "highlight": "NVIDIA"
+}

@@ -1,0 +1,23 @@
+{
+  "title": "Intel’s Gaudi claim measures connectivity",
+  "subtitle": "Vendor I/O comparison and MLPerf workload-test criteria · November 2026 review",
+  "kind": "kpi",
+  "unit": "%",
+  "source": "Intel Gaudi 3 specifications, accessed November 2026 · MLCommons, April 2025",
+  "x": [
+    "Gaudi 3 versus NVIDIA H100"
+  ],
+  "series": [
+    {
+      "name": "Intel’s claimed increase in I/O connectivity",
+      "values": [
+        33
+      ],
+      "facts": [
+        "F0910"
+      ]
+    }
+  ],
+  "highlight": "Gaudi 3 versus NVIDIA H100",
+  "custom_svg": "visuals/custom/vf135-gaudi-io-vs-throughput.svg"
+}

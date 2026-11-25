@@ -1,0 +1,32 @@
+{
+  "title": "NVIDIA has the lowest trailing P/E in this group",
+  "subtitle": "Trailing price-to-earnings multiple · 24 Nov 2026 close",
+  "kind": "hbar",
+  "unit": "x",
+  "x": [
+    "NVIDIA",
+    "TSMC",
+    "Broadcom",
+    "AMD"
+  ],
+  "series": [
+    {
+      "name": "Trailing P/E",
+      "values": [
+        16.69,
+        23.6,
+        38.43,
+        89.58
+      ],
+      "facts": [
+        "F0276",
+        "F0288",
+        "F0284",
+        "F0280"
+      ]
+    }
+  ],
+  "highlight": "NVIDIA",
+  "source": "Stock Analysis · Nov 2026 snapshot",
+  "custom_svg": "visuals/custom/vf152-trailing-pe.svg"
+}

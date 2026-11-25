@@ -1,0 +1,31 @@
+{
+  "title": "Supplier fixes still need worker-level proof",
+  "subtitle": "Corrective action coverage and worker outcomes · NVIDIA FY26",
+  "kind": "kpi",
+  "unit": "%",
+  "x": [
+    "Strategic supplier engagement where applicable"
+  ],
+  "series": [
+    {
+      "name": "Corrective action coverage and worker outcomes",
+      "values": [
+        100
+      ],
+      "facts": [
+        "F0634"
+      ]
+    }
+  ],
+  "highlight": "Strategic supplier engagement where applicable",
+  "source": "NVIDIA FY26 forced labour statement · Responsible Business Alliance, Oct 2026",
+  "custom_svg": "visuals/custom/vf153-supplier-remedy.svg",
+  "display": {
+    "reported_engagement": "100%",
+    "evidence_to_request": [
+      "Fee repayment",
+      "Passport access",
+      "Income lost during remediation"
+    ]
+  }
+}

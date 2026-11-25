@@ -1,0 +1,47 @@
+{
+  "title": "NVIDIA expects lower margins and higher costs",
+  "subtitle": "GAAP gross margin (%) and operating expenses (USD billions) · FY27",
+  "kind": "table",
+  "source": "NVIDIA earnings release and call · Nov 2026",
+  "x": [
+    "Q3 FY27 reported",
+    "Q4 FY27 guidance"
+  ],
+  "series": [
+    {
+      "name": "Gross margin low (%)",
+      "values": [
+        74.8,
+        71
+      ],
+      "facts": [
+        "F0104",
+        "F0111"
+      ]
+    },
+    {
+      "name": "Gross margin high (%)",
+      "values": [
+        null,
+        72
+      ],
+      "facts": [
+        "",
+        "F0112"
+      ]
+    },
+    {
+      "name": "Operating expenses (USD bn)",
+      "values": [
+        9.2,
+        11
+      ],
+      "facts": [
+        "F0123",
+        "F0125"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf133-profitability-outlook.svg",
+  "highlight": "Q4 FY27 guidance"
+}

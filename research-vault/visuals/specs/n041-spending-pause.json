@@ -1,0 +1,30 @@
+{
+  "title": "Modelled downside: spending pause and lost share",
+  "subtitle": "Team assumptions, not a forecast \u00b7 FY27 consensus starting point; FY28\u2013FY30 scenario",
+  "kind": "bar",
+  "unit": "USD bn",
+  "x": [
+    "FY27",
+    "FY28",
+    "FY29",
+    "FY30"
+  ],
+  "series": [
+    {
+      "name": "Bear scenario revenue",
+      "values": [
+        422.22,
+        464.44,
+        441.22,
+        485.34
+      ],
+      "facts": [
+        "F0869",
+        "F0864",
+        "F0865",
+        "F0866"
+      ]
+    }
+  ],
+  "source": "Team model, model_path_bear; Bloomberg consensus starting point; 24 Nov 2026"
+}

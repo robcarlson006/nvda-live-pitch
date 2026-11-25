@@ -1,0 +1,25 @@
+{
+  "title": "AI helped support agents resolve more issues",
+  "subtitle": "Increase in issues resolved per hour after access to AI · 5,179 agents · 2023 working paper",
+  "kind": "bar",
+  "unit": "%",
+  "source": "NBER, Apr 2023",
+  "x": [
+    "All agents",
+    "Novice and low-skilled agents"
+  ],
+  "series": [
+    {
+      "name": "Productivity improvement",
+      "values": [
+        14.0,
+        34.0
+      ],
+      "facts": [
+        "F0857",
+        "F0858"
+      ]
+    }
+  ],
+  "highlight": "Novice and low-skilled agents"
+}

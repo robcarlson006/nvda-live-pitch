@@ -1,0 +1,25 @@
+{
+  "title": "Microsoft’s commercial backlog held steady",
+  "subtitle": "Commercial remaining performance obligations · USD billions · June and September 2026",
+  "source": "Microsoft quarterly results · 29 Jul and 28 Oct 2026",
+  "kind": "bar",
+  "unit": "USD bn",
+  "x": [
+    "June 2026",
+    "September 2026"
+  ],
+  "highlight": "September 2026",
+  "series": [
+    {
+      "name": "Commercial remaining performance obligations",
+      "values": [
+        678,
+        677
+      ],
+      "facts": [
+        "F0274",
+        "F1103"
+      ]
+    }
+  ]
+}

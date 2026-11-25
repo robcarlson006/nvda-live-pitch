@@ -1,0 +1,23 @@
+{
+  "title": "Water stress reaches facilities and fabs",
+  "subtitle": "NVIDIA facility withdrawals and Samsung site ratings  ·  FY25 and calendar 2025",
+  "kind": "table",
+  "unit": "%",
+  "x": [
+    "NVIDIA in high or extremely high water-stress areas"
+  ],
+  "series": [
+    {
+      "name": "Share of facilities withdrawals",
+      "values": [
+        23
+      ],
+      "facts": [
+        "F0828"
+      ]
+    }
+  ],
+  "highlight": "NVIDIA in high or extremely high water-stress areas",
+  "source": "NVIDIA Sustainability Report, FY26 and Samsung Sustainability Report, Jun 2026",
+  "custom_svg": "visuals/custom/vf130-water-stress.svg"
+}

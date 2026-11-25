@@ -1,0 +1,23 @@
+{
+  "title": "The RAG benchmark measures offline throughput",
+  "subtitle": "MLPerf end-to-end retrieval-augmented generation · submission criteria · August 2026",
+  "kind": "kpi",
+  "source": "MLCommons · Aug 2026",
+  "unit": "%",
+  "x": [
+    "Minimum relative answer accuracy"
+  ],
+  "series": [
+    {
+      "name": "Percent of reference accuracy",
+      "values": [
+        97
+      ],
+      "facts": [
+        "F0849"
+      ]
+    }
+  ],
+  "highlight": "Minimum relative answer accuracy",
+  "custom_svg": "visuals/custom/vf136-rag-benchmark.svg"
+}

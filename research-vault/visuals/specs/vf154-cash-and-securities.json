@@ -1,0 +1,42 @@
+{
+  "title": "Marketable equities now exceed cash",
+  "subtitle": "Selected NVIDIA current assets · USD millions · January and October 2026",
+  "kind": "hbar",
+  "source": "NVIDIA Q3 FY27 earnings release · Nov 2026",
+  "x": [
+    "Cash and equivalents",
+    "Marketable debt securities",
+    "Marketable equity securities"
+  ],
+  "series": [
+    {
+      "name": "25 Jan 2026",
+      "values": [
+        10605,
+        39065,
+        12886
+      ],
+      "facts": [
+        "F0333",
+        "F1095",
+        "F0336"
+      ]
+    },
+    {
+      "name": "25 Oct 2026",
+      "values": [
+        29089,
+        24423,
+        44219
+      ],
+      "facts": [
+        "F0333",
+        "F1095",
+        "F0336"
+      ]
+    }
+  ],
+  "unit": "USD m",
+  "highlight": "Marketable equity securities",
+  "custom_svg": "visuals/custom/vf154-cash-and-securities.svg"
+}

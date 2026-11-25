@@ -1,0 +1,26 @@
+{
+  "title": "Machine learning cut cooling energy at one site",
+  "subtitle": "Reduction in cooling energy and PUE overhead · Google data centre case study · 2016",
+  "kind": "kpi",
+  "unit": "%",
+  "source": "Google DeepMind, Jul 2016",
+  "x": [
+    "Cooling energy",
+    "PUE overhead"
+  ],
+  "series": [
+    {
+      "name": "Reported reduction",
+      "values": [
+        40.0,
+        15.0
+      ],
+      "facts": [
+        "F0469",
+        "F0470"
+      ]
+    }
+  ],
+  "highlight": "Cooling energy",
+  "custom_svg": "visuals/custom/vf131-cooling-case.svg"
+}

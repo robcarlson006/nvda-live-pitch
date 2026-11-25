@@ -1,0 +1,29 @@
+{
+  "title": "Stargate UAE is one part of a larger campus",
+  "subtitle": "Announced capacity in megawatts · each smaller project sits within the one above",
+  "source": "G42 Stargate UAE announcement · May 2025",
+  "kind": "hbar",
+  "unit": "MW",
+  "x": [
+    "Wider UAE–U.S. AI Campus",
+    "Stargate UAE cluster within campus",
+    "First phase within Stargate UAE"
+  ],
+  "highlight": "Stargate UAE cluster within campus",
+  "series": [
+    {
+      "name": "Announced capacity",
+      "values": [
+        5000,
+        1000,
+        200
+      ],
+      "facts": [
+        "F0738",
+        "F0735",
+        "F0736"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf155-stargate-uae-phases.svg"
+}

@@ -1,0 +1,16 @@
+{
+  "title": "Updated inputs drove most of the target increase",
+  "subtitle": "Change in DCF value (USD per share) · round one to Nov 2026",
+  "kind": "waterfall",
+  "dataset": {
+    "key": "model_target_bridge",
+    "series": [
+      "Value per share",
+      "Discount rate"
+    ]
+  },
+  "highlight": "Base case today",
+  "source": "Team DCF model, Nov 2026",
+  "total": true,
+  "custom_svg": "visuals/custom/v03-target-revision.svg"
+}

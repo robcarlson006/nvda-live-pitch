@@ -1,0 +1,88 @@
+{
+  "title": "US licences did not ensure China sales",
+  "subtitle": "Selected export-control and company milestones · 2022–2026",
+  "source": "NVIDIA Q2 FY27 10-Q, August 2026 · Q1 FY26 results, May 2025 · Q3 FY27 results, November 2026",
+  "kind": "table",
+  "unit": "",
+  "x": [
+    "Aug 2022",
+    "Oct 2023",
+    "Apr 2025",
+    "Aug 2025",
+    "Feb 2026",
+    "Nov 2026"
+  ],
+  "series": [
+    {
+      "name": "Calendar year",
+      "values": [
+        2022,
+        2023,
+        2025,
+        2025,
+        2026,
+        null
+      ],
+      "facts": [
+        "F1015",
+        "F0604",
+        "F0203",
+        "F0776",
+        "F0597",
+        null
+      ]
+    }
+  ],
+  "highlight": "Aug 2025",
+  "custom_svg": "visuals/custom/v07-export-timeline.svg",
+  "annotations": [
+    {
+      "date": "Aug 2022",
+      "event": "US announces semiconductor export restrictions",
+      "context": "The measures target China’s semiconductor and supercomputing industries.",
+      "facts": [
+        "F1015"
+      ]
+    },
+    {
+      "date": "Oct 2023",
+      "event": "US broadens licensing",
+      "context": "Updated requirements cover chips above specified performance thresholds.",
+      "facts": [
+        "F0604"
+      ]
+    },
+    {
+      "date": "Apr 2025",
+      "event": "US requires a licence for H20",
+      "context": "NVIDIA says it was told that H20 exports to China required a US licence.",
+      "facts": [
+        "F0203"
+      ]
+    },
+    {
+      "date": "Aug 2025",
+      "event": "US grants some H20 licences",
+      "context": "NVIDIA says Chinese restrictions still prevented it from selling its inventory.",
+      "facts": [
+        "F0776"
+      ]
+    },
+    {
+      "date": "Feb 2026",
+      "event": "US starts granting limited H200 licences",
+      "context": "NVIDIA says Chinese restrictions still limited sales to licensed customers.",
+      "facts": [
+        "F0597"
+      ]
+    },
+    {
+      "date": "Nov 2026",
+      "event": "NVIDIA guides without China compute sales",
+      "context": "The Q4 FY27 outlook assumes no Data Center compute revenue from China.",
+      "facts": [
+        "F0785"
+      ]
+    }
+  ]
+}

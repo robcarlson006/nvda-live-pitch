@@ -1,0 +1,42 @@
+{
+  "kind": "bar",
+  "title": "Black and Hispanic workforce shares changed little",
+  "subtitle": "Share of NVIDIA US employees by selected race or ethnicity (%) · FY24 to FY26",
+  "unit": "%",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Black or African American",
+      "values": [
+        2.1,
+        2.2,
+        2.0
+      ],
+      "facts": [
+        "F0653",
+        "F0653",
+        "F0653"
+      ]
+    },
+    {
+      "name": "Hispanic or Latino",
+      "values": [
+        3.9,
+        4.1,
+        4.1
+      ],
+      "facts": [
+        "F1065",
+        "F1065",
+        "F1065"
+      ]
+    }
+  ],
+  "highlight": "FY26",
+  "source": "NVIDIA FY26 Sustainability Report · workforce data",
+  "custom_svg": "visuals/custom/vf143-us-workforce-representation.svg"
+}

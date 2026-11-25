@@ -1,0 +1,31 @@
+{
+  "title": "SoftBank deployed NVIDIA and evaluated AMD",
+  "subtitle": "Deployment and evaluation announcements in Japan, 2026",
+  "source": "SoftBank Corp., 16 Feb and 25 May 2026",
+  "x": [
+    "May, deployment reported",
+    "February, joint validation announced"
+  ],
+  "series": [
+    {
+      "name": "Announcement day of month",
+      "values": [
+        25.0,
+        16.0
+      ],
+      "facts": [
+        "F1049",
+        "F1048"
+      ]
+    }
+  ],
+  "highlight": "May, deployment reported",
+  "kind": "table",
+  "unit": "day of month",
+  "custom_svg": "visuals/custom/vf137-softbank-evidence.svg",
+  "annotations": {
+    "deployment_fact": "F0747",
+    "beta_fact": "F0748",
+    "validation_fact": "F0749"
+  }
+}

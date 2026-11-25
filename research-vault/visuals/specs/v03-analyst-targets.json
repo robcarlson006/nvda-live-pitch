@@ -1,0 +1,32 @@
+{
+  "title": "Our base-case value is above analysts’ averages",
+  "subtitle": "NVIDIA value per share (USD) · one-year analyst targets vs DCF and dated close",
+  "kind": "hbar",
+  "unit": "USD",
+  "x": [
+    "Our base-case DCF",
+    "Stock Analysis average",
+    "Team’s Google Finance capture",
+    "Reported close"
+  ],
+  "series": [
+    {
+      "name": "Value per share",
+      "values": [
+        389.99,
+        244.71,
+        233.36,
+        155.38
+      ],
+      "facts": [
+        "F0051",
+        "F0291",
+        "F0993",
+        "F0473"
+      ]
+    }
+  ],
+  "highlight": "Our base-case DCF",
+  "source": "Team DCF model and Google Finance team capture, 24 Nov 2026; Stock Analysis, 24 Nov 2026",
+  "custom_svg": "visuals/custom/v03-analyst-targets.svg"
+}

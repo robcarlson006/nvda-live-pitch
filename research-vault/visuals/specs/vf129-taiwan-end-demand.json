@@ -1,0 +1,22 @@
+{
+  "title": "Taiwan-booked sales can serve US and European buyers",
+  "subtitle": "FY26 Data Center revenue from Taiwan-headquartered direct customers · NVIDIA estimate",
+  "kind": "kpi",
+  "unit": "%",
+  "x": [
+    "Estimated share attributed to end customers in the US and Europe"
+  ],
+  "series": [
+    {
+      "name": "Estimated share",
+      "values": [
+        76
+      ],
+      "facts": [
+        "F0718"
+      ]
+    }
+  ],
+  "highlight": "Estimated share attributed to end customers in the US and Europe",
+  "source": "NVIDIA Form 10-K, 25 Feb 2026"
+}

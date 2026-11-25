@@ -1,0 +1,76 @@
+{
+  "title": "Arizona adds capacity, and Rubin still uses TSMC",
+  "subtitle": "Wafer fabrication and advanced packaging · Evidence through November 2026",
+  "source": "NVIDIA supply-chain update, November 2026 · NVIDIA Arizona update, October 2025 · FY26 10-K, February 2026",
+  "kind": "table",
+  "unit": "",
+  "x": [
+    "Vera Rubin platform",
+    "Amkor agreements"
+  ],
+  "series": [
+    {
+      "name": "TSMC process node, nm",
+      "values": [
+        5,
+        null
+      ],
+      "facts": [
+        "F0191",
+        null
+      ]
+    },
+    {
+      "name": "TSMC process node, nm",
+      "values": [
+        3,
+        null
+      ],
+      "facts": [
+        "F0191",
+        null
+      ]
+    },
+    {
+      "name": "Amkor commitment, nearly USD bn",
+      "values": [
+        null,
+        3
+      ],
+      "facts": [
+        null,
+        "F0192"
+      ]
+    }
+  ],
+  "highlight": "Vera Rubin platform",
+  "custom_svg": "visuals/custom/v07-taiwan-supply.svg",
+  "annotations": {
+    "cards": [
+      {
+        "label": "SHIPPING PLATFORM",
+        "display": "TSMC",
+        "metric": "Vera Rubin fabrication and packaging",
+        "context": "NVIDIA cites 5 nm, 3 nm and CoWoS.",
+        "facts": [
+          "F0191"
+        ]
+      },
+      {
+        "label": "EXPANSION AGREEMENTS",
+        "display": "Nearly $3bn",
+        "metric": "Amkor advanced packaging",
+        "context": "The agreements cover Arizona and South Korea.",
+        "facts": [
+          "F0192"
+        ]
+      }
+    ],
+    "note": "Arizona is producing Blackwell wafers. How much Taiwan volume it could replace is unknown.",
+    "note_facts": [
+      "F0765",
+      "F0592",
+      "F0774"
+    ]
+  }
+}

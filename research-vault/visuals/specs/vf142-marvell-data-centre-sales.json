@@ -1,0 +1,29 @@
+{
+  "title": "Marvell’s data-centre sales grew",
+  "subtitle": "Marvell data-centre end-market revenue · USD millions · selected quarters",
+  "kind": "bar",
+  "unit": "USD m",
+  "x": [
+    "Q2 FY26",
+    "Q1 FY27",
+    "Q2 FY27"
+  ],
+  "series": [
+    {
+      "name": "USD m",
+      "values": [
+        1490.5,
+        1832.7,
+        2171.5
+      ],
+      "facts": [
+        "F0897",
+        "F0898",
+        "F0899"
+      ]
+    }
+  ],
+  "highlight": "Q2 FY27",
+  "source": "Marvell Q2 FY27 results · Aug 2026",
+  "custom_svg": "visuals/custom/vf142-marvell-data-centre-sales.svg"
+}

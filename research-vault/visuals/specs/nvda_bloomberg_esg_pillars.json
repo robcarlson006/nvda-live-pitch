@@ -1,0 +1,16 @@
+{
+  "title": "NVIDIA Bloomberg ESG pillar scores",
+  "subtitle": "FY22\u2013FY25; score out of 10; different from disclosure score",
+  "kind": "line",
+  "unit": "",
+  "dataset": {
+    "key": "nvda_esg_scores",
+    "series": [
+      "Environmental",
+      "Social",
+      "Governance",
+      "Overall ESG score"
+    ]
+  },
+  "source": "Bloomberg FA; export 20 Nov 2026, latest score FY25"
+}

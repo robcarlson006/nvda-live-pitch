@@ -1,0 +1,15 @@
+{
+  "title": "Bloomberg’s social scores measure different things",
+  "subtitle": "NVIDIA annual social disclosure score and social pillar score · FY22 to FY25",
+  "kind": "table",
+  "unit": "",
+  "source": "Bloomberg FA export, 20 Nov 2026",
+  "dataset": {
+    "key": "nvda_esg_scores",
+    "series": [
+      "Social disclosure score",
+      "Social"
+    ]
+  },
+  "custom_svg": "visuals/custom/vf131-esg-disclosure.svg"
+}

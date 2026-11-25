@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="54" font-weight="800" letter-spacing="-0.5">Data-centre electricity demand could double</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">Global annual electricity use · TWh · IEA estimate and base case</text>
+<path d="M150 642H1450V642" fill="none" stroke="#39452f" stroke-width="2"/><rect x="345" y="492" width="280" height="150" rx="8" fill="#76b900" stroke="#76b900" stroke-width="2" stroke-dasharray=""/><text x="485" y="468" fill="#76b900" font-size="65" font-weight="800" text-anchor="middle">415 TWh</text><text x="485" y="696" fill="#f4f6f1" font-size="32" font-weight="650" text-anchor="middle">2024 estimate</text><rect x="975" y="300" width="280" height="342" rx="8" fill="#10150c" stroke="#e8b04a" stroke-width="2" stroke-dasharray="12 7"/><text x="1115" y="276" fill="#e8b04a" font-size="65" font-weight="800" text-anchor="middle">945 TWh</text><text x="1115" y="696" fill="#f4f6f1" font-size="32" font-weight="650" text-anchor="middle">2030 base case</text><rect x="80" y="717" width="1440" height="68" rx="8" fill="#10150c" stroke="#39452f" stroke-width="2" stroke-dasharray=""/><text x="105" y="759" fill="#9aa094" font-size="25" font-weight="600" text-anchor="start">Includes AI and other workloads. The projection depends on how quickly demand grows.</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: IEA, Energy and AI · April 2025</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

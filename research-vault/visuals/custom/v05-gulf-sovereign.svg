@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="54" font-weight="800" letter-spacing="-0.5">Gulf AI projects name NVIDIA as a supplier</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">Selected Saudi and UAE announcements · hardware counts and cluster capacity · May 2025</text>
+<text x="106" y="229" fill="#9aa094" font-size="22" font-weight="750" text-anchor="start">PROJECT</text>
+<text x="540" y="229" fill="#9aa094" font-size="22" font-weight="750" text-anchor="start">ANNOUNCED SCALE</text>
+<text x="1048" y="229" fill="#9aa094" font-size="22" font-weight="750" text-anchor="start">MILESTONE IN ANNOUNCEMENT</text>
+<rect x="80" y="250" width="1440" height="104" rx="10" fill="#10150c" stroke="#39452f"/>
+<rect x="80" y="250" width="6" height="104" rx="3" fill="#e8b04a" stroke="none"/>
+<text x="106" y="294" fill="#f4f6f1" font-size="31" font-weight="750" text-anchor="start">HUMAIN</text>
+<text x="106" y="327" fill="#9aa094" font-size="24" font-weight="500" text-anchor="start">Saudi Arabia</text>
+<text x="540" y="294" fill="#e8b04a" font-size="31" font-weight="800" text-anchor="start">18,000 GB300</text>
+<text x="540" y="327" fill="#9aa094" font-size="24" font-weight="500" text-anchor="start">Grace Blackwell supercomputer</text>
+<text x="1048" y="294" fill="#f4f6f1" font-size="28" font-weight="700" text-anchor="start">First phase planned</text>
+<text x="1048" y="327" fill="#9aa094" font-size="24" font-weight="500" text-anchor="start">NVIDIA · May 2025</text>
+<rect x="80" y="368" width="1440" height="104" rx="10" fill="#10150c" stroke="#39452f"/>
+<rect x="80" y="368" width="6" height="104" rx="3" fill="#e8b04a" stroke="none"/>
+<text x="106" y="412" fill="#f4f6f1" font-size="31" font-weight="750" text-anchor="start">SDAIA</text>
+<text x="106" y="445" fill="#9aa094" font-size="24" font-weight="500" text-anchor="start">Saudi Arabia</text>
+<text x="540" y="412" fill="#e8b04a" font-size="31" font-weight="800" text-anchor="start">Up to 5,000 GPUs</text>
+<text x="540" y="445" fill="#9aa094" font-size="24" font-weight="500" text-anchor="start">Blackwell for a sovereign AI factory</text>
+<text x="1048" y="412" fill="#f4f6f1" font-size="28" font-weight="700" text-anchor="start">Deployment announced</text>
+<text x="1048" y="445" fill="#9aa094" font-size="24" font-weight="500" text-anchor="start">NVIDIA · May 2025</text>
+<rect x="80" y="486" width="1440" height="104" rx="10" fill="#10150c" stroke="#39452f"/>
+<rect x="80" y="486" width="6" height="104" rx="3" fill="#e8b04a" stroke="none"/>
+<text x="106" y="530" fill="#f4f6f1" font-size="31" font-weight="750" text-anchor="start">Stargate UAE</text>
+<text x="106" y="563" fill="#9aa094" font-size="24" font-weight="500" text-anchor="start">United Arab Emirates</text>
+<text x="540" y="530" fill="#e8b04a" font-size="31" font-weight="800" text-anchor="start">200 MW</text>
+<text x="540" y="563" fill="#9aa094" font-size="24" font-weight="500" text-anchor="start">First cluster with NVIDIA systems</text>
+<text x="1048" y="530" fill="#f4f6f1" font-size="28" font-weight="700" text-anchor="start">Expected to go live in 2026</text>
+<text x="1048" y="563" fill="#9aa094" font-size="24" font-weight="500" text-anchor="start">G42 · May 2025</text>
+<rect x="80" y="751" width="1440" height="62" rx="10" fill="#10150c" stroke="#39452f"/><text x="108" y="790" fill="#e8b04a" font-size="24" font-weight="600" text-anchor="start">The announcements give project milestones. Delivery and NVIDIA revenue remain unconfirmed by these sources.</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: NVIDIA · May 2025 | G42 · May 2025</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

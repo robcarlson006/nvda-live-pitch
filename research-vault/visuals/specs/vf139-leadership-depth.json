@@ -1,0 +1,29 @@
+{
+  "title": "Kress brought prior CFO experience",
+  "subtitle": "NVIDIA executive bench and interim succession · filings through November 2026",
+  "kind": "table",
+  "unit": "year",
+  "x": [
+    "Microsoft Server and Tools",
+    "Cisco Business Technology and Operations Finance",
+    "NVIDIA"
+  ],
+  "series": [
+    {
+      "name": "Year each listed CFO role began",
+      "values": [
+        2006,
+        2010,
+        2013
+      ],
+      "facts": [
+        "F0389",
+        "F0387",
+        "F0386"
+      ]
+    }
+  ],
+  "source": "NVIDIA annual report · February 2026 | Form 8-K and announcements · November 2026",
+  "highlight": "NVIDIA",
+  "custom_svg": "visuals/custom/vf139-leadership-depth.svg"
+}

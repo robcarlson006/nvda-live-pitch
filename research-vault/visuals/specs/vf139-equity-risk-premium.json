@@ -1,0 +1,28 @@
+{
+  "title": "The estimated equity risk premium varies",
+  "subtitle": "US implied equity risk premium (%) · selected years, same FCFE method",
+  "kind": "bar",
+  "unit": "%",
+  "x": [
+    "2000",
+    "2007",
+    "2009"
+  ],
+  "series": [
+    {
+      "name": "Implied equity risk premium",
+      "values": [
+        2.87,
+        4.37,
+        4.36
+      ],
+      "facts": [
+        "F0423",
+        "F0424",
+        "F0425"
+      ]
+    }
+  ],
+  "source": "Aswath Damodaran, NYU Stern · November 2026 historical table",
+  "highlight": "2007"
+}

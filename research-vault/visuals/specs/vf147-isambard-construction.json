@@ -1,0 +1,23 @@
+{
+  "title": "Bristol attributes lower emissions to its modular build",
+  "subtitle": "Estimated reduction in Isambard-AI construction emissions · percent · launch disclosure",
+  "kind": "kpi",
+  "unit": "%",
+  "source": "University of Bristol, July 2025",
+  "x": [
+    "Isambard-AI modular construction"
+  ],
+  "series": [
+    {
+      "name": "Estimated construction emissions reduction",
+      "values": [
+        72
+      ],
+      "facts": [
+        "F0761"
+      ]
+    }
+  ],
+  "highlight": "Isambard-AI modular construction",
+  "custom_svg": "visuals/custom/vf147-isambard-construction.svg"
+}

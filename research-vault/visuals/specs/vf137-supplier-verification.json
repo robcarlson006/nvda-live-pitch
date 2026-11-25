@@ -1,0 +1,31 @@
+{
+  "title": "Supplier checks have limits",
+  "subtitle": "Labour audit review coverage and conflict minerals verification, FY26",
+  "source": "NVIDIA FY26 Modern Slavery Statement, UK Home Office and RMI, accessed Nov 2026",
+  "x": [
+    "Strategic suppliers"
+  ],
+  "series": [
+    {
+      "name": "Audit review coverage in FY26",
+      "values": [
+        45.0
+      ],
+      "facts": [
+        "F0632"
+      ]
+    }
+  ],
+  "highlight": "Strategic suppliers",
+  "kind": "table",
+  "unit": "%",
+  "custom_svg": "visuals/custom/vf137-supplier-verification.svg",
+  "annotations": {
+    "statement_requirement_fact": "F0641",
+    "labour_findings_fact": "F0635",
+    "smelter_assessment_facts": [
+      "F0668",
+      "F0669"
+    ]
+  }
+}

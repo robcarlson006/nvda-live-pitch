@@ -1,0 +1,26 @@
+{
+  "kind": "hbar",
+  "title": "Broadcom’s AI semiconductor revenue rose",
+  "subtitle": "Reported AI semiconductor revenue · USD billions · first half of Broadcom FY2026",
+  "unit": "USD bn",
+  "x": [
+    "Q1 FY2026",
+    "Q2 FY2026"
+  ],
+  "highlight": "Q2 FY2026",
+  "series": [
+    {
+      "name": "Broadcom AI semiconductor revenue",
+      "values": [
+        8.4,
+        10.8
+      ],
+      "facts": [
+        "F0896",
+        "F0486"
+      ]
+    }
+  ],
+  "source": "Broadcom quarterly results · Mar and Jun 2026",
+  "custom_svg": "visuals/custom/v06-broadcom-ai.svg"
+}

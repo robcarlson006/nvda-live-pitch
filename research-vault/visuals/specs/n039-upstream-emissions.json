@@ -1,0 +1,27 @@
+{
+  "title": "Reported upstream emissions remain concentrated",
+  "subtitle": "FY26 \u00b7 Selected upstream categories; product use excluded from this chart",
+  "kind": "hbar",
+  "unit": "tonnes CO2e",
+  "x": [
+    "Purchased goods and services",
+    "Capital goods",
+    "Upstream transport"
+  ],
+  "series": [
+    {
+      "name": "Reported emissions",
+      "values": [
+        9301735,
+        954865,
+        137747
+      ],
+      "facts": [
+        "F0835",
+        "F0836",
+        "F0837"
+      ]
+    }
+  ],
+  "source": "NVIDIA FY2026 Sustainability Report, sustainability indicators, p.30"
+}

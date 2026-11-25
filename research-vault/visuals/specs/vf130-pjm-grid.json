@@ -1,0 +1,23 @@
+{
+  "title": "Grid forecasts discount uncertain projects",
+  "subtitle": "PJM regional load outlook  ·  Annual report and forecast methodology",
+  "kind": "kpi",
+  "unit": "GW",
+  "x": [
+    "Projected data-centre load growth"
+  ],
+  "series": [
+    {
+      "name": "Upper estimate",
+      "values": [
+        30
+      ],
+      "facts": [
+        "F0501"
+      ]
+    }
+  ],
+  "highlight": "Projected data-centre load growth",
+  "source": "PJM 2025 annual report and Feb 2026 load forecast",
+  "custom_svg": "visuals/custom/vf130-pjm-grid.svg"
+}

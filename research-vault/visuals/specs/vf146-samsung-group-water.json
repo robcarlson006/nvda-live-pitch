@@ -1,0 +1,28 @@
+{
+  "title": "Samsung withdrew more water each year",
+  "subtitle": "Samsung Electronics group-wide water withdrawal · thousand tonnes · 2023–2025",
+  "kind": "bar",
+  "source": "Samsung Electronics Sustainability Report · Jun 2026",
+  "unit": "thousand tonnes",
+  "x": [
+    "2023",
+    "2024",
+    "2025"
+  ],
+  "series": [
+    {
+      "name": "Water withdrawal",
+      "values": [
+        177361,
+        188540,
+        197720
+      ],
+      "facts": [
+        "F1068",
+        "F1069",
+        "F0813"
+      ]
+    }
+  ],
+  "highlight": "2025"
+}

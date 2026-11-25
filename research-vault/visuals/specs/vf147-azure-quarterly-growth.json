@@ -1,0 +1,25 @@
+{
+  "title": "Azure and other cloud services grew faster by June",
+  "subtitle": "Reported revenue growth year on year · percent · selected Microsoft FY26 quarters",
+  "kind": "bar",
+  "unit": "%",
+  "source": "Microsoft earnings releases, January and July 2026",
+  "x": [
+    "Q2 FY26 · Dec 2025",
+    "Q4 FY26 · Jun 2026"
+  ],
+  "series": [
+    {
+      "name": "Azure and other cloud services revenue growth",
+      "values": [
+        39,
+        43
+      ],
+      "facts": [
+        "F0273",
+        "F0272"
+      ]
+    }
+  ],
+  "highlight": "Q4 FY26 · Jun 2026"
+}

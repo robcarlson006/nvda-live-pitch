@@ -1,0 +1,41 @@
+{
+  "title": "Gulf AI power plans leave emissions unknown",
+  "subtitle": "Announced capacity (MW or GW) · Saudi and UAE project plans · May 2025",
+  "kind": "table",
+  "source": "NVIDIA & G42 · May 2025",
+  "x": [
+    "Saudi HUMAIN AI factories",
+    "UAE–U.S. AI Campus",
+    "First Stargate UAE cluster within campus"
+  ],
+  "series": [
+    {
+      "name": "Announced MW",
+      "values": [
+        500,
+        null,
+        200
+      ],
+      "facts": [
+        "F0730",
+        "",
+        "F0736"
+      ]
+    },
+    {
+      "name": "Announced GW",
+      "values": [
+        null,
+        5,
+        null
+      ],
+      "facts": [
+        "",
+        "F0738",
+        ""
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf133-gulf-energy-plans.svg",
+  "highlight": "UAE–U.S. AI Campus"
+}

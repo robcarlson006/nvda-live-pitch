@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="46" font-weight="800" letter-spacing="-0.5">Samsung’s device sites discharged most water they withdrew</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">Samsung Device eXperience division · Thousand tonnes of water · Calendar 2025</text>
+<text x="80" y="308" fill="#f4f6f1" font-size="32" font-weight="750" text-anchor="start">Water withdrawn</text>
+<text x="1520" y="308" fill="#f4f6f1" font-size="50" font-weight="800" text-anchor="end">18,710</text>
+<rect x="80" y="379" width="1169.7017637626936" height="110" fill="#39452f" rx="0" stroke="none"/>
+<rect x="1249.7017637626936" y="379" width="270.29823623730636" height="110" fill="#76b900" rx="0" stroke="none"/>
+<text x="110" y="446" fill="#f4f6f1" font-size="43" font-weight="800" text-anchor="start">15,198</text>
+<text x="1276.7017637626936" y="446" fill="#0b0d0a" font-size="41" font-weight="800" text-anchor="start">3,512</text>
+<text x="80" y="546" fill="#9aa094" font-size="29" font-weight="700" text-anchor="start">Discharged</text>
+<text x="1249.7017637626936" y="546" fill="#b7f04a" font-size="29" font-weight="750" text-anchor="start">Consumed</text>
+<line x1="80" x2="1520" y1="658" y2="658" stroke="#39452f" stroke-width="2"/>
+<text x="80" y="716" fill="#9aa094" font-size="27" font-weight="500" text-anchor="start">These figures cover Samsung’s device division. Fab water use is reported separately.</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: Samsung Electronics Sustainability Report · June 2026</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

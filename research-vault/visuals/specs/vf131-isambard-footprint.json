@@ -1,0 +1,37 @@
+{
+  "title": "Bristol reports low overhead at Isambard-AI",
+  "subtitle": "Power usage effectiveness (ratio) and construction emissions reduction (%) · 2025 and 2026",
+  "kind": "table",
+  "unit": "",
+  "source": "University of Bristol, Jul 2025 and 2026",
+  "x": [
+    "Power usage effectiveness",
+    "Construction emissions"
+  ],
+  "series": [
+    {
+      "name": "Ratio",
+      "values": [
+        1.08,
+        null
+      ],
+      "facts": [
+        "F0759",
+        null
+      ]
+    },
+    {
+      "name": "Reduction (%)",
+      "values": [
+        null,
+        72
+      ],
+      "facts": [
+        null,
+        "F0761"
+      ]
+    }
+  ],
+  "highlight": "Power usage effectiveness",
+  "custom_svg": "visuals/custom/vf131-isambard-footprint.svg"
+}

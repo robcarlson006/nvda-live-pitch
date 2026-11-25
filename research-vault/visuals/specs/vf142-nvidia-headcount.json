@@ -1,0 +1,25 @@
+{
+  "title": "NVIDIA’s workforce grew sharply",
+  "subtitle": "NVIDIA employee headcount · FY22 and FY26",
+  "kind": "bar",
+  "unit": "",
+  "x": [
+    "FY22",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "",
+      "values": [
+        22473,
+        42000
+      ],
+      "facts": [
+        "F0057",
+        "F0056"
+      ]
+    }
+  ],
+  "highlight": "FY26",
+  "source": "Bloomberg FA ESG · 20 Nov 2026"
+}

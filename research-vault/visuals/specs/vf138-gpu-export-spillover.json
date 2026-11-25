@@ -1,0 +1,27 @@
+{
+  "title": "GPU export curbs can spill into networking",
+  "subtitle": "Reported unshipped H20 revenue and risks NVIDIA identified · 2025–2026",
+  "kind": "table",
+  "unit": "USD bn",
+  "source": "NVIDIA Q1 FY26 results, May 2025 · Q2 FY27 10-Q, Aug 2026",
+  "x": [
+    "H20 revenue NVIDIA could not ship"
+  ],
+  "series": [
+    {
+      "name": "USD bn",
+      "values": [
+        2.5
+      ],
+      "facts": [
+        "F0206"
+      ]
+    }
+  ],
+  "highlight": "H20 revenue NVIDIA could not ship",
+  "custom_svg": "visuals/custom/vf138-gpu-export-spillover.svg",
+  "annotations": {
+    "F0784": "NVIDIA warned of networking spillover",
+    "F0779": "NVIDIA linked China foreclosure to stronger rival ecosystems"
+  }
+}

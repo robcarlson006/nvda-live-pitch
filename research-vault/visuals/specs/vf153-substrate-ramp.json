@@ -1,0 +1,51 @@
+{
+  "title": "New substrate capacity ramps into 2028",
+  "subtitle": "First capacity and expansion milestones · plans announced Oct–Nov 2026",
+  "kind": "table",
+  "unit": "x",
+  "x": [
+    "IBIDEN Ono plant target"
+  ],
+  "series": [
+    {
+      "name": "First capacity and expansion milestones",
+      "values": [
+        3
+      ],
+      "facts": [
+        "F0767"
+      ]
+    }
+  ],
+  "highlight": "IBIDEN Ono plant target",
+  "source": "NVIDIA Newsroom, Oct and Nov 2026",
+  "custom_svg": "visuals/custom/vf153-substrate-ramp.svg",
+  "display": {
+    "rows": [
+      {
+        "supplier": "Samsung Electro-Mechanics",
+        "location": "South Korea",
+        "first_capacity": "Existing capacity",
+        "milestone": "Available at announcement"
+      },
+      {
+        "supplier": "Unimicron",
+        "location": "Taiwan",
+        "first_capacity": "Q2 2027",
+        "milestone": "Full capacity by mid-2028"
+      },
+      {
+        "supplier": "Kinsus",
+        "location": "Taiwan",
+        "first_capacity": "H2 2027",
+        "milestone": "Added capacity targeted for Q3 2028"
+      },
+      {
+        "supplier": "IBIDEN",
+        "location": "Japan",
+        "first_capacity": "Q1 2028",
+        "milestone": "Plant target: 3× current capacity"
+      }
+    ]
+  }
+}

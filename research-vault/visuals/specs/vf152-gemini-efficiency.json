@@ -1,0 +1,26 @@
+{
+  "title": "Google cut energy per Gemini text prompt",
+  "subtitle": "Fold reduction per median Gemini Apps text prompt · May 2024 to May 2025",
+  "kind": "kpi",
+  "unit": "x",
+  "x": [
+    "Energy",
+    "Greenhouse gas emissions"
+  ],
+  "series": [
+    {
+      "name": "Fold reduction",
+      "values": [
+        33.0,
+        44.0
+      ],
+      "facts": [
+        "F0039",
+        "F1087"
+      ]
+    }
+  ],
+  "highlight": "Energy",
+  "source": "Google Research · Aug 2025",
+  "custom_svg": "visuals/custom/vf152-gemini-efficiency.svg"
+}

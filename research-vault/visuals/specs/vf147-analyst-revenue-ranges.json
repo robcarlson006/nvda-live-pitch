@@ -1,0 +1,48 @@
+{
+  "title": "Analysts disagree far more about FY28 revenue",
+  "subtitle": "Low, average and high published revenue estimates · USD billions · FY27 and FY28",
+  "kind": "table",
+  "unit": "USD bn",
+  "source": "Yahoo Finance, November 2026",
+  "x": [
+    "FY27",
+    "FY28"
+  ],
+  "series": [
+    {
+      "name": "Low estimate",
+      "values": [
+        412.45,
+        546
+      ],
+      "facts": [
+        "F0302",
+        "F0304"
+      ]
+    },
+    {
+      "name": "Average estimate",
+      "values": [
+        423.66,
+        726.02
+      ],
+      "facts": [
+        "F0300",
+        "F0301"
+      ]
+    },
+    {
+      "name": "High estimate",
+      "values": [
+        431.68,
+        778.47
+      ],
+      "facts": [
+        "F0303",
+        "F0305"
+      ]
+    }
+  ],
+  "highlight": "FY28",
+  "custom_svg": "visuals/custom/vf147-analyst-revenue-ranges.svg"
+}

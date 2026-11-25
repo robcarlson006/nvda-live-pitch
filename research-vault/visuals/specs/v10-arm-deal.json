@@ -1,0 +1,36 @@
+{
+  "title": "Regulatory hurdles ended NVIDIA’s Arm deal",
+  "subtitle": "Cash retained and licence duration · deal termination, February 2022",
+  "kind": "table",
+  "unit": "",
+  "x": [
+    "Outcome on termination"
+  ],
+  "series": [
+    {
+      "name": "SoftBank kept prepayment",
+      "values": [
+        1.25
+      ],
+      "facts": [
+        "F0217"
+      ]
+    },
+    {
+      "name": "NVIDIA retained Arm licence",
+      "values": [
+        20
+      ],
+      "facts": [
+        "F0218"
+      ]
+    }
+  ],
+  "highlight": "NVIDIA retained Arm licence",
+  "source": "NVIDIA and SoftBank, Feb 2022 · UK CMA, Nov 2021 and Feb 2022",
+  "custom_svg": "visuals/custom/v10-arm-deal.svg",
+  "units": {
+    "SoftBank kept prepayment": "USD bn",
+    "NVIDIA retained Arm licence": "years"
+  }
+}

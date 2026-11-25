@@ -1,0 +1,31 @@
+{
+  "kind": "table",
+  "title": "Water reuse and consumption track different flows",
+  "subtitle": "Samsung Electronics water disclosures (thousand tonnes) · 2025",
+  "source": "Samsung Electronics Sustainability Report, Jun 2026 · Li et al., Mar 2025",
+  "x": [
+    "Device division withdrawal",
+    "Device division discharge",
+    "Device division consumption",
+    "Company-wide reuse"
+  ],
+  "series": [
+    {
+      "name": "Thousand tonnes",
+      "values": [
+        18710,
+        15198,
+        3512,
+        134011
+      ],
+      "facts": [
+        "F0815",
+        "F0817",
+        "F0816",
+        "F0821"
+      ]
+    }
+  ],
+  "highlight": "Device division consumption",
+  "custom_svg": "visuals/custom/vf132-water-reuse-accounting.svg"
+}

@@ -1,0 +1,48 @@
+{
+  "kind": "hbar",
+  "title": "Data centres could take a larger share of U.S. power",
+  "subtitle": "Share of total U.S. electricity use · estimated in 2023, projected for 2028",
+  "source": "Lawrence Berkeley National Laboratory via U.S. Department of Energy · Dec 2024",
+  "unit": "%",
+  "x": [
+    "2023",
+    "2028"
+  ],
+  "series": [
+    {
+      "name": "Estimate",
+      "values": [
+        4.4,
+        null
+      ],
+      "facts": [
+        "F0499",
+        null
+      ]
+    },
+    {
+      "name": "Projection lower bound",
+      "values": [
+        null,
+        6.7
+      ],
+      "facts": [
+        null,
+        "F0500"
+      ]
+    },
+    {
+      "name": "Projection upper bound",
+      "values": [
+        null,
+        12.0
+      ],
+      "facts": [
+        null,
+        "F1058"
+      ]
+    }
+  ],
+  "highlight": "2028",
+  "custom_svg": "visuals/custom/vf141-us-electricity-share.svg"
+}

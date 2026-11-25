@@ -1,0 +1,26 @@
+{
+  "title": "NVIDIA disclosed a maximum loss on some AI stakes",
+  "subtitle": "Infrastructure-financier investments · USD billions · July 2026",
+  "kind": "kpi",
+  "unit": "USD bn",
+  "x": [
+    "Infrastructure-financier investments",
+    "Maximum loss exposure"
+  ],
+  "series": [
+    {
+      "name": "Disclosed measure",
+      "values": [
+        3.3,
+        4.7
+      ],
+      "facts": [
+        "F0622",
+        "F0623"
+      ]
+    }
+  ],
+  "highlight": "Maximum loss exposure",
+  "source": "NVIDIA Form 10-Q · August 2026",
+  "custom_svg": "visuals/custom/vf145-infrastructure-financier-exposure.svg"
+}

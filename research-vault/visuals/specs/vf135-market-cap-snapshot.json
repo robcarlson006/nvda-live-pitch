@@ -1,0 +1,28 @@
+{
+  "title": "Apple was worth more than NVIDIA",
+  "subtitle": "Market capitalisation in USD trillions · 24 November 2026 snapshot",
+  "kind": "bar",
+  "unit": "USD tn",
+  "source": "Stock Analysis, 24 November 2026",
+  "x": [
+    "Apple",
+    "NVIDIA",
+    "Microsoft"
+  ],
+  "series": [
+    {
+      "name": "Market capitalisation",
+      "values": [
+        5.15,
+        3.75,
+        3.68
+      ],
+      "facts": [
+        "F0430",
+        "F0429",
+        "F0431"
+      ]
+    }
+  ],
+  "highlight": "NVIDIA"
+}

@@ -1,0 +1,29 @@
+{
+  "title": "Marvell can build around a customer’s chip design",
+  "subtitle": "Custom accelerator roles and reported Data Center sales, Q2 FY27",
+  "source": "Marvell product disclosure, accessed Nov 2026, and results, Aug 2026",
+  "x": [
+    "Marvell Data Center revenue"
+  ],
+  "series": [
+    {
+      "name": "Reported Data Center sales in Q2 FY27",
+      "values": [
+        2171.5
+      ],
+      "facts": [
+        "F0899"
+      ]
+    }
+  ],
+  "highlight": "Marvell Data Center revenue",
+  "kind": "table",
+  "unit": "USD m",
+  "custom_svg": "visuals/custom/vf137-marvell-roles.svg",
+  "annotations": {
+    "customer_compute_fact": "F0901",
+    "supplier_roles_fact": "F1050",
+    "engagement_models_fact": "F0902",
+    "sales_scope": "Data Center end market, including businesses beyond custom AI accelerators"
+  }
+}

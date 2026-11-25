@@ -1,0 +1,29 @@
+{
+  "title": "NVIDIA said its board inquiry would continue",
+  "subtitle": "Board investigation and government inquiries · 23 November 2026",
+  "kind": "table",
+  "unit": "day of November",
+  "source": "NVIDIA Newsroom · 23 Nov 2026",
+  "x": [
+    "Company statement"
+  ],
+  "series": [
+    {
+      "name": "day of November",
+      "values": [
+        23
+      ],
+      "facts": [
+        "F0398"
+      ]
+    }
+  ],
+  "highlight": "Company statement",
+  "custom_svg": "visuals/custom/vf138-investigation-status.svg",
+  "annotations": {
+    "F0070": "Independent director committee retained counsel",
+    "F0071": "Company said the inquiry would continue",
+    "F0072": "Company said cooperation would continue",
+    "F0575": "Board assessment after government input"
+  }
+}

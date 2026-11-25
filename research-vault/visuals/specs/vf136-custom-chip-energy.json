@@ -1,0 +1,26 @@
+{
+  "title": "Custom chip efficiency depends on the workload",
+  "subtitle": "Vendor disclosures · relative efficiency and chip thermal design power",
+  "kind": "kpi",
+  "source": "Meta · May 2023 | Google Cloud TPU documentation · accessed Nov 2026",
+  "unit": "",
+  "x": [
+    "Trillium vs TPU v5e: energy efficiency gain",
+    "MTIA v1: thermal design power (W)"
+  ],
+  "series": [
+    {
+      "name": "Vendor metrics (different units)",
+      "values": [
+        67,
+        25
+      ],
+      "facts": [
+        "F0156",
+        "F0160"
+      ]
+    }
+  ],
+  "highlight": "Trillium vs TPU v5e: energy efficiency gain",
+  "custom_svg": "visuals/custom/vf136-custom-chip-energy.svg"
+}

@@ -1,0 +1,28 @@
+{
+  "title": "NVIDIA’s largest direct buyer took a bigger share",
+  "subtitle": "Largest disclosed direct customer, share of total NVIDIA revenue, FY24–FY26",
+  "kind": "bar",
+  "source": "NVIDIA FY26 Form 10-K, Feb 2026",
+  "unit": "%",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Share of total revenue",
+      "values": [
+        13.0,
+        12.0,
+        22.0
+      ],
+      "facts": [
+        "F0710",
+        "F1080",
+        "F0709"
+      ]
+    }
+  ],
+  "highlight": "FY26"
+}

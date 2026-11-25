@@ -1,0 +1,34 @@
+{
+  "title": "Automotive sales edged higher in FY26",
+  "subtitle": "Standalone NVIDIA Automotive revenue · USD millions · Q4 FY25 to Q4 FY26",
+  "kind": "bar",
+  "source": "NVIDIA earnings releases · Feb 2025 to Feb 2026",
+  "unit": "USD m",
+  "x": [
+    "Q4 FY25",
+    "Q1 FY26",
+    "Q2 FY26",
+    "Q3 FY26",
+    "Q4 FY26"
+  ],
+  "series": [
+    {
+      "name": "Automotive revenue",
+      "values": [
+        570,
+        567,
+        586,
+        592,
+        604
+      ],
+      "facts": [
+        "F0886",
+        "F0889",
+        "F0145",
+        "F0142",
+        "F0139"
+      ]
+    }
+  ],
+  "highlight": "Q4 FY26"
+}

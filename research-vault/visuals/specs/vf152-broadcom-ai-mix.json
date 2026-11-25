@@ -1,0 +1,40 @@
+{
+  "title": "AI is a major part of Broadcom’s chip sales",
+  "subtitle": "Reported revenue · USD · Q2 FY26",
+  "kind": "hbar",
+  "unit": "USD m",
+  "x": [
+    "Semiconductor Solutions",
+    "Infrastructure Software"
+  ],
+  "series": [
+    {
+      "name": "Segment revenue",
+      "values": [
+        15009.0,
+        7178.0
+      ],
+      "facts": [
+        "F1090",
+        "F1091"
+      ]
+    },
+    {
+      "name": "Of which AI semiconductors",
+      "values": [
+        10.8,
+        null
+      ],
+      "facts": [
+        "F0486",
+        null
+      ]
+    }
+  ],
+  "highlight": "Semiconductor Solutions",
+  "source": "Broadcom · Jun 2026",
+  "units": {
+    "Of which AI semiconductors": "USD bn"
+  },
+  "custom_svg": "visuals/custom/vf152-broadcom-ai-mix.svg"
+}

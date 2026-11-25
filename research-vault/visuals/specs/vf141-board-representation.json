@@ -1,0 +1,28 @@
+{
+  "kind": "bar",
+  "title": "Women’s share of NVIDIA’s board fell",
+  "subtitle": "Share of board seats held by women · fiscal-year labels as reported",
+  "source": "NVIDIA FY26 Sustainability Report · board data as of 12 May 2026",
+  "unit": "%",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Board seats held by women",
+      "values": [
+        33.3,
+        38.5,
+        30.0
+      ],
+      "facts": [
+        "F1057",
+        "F0654",
+        "F0655"
+      ]
+    }
+  ],
+  "highlight": "FY26"
+}

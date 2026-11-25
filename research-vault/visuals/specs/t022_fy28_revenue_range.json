@@ -1,0 +1,27 @@
+{
+  "title": "Analysts disagree on revenue",
+  "subtitle": "FY28 revenue estimates; labels rounded to nearest billion",
+  "kind": "bar",
+  "unit": "USD bn",
+  "x": [
+    "Low",
+    "Average",
+    "High"
+  ],
+  "series": [
+    {
+      "name": "Revenue estimate",
+      "values": [
+        546,
+        726.02,
+        778.47
+      ],
+      "facts": [
+        "F0304",
+        "F0301",
+        "F0305"
+      ]
+    }
+  ],
+  "source": "Yahoo Finance analyst estimates; snapshot accessed 25 Nov 2026"
+}

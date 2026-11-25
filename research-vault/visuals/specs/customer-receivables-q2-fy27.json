@@ -1,0 +1,33 @@
+{
+  "title": "Receivables concentrated among direct customers",
+  "subtitle": "Share of accounts receivable, July 26, 2026; not revenue shares",
+  "kind": "bar",
+  "unit": "%",
+  "x": [
+    "Customer A",
+    "Customer B",
+    "Customer C",
+    "Customer D",
+    "Customer E"
+  ],
+  "series": [
+    {
+      "name": "Receivables share",
+      "values": [
+        22,
+        14,
+        13,
+        11,
+        10
+      ],
+      "facts": [
+        "F0719",
+        "F0720",
+        "F0721",
+        "F0722",
+        "F0723"
+      ]
+    }
+  ],
+  "source": "NVIDIA Form 10-Q, Q2 FY27, credit risk note; identities undisclosed"
+}

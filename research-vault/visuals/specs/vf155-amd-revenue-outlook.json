@@ -1,0 +1,27 @@
+{
+  "title": "AMD guided to higher company-wide sales",
+  "subtitle": "AMD total revenue · USD billions · Q3 actual and Q4 guidance, calendar 2026",
+  "source": "AMD Q3 results and Q4 guidance · 3 Nov 2026",
+  "kind": "bar",
+  "unit": "USD bn",
+  "x": [
+    "Q3 2026 actual",
+    "Q4 2026 guidance"
+  ],
+  "highlight": "Q3 2026 actual",
+  "series": [
+    {
+      "name": "Company-wide revenue",
+      "values": [
+        13.4,
+        17
+      ],
+      "facts": [
+        "F0490",
+        "F0493"
+      ]
+    }
+  ],
+  "guidance_tolerance_pct": 3,
+  "custom_svg": "visuals/custom/vf155-amd-revenue-outlook.svg"
+}

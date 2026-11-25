@@ -1,0 +1,47 @@
+{
+  "title": "NVIDIA reports pay ratios close to parity",
+  "subtitle": "Company-reported pay ratios · pay relative to each comparison group · FY26",
+  "kind": "table",
+  "source": "NVIDIA FY26 Sustainability Report",
+  "x": [
+    "Women vs men",
+    "Asian vs White employees",
+    "Black or African American vs White employees",
+    "Hispanic or Latino vs White employees"
+  ],
+  "series": [
+    {
+      "name": "Reported group",
+      "values": [
+        99.5,
+        100.1,
+        100,
+        99.3
+      ],
+      "facts": [
+        "F0652",
+        "F1100",
+        "F1101",
+        "F1102"
+      ]
+    },
+    {
+      "name": "Comparison basis",
+      "values": [
+        100,
+        100,
+        100,
+        100
+      ],
+      "facts": [
+        "F0652",
+        "F1100",
+        "F1101",
+        "F1102"
+      ]
+    }
+  ],
+  "unit": "ratio per 100",
+  "highlight": "Women vs men",
+  "custom_svg": "visuals/custom/vf154-pay-ratios.svg"
+}

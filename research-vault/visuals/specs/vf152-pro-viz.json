@@ -1,0 +1,35 @@
+{
+  "title": "Professional Visualization sales climbed",
+  "subtitle": "Originally reported revenue · USD · Q4 FY25 to Q4 FY26",
+  "kind": "bar",
+  "unit": "USD m",
+  "x": [
+    "Q4 FY25",
+    "Q1 FY26",
+    "Q2 FY26",
+    "Q3 FY26",
+    "Q4 FY26"
+  ],
+  "series": [
+    {
+      "name": "Revenue in USD millions",
+      "values": [
+        511,
+        509,
+        601,
+        760,
+        1300
+      ],
+      "facts": [
+        "F0885",
+        "F0888",
+        "F0144",
+        "F0141",
+        "F0138"
+      ]
+    }
+  ],
+  "highlight": "Q4 FY26",
+  "source": "NVIDIA earnings releases · Feb 2025 to Feb 2026",
+  "custom_svg": "visuals/custom/vf152-pro-viz.svg"
+}

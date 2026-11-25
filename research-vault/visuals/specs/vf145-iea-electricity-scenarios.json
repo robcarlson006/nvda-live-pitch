@@ -1,0 +1,32 @@
+{
+  "title": "AI adoption could swing data-centre power demand",
+  "subtitle": "IEA scenarios for global data-centre electricity use in 2035 · TWh",
+  "kind": "hbar",
+  "unit": "TWh",
+  "x": [
+    "Headwinds",
+    "High efficiency",
+    "Base case",
+    "Lift-off"
+  ],
+  "series": [
+    {
+      "name": "Projected electricity use",
+      "values": [
+        700,
+        970,
+        1200,
+        1700
+      ],
+      "facts": [
+        "F0010",
+        "F0009",
+        "F1066",
+        "F1067"
+      ]
+    }
+  ],
+  "highlight": "Base case",
+  "source": "IEA, Energy and AI · April 2025",
+  "custom_svg": "visuals/custom/vf145-iea-electricity-scenarios.svg"
+}

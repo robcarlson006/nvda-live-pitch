@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="54" font-weight="800" letter-spacing="-0.5">Employees put NVIDIA near the top of the Fortune list</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">Fortune Best Companies to Work For · US employee survey · 2026</text>
+<rect x="80" y="239" width="615" height="360" fill="#10150c" rx="12" stroke="#39452f"/>
+<rect x="725" y="239" width="795" height="360" fill="#10150c" rx="12" stroke="#39452f"/>
+<rect x="80" y="239" width="615" height="5" fill="#76b900" rx="2" stroke="none"/>
+<text x="118" y="335" fill="#9aa094" font-size="31" font-weight="700" text-anchor="start">NVIDIA’s position</text>
+<text x="118" y="475" fill="#b7f04a" font-size="108" font-weight="800" text-anchor="start">6th</text>
+<text x="765" y="335" fill="#9aa094" font-size="30" font-weight="650" text-anchor="start">Survey responses across eligible employers</text>
+<text x="765" y="475" fill="#f4f6f1" font-size="77" font-weight="800" text-anchor="start">Nearly 640,000</text>
+<line x1="80" x2="1520" y1="671" y2="671" stroke="#39452f" stroke-width="2"/>
+<text x="80" y="728" fill="#9aa094" font-size="27" font-weight="500" text-anchor="start">The ranking reflects employee feedback from eligible US employers.</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: Great Place To Work · April 2026</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

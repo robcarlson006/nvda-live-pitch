@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="54" font-weight="800" letter-spacing="-0.5">Updated inputs drove most of the target increase</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">Change in DCF value (USD per share) · round one to Nov 2026</text>
+<line x1="80" y1="652" x2="1520" y2="652" stroke="#2d3926" stroke-width="2" stroke-dasharray=""/>
+<rect x="164" y="433.92" width="172" height="218.07999999999998" rx="7" fill="#a3ad9c" stroke="none" stroke-width="2"/>
+<text x="250" y="414.92" fill="#f4f6f1" font-size="42" font-weight="780" text-anchor="middle">$232.00</text>
+<line x1="337" y1="433.92" x2="528" y2="433.92" stroke="#a3ad9c" stroke-width="2" stroke-dasharray="6 7"/>
+<text x="250" y="706" fill="#f4f6f1" font-size="27" font-weight="700" text-anchor="middle">Round-one target</text>
+<text x="250" y="743" fill="#9aa094" font-size="22" font-weight="500" text-anchor="middle">11.1% discount rate</text>
+<rect x="529" y="312.14" width="172" height="121.78000000000003" rx="7" fill="#b7f04a" stroke="none" stroke-width="2"/>
+<text x="615" y="293.14" fill="#f4f6f1" font-size="42" font-weight="780" text-anchor="middle">+$129.55</text>
+<line x1="702" y1="312.14" x2="893" y2="312.14" stroke="#a3ad9c" stroke-width="2" stroke-dasharray="6 7"/>
+<text x="615" y="706" fill="#f4f6f1" font-size="27" font-weight="700" text-anchor="middle">Updated inputs</text>
+<text x="615" y="743" fill="#9aa094" font-size="22" font-weight="500" text-anchor="middle">Hold at 11.1%</text>
+<rect x="894" y="285.41" width="172" height="26.72999999999996" rx="7" fill="#e8b04a" stroke="none" stroke-width="2"/>
+<text x="980" y="266.41" fill="#f4f6f1" font-size="42" font-weight="780" text-anchor="middle">+$28.44</text>
+<line x1="1067" y1="285.41" x2="1258" y2="285.41" stroke="#a3ad9c" stroke-width="2" stroke-dasharray="6 7"/>
+<text x="980" y="706" fill="#f4f6f1" font-size="27" font-weight="700" text-anchor="middle">Lower discount rate</text>
+<text x="980" y="743" fill="#9aa094" font-size="22" font-weight="500" text-anchor="middle">Move to 10.55%</text>
+<rect x="1259" y="285.41" width="172" height="366.59" rx="7" fill="#76b900" stroke="none" stroke-width="2"/>
+<text x="1345" y="266.41" fill="#f4f6f1" font-size="42" font-weight="780" text-anchor="middle">$389.99</text>
+<text x="1345" y="706" fill="#f4f6f1" font-size="27" font-weight="700" text-anchor="middle">Current base case</text>
+<text x="1345" y="743" fill="#9aa094" font-size="22" font-weight="500" text-anchor="middle">10.55% discount rate</text>
+<text x="80" y="795" fill="#9aa094" font-size="22" font-weight="500" text-anchor="start">The team reported the round-one target and rate. The original model is unavailable.</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: Team DCF model, Nov 2026</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

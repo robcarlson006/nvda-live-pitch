@@ -1,0 +1,14 @@
+{
+  "title": "Reported Scope 3 emissions kept rising",
+  "subtitle": "NVIDIA value-chain emissions · million metric tonnes CO₂e · FY24–FY26",
+  "kind": "bar",
+  "source": "Bloomberg FA · Nov 2026 • NVIDIA FY26 Sustainability Report",
+  "highlight": "FY26",
+  "dataset": {
+    "key": "nvda_emissions",
+    "series": [
+      "Scope 3"
+    ]
+  },
+  "custom_svg": "visuals/custom/v04-scope3-trend.svg"
+}

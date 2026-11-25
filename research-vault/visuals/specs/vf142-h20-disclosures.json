@@ -1,0 +1,32 @@
+{
+  "title": "H20 restrictions triggered charges and blocked shipments",
+  "subtitle": "NVIDIA H20 export-control disclosures · USD · Q1 and Q2 FY26",
+  "kind": "table",
+  "unit": "USD bn",
+  "x": [
+    "Inventory and purchase obligations",
+    "H20 shipments NVIDIA could not make",
+    "Lost H20 sales in the May outlook",
+    "H20 inventory reserves released"
+  ],
+  "series": [
+    {
+      "name": "USD bn",
+      "values": [
+        4.5,
+        2.5,
+        8,
+        0.18
+      ],
+      "facts": [
+        "F0204",
+        "F0206",
+        "F0207",
+        "F0209"
+      ]
+    }
+  ],
+  "highlight": "Inventory and purchase obligations",
+  "source": "NVIDIA Q1 and Q2 FY26 results · May and Aug 2025",
+  "custom_svg": "visuals/custom/vf142-h20-disclosures.svg"
+}

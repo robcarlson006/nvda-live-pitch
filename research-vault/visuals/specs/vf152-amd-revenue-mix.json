@@ -1,0 +1,28 @@
+{
+  "title": "Data Center leads AMD’s sales",
+  "subtitle": "Revenue by reporting segment · USD millions · Q3 2026",
+  "kind": "bar",
+  "unit": "USD m",
+  "x": [
+    "Data Center",
+    "Client and Gaming",
+    "Embedded"
+  ],
+  "series": [
+    {
+      "name": "Segment revenue",
+      "values": [
+        8546.0,
+        3722.0,
+        1109.0
+      ],
+      "facts": [
+        "F0913",
+        "F1088",
+        "F1089"
+      ]
+    }
+  ],
+  "highlight": "Data Center",
+  "source": "AMD · 3 Nov 2026"
+}

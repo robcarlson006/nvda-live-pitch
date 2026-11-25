@@ -1,0 +1,28 @@
+{
+  "title": "Morningstar values NVIDIA below our base case",
+  "subtitle": "Estimated fair value in USD per share · Morningstar and team DCF snapshots · Nov 2026",
+  "kind": "hbar",
+  "unit": "USD",
+  "source": "Morningstar, 23 Nov 2026 · Team DCF, 24 Nov 2026",
+  "x": [
+    "Team base case",
+    "Morningstar fair value",
+    "Team high-rate sensitivity"
+  ],
+  "series": [
+    {
+      "name": "Estimated value per share",
+      "values": [
+        389.99,
+        250.0,
+        226.87
+      ],
+      "facts": [
+        "F0051",
+        "F0474",
+        "F0979"
+      ]
+    }
+  ],
+  "highlight": "Morningstar fair value"
+}

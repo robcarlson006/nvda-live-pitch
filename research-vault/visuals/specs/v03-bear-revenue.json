@@ -1,0 +1,15 @@
+{
+  "title": "Revenue dips when customers pause spending",
+  "subtitle": "NVIDIA annual revenue (USD billions) · FY26 actual through FY32 scenario",
+  "kind": "line",
+  "dataset": {
+    "key": "model_path_bear",
+    "series": [
+      "Base case",
+      "Bear case"
+    ]
+  },
+  "highlight": "Bear case",
+  "source": "Bloomberg FA consensus, 20 Nov 2026; Team DCF model, Nov 2026",
+  "custom_svg": "visuals/custom/v03-bear-revenue.svg"
+}

@@ -1,0 +1,32 @@
+{
+  "kind": "bar",
+  "title": "Software and GPUs both improved efficiency",
+  "subtitle": "Facebook language translation study · reported efficiency gain at each step · 2021",
+  "unit": "x",
+  "x": [
+    "Platform caching",
+    "GPU acceleration",
+    "Lower precision"
+  ],
+  "series": [
+    {
+      "name": "Improvement over prior configuration",
+      "values": [
+        6.7,
+        10.1,
+        2.4
+      ],
+      "facts": [
+        "F0918",
+        "F0917",
+        "F0919"
+      ]
+    }
+  ],
+  "highlight": "GPU acceleration",
+  "source": "Wu et al., Sustainable AI · Nov 2021",
+  "annotations": {
+    "baseline": "Each gain is relative to the prior configuration"
+  },
+  "custom_svg": "visuals/custom/vf143-translation-efficiency-steps.svg"
+}

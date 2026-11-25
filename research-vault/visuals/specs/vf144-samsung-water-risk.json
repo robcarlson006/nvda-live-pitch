@@ -1,0 +1,37 @@
+{
+  "title": "Samsung reports water use at water-stressed sites",
+  "subtitle": "Samsung device division · thousand tonnes of water · 2025",
+  "kind": "hbar",
+  "unit": "thousand tonnes",
+  "source": "Samsung Electronics Sustainability Report · Jun 2026",
+  "x": [
+    "Withdrawal",
+    "Consumption"
+  ],
+  "series": [
+    {
+      "name": "All device sites",
+      "values": [
+        18710,
+        3512
+      ],
+      "facts": [
+        "F0815",
+        "F0816"
+      ]
+    },
+    {
+      "name": "Water-risk sites, included in total",
+      "values": [
+        2440,
+        552
+      ],
+      "facts": [
+        "F0827",
+        "F0826"
+      ]
+    }
+  ],
+  "highlight": "Water-risk sites",
+  "custom_svg": "visuals/custom/vf144-samsung-water-risk.svg"
+}

@@ -1,0 +1,23 @@
+{
+  "title": "ESG risk extends beyond emissions",
+  "subtitle": "Supplier diligence and AI adoption risks · FY2026 disclosures",
+  "kind": "kpi",
+  "unit": "%",
+  "x": [
+    "Strategic suppliers covered by audits reviewed"
+  ],
+  "series": [
+    {
+      "name": "Coverage of supplier audits reviewed in FY26",
+      "values": [
+        45
+      ],
+      "facts": [
+        "F0632"
+      ]
+    }
+  ],
+  "source": "NVIDIA annual report and Modern Slavery Statement · FY2026",
+  "highlight": "Strategic suppliers covered by audits reviewed",
+  "custom_svg": "visuals/custom/vf139-esg-beyond-emissions.svg"
+}

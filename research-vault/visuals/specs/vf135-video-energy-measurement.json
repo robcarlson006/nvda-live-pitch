@@ -1,0 +1,23 @@
+{
+  "title": "Video energy needs a per-clip measurement",
+  "subtitle": "Electricity measurement for generated video · Google text-serving study as a method example",
+  "kind": "kpi",
+  "unit": "Wh",
+  "source": "Google Research, August 2025 · MLCommons power methodology, accessed November 2026",
+  "x": [
+    "Median Gemini Apps text prompt (method example)"
+  ],
+  "series": [
+    {
+      "name": "Measured text-serving electricity",
+      "values": [
+        0.24
+      ],
+      "facts": [
+        "F0037"
+      ]
+    }
+  ],
+  "highlight": "Median Gemini Apps text prompt (method example)",
+  "custom_svg": "visuals/custom/vf135-video-energy-measurement.svg"
+}

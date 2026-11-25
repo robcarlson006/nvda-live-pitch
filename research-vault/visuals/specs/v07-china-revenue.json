@@ -1,0 +1,28 @@
+{
+  "title": "China-booked revenue fell in FY26",
+  "subtitle": "All products · Direct customers headquartered in China and Hong Kong · USD millions",
+  "source": "NVIDIA FY26 10-K, February 2026",
+  "kind": "bar",
+  "unit": "USD m",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Reported geographic revenue",
+      "values": [
+        12330,
+        25048,
+        19677
+      ],
+      "facts": [
+        "F1012",
+        "F1013",
+        "F1014"
+      ]
+    }
+  ],
+  "highlight": "FY26"
+}

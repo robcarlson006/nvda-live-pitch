@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" font-family="'Archivo', 'Archivo Variable', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif">
+<defs><pattern id="core" width="18" height="18" patternUnits="userSpaceOnUse"><rect x="2" y="2" width="14" height="14" rx="2" fill="#141a10"/></pattern>
+<linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#76b900" stop-opacity="0.18"/><stop offset="1" stop-color="#76b900" stop-opacity="0"/></linearGradient></defs>
+<rect width="1600" height="900" fill="#0b0d0a"/><rect width="1600" height="900" fill="url(#core)" opacity="0.55"/>
+<rect x="0" y="0" width="10" height="900" fill="#76b900"/>
+<text x="80" y="96" fill="#f4f6f1" font-size="54" font-weight="800" letter-spacing="-0.5">Higher discount rates cut the DCF value</text>
+<text x="80" y="146" fill="#9aa094" font-size="28" font-weight="500">Implied USD per NVDA share · Discount rate and perpetual growth · November 2026</text>
+<text x="80" y="337" fill="#b3b9ad" font-size="22" font-weight="730" text-anchor="start">TERMINAL GROWTH</text>
+<text x="470" y="231" fill="#b3b9ad" font-size="22" font-weight="730" text-anchor="start">DISCOUNT RATE</text>
+<line x1="470" y1="252" x2="1520" y2="252" stroke="#303b2a" stroke-width="2" stroke-dasharray="none"/>
+<text x="639" y="309" fill="#b7f04a" font-size="36" font-weight="780" text-anchor="middle">10.55%</text>
+<text x="639" y="346" fill="#b3b9ad" font-size="22" font-weight="500" text-anchor="middle">US chip-sector average</text>
+<text x="995" y="309" fill="#f4f6f1" font-size="36" font-weight="780" text-anchor="middle">14.45%</text>
+<text x="995" y="346" fill="#b3b9ad" font-size="22" font-weight="500" text-anchor="middle">Google Finance input</text>
+<text x="1351" y="309" fill="#f4f6f1" font-size="36" font-weight="780" text-anchor="middle">15.4%</text>
+<text x="1351" y="346" fill="#b3b9ad" font-size="22" font-weight="500" text-anchor="middle">Team sensitivity</text>
+<text x="80" y="427" fill="#f4f6f1" font-size="36" font-weight="760" text-anchor="start">2%</text>
+<text x="80" y="459" fill="#b3b9ad" font-size="22" font-weight="500" text-anchor="start">Per year in perpetuity</text>
+<rect x="470" y="368" width="338" height="102" rx="12" fill="#11160e" stroke="#303b2a" stroke-width="2"/>
+<text x="639" y="434" fill="#f4f6f1" font-size="38" font-weight="780" text-anchor="middle">$353.23</text>
+<rect x="826" y="368" width="338" height="102" rx="12" fill="#11160e" stroke="#303b2a" stroke-width="2"/>
+<text x="995" y="434" fill="#f4f6f1" font-size="38" font-weight="780" text-anchor="middle">$233.42</text>
+<rect x="1182" y="368" width="338" height="102" rx="12" fill="#241d10" stroke="#78572b" stroke-width="2"/>
+<text x="1351" y="417" fill="#e8b04a" font-size="38" font-weight="780" text-anchor="middle">$214.94</text>
+<text x="1351" y="447" fill="#e8b04a" font-size="19" font-weight="690" text-anchor="middle">Lowest tested</text>
+<text x="80" y="543" fill="#b7f04a" font-size="36" font-weight="760" text-anchor="start">3%</text>
+<text x="80" y="575" fill="#b3b9ad" font-size="22" font-weight="500" text-anchor="start">Base growth assumption</text>
+<rect x="470" y="484" width="338" height="102" rx="12" fill="#212e14" stroke="#76b900" stroke-width="2"/>
+<text x="639" y="533" fill="#b7f04a" font-size="38" font-weight="780" text-anchor="middle">$389.99</text>
+<text x="639" y="563" fill="#b7f04a" font-size="19" font-weight="690" text-anchor="middle">Base case</text>
+<rect x="826" y="484" width="338" height="102" rx="12" fill="#11160e" stroke="#303b2a" stroke-width="2"/>
+<text x="995" y="550" fill="#f4f6f1" font-size="38" font-weight="780" text-anchor="middle">$247.81</text>
+<rect x="1182" y="484" width="338" height="102" rx="12" fill="#11160e" stroke="#303b2a" stroke-width="2"/>
+<text x="1351" y="550" fill="#f4f6f1" font-size="38" font-weight="780" text-anchor="middle">$226.87</text>
+<text x="80" y="659" fill="#f4f6f1" font-size="36" font-weight="760" text-anchor="start">4%</text>
+<text x="80" y="691" fill="#b3b9ad" font-size="22" font-weight="500" text-anchor="start">Per year in perpetuity</text>
+<rect x="470" y="600" width="338" height="102" rx="12" fill="#11160e" stroke="#303b2a" stroke-width="2"/>
+<text x="639" y="666" fill="#f4f6f1" font-size="38" font-weight="780" text-anchor="middle">$437.97</text>
+<rect x="826" y="600" width="338" height="102" rx="12" fill="#11160e" stroke="#303b2a" stroke-width="2"/>
+<text x="995" y="666" fill="#f4f6f1" font-size="38" font-weight="780" text-anchor="middle">$264.95</text>
+<rect x="1182" y="600" width="338" height="102" rx="12" fill="#11160e" stroke="#303b2a" stroke-width="2"/>
+<text x="1351" y="666" fill="#f4f6f1" font-size="38" font-weight="780" text-anchor="middle">$240.89</text>
+<text x="80" y="860" fill="#9aa094" font-size="19">Source: Team DCF sensitivity grid, Nov 2026</text>
+<text x="1560" y="860" fill="#39452f" font-size="19" text-anchor="end" font-weight="700" letter-spacing="2">NVDA · RESEARCH VAULT</text>
+</svg>

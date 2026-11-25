@@ -1,0 +1,41 @@
+{
+  "title": "External use of CDP scores needs written consent",
+  "subtitle": "CDP corporate climate scores · website policy reviewed November 2026",
+  "kind": "table",
+  "unit": "",
+  "source": "CDP Scores and A Lists and Website Terms, accessed 25 November 2026",
+  "x": [
+    "Next scheduled public release"
+  ],
+  "series": [
+    {
+      "name": "Release year",
+      "values": [
+        2026
+      ],
+      "facts": [
+        "F0530"
+      ]
+    },
+    {
+      "name": "Release day in December",
+      "values": [
+        2
+      ],
+      "facts": [
+        "F0530"
+      ]
+    }
+  ],
+  "highlight": "External or commercial use",
+  "custom_svg": "visuals/custom/vf140-cdp-score-permission.svg",
+  "notes": [
+    {
+      "label": "Permission for internal, non-commercial and other uses",
+      "facts": [
+        "F1053",
+        "F0536"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "title": "A supply shock can coincide with weaker demand",
+  "subtitle": "NVIDIA’s operating risk disclosures and H200 charge · USD bn · first half of FY27",
+  "kind": "kpi",
+  "source": "NVIDIA Form 10-K · Feb 2026 | Form 10-Q · Aug 2026",
+  "unit": "USD bn",
+  "x": [
+    "H200 inventory and purchase-obligation charge"
+  ],
+  "series": [
+    {
+      "name": "Reported accounting charge",
+      "values": [
+        0.4
+      ],
+      "facts": [
+        "F0598"
+      ]
+    }
+  ],
+  "highlight": "H200 inventory and purchase-obligation charge",
+  "custom_svg": "visuals/custom/vf136-double-shock.svg"
+}

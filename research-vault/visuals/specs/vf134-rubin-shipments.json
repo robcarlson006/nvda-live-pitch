@@ -1,0 +1,26 @@
+{
+  "title": "NVIDIA says Rubin entered volume shipments",
+  "subtitle": "Vera Rubin platform · launch guidance and company-reported shipment milestone",
+  "kind": "table",
+  "unit": "day of January",
+  "x": [
+    "January launch",
+    "Q3 FY27 shipments"
+  ],
+  "series": [
+    {
+      "name": "January launch day",
+      "values": [
+        5,
+        null
+      ],
+      "facts": [
+        "F0365",
+        ""
+      ]
+    }
+  ],
+  "highlight": "Q3 FY27 shipments",
+  "source": "NVIDIA Newsroom · Jan and Nov 2026",
+  "custom_svg": "visuals/custom/vf134-rubin-shipments.svg"
+}

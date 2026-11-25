@@ -1,0 +1,30 @@
+{
+  "title": "What powers data centres?",
+  "subtitle": "Estimated global physical electricity mix, IEA 2025 report baseline; approximate shares",
+  "kind": "hbar",
+  "unit": "%",
+  "x": [
+    "Coal",
+    "Renewables",
+    "Natural gas",
+    "Nuclear"
+  ],
+  "series": [
+    {
+      "name": "Share of electricity consumed",
+      "values": [
+        30,
+        27,
+        26,
+        15
+      ],
+      "facts": [
+        "F0458",
+        "F0459",
+        "F0460",
+        "F0461"
+      ]
+    }
+  ],
+  "source": "IEA, Energy and AI (2025); physical grid mix, not contractual purchases; rounded"
+}

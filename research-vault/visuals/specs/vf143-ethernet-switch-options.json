@@ -1,0 +1,48 @@
+{
+  "kind": "table",
+  "title": "Broadcom offers several Ethernet port speeds",
+  "subtitle": "Tomahawk 5 BCM78900 family · alternative configurations and maximum port counts",
+  "unit": "",
+  "units": {
+    "Speed per port": "GbE"
+  },
+  "x": [
+    "Highest speed per port",
+    "Mid-speed option",
+    "Highest port count"
+  ],
+  "series": [
+    {
+      "name": "Speed per port",
+      "values": [
+        800,
+        400,
+        200
+      ],
+      "facts": [
+        "F0962",
+        "F0962",
+        "F0962"
+      ]
+    },
+    {
+      "name": "Maximum ports",
+      "values": [
+        64,
+        128,
+        256
+      ],
+      "facts": [
+        "F0962",
+        "F0962",
+        "F0962"
+      ]
+    }
+  ],
+  "highlight": "Highest speed per port",
+  "source": "Broadcom BCM78900 specifications · accessed Nov 2026",
+  "annotations": {
+    "boundary": "Vendor specifications give no measured network energy per job"
+  },
+  "custom_svg": "visuals/custom/vf143-ethernet-switch-options.svg"
+}

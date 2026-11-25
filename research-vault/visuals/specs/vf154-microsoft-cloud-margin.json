@@ -1,0 +1,28 @@
+{
+  "title": "Microsoft’s cloud gross margin fell",
+  "subtitle": "Reported Microsoft Cloud gross margin · % · FY2024–FY2026",
+  "kind": "bar",
+  "source": "Microsoft annual reports · FY2024, FY2025 and FY2026",
+  "x": [
+    "FY2024",
+    "FY2025",
+    "FY2026"
+  ],
+  "series": [
+    {
+      "name": "Microsoft Cloud gross margin",
+      "values": [
+        71,
+        69,
+        66
+      ],
+      "facts": [
+        "F1098",
+        "F1099",
+        "F0860"
+      ]
+    }
+  ],
+  "unit": "%",
+  "highlight": "FY2026"
+}

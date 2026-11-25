@@ -1,0 +1,59 @@
+{
+  "kind": "table",
+  "title": "The base case implies $389.99 per share",
+  "subtitle": "NVDA discounted cash flow · USD per share · FY28–FY32 forecast",
+  "source": "Team DCF · Bloomberg FA/DES and Google Finance · Nov 2026",
+  "dataset": {
+    "key": "model_dcf_summary",
+    "series": [
+      "Forecast period",
+      "Revenue CAGR, FY27–32",
+      "EBIT margin, FY26",
+      "Free-cash-flow margin",
+      "PV of FCFs",
+      "PV of terminal value",
+      "Terminal value share of EV",
+      "Enterprise value",
+      "Net debt",
+      "Equity value",
+      "Diluted shares",
+      "Implied share price",
+      "Share price",
+      "Upside"
+    ]
+  },
+  "highlight": "Implied share price",
+  "custom_svg": "visuals/custom/v01-summary.svg",
+  "x": [
+    "value"
+  ],
+  "series": [
+    {
+      "name": "Net cash",
+      "values": [
+        59.6
+      ],
+      "facts": [
+        "F0976"
+      ]
+    },
+    {
+      "name": "Base discount rate",
+      "values": [
+        10.55
+      ],
+      "facts": [
+        "F0868"
+      ]
+    },
+    {
+      "name": "Terminal growth",
+      "values": [
+        3
+      ],
+      "facts": [
+        "F0969"
+      ]
+    }
+  ]
+}

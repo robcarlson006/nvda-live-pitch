@@ -1,0 +1,29 @@
+{
+  "title": "NVIDIA reported no H20 sales to China-based buyers",
+  "subtitle": "Reported H20 sales · US dollars · first half of FY26",
+  "kind": "kpi",
+  "unit": "USD m",
+  "source": "NVIDIA quarterly results · May and Aug 2025",
+  "x": [
+    "Q1 FY26",
+    "Q2 FY26"
+  ],
+  "series": [
+    {
+      "name": "Reported sales in the stated customer and timing scope",
+      "values": [
+        4600,
+        650
+      ],
+      "facts": [
+        "F0205",
+        "F0210"
+      ]
+    }
+  ],
+  "highlight": "Q2 FY26",
+  "evidence": {
+    "No H20 sales to China-based customers in Q2 FY26": "F0208"
+  },
+  "custom_svg": "visuals/custom/vf144-h20-sales.svg"
+}

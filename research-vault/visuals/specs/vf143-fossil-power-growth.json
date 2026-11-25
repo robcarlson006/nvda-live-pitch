@@ -1,0 +1,27 @@
+{
+  "kind": "kpi",
+  "title": "Gas and coal still matter for data-centre growth",
+  "subtitle": "Share of added global data-centre electricity demand through 2030 · IEA base case",
+  "unit": "%",
+  "x": [
+    "Natural gas and coal"
+  ],
+  "series": [
+    {
+      "name": "Lower bound, share of demand growth",
+      "values": [
+        40
+      ],
+      "facts": [
+        "F0462"
+      ]
+    }
+  ],
+  "highlight": "Natural gas and coal",
+  "source": "IEA Energy and AI · Apr 2025",
+  "annotations": {
+    "qualifier": "over",
+    "scope": "Incremental electricity demand from all data centres"
+  },
+  "custom_svg": "visuals/custom/vf143-fossil-power-growth.svg"
+}

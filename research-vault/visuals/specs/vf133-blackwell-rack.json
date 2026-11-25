@@ -1,0 +1,25 @@
+{
+  "title": "Blackwell scales across an entire rack",
+  "subtitle": "Processor counts in one NVIDIA GB200 NVL72 rack · 2024 specification",
+  "kind": "bar",
+  "source": "NVIDIA Newsroom · Mar 2024",
+  "x": [
+    "Blackwell GPUs",
+    "Grace CPUs"
+  ],
+  "series": [
+    {
+      "name": "Processors per rack",
+      "values": [
+        72,
+        36
+      ],
+      "facts": [
+        "F0360",
+        "F0360"
+      ]
+    }
+  ],
+  "custom_svg": "visuals/custom/vf133-blackwell-rack.svg",
+  "highlight": "Blackwell GPUs"
+}

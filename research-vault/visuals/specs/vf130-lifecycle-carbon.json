@@ -1,0 +1,32 @@
+{
+  "title": "AI hardware has a manufacturing footprint",
+  "subtitle": "Modelled carbon split for large-scale workloads at Facebook  ·  2021 study",
+  "kind": "stacked",
+  "unit": "%",
+  "x": [
+    "Large-scale workloads"
+  ],
+  "series": [
+    {
+      "name": "Embodied",
+      "values": [
+        30
+      ],
+      "facts": [
+        "F0916"
+      ]
+    },
+    {
+      "name": "Operational",
+      "values": [
+        70
+      ],
+      "facts": [
+        "F0916"
+      ]
+    }
+  ],
+  "highlight": "Large-scale workloads",
+  "source": "Wu et al., Sustainable AI, Nov 2021",
+  "custom_svg": "visuals/custom/vf130-lifecycle-carbon.svg"
+}

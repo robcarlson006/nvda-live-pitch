@@ -1,0 +1,28 @@
+{
+  "title": "NVIDIA still uses fuel alongside renewable electricity",
+  "subtitle": "Reported operational fuel use · MWh · FY24 to FY26",
+  "kind": "bar",
+  "unit": "MWh",
+  "source": "NVIDIA Sustainability Report, FY26",
+  "x": [
+    "FY24",
+    "FY25",
+    "FY26"
+  ],
+  "series": [
+    {
+      "name": "Fuel use",
+      "values": [
+        39087,
+        35729,
+        46258
+      ],
+      "facts": [
+        "F1073",
+        "F1074",
+        "F0999"
+      ]
+    }
+  ],
+  "highlight": "FY26"
+}

@@ -1,0 +1,40 @@
+{
+  "kind": "bar",
+  "title": "NVIDIA’s free cash flow swings from quarter to quarter",
+  "subtitle": "Company-defined free cash flow · USD millions · Q1 FY26 to Q3 FY27",
+  "source": "NVIDIA quarterly earnings releases · May 2025–Nov 2026",
+  "unit": "USD m",
+  "x": [
+    "Q1 FY26",
+    "Q2 FY26",
+    "Q3 FY26",
+    "Q4 FY26",
+    "Q1 FY27",
+    "Q2 FY27",
+    "Q3 FY27"
+  ],
+  "series": [
+    {
+      "name": "Free cash flow",
+      "values": [
+        26135.0,
+        13450.0,
+        22089.0,
+        34902.0,
+        48554.0,
+        21341.0,
+        43777.0
+      ],
+      "facts": [
+        "F0346",
+        "F0347",
+        "F0348",
+        "F0349",
+        "F0350",
+        "F0351",
+        "F0352"
+      ]
+    }
+  ],
+  "highlight": "Q2 FY27"
+}

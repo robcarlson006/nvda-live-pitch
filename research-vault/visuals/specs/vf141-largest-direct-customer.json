@@ -1,0 +1,25 @@
+{
+  "kind": "bar",
+  "title": "The largest direct buyer’s share fell year over year",
+  "subtitle": "Largest disclosed direct customer · share of NVIDIA revenue · fiscal second quarters",
+  "source": "NVIDIA Form 10-Q · 26 Aug 2026",
+  "unit": "%",
+  "x": [
+    "Q2 FY26",
+    "Q2 FY27"
+  ],
+  "series": [
+    {
+      "name": "Largest disclosed share",
+      "values": [
+        23.0,
+        16.0
+      ],
+      "facts": [
+        "F0708",
+        "F0706"
+      ]
+    }
+  ],
+  "highlight": "Q2 FY27"
+}
