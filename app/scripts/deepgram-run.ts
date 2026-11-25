@@ -84,6 +84,8 @@ await new Promise<void>((resolve, reject) => {
     if (r.final) finals++;
     heardAt = r.endsAt ?? heardAt;
     step({ type: 'transcript', text: r.text, final: r.final });
+    // DG_LOG=<file>: every transcript with where the show is, for diagnosing a stall.
+    if (process.env.DG_LOG) fs.appendFileSync(process.env.DG_LOG, `${heardAt.toFixed(1)}s ${r.final ? 'FINAL' : 'interim'} [${state.live?.id ?? '-'} ${state.reveal} consumed=${state.consumed}] ${r.text}\n`);
   });
   dg.on('close', () => resolve());
   dg.on('open', async () => {

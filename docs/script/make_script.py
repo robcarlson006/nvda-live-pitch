@@ -20,10 +20,10 @@ from build import resolve  # noqa: E402  the backup deck's own lookup, so both r
 
 PARTS = {
     "founding": "Part one: Story (Rob)",
-    "last-quarter": "Part two: Numbers (Panshul)",
-    "already-doing": "Part three: Future (Mi'kael)",
-    "governance": "Part four: Responsibility (Mi'kael)",
-    "recommendation": "Part five: Verdict (Mi'kael, then Rob)",
+    "last-quarter": "Part two: Numbers (Mi'kael, from \"Has anyone caught up?\")",
+    "already-doing": "Part three: Future (Panshul, from the two downside cases)",
+    "governance": "Part four: Responsibility (Panshul)",
+    "recommendation": "Part five: Verdict (Panshul)",
 }
 
 
@@ -41,7 +41,7 @@ def main() -> None:
         "Plain paragraphs are spoken. Lines starting with ▸ build on screen (the trigger phrase is in quotes); 🔍 is a "
         "zoom into the chart; ⏱ an element that builds on its own. Figures are the live data values.",
         "",
-        "Cut to nine minutes on 25 Nov (cut slides are in the Q&A bank). See the word counts at the end.",
+        "Cut to nine minutes on 25 Nov and split into three equal parts: Rob the story, Mi'kael the numbers, Panshul the downside cases, ESG and the close. See the word counts at the end.",
     ]
     for s in slides:
         if s["id"] in PARTS:

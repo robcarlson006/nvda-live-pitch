@@ -241,7 +241,7 @@ export const ClientMsg = z.discriminatedUnion('type', [
   z.object({ type: z.literal('next') }),
   z.object({ type: z.literal('back') }),
   z.object({ type: z.literal('goto'), index: z.number().int() }),
-  z.object({ type: z.literal('transcript'), text: z.string().max(2000), final: z.boolean(), receivedAt: z.number().int().optional() }),
+  z.object({ type: z.literal('transcript'), text: z.string().max(20000) /* one long unbroken stretch of speech must never be refused */, final: z.boolean(), receivedAt: z.number().int().optional() }),
   z.object({ type: z.literal('autoCue'), on: z.boolean() }),
   z.object({ type: z.literal('skip'), id: z.string(), on: z.boolean() }),
   z.object({ type: z.literal('rehearsal'), action: z.enum(['start', 'stop']) }),

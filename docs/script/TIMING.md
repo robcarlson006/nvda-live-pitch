@@ -1,4 +1,20 @@
-# Spoken script timing — 25 November 2026 (after the cut)
+# Spoken script timing — 25 November 2026 (after rehearsal)
+
+## 25 Nov, afternoon: three equal parts, 8:38 of speech
+
+| Speaker | Slides | Words | Speech |
+|---|---|---:|---:|
+| Rob | founding → supply (the story) | 439 | 2:56 |
+| Mi'kael | catch-up → reverse DCF (the numbers) | 415 | 2:46 |
+| Panshul | bear case → close (downside, future, ESG, verdict) | 442 | 2:57 |
+| **All** | 32 slides | **1,296** | **8:38** |
+
+Changed after the first rehearsal: the close now ends on "Our recommendation is a buy" (the "three university
+students" paragraph is gone); the recommendation no longer says when we would add or sell; the emissions comparison
+ends on the two figures; governance opens "Now responsibility: governance." Spoken handoffs: Rob ends supply with
+"Mi'kael."; Mi'kael ends the reverse DCF with "Panshul.". Add about 20–30 s for section cards: about 9:05 in the room.
+
+## Earlier on 25 Nov (after the cut)
 
 ## 25 Nov: 32 slides, 8:58 of speech
 

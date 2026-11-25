@@ -22,8 +22,8 @@ const optional = spine.filter((s) => s.optional).map((s) => s.id);
 test('the script loads and every chart/number points at real data', () => {
   assert.ok(spine.length >= 25);
   assert.deepEqual(optional, ['revenue-long']);
-  assert.deepEqual([...new Set(spine.map((s) => s.speaker))], ['Rob', 'Panshul', "Mi'kael"]);
-  assert.equal(spine[sectionLastIndex(spine)].id, 'handoff');
+  assert.deepEqual([...new Set(spine.map((s) => s.speaker))], ['Rob', "Mi'kael", 'Panshul']);
+  assert.equal(spine[sectionLastIndex(spine)].id, 'supply');
 });
 
 test('zoom steps: the chart builds where it is told, zooms follow cues, and bad zooms are refused', () => {
@@ -358,4 +358,36 @@ test('no presenter names on any slide or prepared answer (they can be spoken, ne
   const shown = (s: Parameters<typeof slideTexts>[0]) => [...slideTexts(s), ...(s.groups ?? []).map((g) => g.tag), ...(s.diagram?.nodes ?? [])];
   for (const s of spine) for (const t of shown(s)) assert.doesNotMatch(String(t), NAMES, `${s.id}: "${t}"`);
   for (const e of loadBank(datasets)) for (const t of shown(e.slide)) assert.doesNotMatch(String(t), NAMES, `${e.id}: "${t}"`);
+});
+
+// ---- 25 Nov rehearsal fixes: triggers early in each slide, paraphrase-tolerant, no stalls ----
+import { resolveText as resolveForTest } from '../shared/schema.ts';
+const opening = (id: string, n = 12) => resolveForTest(spine[idx(id)].say ?? '', datasets).replace(/\*/g, '').split(/\s+/).slice(0, n).join(' ');
+
+test('every slide fires from its first dozen spoken words', () => {
+  for (let i = 1; i < spine.length; i++) {
+    const s = run(emptyState(), { type: 'goto', index: i - 1 }, say(opening(spine[i].id)));
+    assert.equal(spine[s.index].id, spine[i].id, `"${opening(spine[i].id)}" should start ${spine[i].id}`);
+  }
+});
+
+test('a paraphrased point does not stall the points after it', () => {
+  // dcf-summary: points on "assumptions", "worth today", "one share", "the answer". Skip the second, say the third.
+  let s = run(emptyState(), { type: 'goto', index: idx('dcf-summary') }, say('here are the assumptions'));
+  const before = s.reveal;
+  s = run(s, say('and that takes us from enterprise value to one share'));
+  assert.equal(s.reveal, before + 2, 'the skipped point builds with the one after it');
+});
+
+test('a loosely worded trigger fires mid-sentence, without waiting for the end of it', () => {
+  const s = run(emptyState(), { type: 'goto', index: idx('last-quarter') }, interim('and it has beaten our expectations'));
+  assert.equal(spine[s.index].id, 'beats');
+});
+
+test('a garbled point: the next one said still builds, and never spills into the next slide', () => {
+  // "NVIDIA's guidance is $130bn" came back from Deepgram as "NVIDIA give or take three percent".
+  let s = run(emptyState(), { type: 'goto', index: idx('guidance') }, say('what comes next nvidia give or take three percent'));
+  s = run(s, say('it also raised next years revenue growth outlook'));
+  assert.equal(spine[s.index].id, 'guidance', 'still on guidance');
+  assert.ok(s.reveal >= 4, `built through "raised" (reveal ${s.reveal})`);
 });

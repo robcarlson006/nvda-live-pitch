@@ -1,5 +1,5 @@
 # The scripted spine: the slides in order, and the phrases that trigger them.
-# Running order: Part one, Story (Rob) → Part two, Numbers (Panshul) → Part three, Future (Mi'kael) → Part four, Responsibility (Mi'kael) → Part five, Verdict (Mi'kael, then Rob's close). Each part opens with a title card (Effects.tsx SECTIONS).
+# Speakers (25 Nov, three equal parts): Rob, the story (founding → supply); Mi'kael, the numbers (catch-up → reverse DCF); Panshul, the downside cases, the future, responsibility, the recommendation and the close. Each part of the deck opens with a title card (Effects.tsx SECTIONS).
 # See docs/script/TIMING.md for the current speaking-time estimate.
 # A timed room rehearsal is still required before claiming a sub-nine-minute run.
 #
@@ -33,7 +33,7 @@
 
 - id: founding
   speaker: Rob
-  cues: ["1993", nineteen ninety three, three engineers, booth at a denny's, booth at a dennys]
+  cues: ["1993", nineteen ninety three, three engineers, dennys, denny, booth, san jose]
   layout: statement
   title: "1993. A booth at Denny's."
   bullets:
@@ -46,7 +46,7 @@
 
 - id: first-gpu
   speaker: Rob
-  cues: ["1999", nineteen ninety nine, geforce 256, geforce, g force]
+  cues: [six years later, "1999", nineteen ninety nine, geforce, g force, first gpu]
   layout: statement
   title: "1999: the world's first GPU."
   bullets:
@@ -59,7 +59,7 @@
 - id: cuda
   speaker: Rob
   effect: cpu-gpu
-  cues: [instead, announced cuda, announced cooda, announced kuda, november 2006, november two thousand and six]
+  cues: [instead, announced cuda, cuda, cooda, november 2006, "2006", two thousand and six]
   layout: statement
   title: "2006: CUDA."
   bullets:
@@ -76,7 +76,7 @@
 
 - id: wall-street
   speaker: Rob
-  cues: [wall street, wall street hated it, wall street hated, street hated it]
+  cues: [wall street, hated it, street hated]
   layout: split
   title: Wall Street hated it.
   bullets:
@@ -90,7 +90,7 @@
 
 - id: alexnet
   speaker: Rob
-  cues: ["2012", twenty twelve, two thousand twelve, two thousand and twelve, student team]
+  cues: ["2012", twenty twelve, two thousand and twelve, toronto, imagenet, image net, alexnet, alex net, student team]
   layout: split
   title: Then AI found CUDA.
   bullets:
@@ -103,7 +103,7 @@
 - id: revenue-long
   speaker: Rob
   optional: true
-  cues: [that bet, what that bet did, twenty seven years, 27 years of revenue]
+  cues: [that bet, what the bet did, twenty seven years, "27 years", years of revenue]
   layout: chart
   title: What the bet did.
   chart: { type: bar, datasetKey: nvda_revenue_annual, series: [Revenue], highlight: FY26 }
@@ -111,7 +111,7 @@
 
 - id: four-layers
   speaker: Rob
-  cues: [why the gold, gold standard, why is nvidia the gold, the gold standard]
+  cues: [gold standard, four layers, why is nvidia]
   layout: statement
   title: Why NVIDIA is the gold standard.
   bullets:
@@ -123,7 +123,7 @@
 
 - id: chips
   speaker: Rob
-  cues: [one chips, 1 chips, on paper amd, amds latest chip]
+  cues: [one chips, first chips, tensor cores, tensor, "2017"]
   layout: split
   title: "One: chips. Built for AI, not just fast."
   bullets:
@@ -134,14 +134,14 @@
     - text: "In data centres, NVIDIA makes {{peers_datacenter_revenue | Multiple of AMD | NVIDIA}} what AMD makes"
       cue: amd makes
   chart: { type: bar, datasetKey: peers_datacenter_revenue, series: [Data centre revenue], highlight: NVIDIA }
-  chartCue: billion
+  chartCue: dollars a year
   say: "One: chips. In 2017 NVIDIA added Tensor Cores: circuits built for the maths of AI. It brings out a new chip generation every year, so rivals are always aiming at last year's chip. In data centres, NVIDIA makes {{peers_datacenter_revenue | Multiple of AMD | NVIDIA}} what AMD makes, measured in billions of dollars a year."
 
 # The cores: one core lights, a ripple spreads across the block, then it locks in
 - id: software
   speaker: Rob
   effect: spread
-  cues: [two software, 2 software, iphone versus android, iphone vs android]
+  cues: [two software, second software, six million, developers, hard to beat]
   layout: statement
   title: "Two: software. Why CUDA is so hard to beat."
   bullets:
@@ -159,7 +159,7 @@
 - id: connections
   speaker: Rob
   effect: merge72
-  cues: [three connections, 3 connections, connections nvidia, nvlink wires, nv link wires]
+  cues: [three connections, third connections, nvlink, nv link, mellanox]
   layout: statement
   title: "Three: connections."
   bullets:
@@ -171,7 +171,7 @@
 
 - id: supply
   speaker: Rob
-  cues: [four supply, 4 supply, for supply]
+  cues: [four supply, for supply, fourth supply, tsmc, taiwan, designs the chips]
   layout: split
   title: "Four: supply."
   bullets:
@@ -180,11 +180,11 @@
     - text: The bottleneck is packaging, and NVIDIA has booked most of it
       cue: booked
   chart: { type: bar, datasetKey: research_cowos_share, series: [Share of CoWoS], highlight: NVIDIA }
-  say: "Four: supply. NVIDIA designs the chips; TSMC in Taiwan makes them, and TSMC makes about {{research_facts | TSMC share of leading-edge chips | value}} of the world's most advanced chips. The real bottleneck is packaging, and NVIDIA has booked around {{research_cowos_share | Share of CoWoS | NVIDIA}} of it. So even a rival with a better design still needs a factory that is already full."
+  say: "Four: supply. NVIDIA designs the chips; TSMC in Taiwan makes them, and TSMC makes about {{research_facts | TSMC share of leading-edge chips | value}} of the world's most advanced chips. The real bottleneck is packaging, and NVIDIA has booked around {{research_cowos_share | Share of CoWoS | NVIDIA}} of it. So even a rival with a better design still needs a factory that is already full. Mi'kael."
 
 - id: catch-up
-  speaker: Rob
-  cues: [has anyone, has anyone caught up, anyone caught up, caught up]
+  speaker: "Mi'kael"
+  cues: [caught up, catch up, has anyone, google came closest, came closest]
   layout: statement
   title: Has anyone caught up?
   bullets:
@@ -195,28 +195,28 @@
   say: "Has anyone caught up? Google came closest: it has built its own chips since 2015 and spent tens of billions. Amazon, Microsoft and Meta are trying too, and they all still buy NVIDIA."
 
 - id: handoff
-  speaker: Rob
-  cues: [leads in all four, all four layers, in all four]
+  speaker: "Mi'kael"
+  cues: [all four layers, leads in all four, do the numbers, numbers agree]
   layout: statement
   title: The best chips, software, connections and supply.
   bullets:
     - text: Do the numbers agree?
-      cue: panshul
-  say: "So NVIDIA leads in all four layers. Panshul: do the numbers agree?"
+      cue: numbers agree
+  say: "So NVIDIA leads in all four layers. Do the numbers agree?"
 
-# ---------------- Panshul: financials ----------------
+# ---------------- Mi'kael: the numbers (from catch-up to the reverse DCF) ----------------
 
 - id: last-quarter
-  speaker: Panshul
-  cues: [last quarter, three months, single quarter]
+  speaker: "Mi'kael"
+  cues: [three months, last quarter, single quarter, "25 october", twenty fifth of october]
   layout: number
   title: Revenue in a single quarter
   stat: { datasetKey: nvda_revenue_quarterly, series: Revenue, x: FY27 Q3, label: "Three months to 25 October 2026, reported on 17 November: {{nvda_revenue_surprise | Revenue surprise | FY27 Q3}} above what analysts expected." }
   say: "In the three months to 25 October, NVIDIA made {{nvda_revenue_quarterly | Revenue | FY27 Q3}} in revenue. In a single quarter. That was {{nvda_revenue_surprise | Revenue surprise | FY27 Q3}} more than analysts expected."
 
 - id: beats
-  speaker: Panshul
-  cues: [revenue has, beat expectations, every quarter]
+  speaker: "Mi'kael"
+  cues: [beaten expectations, beat expectations, thirteen quarters, "13 quarters", quarters running, quarters in a row]
   layout: split
   title: Revenue has beaten consensus thirteen quarters running
   chartFirst: true
@@ -234,8 +234,8 @@
 
 # From the Q3 FY27 earnings call (17 Nov). Figures are in data/clean/research_q3_call.json, unverified until checked against the 10-Q.
 - id: guidance
-  speaker: Panshul
-  cues: [next quarter, what comes next, raised its outlook]
+  speaker: "Mi'kael"
+  cues: [what comes next, comes next, guidance, next quarter]
   layout: split
   title: NVIDIA has told investors next quarter is bigger again
   chartFirst: true
@@ -251,8 +251,8 @@
   sources: [NVIDIA Q3 FY27 earnings call, 17 Nov 2026; Bloomberg FA, 20 Nov 2026]
 
 - id: peers
-  speaker: Panshul
-  cues: [expensive, compared to its peers, price to earnings]
+  speaker: "Mi'kael"
+  cues: [expensive, forward p e, forward pe, price to earnings, cheapest]
   layout: split
   title: The cheapest of the five on this year's expected earnings
   chartFirst: true
@@ -267,8 +267,8 @@
 # ---- The DCF, one step at a time (v2, 24 Nov 2026). Every figure is from data/clean/model_*.json. ----
 # The credibility moment: every input, grouped by where it comes from. Each input lights green as it is said.
 - id: dcf-inputs
-  speaker: Panshul
-  cues: [share worth, what is one share worth, none of these figures, figures are ours, where our numbers come from]
+  speaker: "Mi'kael"
+  cues: [share worth, one share worth, every input, inputs, where our numbers]
   layout: inputs
   title: What goes into our valuation?
   groups:
@@ -298,8 +298,8 @@
   say: "So what is one share worth? Every input on this slide comes from Bloomberg, Google Finance or Damodaran at NYU. Our two choices: {{model_dcf_inputs | Terminal growth (our choice) | value}} long-run growth after 2032, and growth fading to it in a straight line."
 
 - id: dcf-worksheet
-  speaker: Panshul
-  cues: [five year, five year dcf, annual model, worksheet]
+  speaker: "Mi'kael"
+  cues: [five year, worksheet, dcf worksheet, year by year]
   layout: chart
   title: The five-year DCF
   chartFirst: true
@@ -314,8 +314,8 @@
   say: "Here is the five-year DCF worksheet: each year's revenue, times NVIDIA's cash margin, gives free cash flow. A dollar in 2032 is worth less than a dollar today, so we discount it. The bottom row is what each year's cash is worth now."
 
 - id: three-rates
-  speaker: Panshul
-  cues: ["we didn't", didnt invent a discount rate, invent a discount rate, we didnt invent]
+  speaker: "Mi'kael"
+  cues: [invent a discount rate, discount rate, tested three, three rates, three discount]
   layout: split
   title: Base-case value per share at three discount rates
   chartFirst: true
@@ -333,8 +333,8 @@
 # Every DCF output on one page, drawn by the DcfSummary scene: one tile per point, in this order. Keep four points.
 # Avoid "price assumes" / "turn it around" here: they are the next slide's cues.
 - id: dcf-summary
-  speaker: Panshul
-  cues: [on one page, the dcf on one, whole dcf]
+  speaker: "Mi'kael"
+  cues: [one page, whole dcf, dcf on one]
   layout: statement
   title: The DCF on one page.
   bullets:
@@ -351,8 +351,8 @@
   sources: ["Team valuation model on Bloomberg FA, DES and consensus data; Google Finance; Damodaran (NYU)"]
 
 - id: reverse-dcf
-  speaker: Panshul
-  cues: [turn it around, what does our, turn it]
+  speaker: "Mi'kael"
+  cues: [turn it around, price assume, todays price assume, what does todays price]
   layout: split
   title: "Today's price assumes {{model_implied_growth | Growth per year | Priced in today}} growth a year"
   chartFirst: true
@@ -363,12 +363,12 @@
       cue: market prices
     - { zoom: all }
   chart: { type: bar, datasetKey: model_implied_growth, series: [Growth per year], highlight: Priced in today }
-  say: "Now turn it around: what does today's price assume? Revenue growth of only {{model_implied_growth | Growth per year | Priced in today}} a year for five years. Our base case, on consensus, is {{model_implied_growth | Growth per year | Base case (consensus, then slowing)}}. The market prices in far less growth than analysts expect. That gap is our margin of safety."
+  say: "Now turn it around: what does today's price assume? Revenue growth of only {{model_implied_growth | Growth per year | Priced in today}} a year for five years. Our base case, on consensus, is {{model_implied_growth | Growth per year | Base case (consensus, then slowing)}}. The market prices in far less growth than analysts expect. That gap is our margin of safety. Panshul."
 
 # Two downside cases: two slides, two names, never merged. Always say "our bear case, where rivals take share" and "if AI ended for good".
 - id: bear-case
   speaker: Panshul
-  cues: [our bear, rivals take share, where rivals take, two downside cases]
+  cues: [downside cases, two downside, bear case, our bear]
   layout: split
   title: "Our bear case: rivals take share and spending pauses for a year"
   chartFirst: true
@@ -387,7 +387,7 @@
 - id: ai-ended
   speaker: Panshul
   effect: dark
-  cues: [second if, if ai ended for good, ai ended for good, ended for good]
+  cues: [ai ended, ended for good, second if, if ai ended]
   layout: split
   title: If AI ended for good
   chartFirst: true
@@ -399,14 +399,14 @@
     - text: "Portfolio loss: only {{model_downside | Cost to the portfolio | If AI ended for good}} at a {{model_downside | Position size | If AI ended for good}} position"
       cue: position
   chart: { type: line, datasetKey: model_path_ai_ended, series: [If AI ended for good, Base case], muted: true, highlight: FY29 }
-  say: "Second, if AI ended for good: revenue falls by a fifth and margins fall. The stock would fall {{model_downside | Change from today | If AI ended for good}}, to {{model_downside | Value per share | If AI ended for good}} a share. Even then, at a {{model_downside | Position size | If AI ended for good}} position, the portfolio would lose **only {{model_downside | Cost to the portfolio | If AI ended for good}}**. Mi'kael."
+  say: "Second, if AI ended for good: revenue falls by a fifth and margins fall. The stock would fall {{model_downside | Change from today | If AI ended for good}}, to {{model_downside | Value per share | If AI ended for good}} a share. Even then, at a {{model_downside | Position size | If AI ended for good}} position, the portfolio would lose **only {{model_downside | Cost to the portfolio | If AI ended for good}}**."
 
 # Opens Part three (Future). The space-race slide was cut on 25 Nov (now in the Q&A bank); this slide stands on its own.
 # One industry per point, so all four panels of the AiIndustries scene zoom (it matches on keywords, not position).
 # Only Deere and Ecolab claim NVIDIA involvement; keep it that way.
 - id: already-doing
-  speaker: Mi'kael
-  cues: [already delivering, delivering results, already leaving, results already]
+  speaker: Panshul
+  cues: [delivering results, already delivering, nobel, chemistry nobel]
   layout: statement
   title: AI is already delivering results.
   bullets:
@@ -422,8 +422,8 @@
   sources: ["Nobel Prize in Chemistry 2024", "NVIDIA Developer blog and TechTarget (John Deere See & Spray)", "Ecolab press releases, 2 Jul and 16 Nov 2026"]
 
 - id: beyond-hyperscalers
-  speaker: Mi'kael
-  cues: [demand extends, demand beyond hyperscalers, beyond hyperscalers, beyond the hyperscalers, demand beyond the giants]
+  speaker: Panshul
+  cues: [beyond the hyperscalers, beyond hyperscalers, demand extends, demand beyond, hyperscalers]
   layout: statement
   title: Nearly half of sales are beyond the hyperscalers
   bullets:
@@ -442,8 +442,8 @@
 
 # VERIFY the reinstatement and every date against a major news source on the morning of the pitch.
 - id: governance
-  speaker: Mi'kael
-  cues: ["let's start", governance, chief executive, start with the hard one] # "the ceo" removed 21 Nov: Panshul's "peers" script once said "the CEO resigned" and jumped here
+  speaker: Panshul
+  cues: [governance, now responsibility, jensen huang resigned, resigned as ceo]
   layout: statement
   title: Governance. The founder is back.
   bullets:
@@ -453,14 +453,14 @@
       cue: independent
     - text: The board investigation and government inquiries remain open
       cue: board
-  say: "Now responsibility, starting with the hard one: governance. Jensen Huang resigned as CEO on 12 November, and the board reinstated him days later, with a new independent committee for national security and export control. The board investigation and government inquiries remain open; we won't pretend that risk has gone."
+  say: "Now responsibility: governance. Jensen Huang resigned as CEO on 12 November, and the board reinstated him days later, with a new independent committee for national security and export control. The board investigation and government inquiries remain open; we won't pretend that risk has gone."
   video: { file: jensen-reinstated.mp4, credit: The Wall Street Journal } # muted and looping; the file lives in app/public/media (not in git)
   sources: [NVIDIA press releases, 12 and 23 Nov 2026; NVIDIA Form 8-K, 23 Nov 2026]
 
 # The "S" in ESG (added 24 Nov 2026, evening). Rankings checked on each publisher's page; people figures from Bloomberg.
 - id: people
-  speaker: Mi'kael
-  cues: [only three, three point seven, staff turnover, people want to work, want to work there]
+  speaker: Panshul
+  cues: [staff turnover, turnover, people stay, staff]
   layout: split
   title: "Staff stay: low turnover is a strength."
   chartFirst: true
@@ -473,8 +473,8 @@
   say: "Staff turnover is low, and that is a good thing: NVIDIA's people stay. Only {{research_people | Staff turnover, FY26 | value}} of staff left last year, against {{research_people_turnover | Staff turnover | Tech and media 2022}} for tech and media in 2022."
 
 - id: renewables
-  speaker: Mi'kael
-  cues: [environment, renewable, own operations]
+  speaker: Panshul
+  cues: [environment, renewable, own operations, renewables]
   layout: split
   title: NVIDIA's own operations now run on renewable energy
   bullets:
@@ -483,8 +483,8 @@
   say: "On the environment: NVIDIA's own operations now run on {{nvda_renewable_share | Renewable | FY26}} renewable energy, up from about a third in 2018."
 
 - id: emissions-peers
-  speaker: Mi'kael
-  cues: [now compare, compare chip, other chip companies, other chip makers, compare emissions]
+  speaker: Panshul
+  cues: [compare chip, now compare, compare chip companies, own buildings, per million dollars]
   layout: split
   title: NVIDIA's own emissions are tiny next to other chip makers
   chartFirst: true
@@ -493,12 +493,12 @@
       cue: buildings
     - { zoom: NVIDIA, cue: emits }
   chart: { type: bar, datasetKey: peers_emissions_intensity, series: [Emissions intensity], highlight: NVIDIA, exclude: [TSMC] }
-  say: "Now compare chip companies on their own buildings and the electricity they buy, per million dollars of sales. NVIDIA emits about {{peers_emissions_intensity | Emissions intensity | NVIDIA}}. Intel emits {{peers_emissions_intensity | Emissions intensity | Intel}}. Partly because TSMC makes NVIDIA's chips, so those factory emissions sit in its Scope 3."
+  say: "Now compare chip companies on their own buildings and the electricity they buy, per million dollars of sales. NVIDIA emits about {{peers_emissions_intensity | Emissions intensity | NVIDIA}}. Intel emits {{peers_emissions_intensity | Emissions intensity | Intel}}."
 
 # Sizes are the team's own choice, written in words on purpose.
 - id: recommendation
-  speaker: Mi'kael
-  cues: [our recommendation, we recommend, recommend a buy, recommendation is to buy]
+  speaker: Panshul
+  cues: [our recommendation, so our recommendation, recommend, we recommend]
   layout: statement
   title: "Our recommendation: Buy."
   bullets:
@@ -506,20 +506,18 @@
       cue: three percent
     - text: "Our bear case costs the portfolio only {{model_downside | Cost to the portfolio | Bear case}}; if AI ended for good, only {{model_downside | Cost to the portfolio | If AI ended for good}}"
       cue: portfolio
-    - text: Add if cloud spending rises and the CEO investigation closes; sell if spending is cut
-      cue: we would
-  say: "So, our recommendation: **buy**. A **three percent** position, inside our ten percent single-stock limit, for three to five years. If we're wrong, our bear case costs the portfolio only {{model_downside | Cost to the portfolio | Bear case}}; even if AI ended for good, only {{model_downside | Cost to the portfolio | If AI ended for good}}. We would add if cloud spending rises and the CEO investigation closes; we would sell if it is cut."
+  say: "So, our recommendation: **buy**. A **three percent** position, inside our ten percent single-stock limit, for three to five years. If we're wrong, our bear case costs the portfolio only {{model_downside | Cost to the portfolio | Bear case}}; even if AI ended for good, only {{model_downside | Cost to the portfolio | If AI ended for good}}."
 
-# ---------------- Rob: the close ----------------
+# ---------------- Panshul: the close ----------------
 
 - id: close
-  speaker: Rob
-  cues: [ai industry, runs on infrastructure, infrastructure nvidia built, thank you]
+  speaker: Panshul
+  cues: [ai industry, runs on infrastructure, infrastructure nvidia built, nvidia built]
   layout: statement
   title: The AI industry runs on infrastructure NVIDIA built.
   bullets:
     - text: The best chips, the best software, the best connections and the best supply
       cue: best chips
-    - text: Our recommendation is to buy.
-      cue: recommend
-  say: "Everything you just watched was built and run by AI. And the AI industry runs on infrastructure NVIDIA built: the best chips, software, connections and supply. If three university students can do this for a stock pitch, imagine what the world's companies are doing. We recommend a buy. Thank you."
+    - text: Our recommendation is a buy.
+      cue: recommendation is
+  say: "So: the AI industry runs on infrastructure NVIDIA built, and NVIDIA leads every layer of it, with the best chips, software, connections and supply. The numbers agree, and the downside is small. Our recommendation is a buy. Thank you."

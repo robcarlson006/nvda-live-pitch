@@ -260,3 +260,10 @@ cd app && npm install && npm run dev
 - Tests: 127 pass (new `server/evidence.test.ts`). Live probe: `npx tsx scripts/qa-live.ts "question"` (real API, ~1–2 cents each).
 - **Not done:** a rehearsal with real board-style questions through the mic; the vault's 80 tables and 5 waterfalls are searchable as facts but not drawn as charts.
 
+
+## 25 Nov, after the first rehearsal: three equal parts, faster triggers
+
+- Script: Rob 2:56 (story), Mi'kael 2:46 (catch-up → reverse DCF), Panshul 2:57 (downside cases, future, ESG, verdict, close); 8:38 in all. Close ends "Our recommendation is a buy"; add/sell sentence, the TSMC Scope 3 clause and "starting with the hard one" removed.
+- Triggers: every slide now fires from its first dozen words (new test), with several short, paraphrase-friendly phrases each; the next three points are listened for, so a missed one no longer stalls the slide; a phrase with all its key words fires mid-sentence instead of waiting for the end; the cue said first wins.
+- Teleprompter never jumps more than one slide ahead on a common word pair; one long unbroken stretch of speech is no longer refused (it was capped at 2,000 characters).
+- Deepgram run-through at 2x speed: 22–23/32 slides built by speech alone, live 0.6–2 s into their opening; the tail failed only because the harness closed the stream early. The real-time run was skipped for practice time. 132 tests pass.

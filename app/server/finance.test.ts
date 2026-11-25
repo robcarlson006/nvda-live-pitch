@@ -101,7 +101,9 @@ test('the finance run is in order and the old valuation slide is gone', () => {
   const order = ['peers', 'dcf-inputs', 'dcf-worksheet', 'three-rates', 'dcf-summary', 'reverse-dcf', 'bear-case', 'ai-ended'];
   const pos = order.map((id) => ids.indexOf(id));
   assert.ok(pos.every((p, i) => p >= 0 && (i === 0 || p === pos[i - 1] + 1)), `consecutive: ${pos}`);
-  assert.equal(spine[pos.at(-1)! + 1].speaker, "Mi'kael");
+  // 25 Nov split: Mi'kael presents the numbers up to the reverse DCF; Panshul takes the two downside cases onwards.
+  assert.equal(spine[ids.indexOf('reverse-dcf')].speaker, "Mi'kael");
+  assert.equal(spine[ids.indexOf('bear-case')].speaker, 'Panshul');
 });
 
 // ---- No discount rate above 15.4% ----

@@ -103,9 +103,9 @@ test('a question fires no cues, and its trailing words are ignored', () => {
   let s = run(emptyState(), { type: 'goto', index: idx('four-layers') }, { type: 'question', action: 'start' }, say('on paper amd beats you so'), say('why buy', false));
   assert.equal(spine[s.index].id, 'four-layers');
   assert.equal(`${s.question} ${s.questionTail}`, 'on paper amd beats you so why buy');
-  s = run(s, { type: 'question', action: 'answer' }, say('why buy amds latest chip'));
-  assert.equal(spine[s.index].id, 'four-layers');
-  s = run(s, say('amds latest chip'));
+  s = run(s, { type: 'question', action: 'answer' }, say('why buy their tensor cores'));
+  assert.equal(spine[s.index].id, 'four-layers', "the question's trailing words fire nothing");
+  s = run(s, say('tensor cores'));
   assert.equal(spine[s.index].id, 'chips', 'and listening carries on afterwards');
 });
 

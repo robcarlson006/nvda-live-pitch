@@ -258,15 +258,19 @@ function next(state: ShowState, spine: SpineSlide[]): ShowState {
   return i >= 0 ? show(state, spine[i], i) : state;
 }
 
-type Target = { kind: 'element' } | { kind: 'slide'; index: number };
+type Target = { kind: 'element'; ahead: number } | { kind: 'slide'; index: number };
+const LOOKAHEAD = 3; // points listened for at once on the live slide
 
 /** Listen only for what can come next: this slide's next element, then the next two slides that are switched on. */
 function candidates(state: ShowState, spine: SpineSlide[], final: boolean): Candidate<Target>[] {
   const out: Candidate<Target>[] = [];
   const live = state.index >= 0 ? spine[state.index] : undefined;
   if (live && state.live?.id === live.id && state.reveal < elementCount(live)) {
-    const c = live.elementCues[state.reveal - 1];
-    if (c) out.push({ cue: c, target: { kind: 'element' } });
+    // Nearest first, so the next point wins when two could match. A later one builds the points before it too.
+    for (let ahead = 0; ahead < LOOKAHEAD && state.reveal + ahead < elementCount(live); ahead++) {
+      const c = live.elementCues[state.reveal - 1 + ahead];
+      if (c) out.push({ cue: c, target: { kind: 'element', ahead } });
+    }
   }
   const a = step(spine, state.skipped, state.index, 1);
   const b = final && a >= 0 ? step(spine, state.skipped, a, 1) : -1;
@@ -301,7 +305,13 @@ function hear(state: ShowState, text: string, final: boolean, spine: SpineSlide[
       if (!hit) break;
       const before = s;
       const live = s.index >= 0 ? spine[s.index] : undefined;
-      s = hit.target.kind === 'element' ? next(s, spine) : show(s, spine[hit.target.index], hit.target.index);
+      if (hit.target.kind === 'element') {
+        // Build up to and including the cued point, never past this slide's last point (that would change slides).
+        const target = s.reveal + hit.target.ahead + 1;
+        const count = live ? elementCount(live) : 0;
+        while (s.reveal < target && s.reveal < count && s.index === before.index) s = next(s, spine);
+      }
+      else s = show(s, spine[hit.target.index], hit.target.index);
       const at = Date.now();
       s = { ...s, lastCue: { phrase: hit.cue, target: hit.target.kind === 'element' ? `${live?.id}: next element` : spine[hit.target.index].id, at, ...(receivedAt !== undefined && receivedAt <= at && at - receivedAt <= 30000 ? { receivedAt } : {}) } };
       if (hit.target.kind === 'slide') s = logMove(before, s, 'cue', spine);

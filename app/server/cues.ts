@@ -89,21 +89,38 @@ export function findCue<T>(heard: string | string[], candidates: Candidate<T>[],
   const all = typeof heard === 'string' ? words(heard) : heard;
   const offset = Math.max(0, (newFrom ?? all.length) - WINDOW);
   const recent = all.slice(offset);
+  // The cue said first wins (so a slide change isn't swallowed by a leftover point named later in the same breath);
+  // on a tie, the earlier candidate (the next point, then the next slide) wins.
+  let best: Hit<T> | null = null;
   for (const c of candidates) {
     const m = match(c.cue, recent, Math.max(0, (newFrom ?? offset) - offset));
-    if (m.score >= threshold) return { ...c, end: offset + m.end };
+    if (m.score >= threshold && (!best || offset + m.end < best.end)) best = { ...c, end: offset + m.end };
   }
-  return null;
+  return best;
 }
 
 /** The speech engine may revise a partial. Only use an exact, ordered cue that ends in new speech. */
 export function findInterimCue<T>(heard: string[], candidates: Candidate<T>[], newFrom: number): Hit<T> | null {
-  const start = Math.max(0, newFrom - WINDOW);
+  let best: Hit<T> | null = null;
   for (const candidate of candidates) {
+    const hit = interimHit(heard, candidate, newFrom);
+    if (hit && (!best || hit.end < best.end)) best = hit;
+  }
+  return best;
+}
+
+function interimHit<T>(heard: string[], candidate: Candidate<T>, newFrom: number): Hit<T> | null {
+  const start = Math.max(0, newFrom - WINDOW);
+  {
     const phrase = words(candidate.cue);
-    if (!phrase.length || (phrase.length === 1 && phrase[0].length < 4)) continue;
+    if (!phrase.length || (phrase.length === 1 && phrase[0].length < 4)) return null;
     for (let i = Math.max(start, newFrom - phrase.length + 1); i <= heard.length - phrase.length; i++) {
       if (phrase.every((word, j) => heard[i + j] === word)) return { ...candidate, end: i + phrase.length - 1 };
+    }
+    // Not word for word: every key word present, close together and ending in new speech ("we've beaten our expectations").
+    if (needed(candidate.cue).length >= 2) {
+      const m = match(candidate.cue, heard.slice(start), newFrom - start);
+      if (m.score === 1) return { ...candidate, end: start + m.end };
     }
   }
   return null;

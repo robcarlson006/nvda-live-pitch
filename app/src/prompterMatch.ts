@@ -42,7 +42,16 @@ export function advance(words: Word[], at: number, word: string, prev: string | 
   if (STOP.has(w) || !prev) return at;
   const p = norm(prev);
   if (STOP.has(p)) return at; // "the cash" is too common to justify a long jump
-  for (let j = at + near + 1; j <= Math.min(words.length - 1, at + 70); j++) {
+  // A skipped sentence: look a little further, but never past the end of the next slide (the deck's cues move it on
+  // anyway), so a common pair like "data centres" can't fling the marker several slides ahead.
+  const slide = words[Math.max(0, at)]?.slide ?? 0;
+  let limit = Math.min(words.length - 1, at + 40);
+  const nextStart = words.findIndex((x, k) => k > at && x.slide > slide);
+  if (nextStart >= 0) {
+    const after = words.findIndex((x, k) => k > nextStart && x.slide > words[nextStart].slide);
+    if (after >= 0) limit = Math.min(limit, after - 1);
+  }
+  for (let j = at + near + 1; j <= limit; j++) {
     if (same(words[j].norm, w) && j > 0 && same(words[j - 1].norm, p)) return j;
   }
   return at;

@@ -70,3 +70,13 @@ for (const [how, say] of [['as written', (t: string) => t], ['figures as words',
     assert.equal(at, full.length - 1, `ends on the last word, "${full.at(-1)!.text}"`);
     assert.equal(lastSlide, spine.length - 1);
   });
+
+test('a common two-word pair never flings the teleprompter more than one slide ahead', () => {
+  const cuda = spine.findIndex((s) => s.id === 'cuda');
+  const start = full.findIndex((w) => w.slide === cuda);
+  const chips = spine.findIndex((s) => s.id === 'chips');
+  assert.ok(full.some((w, i) => w.slide === chips && /^data$/i.test(w.text) && /^centres/i.test(full[i + 1]?.text ?? '')), 'the chips slide says "data centres"');
+  let at = start, prev: string | null = null;
+  for (const h of ['in', 'data', 'centres']) { at = advance(full, at, h, prev); prev = h; }
+  assert.ok(full[at].slide <= cuda + 1, `stayed within the next slide (at ${spine[full[at].slide].id})`);
+});
