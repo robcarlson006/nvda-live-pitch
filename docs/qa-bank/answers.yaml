@@ -233,13 +233,14 @@
     - overvalued
     - too expensive
     - bubble burst
+    - bubble pops
   slide:
     layout: split
-    title: An AI slowdown would hurt the stock
+    title: Even if it pops, NVIDIA is built to survive it
     bullets:
-      - Our bear case is {{model_valuation | Value per share | Bear case}} a share versus {{model_dcf_inputs | Share price | value}} at the model reference price.
-      - If AI ended for good, value falls to {{model_valuation | Value per share | If AI ended for good}}.
-      - We size the position for that downside and watch customer spending.
+      - The dot-com crash wiped out companies built on ideas. The ones selling something people needed survived.
+      - NVIDIA sells both halves of AI, the hardware and the CUDA software developers already build on. When money gets tight, the weakest bets are cut first.
+      - "Our worst case, AI ending for good, values a share at {{model_valuation | Value per share | If AI ended for good}} and costs the portfolio only {{model_downside | Cost to the portfolio | If AI ended for good}}."
     chart:
       type: bar
       datasetKey: model_valuation
@@ -248,6 +249,7 @@
       highlight: If AI ended for good
     sources:
       - Team DCF model, data/model/NVDA_DCF.xlsx
+      - Team analysis of the dot-com crash (slide cut from the main pitch on 25 Nov)
 - id: discount-rate
   question: Why that discount rate? Why not Bloomberg's?
   ask:
@@ -287,7 +289,7 @@
     - title: NYU Stern, cost of capital by industry
       url: https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/wacc.html
 - id: concentration
-  question: Isn't it too dependent on data centres?
+  question: Isn't NVIDIA too dependent on a few big customers?
   ask:
     - customer concentration
     - few customers
@@ -295,26 +297,28 @@
     - reliant on data centers
     - one product
     - diversified
+    - few hyperscalers
+    - dependent on hyperscalers
+    - reliant on hyperscalers
+    - depends on a few
+    - dependent on a few
+    - handful of customers
   slide:
     layout: split
-    title: Data Centre dominates revenue
+    title: Demand is spreading beyond the giants
     bullets:
-      - It made {{nvda_segments_annual | Data Center | FY26}} of NVIDIA's {{nvda_revenue_annual | Revenue | FY26}} in FY26.
-      - Government-backed projects and independent clouds widen the buyer base.
-      - That does not remove exposure to data-centre spending.
+      - "Nearly half of revenue, {{nvda_dc_customer_mix | Share of revenue | Beyond the hyperscalers}}, came from outside the hyperscalers last quarter."
+      - "AI clouds, industry and enterprise grew {{nvda_dc_customer_mix | Growth on a year ago | AI clouds, industrial & enterprise}} in a year, faster than the giants' {{nvda_dc_customer_mix | Growth on a year ago | Hyperscalers}}."
+      - Governments and specialist clouds widen it further, such as Isambard-AI in Bristol and Nscale's NVIDIA-powered capacity.
     chart:
-      type: stackedBar
-      datasetKey: nvda_segments_annual
+      type: bar
+      datasetKey: nvda_dc_customer_mix
       series:
-        - Data Center
-        - Gaming
-        - Pro Visualization
-        - Automotive
-      highlight: FY26
+        - Share of revenue
+      highlight: Beyond the hyperscalers
     sources:
-      - Bloomberg FA, 20 November 2026, local terminal exports
+      - "Bloomberg FA, Data Center revenue by end user, Q3 FY27 (preliminary)"
       - NVIDIA, UK infrastructure projects
-      - NVIDIA, Q3 FY27 earnings release
   links:
     - title: NVIDIA, UK infrastructure projects
       url: https://nvidianews.nvidia.com/news/nvidia-and-united-kingdom-build-nations-ai-infrastructure-and-ecosystem-to-fuel-innovation-economic-growth-and-jobs
@@ -691,6 +695,13 @@
     - cool it systems
     - closed loop cooling
     - liquid cooling water
+    - water use in data
+    - data centre water
+    - data center water
+    - water contamination
+    - contaminate water
+    - contaminating water
+    - drinking water
   slide:
     layout: statement
     title: NVIDIA is helping test lower-water cooling
@@ -726,22 +737,22 @@
     - who would replace jensen
   slide:
     layout: statement
-    title: Another departure would raise key-person risk
+    title: The business has already run without him
     bullets:
-      - In November, Colette Kress served as interim CEO before Huang returned.
-      - A future succession would depend on the board’s plan and customer commitments.
-      - We would pause additions while reviewing orders, oversight and our valuation.
+      - In November, CFO Colette Kress stepped in as interim CEO, and NVIDIA still delivered its quarter above expectations.
+      - A flat structure spreads decisions across dozens of senior leaders, not one person.
+      - What we watch is the yearly chip cadence and large orders, not the headlines.
     sources:
       - NVIDIA, CEO transition, 12 November
-      - NVIDIA, reinstatement Form 8-K
+      - NVIDIA, Q3 FY27 earnings release, 17 November
       - NVIDIA, board reinstatement statement
     diagram:
       kind: flow
       nodes:
-        - Board succession plan
-        - Operating continuity
-        - Customer commitments
-        - Reassess position
+        - Interim CEO in place
+        - Quarter delivered
+        - Flat leadership team
+        - Chip cadence continues
   links:
     - title: NVIDIA, CEO transition, 12 November
       url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000082/nvidiaannouncesceotransiti.htm
@@ -749,6 +760,8 @@
       url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000090/nvda-20261122.htm
     - title: NVIDIA, board reinstatement statement
       url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Board-Reinstates-Jensen-Huang-as-President-CEO-and-Board-Director/default.aspx
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
 - id: porter-forces
   question: How do Porter's Five Forces apply to NVIDIA?
   ask:
@@ -1051,3 +1064,181 @@
   links:
     - title: NVIDIA, Q3 FY27 earnings release
       url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
+- id: huang-key-person
+  question: Jensen said he didn't need a successor, then resigned out of nowhere. Isn't NVIDIA a one-man company?
+  ask:
+    - no successor
+    - a successor
+    - succession plan
+    - out of nowhere
+    - one man company
+    - one man show
+    - key person risk
+    - depends on jensen
+    - relies on jensen
+    - jensen credibility
+    - credibility of jensen
+    - cult of personality
+  slide:
+    layout: split
+    title: The market prices the chips and demand, not one person
+    bullets:
+      - "NVIDIA runs flat on purpose: dozens of leaders report to the CEO, so know-how is spread across the team."
+      - "The test already happened: with Huang out, NVIDIA reported {{nvda_revenue_quarterly | Revenue | FY27 Q3}} for the quarter, {{nvda_revenue_surprise | Revenue surprise | FY27 Q3}} above expectations."
+      - "One share class, no controlling owner: the board can replace any CEO."
+    chart:
+      type: line
+      datasetKey: nvda_revenue_quarterly
+      series:
+        - Revenue
+        - Consensus
+      highlight: FY27 Q3
+    sources:
+      - Bloomberg FA, 20 Nov 2026; NVIDIA Q3 FY27 release, 17 Nov 2026
+      - NVIDIA, CEO transition (12 Nov) and reinstatement (23 Nov); team research on bylaws and structure
+  links:
+    - title: NVIDIA, Q3 FY27 earnings release
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Announces-Financial-Results-for-Third-Quarter-Fiscal-2027/default.aspx
+    - title: NVIDIA, CEO transition, 12 November
+      url: https://www.sec.gov/Archives/edgar/data/1045810/000104581026000082/nvidiaannouncesceotransiti.htm
+    - title: NVIDIA, board reinstatement statement
+      url: https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Board-Reinstates-Jensen-Huang-as-President-CEO-and-Board-Director/default.aspx
+- id: ai-build-out
+  question: How big is the AI build-out compared with past infrastructure booms?
+  ask:
+    - past booms
+    - infrastructure boom
+    - infrastructure booms
+    - railroads
+    - highways
+    - share of gdp
+    - how big is the build out
+  slide:
+    layout: split
+    title: America's great infrastructure booms, as a share of GDP each year
+    bullets:
+      - "Highways took {{research_infra_gdp | Average yearly spend | Highways 1956–73}} a year, fibre {{research_infra_gdp | Average yearly spend | Fibre 1996–2003}} and railroads {{research_infra_gdp | Average yearly spend | Railroads 1870–90}}."
+      - "The AI build-out is projected at {{research_infra_gdp | Average yearly spend | AI 2025–32}}: a projection, set against booms that already happened."
+      - Every one of those booms left lasting infrastructure behind. AI's is being built on NVIDIA chips.
+    chart:
+      type: bar
+      datasetKey: research_infra_gdp
+      series:
+        - Average yearly spend
+      highlight: AI 2025–32
+    sources:
+      - See the research_infra_gdp dataset sources (data/clean)
+- id: fcf-forecast
+  question: What free cash flow do you forecast?
+  ask:
+    - free cash flow forecast
+    - cash flow forecast
+    - forecast free cash flow
+    - how much free cash
+    - fcf
+  slide:
+    layout: split
+    title: "Free cash flow: what NVIDIA made, then our base case"
+    bullets:
+      - "Free cash flow is the cash left after running the business and investing in it. Last year NVIDIA made {{model_fcf_forecast | Actual | FY26}}."
+      - "On consensus revenue, our base case reaches {{model_fcf_forecast | Base-case forecast | FY32}} by FY32."
+      - "Revenue is the analyst consensus; the margin is NVIDIA's own FY24 to FY26 average."
+    chart:
+      type: stackedBar
+      datasetKey: model_fcf_forecast
+      series:
+        - Actual
+        - Base-case forecast
+      range: [FY22, FY32]
+      highlight: FY26
+    sources:
+      - Team valuation model on Bloomberg FA and consensus data
+- id: dcf-drivers
+  question: What drives your valuation?
+  ask:
+    - drives your valuation
+    - valuation drivers
+    - key assumptions
+    - base case assumptions
+    - revenue growth assumption
+    - what margin do you assume
+  slide:
+    layout: statement
+    title: Our base case in three numbers
+    bullets:
+      - "The forecast runs from FY28 to FY32."
+      - "Revenue grows {{model_dcf_summary | Revenue CAGR, FY27–32 | value}} a year, compounded, from FY27 to FY32."
+      - "From each dollar of sales: {{model_dcf_summary | EBIT margin, FY26 | value}} operating profit (EBIT) in FY26, and {{model_dcf_summary | Free-cash-flow margin | value}} kept as cash."
+    sources:
+      - Team valuation model (data/model/assumptions.json) on Bloomberg FA and consensus data
+- id: dcf-bridge
+  question: How do you get from cash flow to a share price?
+  ask:
+    - cash flow to a share price
+    - enterprise value
+    - equity value
+    - terminal value
+    - net debt
+    - net cash
+    - diluted shares
+  slide:
+    layout: statement
+    title: "From cash flow to value per share, at {{model_dcf_inputs | WACC, US semiconductor industry average | value}}"
+    bullets:
+      - "Five years of cash, in today's money: {{model_dcf_summary | PV of FCFs | value}}. Everything after FY32: {{model_dcf_summary | PV of terminal value | value}}, or {{model_dcf_summary | Terminal value share of EV | value}} of the total."
+      - "Enterprise value {{model_dcf_summary | Enterprise value | value}}. No net debt: {{model_dcf_inputs | Net cash | value}} of net cash is added, for {{model_dcf_summary | Equity value | value}} of equity."
+      - "÷ {{model_dcf_inputs | Diluted shares | value}} diluted shares = {{model_dcf_summary | Implied share price | value}} a share, against {{model_dcf_summary | Share price | value}} today."
+    sources:
+      - Team valuation model (data/model/assumptions.json) on Bloomberg FA, DES and consensus data
+- id: ai-race
+  question: Is the AI race worth it?
+  ask:
+    - space race
+    - ai race
+    - arms race
+    - race worth it
+    - leave behind
+  slide:
+    layout: statement
+    title: A race can change the world
+    bullets:
+      - The space race began with Sputnik in 1957 and landed people on the Moon in 1969.
+      - "Its by-product we still use every day: Earth-observation satellites that track our climate and forests."
+      - AI is a race now too. It is already leaving tools behind, from protein design to crops sprayed only where weeds grow.
+    sources:
+      - NASA, The Dawn of the Space Age; NASA, Apollo 11; NASA Earth Observatory, Space-based Observations of the Earth
+    diagram:
+      kind: flow
+      nodes:
+        - "1957: Sputnik"
+        - "1969: Moon landing"
+        - "By-product: Earth observation"
+        - "AI race: what will it leave?"
+- id: open-models
+  question: Who else does NVIDIA back besides the AI giants?
+  ask:
+    - open models
+    - open source models
+    - hugging face
+    - mistral
+    - smaller ai companies
+    - ai startups
+    - who else does nvidia back
+    - competition is capitalism
+  slide:
+    layout: statement
+    title: NVIDIA is funding competition to the AI giants
+    bullets:
+      - "Sharing open models: Hugging Face, which NVIDIA agreed to buy in September 2026, pending approval."
+      - "Building them: Mistral, Black Forest Labs and AI21 Labs. Running them: Fireworks AI, Together AI and Replicate."
+      - More choice keeps the giants' prices and lock-in in check, and whichever model wins still needs chips. Competition is capitalism.
+    sources:
+      - NVIDIA blog, 3 Sep 2026 (Hugging Face, pending approval)
+      - "Funding announcements: Mistral 2024, AI21 Labs 2023, Black Forest Labs 2025, Fireworks AI 2024, Replicate 2023, Together AI (Reuters) 2024"
+    diagram:
+      kind: flow
+      nodes:
+        - Share open models
+        - Build them
+        - Run them
+        - More choice, more chips

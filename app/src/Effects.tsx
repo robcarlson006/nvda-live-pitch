@@ -8,12 +8,12 @@ import './effects.css';
  * Only plays moving forward into the section, and never with motion off.
  */
 // One card per part of the pitch, keyed by that part's first slide. The spine keeps each part's slides together:
-// story (founding → handoff), numbers (last-quarter → ai-ended), future (space-race → beyond-hyperscalers),
+// story (founding → handoff), numbers (last-quarter → ai-ended), future (already-doing → beyond-hyperscalers),
 // responsibility (governance → emissions-peers), verdict (recommendation → close).
 export const SECTIONS: Record<string, { kicker: string; word: string; line: string }> = {
   founding: { kicker: 'Part one', word: 'Story.', line: 'Why NVIDIA is the gold standard' },
   'last-quarter': { kicker: 'Part two', word: 'Numbers.', line: 'Do the numbers agree?' },
-  'space-race': { kicker: 'Part three', word: 'Future.', line: 'What AI is already doing, and who it reaches' },
+  'already-doing': { kicker: 'Part three', word: 'Future.', line: 'What AI is already doing, and who it reaches' },
   governance: { kicker: 'Part four', word: 'Responsibility.', line: 'Governance, people and the planet' },
   recommendation: { kicker: 'Part five', word: 'Verdict.', line: 'Our recommendation' },
 };
@@ -42,7 +42,7 @@ export function SectionCard({ kicker, word, line }: { kicker: string; word: stri
  */
 export const CHAPTERS: { key: string; ids: (string | null)[]; labels: string[] }[] = [
   { key: 'layers', ids: ['chips', 'software', 'connections', 'supply'], labels: ['Chips', 'Software', 'Connections', 'Supply'] },
-  { key: 'dcf', ids: ['dcf-inputs', 'dcf-drivers', 'fcf', 'dcf-worksheet', 'dcf-bridge', 'three-rates', 'dcf-summary', 'reverse-dcf'], labels: ['Inputs', 'Drivers', 'Cash flow', 'Discounting', 'Value', 'Three rates', 'Summary', 'Priced in'] },
+  { key: 'dcf', ids: ['dcf-inputs', 'dcf-worksheet', 'three-rates', 'dcf-summary', 'reverse-dcf'], labels: ['Inputs', 'Cash flow', 'Three rates', 'Summary', 'Priced in'] },
 ];
 // Overview slides that show a chapter with every step lit, just before its first step.
 const OVERVIEW: Record<string, string> = { 'four-layers': 'layers' };

@@ -115,8 +115,9 @@ const ZOOM_MS = 1300;
 /**
  * Renders any dataset by key. Numbers come only from the dataset; the slide just names series.
  * `zoom` (an x value) magnifies the chart around that bar or point and makes it the highlight, as the presenter talks about it.
+ * `ring: false` leaves out the hand-drawn red ring (Q&A answer slides: it sometimes landed on the wrong spot there).
  */
-export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<Slide['chart']>; dataset: Dataset; zoom?: string | null }) {
+export function Chart({ spec, dataset: full, zoom = null, ring: showRing = true }: { spec: NonNullable<Slide['chart']>; dataset: Dataset; zoom?: string | null; ring?: boolean }) {
   const el = useRef<HTMLDivElement>(null);
   const live = useRef<{ chart: echarts.ECharts; restyle: (hi: number) => void; point: (i: number) => [number, number] | null; slot: number; born: number } | null>(null);
   const box = useRef<HTMLDivElement>(null);
@@ -390,7 +391,7 @@ export function Chart({ spec, dataset: full, zoom = null }: { spec: NonNullable<
     <div className="chart-clip">
       <div ref={box} className="chart-canvas" style={{ position: 'relative', width: '100%', height: '100%', transformOrigin: '0 0', transition: `transform ${ZOOM_MS}ms cubic-bezier(0.6, 0, 0.2, 1)` }}>
         <div ref={el} style={{ width: '100%', height: '100%' }} />
-        {ring && (
+        {showRing && ring && (
           <svg className="chart-ring" aria-hidden="true">
             <path key={ring.key} d={ring.d} pathLength={1} />
           </svg>

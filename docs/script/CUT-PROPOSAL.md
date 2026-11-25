@@ -1,4 +1,4 @@
-# Proposal: a shorter pitch (25 Nov 2026) — not applied yet
+# Proposal: a shorter pitch (25 Nov 2026) — applied 25 Nov, with changes (see docs/PROGRESS.md and TIMING.md)
 
 ## Why
 The current `spine.yaml` is **40 slides and about 2,360 spoken words** (each `{{figure}}` counted as five spoken words,

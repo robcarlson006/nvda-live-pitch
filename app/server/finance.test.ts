@@ -98,7 +98,7 @@ test('the DCF inputs slide uses the three rates and shows every model input', ()
 test('the finance run is in order and the old valuation slide is gone', () => {
   const ids = spine.map((s) => s.id);
   assert.ok(!ids.includes('valuation'));
-  const order = ['peers', 'dcf-inputs', 'dcf-drivers', 'fcf', 'dcf-worksheet', 'dcf-bridge', 'three-rates', 'dcf-summary', 'reverse-dcf', 'bear-case', 'ai-ended'];
+  const order = ['peers', 'dcf-inputs', 'dcf-worksheet', 'three-rates', 'dcf-summary', 'reverse-dcf', 'bear-case', 'ai-ended'];
   const pos = order.map((id) => ids.indexOf(id));
   assert.ok(pos.every((p, i) => p >= 0 && (i === 0 || p === pos[i - 1] + 1)), `consecutive: ${pos}`);
   assert.equal(spine[pos.at(-1)! + 1].speaker, "Mi'kael");

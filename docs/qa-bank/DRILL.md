@@ -2,7 +2,7 @@
 
 One person reads a question cold, in their own words. The answerer has **five seconds** to name the bank answer (or say "no prepared answer"), then **thirty seconds** to answer aloud. The operator types the question into the operator chat to check what the bank matches. Mark each: right answer / right slide / within 30 s.
 
-Rules for every answer: direct answer first, then one figure from the slide, then the risk we concede, then what it means for the 3% position. Never give a figure that is not on a slide or in `QA_PREP.md`.
+Rules for every answer: direct answer first, then one figure from the slide, then the risk we concede (except where the drill says rebut), then what it means for the 3% position. Never give a figure that is not on a slide or in `QA_PREP.md`.
 
 ## A. Same question, unfamiliar wording (does the bank still match?)
 
@@ -16,6 +16,10 @@ Rules for every answer: direct answer first, then one figure from the slide, the
 | 6 | "Your number went from two-thirty to nearly four hundred. Why should we trust either?" | `target-revision` | $232 is team-reported; most of the move is inputs (+$130.84), less is the rate (+$28.54) |
 | 7 | "Is the liquid-cooling thing with Ecolab actually saving water?" | `ecolab-water` | Neither Ecolab release gives a water-saving figure |
 | 8 | "Could Washington just ban new data centres?" | `democrats-datacentres` | Bills introduced, in committee. Don't call them Democrat bills: Sanders is an independent |
+| 8a | "He said he didn't need a successor, then walked out. Isn't NVIDIA a one-man company?" | `huang-key-person` | **Rebut, don't concede.** Flat organisation; the quarter was delivered without him (beat expectations); one share class, the board can replace any CEO. The market prices the chips and demand |
+| 8b | "Isn't all the revenue from a handful of hyperscalers?" | `concentration` | Nearly half of revenue came from outside the hyperscalers last quarter; don't claim a government share (Bloomberg doesn't split it) |
+| 8c | "Aren't these data centres draining and contaminating local water?" | `ecolab-water` | Ecolab + NVIDIA on closed-loop liquid cooling; no water-saving figure published yet |
+| 8d | "Show us the cash flows behind the DCF." / "What's terminal value as a share of EV?" | `fcf-forecast` / `dcf-bridge` | Both were main-deck slides until the 25 Nov cut; every figure is on the DCF-on-one-page slide too |
 
 ## B. Compound questions (answer both halves, in the order asked)
 

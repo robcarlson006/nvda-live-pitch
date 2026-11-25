@@ -50,13 +50,13 @@ test('zoom steps: the chart builds where it is told, zooms follow cues, and bad 
   assert.equal(checkSlide({ ...base, steps: [{ chart: true }, { zoom: 'NVIDIA' }, { bullet: 0 }, { zoom: 'all' }] }, datasets), null);
 });
 
-test('the spoken DCF worksheet cue reveals the actual model before the valuation bridge', () => {
-  const start = run(emptyState(), { type: 'goto', index: idx('fcf') });
+test('the spoken DCF worksheet cue reveals the actual model before the three rates', () => {
+  const start = run(emptyState(), { type: 'goto', index: idx('dcf-inputs') });
   const worksheet = run(start, say("here's the five year DCF"));
   assert.equal(worksheet.live?.id, 'dcf-worksheet');
   assert.equal(worksheet.live?.chart?.datasetKey, 'model_dcf_detail');
   assert.equal(worksheet.reveal, elementCount(worksheet.live!));
-  assert.equal(run(worksheet, say('add it up')).live?.id, 'dcf-bridge');
+  assert.equal(run(worksheet, say("we didn't invent a discount rate")).live?.id, 'three-rates');
 });
 
 test('the people benchmark is dated, lower for NVIDIA and marked unverified', () => {
@@ -100,8 +100,11 @@ test('slide text may not contain hand-typed numbers; {{tokens}} must resolve', (
 
 test('operator sees which slides still rely on unverified figures', () => {
   const ds = Object.fromEntries(datasets);
-  assert.equal(isUnverified(spine[idx('catch-up')], ds), true);
-  assert.equal(isUnverified(spine[idx('connections')], ds), true, 'figure inside a bullet');
+  // The unverified networking-revenue and AI-chip-share figures were cut from the pitch on 25 Nov.
+  assert.equal(isUnverified(spine[idx('catch-up')], ds), false);
+  assert.equal(isUnverified(spine[idx('connections')], ds), false);
+  assert.equal(isUnverified(spine[idx('people')], ds), true, 'the dated turnover benchmark is still flagged');
+  assert.equal(isUnverified({ ...spine[idx('chips')], bullets: ['{{research_facts_unverified | Networking revenue FY26 | value}}'] }, ds), true, 'figure inside a bullet');
   assert.equal(isUnverified(spine[idx('chips')], ds), false);
 });
 
@@ -335,7 +338,7 @@ test('after a script edit the live slide is found again by id', () => {
 });
 
 test('static backup switches the stage to full pages and advances whole slides', () => {
-  let s = run(emptyState(), { type: 'goto', index: idx('dcf-bridge') }, { type: 'backup', on: true });
+  let s = run(emptyState(), { type: 'goto', index: idx('dcf-worksheet') }, { type: 'backup', on: true });
   assert.equal(s.backup, true);
   s = run(s, { type: 'next' });
   assert.equal(s.index, idx('three-rates'));
@@ -343,7 +346,7 @@ test('static backup switches the stage to full pages and advances whole slides',
   s = run(s, say('turn it around'));
   assert.equal(s.index, idx('three-rates'), 'speech cannot move the static deck');
   s = run(s, { type: 'back' });
-  assert.equal(s.index, idx('dcf-bridge'));
+  assert.equal(s.index, idx('dcf-worksheet'));
   assert.equal(s.reveal, elementCount(spine[s.index]));
   s = run(s, { type: 'backup', on: false });
   assert.equal(s.backup, false);

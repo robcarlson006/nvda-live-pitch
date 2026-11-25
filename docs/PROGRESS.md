@@ -238,3 +238,15 @@ cd app && npm install && npm run dev
 - **research-vault/** (new, GPT overnight loop, sandboxed to that folder): see its README. Started 01:46; research until 07:46, visuals (gpt-6.2-sol) until 09:46.
 - **Script length:** the spine is ~2,360 spoken words (~15½ min), not the 8.9 min in TIMING.md. Proposal: `docs/script/CUT-PROPOSAL.md` (28 slides, ~9½ min). Not applied.
 - **Not done:** backup deck (`fallback/spine.pdf` + slide images) not regenerated for tonight's slide changes; prompter not yet tried with the real mic.
+
+## 25 Nov, afternoon: the 9-minute cut (branch `panshul/nine-minute-cut`)
+
+- **Script: 32 slides, 8:58 of speech** (was 40 slides, 15:45), Rob 3:33 · Panshul 3:10 · Mi'kael 2:15. Details in `docs/script/TIMING.md`; readable script `docs/script/pitch-script-v10.md`.
+- **How it was decided:** a cut quiz (`app/scripts/cut-quiz/`, candidates in `docs/script/cut-candidates.yaml`, picks in `docs/script/cut-choices.json`). The team kept `revenue-long` and `dcf-worksheet` (so `fcf` went); Claude chose the rest, repeated material first: the DCF method slides that `dcf-summary` already covers, buybacks, the space-race analogy, open-model funding and the two bubble slides.
+- **Nothing lost:** every cut slide is a prepared answer. New: `fcf-forecast`, `dcf-drivers`, `dcf-bridge`, `ai-build-out`, `ai-race`, `open-models`, and `huang-key-person` (the "one-man company / no successor" question, as a rebuttal: flat organisation, the quarter beat expectations with Huang out, one share class). Rewritten to argue rather than concede: `bubble` (if it pops, NVIDIA survives), `huang-departure`, `concentration` (nearly half of revenue from outside the hyperscalers, from Bloomberg's split). Water questions now reach `ecolab-water`. Bank: 42 answers.
+- **Every DCF item is still on stage**: `dcf-summary` shows implied and current price, upside, WACC, terminal growth, forecast period, CAGR, EBIT margin, PV of FCFs and TV, TV % of EV, EV, net debt, equity value, diluted shares; `dcf-worksheet` has each year's FCF.
+- **No unverified figure on stage now:** networking revenue and the AI-chip-spend share are gone from both speech and screen (`catch-up` is now a plain statement slide).
+- **Stage:** section card "Part three" now opens on `already-doing`; the DCF tracker has five steps; the first-GPU scene runs 1999 → stop (no Xbox/Forbes). The closing "Our recommendation is to buy." is centred properly (it overflowed its box). The red hand-drawn ring no longer appears on Q&A answer slides (it sometimes landed in the wrong place); the main deck keeps it.
+- Backup deck rebuilt: 32 spine pages, 42 Q&A pages. 118 tests pass; typecheck clean. Checked on `/stage` at 1600×900.
+- **Not done:** a timed run with the real mic; the cue changes (alexnet, handoff, wall-street, close) are proven only by the read-aloud tests.
+

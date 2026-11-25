@@ -1,4 +1,37 @@
-# Spoken script timing — 24 November 2026 (late evening)
+# Spoken script timing — 25 November 2026 (after the cut)
+
+## 25 Nov: 32 slides, 8:58 of speech
+
+Measured with `cd app && npx tsx scripts/measure-script.ts` (every `{{figure}}` counted as five spoken words, 150 words a
+minute). The same count is at the end of `docs/script/pitch-script-v10.md`.
+
+| Speaker | Words | Speech |
+|---|---:|---:|
+| Rob | 533 | 3:33 |
+| Panshul | 476 | 3:10 |
+| Mi'kael | 337 | 2:15 |
+| **All** | **1,346** | **8:58** |
+
+Add about 20–30 s for the five section cards and slide builds: **about 9:20 in the room**. Still unproven with a real
+microphone; time a full run-through.
+
+**Cut (each is now a Q&A bank answer):** `fcf` → `fcf-forecast`, `dcf-drivers` → `dcf-drivers`, `dcf-bridge` →
+`dcf-bridge`, `returns` → `buybacks`, `bubble` + `if-it-pops` → `bubble` (rewritten) and `ai-build-out`, `space-race` →
+`ai-race`, `open-ai` → `open-models`. **Kept by the team:** `revenue-long` and `dcf-worksheet`.
+
+**Trimmed:** first-gpu (Xbox, Forbes), wall-street, alexnet (Stanford), connections and catch-up (both unverified figures
+gone from speech *and* screen), handoff, beats, guidance (Vera Rubin), peers (trailing P/E on screen only), dcf-inputs,
+dcf-worksheet, three-rates, dcf-summary, reverse-dcf, bear-case, ai-ended, already-doing (Sweden), beyond-hyperscalers,
+governance, people (rankings → `peer-rankings`), emissions-peers, recommendation, close, plus small cuts in cuda,
+software, four-layers, chips and supply.
+
+**If a run is still long:** switch off `revenue-long` on the operator panel (10 s); then trim `cuda`'s analogy.
+
+Everything below is the earlier count.
+
+---
+
+## 24 November 2026 (late evening)
 
 ## Update, 24 Nov late night: 40 slides, about 8.9 minutes of speech
 

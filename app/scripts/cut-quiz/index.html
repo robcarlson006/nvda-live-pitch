@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cut quiz</title>
+<style>
+  :root { --bg: #0b0d0a; --panel: #151a12; --line: #2a3324; --text: #eef2e8; --dim: #9aa391; --green: #76b900; --lime: #b7f04a; --red: #ff6b5e; --amber: #f2b84b; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.45 -apple-system, system-ui, sans-serif; }
+  header { position: sticky; top: 0; z-index: 5; background: rgba(11,13,10,.96); border-bottom: 1px solid var(--line); padding: 14px 24px 16px; }
+  .row { display: flex; align-items: baseline; gap: 22px; flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 20px; letter-spacing: .02em; }
+  #clock { font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  #clock small { font-size: 16px; color: var(--dim); font-weight: 500; }
+  .over { color: var(--amber); } .under { color: var(--lime); }
+  #speakers span { margin-right: 14px; color: var(--dim); font-variant-numeric: tabular-nums; } #speakers b { color: var(--text); }
+  #left { margin-left: auto; color: var(--dim); }
+  #bar { position: relative; height: 16px; margin-top: 10px; background: #1d2318; border-radius: 8px; overflow: visible; }
+  #fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--green), var(--lime)); transition: width .4s ease; }
+  #fill.over { background: linear-gradient(90deg, #a6731d, var(--amber)); }
+  #target { position: absolute; top: -6px; bottom: -6px; width: 3px; background: #fff; border-radius: 2px; }
+  #target::after { content: '9:00'; position: absolute; top: -18px; left: -12px; font-size: 12px; color: #fff; }
+  main { padding: 22px 24px 60px; max-width: 1500px; margin: 0 auto; }
+  .kind { color: var(--green); text-transform: uppercase; letter-spacing: .12em; font-size: 13px; font-weight: 700; }
+  .question { font-size: 24px; font-weight: 700; margin: 4px 0 6px; }
+  .why { color: var(--dim); margin: 0 0 18px; }
+  .duel { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 900px) { .duel { grid-template-columns: 1fr; } }
+  .card { background: var(--panel); border: 2px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .card:hover { border-color: var(--green); }
+  .imgs { display: grid; gap: 8px; } .imgs.two { grid-template-columns: 1fr 1fr; }
+  .imgs img { width: 100%; max-height: 30vh; aspect-ratio: 16/9; object-fit: contain; border-radius: 8px; border: 1px solid var(--line); background: #000; }
+  .card.cutcard .imgs img { filter: grayscale(1) brightness(.35); }
+  .card h3 { margin: 0; font-size: 19px; }
+  .meta { color: var(--dim); font-size: 14px; }
+  .script { background: #0f130d; border-radius: 8px; padding: 12px 14px; font-size: 16px; line-height: 1.55; max-height: 26vh; overflow: auto; }
+  .script .sp { color: var(--green); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; display: block; margin-top: 6px; }
+  del { color: var(--red); text-decoration-thickness: 2px; } ins { color: var(--lime); text-decoration: none; border-bottom: 2px solid var(--lime); }
+  .cost { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .cost.save { color: var(--lime); } .cost.zero { color: var(--dim); }
+  .qa { font-size: 14px; color: var(--amber); }
+  .screen { font-size: 14px; color: var(--dim); }
+  button { font: inherit; cursor: pointer; border-radius: 10px; border: 0; }
+  .pick { margin-top: auto; padding: 16px; font-size: 20px; font-weight: 800; background: var(--green); color: #0b0d0a; }
+  .pick:hover { background: var(--lime); }
+  .pick kbd { background: rgba(0,0,0,.2); border-radius: 5px; padding: 1px 8px; margin-right: 8px; }
+  .tools { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+  .tools button { background: #232b1e; color: var(--text); padding: 12px 20px; font-size: 16px; border: 1px solid var(--line); }
+  .tools button:hover { border-color: var(--green); }
+  .banner { background: #1a2410; border: 2px solid var(--green); border-radius: 14px; padding: 24px; text-align: center; }
+  .banner h2 { margin: 0 0 6px; font-size: 30px; }
+  .banner .tools { justify-content: center; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0 26px; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--dim); font-weight: 600; font-size: 14px; }
+  td.num, th.num { text-align: right; }
+  tr.cut td { color: var(--dim); text-decoration: line-through; } tr.cut td.qa { text-decoration: none; color: var(--amber); }
+  .tag { font-size: 12px; font-weight: 700; padding: 2px 7px; border-radius: 6px; text-transform: uppercase; letter-spacing: .06em; }
+  .tag.cut { background: #3a1d1a; color: var(--red); } .tag.trim { background: #2b3a12; color: var(--lime); } .tag.keep { background: #222; color: var(--dim); }
+  h2.sec { margin: 30px 0 6px; }
+  .fullscript p { margin: 0 0 10px; max-width: 900px; } .fullscript .sid { color: var(--dim); font-size: 13px; }
+  .saved { color: var(--dim); font-size: 13px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="row">
+    <h1>Cut to 9:00</h1>
+    <div id="clock"></div>
+    <div id="speakers"></div>
+    <div id="left"></div>
+  </div>
+  <div id="bar"><div id="fill"></div><div id="target"></div></div>
+</header>
+<main id="main">Loading…</main>
+<script>
+let D, picks = [], keepGoing = false, view = 'quiz', saveNote = '';
+
+const words = (say) => {
+  const f = (say.match(/\{\{[^}]*\}\}/g) || []).length;
+  const plain = say.replace(/\{\{[^}]*\}\}/g, ' ').replace(/[*_]/g, '');
+  return plain.split(/\s+/).filter((w) => /[A-Za-z0-9]/.test(w)).length + f * 5;
+};
+const secs = (w) => Math.round((w / D.wpm) * 60);
+const mmss = (s) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+const esc = (t) => t.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const slide = (id) => D.spine.find((s) => s.id === id);
+
+// ---------- the engine: state is rebuilt from the list of picks, so undo and refresh are exact ----------
+function init() {
+  const S = { say: {}, shown: {}, cut: {}, trimmed: {}, step: 0, pool: [], wins: {}, safe: {}, poolOn: false };
+  for (const s of D.spine) { S.say[s.id] = s.say; S.shown[s.id] = s.shown; }
+  return S;
+}
+const order = () => Object.keys(D.cuts);
+const candWords = (S, c) => D.cuts[c].slides.reduce((a, id) => a + (S.cut[id] ? 0 : words(S.say[id])), 0);
+const isCut = (S, c) => D.cuts[c].slides.every((id) => S.cut[id]);
+const alive = (S, c) => !isCut(S, c) && !S.safe[c];
+function totals(S) {
+  let t = 0; const by = {};
+  for (const s of D.spine) { const w = S.cut[s.id] ? 0 : words(S.say[s.id]); t += w; by[s.speaker] = (by[s.speaker] || 0) + w; }
+  return { t, by };
+}
+function next(S) {
+  for (let guard = 0; guard < 1000; guard++) {
+    if (S.poolOn) {
+      const live = S.pool.filter((c) => alive(S, c));
+      if (live.length >= 2) {
+        live.sort((a, b) => (S.wins[a] || 0) - (S.wins[b] || 0) || order().indexOf(a) - order().indexOf(b));
+        const a = live[0], wa = candWords(S, a);
+        const b = live.slice(1, 4).sort((x, y) => Math.abs(candWords(S, x) - wa) - Math.abs(candWords(S, y) - wa))[0];
+        return { type: 'duel', a, b, pool: true, key: `pool:${a}|${b}` };
+      }
+      S.poolOn = false; S.step++; continue;
+    }
+    const st = D.steps[S.step];
+    if (!st) return null;
+    if (st.single) { if (alive(S, st.single)) return { type: 'single', a: st.single, key: `single:${st.single}` }; S.step++; continue; }
+    if (st.duel) {
+      const [a, b] = st.duel, la = alive(S, a), lb = alive(S, b);
+      if (la && lb) return { type: 'duel', a, b, key: `duel:${a}|${b}` };
+      if (la) S.pool.push(a); if (lb) S.pool.push(b);
+      S.step++; continue;
+    }
+    if (st.trim) { if (!S.cut[st.trim] && !S.trimmed[st.trim]) return { type: 'trim', id: st.trim, key: `trim:${st.trim}` }; S.step++; continue; }
+    if (st.pool) { for (const c of D.pool_extra || []) if (alive(S, c) && !S.pool.includes(c)) S.pool.push(c); S.poolOn = true; continue; }
+    S.step++;
+  }
+  return null;
+}
+const cutCand = (S, c) => { for (const id of D.cuts[c].slides) S.cut[id] = c; };
+function apply(S, r, ch) {
+  if (r.type === 'single') {
+    if (ch === 'b') cutCand(S, r.a); else if (ch === 'a') S.pool.push(r.a); else S.safe[r.a] = true;
+    S.step++;
+  } else if (r.type === 'duel') {
+    if (ch === 'skip') { S.safe[r.a] = S.safe[r.b] = true; }
+    else {
+      const keep = ch === 'a' ? r.a : r.b, lose = ch === 'a' ? r.b : r.a;
+      cutCand(S, lose); S.wins[keep] = (S.wins[keep] || 0) + 1;
+      if (!r.pool) S.pool.push(keep);
+    }
+    if (!r.pool) S.step++;
+  } else if (r.type === 'trim') {
+    if (ch === 'b') { S.say[r.id] = D.trims[r.id].say; S.shown[r.id] = D.trims[r.id].shown; S.trimmed[r.id] = true; }
+    else S.trimmed[r.id] = 'kept';
+    S.step++;
+  }
+}
+function build() {
+  const S = init(); let i = 0;
+  for (; i < picks.length; i++) { const r = next(S); if (!r || r.key !== picks[i].key) break; apply(S, r, picks[i].choice); }
+  if (i < picks.length) picks = picks.slice(0, i);
+  return S;
+}
+function roundsLeft(S) {
+  const rest = D.steps.slice(S.step).filter((st) => !st.pool && !(st.trim && S.cut[st.trim])).length;
+  return rest + Math.max(0, S.pool.filter((c) => alive(S, c)).length - 1);
+}
+
+// ---------- word diff for trims ----------
+function diff(a, b) {
+  const A = a.split(/\s+/), B = b.split(/\s+/), n = A.length, m = B.length;
+  const L = Array.from({ length: n + 1 }, () => new Int16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = A[i] === B[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const left = [], right = []; let i = 0, j = 0;
+  while (i < n || j < m) {
+    if (i < n && j < m && A[i] === B[j]) { left.push(esc(A[i])); right.push(esc(B[j])); i++; j++; }
+    else if (j < m && (i >= n || L[i][j + 1] >= L[i + 1][j])) { right.push(`<ins>${esc(B[j])}</ins>`); j++; }
+    else { left.push(`<del>${esc(A[i])}</del>`); i++; }
+  }
+  return [left.join(' ').replace(/<\/del> <del>/g, ' '), right.join(' ').replace(/<\/ins> <ins>/g, ' ')];
+}
+
+// ---------- rendering ----------
+function header(S) {
+  const { t, by } = totals(S), s = secs(t), start = secs(D.spine.reduce((a, x) => a + words(x.say), 0));
+  const over = s > D.target_seconds;
+  document.getElementById('clock').innerHTML = `<span class="${over ? 'over' : 'under'}">${mmss(s)}</span> <small>of 9:00 target · started at ${mmss(start)} · ${t} words</small>`;
+  document.getElementById('speakers').innerHTML = Object.entries(by).map(([k, v]) => `<span>${esc(k)} <b>${v}</b> w · ${mmss(secs(v))}</span>`).join('');
+  const max = Math.max(start, D.target_seconds);
+  const fill = document.getElementById('fill');
+  fill.style.width = `${(s / max) * 100}%`; fill.className = over ? 'over' : '';
+  document.getElementById('target').style.left = `${(D.target_seconds / max) * 100}%`;
+  document.getElementById('left').textContent = view === 'summary' ? '' : `≈ ${roundsLeft(S)} rounds left in the list · ${picks.length} picked`;
+  return over;
+}
+function imgs(ids) { return `<div class="imgs ${ids.length > 1 ? 'two' : ''}">${ids.map((id) => `<img src="${slide(id).image}" alt="Slide ${slide(id).n}: ${esc(slide(id).title)}">`).join('')}</div>`; }
+function scriptOf(S, ids) { return ids.map((id) => `<span class="sp">${esc(slide(id).speaker)} · slide ${slide(id).n} · ${id}</span>${esc(S.shown[id])}`).join(''); }
+function candCard(S, c, key, label, cutView) {
+  const ids = D.cuts[c].slides, w = candWords(S, c);
+  return `<div class="card ${cutView ? 'cutcard' : ''}">
+    ${imgs(ids)}
+    <h3>${esc(D.cuts[c].label)}</h3>
+    <div class="script">${scriptOf(S, ids)}</div>
+    <div class="cost save">${cutView ? 'Cutting it saves' : 'Cutting this would save'} ${secs(w)} s</div>
+    <div class="qa">If cut → ${esc(D.cuts[c].qa)}</div>
+    <button class="pick" data-ch="${key}"><kbd>${key === 'a' ? 1 : 2}</kbd>${label}</button>
+  </div>`;
+}
+function renderRound(S, r) {
+  let html = '';
+  if (r.type === 'duel') {
+    html += `<div class="kind">${r.pool ? 'Rematch · both survived an earlier round' : 'Match-up'}</div>
+      <div class="question">Keep one. The other is cut and goes to the Q&amp;A.</div><p class="why">${esc(D.cuts[r.a].label)} vs ${esc(D.cuts[r.b].label)}</p>
+      <div class="duel">${candCard(S, r.a, 'a', 'Keep this one')}${candCard(S, r.b, 'b', 'Keep this one')}</div>`;
+  } else if (r.type === 'single') {
+    const c = r.a, ids = D.cuts[c].slides;
+    html += `<div class="kind">Keep or cut</div><div class="question">${esc(D.cuts[c].label)}</div><p class="why">Kept slides can face another slide later if we are still over time.</p>
+      <div class="duel">${candCard(S, c, 'a', 'Keep it')}
+      <div class="card cutcard">${imgs(ids)}<h3>Cut it</h3><div class="script"><span class="sp">Nothing said here</span>The talk goes straight to the next slide.</div>
+        <div class="cost save">Saves ${secs(candWords(S, c))} s</div><div class="qa">→ ${esc(D.cuts[c].qa)}</div>
+        <button class="pick" data-ch="b"><kbd>2</kbd>Cut it</button></div></div>`;
+  } else {
+    const t = D.trims[r.id], s = slide(r.id), [full, trimmed] = diff(S.shown[r.id], t.shown);
+    const saved = secs(words(S.say[r.id]) - words(t.say));
+    html += `<div class="kind">Trim · ${esc(s.speaker)} · slide ${s.n}</div><div class="question">${esc(s.title.replace(/\{\{[^}]*\}\}/g, '…'))}</div><p class="why">${esc(t.why)}</p>
+      <div class="duel">
+        <div class="card">${imgs([r.id])}<h3>Full version</h3><div class="script">${full}</div><div class="cost zero">${secs(words(S.say[r.id]))} s</div>
+          <button class="pick" data-ch="a"><kbd>1</kbd>Keep the full version</button></div>
+        <div class="card">${imgs([r.id])}<h3>Trimmed version</h3><div class="script">${trimmed}</div><div class="cost save">${secs(words(t.say))} s · saves ${saved} s</div>
+          <div class="screen">On screen: ${esc(t.screen)}</div>
+          <button class="pick" data-ch="b"><kbd>2</kbd>Use the trimmed version</button></div>
+      </div>`;
+  }
+  html += `<div class="tools"><button data-act="skip"><kbd>S</kbd> Skip (keep ${r.type === 'trim' ? 'the full version' : 'both'})</button><button data-act="undo" ${picks.length ? '' : 'disabled'}><kbd>U</kbd> Undo last pick</button><button data-act="summary">See summary so far</button><span class="saved">${esc(saveNote)}</span></div>`;
+  return html;
+}
+function result(S) {
+  const { t, by } = totals(S);
+  const cuts = [...new Set(Object.values(S.cut))].map((c) => ({ candidate: c, slides: D.cuts[c].slides, qa: D.cuts[c].qa }));
+  const trims = Object.keys(S.trimmed).filter((id) => S.trimmed[id] === true && !S.cut[id]);
+  return { seconds: secs(t), words: t, bySpeaker: Object.fromEntries(Object.entries(by).map(([k, v]) => [k, { words: v, seconds: secs(v) }])), cuts, trims };
+}
+function renderSummary(S) {
+  const start = {}; for (const s of D.spine) start[s.speaker] = (start[s.speaker] || 0) + words(s.say);
+  const { by } = totals(S), res = result(S);
+  let h = `<div class="kind">Summary</div><div class="question">New running time ${mmss(res.seconds)} (speech only; add about 20 s for section cards and transitions)</div>
+    <p class="why">${res.cuts.length} cut${res.cuts.length === 1 ? '' : 's'}, ${res.trims.length} trim${res.trims.length === 1 ? '' : 's'}. Saved to docs/script/cut-choices.json. When you're happy, tell Claude to apply it.</p>
+    <div class="tools"><button data-act="back">Back to the quiz</button><button data-act="undo" ${picks.length ? '' : 'disabled'}>Undo last pick</button></div>
+    <h2 class="sec">Time per speaker</h2><table><tr><th>Speaker</th><th class="num">Before</th><th class="num">After</th><th class="num">Words</th></tr>
+    ${Object.keys(start).map((k) => `<tr><td>${esc(k)}</td><td class="num">${mmss(secs(start[k]))}</td><td class="num">${mmss(secs(by[k] || 0))}</td><td class="num">${start[k]} → ${by[k] || 0}</td></tr>`).join('')}</table>
+    <h2 class="sec">Running order</h2><table><tr><th>#</th><th>Slide</th><th>Speaker</th><th></th><th class="num">Time</th><th>Note</th></tr>`;
+  for (const s of D.spine) {
+    const c = S.cut[s.id], tr = S.trimmed[s.id] === true;
+    h += `<tr class="${c ? 'cut' : ''}"><td>${s.n}</td><td>${esc(s.id)}</td><td>${esc(s.speaker)}</td>
+      <td>${c ? '<span class="tag cut">cut</span>' : tr ? '<span class="tag trim">trimmed</span>' : '<span class="tag keep">kept</span>'}</td>
+      <td class="num">${c ? '' : secs(words(S.say[s.id])) + ' s'}</td>
+      <td class="${c ? 'qa' : ''}">${c ? '→ ' + esc(D.cuts[c].qa) : tr ? esc(D.trims[s.id].screen) : ''}</td></tr>`;
+  }
+  h += `</table><h2 class="sec">The new script</h2><div class="fullscript">`;
+  for (const s of D.spine) if (!S.cut[s.id]) h += `<p><span class="sid">${esc(s.speaker)} · ${esc(s.id)}</span><br>${esc(S.shown[s.id])}</p>`;
+  return h + '</div>';
+}
+function render() {
+  const S = build(), over = header(S);
+  const main = document.getElementById('main');
+  if (view === 'summary') { main.innerHTML = renderSummary(S); return; }
+  if (!over && !keepGoing) {
+    main.innerHTML = `<div class="banner"><h2>Under 9:00</h2><p>Speech is now ${mmss(secs(totals(S).t))}. You can stop here or keep trimming for a safety margin.</p>
+      <div class="tools"><button data-act="summary">See the summary</button><button data-act="keep">Keep going</button><button data-act="undo">Undo last pick</button></div></div>`;
+    return;
+  }
+  const r = next(S);
+  if (!r) { view = 'summary'; render(); return; }
+  main.innerHTML = renderRound(S, r);
+  main.dataset.key = r.key;
+}
+async function save() {
+  const S = build();
+  try {
+    const res = await fetch('/api/choices', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ picks, keepGoing, result: result(S) }) });
+    saveNote = res.ok ? `Saved ${new Date().toLocaleTimeString()}` : 'Not saved: server error';
+  } catch { saveNote = 'Not saved: server unreachable'; }
+  if (view !== 'summary') { const n = document.querySelector('.saved'); if (n) n.textContent = saveNote; }
+}
+function choose(ch) {
+  const key = document.getElementById('main').dataset.key;
+  if (!key || view === 'summary') return;
+  picks.push({ key, choice: ch, at: new Date().toISOString() });
+  render(); save(); window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function act(a) {
+  if (a === 'undo') { if (!picks.length) return; picks.pop(); if (view === 'summary') view = 'quiz'; keepGoing = keepGoing && secs(totals(build()).t) <= D.target_seconds; render(); save(); }
+  else if (a === 'skip') choose('skip');
+  else if (a === 'summary') { view = 'summary'; render(); }
+  else if (a === 'back') { view = 'quiz'; render(); }
+  else if (a === 'keep') { keepGoing = true; render(); save(); }
+}
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b || b.disabled) return;
+  if (b.dataset.ch) choose(b.dataset.ch); else if (b.dataset.act) act(b.dataset.act);
+});
+document.addEventListener('keydown', (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.key === '1') choose('a'); else if (e.key === '2') choose('b');
+  else if (e.key === 's' || e.key === 'S') act('skip');
+  else if (e.key === 'u' || e.key === 'U' || e.key === 'Backspace') { e.preventDefault(); act('undo'); }
+});
+fetch('/api/data').then((r) => r.ok ? r.json() : r.text().then((t) => Promise.reject(new Error(t)))).then((d) => {
+  D = d; picks = d.choices.picks || []; keepGoing = !!d.choices.keepGoing; render();
+}).catch((e) => { document.getElementById('main').textContent = 'Could not load: ' + e.message; });
+</script>
+</body>
+</html>

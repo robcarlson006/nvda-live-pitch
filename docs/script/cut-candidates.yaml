@@ -1,0 +1,120 @@
+# Candidates for the cut quiz (app/scripts/cut-quiz). Not applied to spine.yaml until the team confirms the summary.
+# Word counts and time are computed from spine.yaml's `say` (each {{figure}} = 5 spoken words, 150 words a minute).
+# Every slide that is cut goes to the Q&A bank (an existing answer, or a new one built from the slide) so nothing is lost.
+target_seconds: 540
+wpm: 150
+
+# Whole slides (or groups) that can be cut. `qa` = where the content lives after a cut.
+cuts:
+  revenue-long:  { slides: [revenue-long],  label: "27 years of revenue (chart)",       qa: "New Q&A answer: \"How has revenue grown over time?\" (same chart)" }
+  fcf:           { slides: [fcf],           label: "Free cash flow chart",              qa: "New Q&A answer: \"What free cash flow do you forecast?\" (same chart). FCF for each year stays on the DCF-on-one-page slide" }
+  dcf-worksheet: { slides: [dcf-worksheet], label: "Five-year DCF worksheet",           qa: "New Q&A answer: \"Show us the DCF year by year\" (same table). The DCF-on-one-page slide keeps every output" }
+  dcf-drivers:   { slides: [dcf-drivers],   label: "Base case in three numbers",        qa: "New Q&A answer: \"What drives your valuation?\". CAGR and EBIT margin stay on the DCF-on-one-page slide" }
+  dcf-bridge:    { slides: [dcf-bridge],    label: "Cash flow to value per share",      qa: "New Q&A answer: \"How do you get from cash flow to a share price?\". EV, net debt, equity, shares and TV % of EV stay on the DCF-on-one-page slide" }
+  returns:       { slides: [returns],       label: "Cash back to shareholders",         qa: "Existing Q&A answer: buybacks" }
+  space-race:    { slides: [space-race],    label: "A race can change the world",       qa: "New Q&A answer: \"Is the AI race worth it?\" (timeline)" }
+  already-doing: { slides: [already-doing], label: "AI is already delivering (4 industries)", qa: "New Q&A answer: \"What has AI actually achieved?\" (four-industry board). Ecolab also in ecolab-water" }
+  open-ai:       { slides: [open-ai],       label: "NVIDIA funds competition to the giants", qa: "Existing Q&A answers: circular, competition. New: \"Who else does NVIDIA back?\"" }
+  bubble:        { slides: [bubble, if-it-pops], label: "Is this a bubble? + if it pops", qa: "Existing Q&A answer: bubble" }
+  four-layers:   { slides: [four-layers],   label: "Why NVIDIA is the gold standard (four layers)", qa: "Chips slide opens with \"NVIDIA leads in four layers\" instead" }
+
+# Trimmed versions of one slide. `say` is the full new line; `screen` says what changes on the slide.
+trims:
+  first-gpu:
+    say: "Six years later, in 1999, they launched the GeForce 256 and called it the world's first GPU. A successful gaming company. They could have stopped there."
+    screen: "Xbox and Forbes points removed"
+    why: "Two side facts; the story only needs 'first GPU, they could have stopped there'"
+  wall-street:
+    say: "Wall Street hated it. The stock more than halved in 2008. NVIDIA held on anyway."
+    screen: "'Bigger, pricier chips' point removed; revenue chart stays"
+    why: "The chart already shows revenue stalling"
+  alexnet:
+    say: "Then, in 2012, a student team from Toronto entered ImageNet, the biggest image-recognition contest, with a network called AlexNet, trained on two NVIDIA gaming cards. It won by a mile: about 15 percent error, against 26 for the next best. AI had found CUDA."
+    screen: "Stanford 2009 point removed"
+    why: "AlexNet is the moment that matters; Stanford is a warm-up"
+  dcf-inputs:
+    say: "So what is one share worth? Every input on this slide comes from Bloomberg, Google Finance or Damodaran at NYU. The only choice that is ours: {{model_dcf_inputs | Terminal growth (our choice) | value}} long-run growth after 2032."
+    screen: "Nothing: the slide still lists every input and its source"
+    why: "Reading the list aloud repeats what is on screen"
+  connections:
+    say: "Three: connections. NVLink joins {{research_facts | GPUs per NVL72 rack | value}} chips in one rack, so they act as one giant chip. In 2019, NVIDIA agreed to buy Mellanox, which links whole racks together, for about {{research_facts | Mellanox price | value}}."
+    screen: "Networking-revenue point removed"
+    why: "That figure is unverified (amber on the operator panel)"
+  catch-up:
+    say: "Has anyone caught up? Google came closest: it has built its own chips since 2015 and spent tens of billions. Amazon, Microsoft and Meta are trying too, and they all still buy NVIDIA."
+    screen: "Nothing changes on screen"
+    why: "The 'share of AI chip spending' figure is unverified"
+  people:
+    say: "Staff turnover is low, and that is a good thing: NVIDIA's people stay. Only {{research_people | Staff turnover, FY26 | value}} of staff left last year, against {{research_people_turnover | Staff turnover | Tech and media 2022}} for tech and media in 2022."
+    screen: "Glassdoor, Fortune and TIME points move to the Q&A (peer-rankings)"
+    why: "Rankings invite the 'Social score fell 6.29 to 3.63' comeback"
+  handoff:
+    say: "So: NVIDIA has the chips, the software, the connections and the supply. The biggest companies and governments are all building AI, and they keep building. Panshul: do the numbers agree?"
+    screen: "'The only way to stop NVIDIA is to stop innovation' removed"
+    why: "An overclaim a sceptic will pounce on"
+  peers:
+    say: "Is it expensive? This is the forward P/E: the share price divided by this year's forecast earnings. Against four other big chip companies, on expected earnings NVIDIA is the cheapest of the five."
+    screen: "Trailing P/E stays on screen, just not read aloud"
+    why: "Two P/E numbers spoken one after another confuse"
+  recommendation:
+    say: "So, our recommendation. We recommend a buy: a **three percent** position, inside our ten percent limit for any one stock, held for three to five years. If we're wrong, our bear case costs the portfolio only {{model_downside | Cost to the portfolio | Bear case}}; even if AI ended for good, only {{model_downside | Cost to the portfolio | If AI ended for good}}. We would add if cloud spending rises and the CEO investigation closes, and sell if spending is cut."
+    screen: "'Base case above today's price at all three rates' point removed"
+    why: "Repeats the three-rates slide a minute earlier"
+  dcf-summary:
+    say: "So here is the whole DCF **on one page**. The assumptions are on the left. Then the cash flows, and what they are worth today. From enterprise value, with no net debt, to one share. And the answer: {{model_dcf_summary | Implied share price | value}} against {{model_dcf_summary | Share price | value}}, {{model_dcf_summary | Upside | value}} upside."
+    screen: "Nothing: every DCF number stays on the slide"
+    why: "The page shows WACC, growth, CAGR and margin; no need to read them out"
+  three-rates:
+    say: "We didn't invent a discount rate; we tested three. At the US chip-industry rate, a share is worth **{{model_three_rates | Value per share | 10.55% industry (Damodaran)}}**. At Google Finance's rate, {{model_three_rates | Value per share | 14.45% Google Finance}}. At Bloomberg's, {{model_three_rates | Value per share | 15.4% Bloomberg}}. All three are above our dated reference price."
+    screen: "Nothing: the rates are on the chart"
+    why: "The percentages are printed under each bar"
+  beats:
+    say: "Revenue has beaten expectations thirteen quarters running. Grey is what analysts expected; green is what NVIDIA made. The latest delivery: another beat, with earnings per share of {{nvda_eps_quarterly | EPS | FY27 Q3}} against {{nvda_eps_quarterly | Consensus | FY27 Q3}} expected."
+    screen: "Nothing changes on screen"
+    why: "Same points, fewer words"
+  guidance:
+    say: "What comes next? NVIDIA's guidance is {{research_q3_call | Q4 FY27 revenue guide | value}} for next quarter, give or take {{research_q3_call | Q4 FY27 revenue guide, range plus or minus | value}}. It also raised next year's revenue growth outlook to about {{research_q3_call | FY28 revenue growth outlook | value}}, from {{research_q3_call | FY28 revenue growth outlook, previous | value}}."
+    screen: "Vera Rubin point removed"
+    why: "Product detail; the guidance is the investment point"
+  beyond-hyperscalers:
+    say: "Demand extends beyond the hyperscalers. **AI clouds, industry and enterprise** were {{nvda_dc_customer_mix | Share of revenue | AI clouds, industrial & enterprise}} of revenue last quarter, and grew {{nvda_dc_customer_mix | Growth on a year ago | AI clouds, industrial & enterprise}} in a year. Public compute: Isambard-AI, the UK's AI supercomputer, is already operating in Bristol. Specialist clouds: Nscale has announced NVIDIA-powered capacity. So demand doesn't rest on the giants alone."
+    screen: "Nothing: hyperscaler share and growth stay on the chart"
+    why: "Keeps the diversification point, drops the comparison figures"
+  bear-case:
+    say: "Now two downside cases. First, our bear case: rivals take share, customers pause spending for a year, and revenue falls in 2029. The stock would fall {{model_downside | Change from today | Bear case}}, to {{model_downside | Value per share | Bear case}} a share. But at a {{model_downside | Position size | Bear case}} position, the portfolio would lose **only {{model_downside | Cost to the portfolio | Bear case}}**."
+    screen: "Nothing changes on screen"
+    why: "Shorter description of the scenario"
+  close:
+    say: "Everything you just watched was built and run by AI. And the AI industry runs on infrastructure NVIDIA built: the best chips, software, connections and supply. If three university students can do this for a stock pitch, imagine what the world's companies are doing. We recommend a buy. Thank you."
+    screen: "Nothing (the first point's cue moves to 'best chips')"
+    why: "'Hard to replace' repeats the line before it"
+
+# The order of rounds: least essential first (CUT-PROPOSAL tiers), then our weakest points, then finer trims.
+# single = keep or cut one slide; duel = keep one of two, the other is cut; pool = everything that survived a
+# single or duel (plus `pool_extra`) faces each other again, one round at a time, while we are still over time.
+steps:
+  - single: revenue-long
+  - duel: [fcf, dcf-worksheet]
+  - single: dcf-drivers
+  - duel: [space-race, already-doing]
+  - duel: [returns, open-ai]
+  - trim: first-gpu
+  - trim: wall-street
+  - trim: alexnet
+  - trim: dcf-inputs
+  - duel: [dcf-bridge, bubble]
+  - trim: connections
+  - trim: catch-up
+  - trim: people
+  - trim: handoff
+  - trim: peers
+  - trim: recommendation
+  - pool: true
+  - trim: dcf-summary
+  - trim: three-rates
+  - trim: beats
+  - trim: guidance
+  - trim: beyond-hyperscalers
+  - trim: bear-case
+  - trim: close
+pool_extra: [four-layers]

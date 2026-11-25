@@ -247,7 +247,7 @@ function SlideView({ slide, reveal, datasets, figure, motion }: { slide: Slide; 
               {dataset.placeholder && <span className="placeholder">Placeholder data</span>}
             </figcaption>
             <div className="chart-body">
-              {slide.chart.display === 'table' ? <DataTable spec={slide.chart} dataset={dataset} zoom={zoom} /> : <Chart spec={slide.chart} dataset={dataset} zoom={zoom} />}
+              {slide.chart.display === 'table' ? <DataTable spec={slide.chart} dataset={dataset} zoom={zoom} /> : <Chart spec={slide.chart} dataset={dataset} zoom={zoom} ring={!slide.answer} />}
             </div>
           </Delayed>
         ) : (

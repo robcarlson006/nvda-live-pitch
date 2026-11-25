@@ -4,34 +4,27 @@ import { rng } from './util.ts';
 import './first-gpu.css';
 
 /**
- * "1999: the world's first GPU." A chip builds itself, then a track runs through the milestones the slide names:
+ * "1999: the world's first GPU." A chip builds itself, then a track runs on from 1999:
  *   title                       — the chip's pins draw in and its die fills pixel by pixel, then the track reaches 1999
- *   1 "nvidia for xbox"         — the track runs on to 2000, and a games console appears
- *   2 "company of the year"     — on to 2007, and a pixel star
- *   3 "could have stopped"      — the track reaches a stop... and a faint dashed path keeps going off the edge:
+ *   1 "could have stopped"      — the track runs to a stop... and a faint dashed path keeps going off the edge:
  *                                 the bet the next slide (CUDA) is about
- * The only figures are the years the slide itself shows. The console is a generic shape, not any company's design.
+ * The Xbox (2000) and Forbes (2007) milestones were cut from the script on 25 Nov, so the track no longer stops there.
+ * The only figure is the year the slide itself shows.
  */
 
 const CHIP = { cx: 400, cy: 300, s: 300 };
 const DIE = 8;
 const TRACK_Y = 760;
-const STOPS = [
-  { x: 110, year: '1999' },
-  { x: 310, year: '2000' },
-  { x: 510, year: '2007' },
-] as const;
+const STOPS = [{ x: 110, year: '1999' }] as const;
 const END_X = 640;
 
-// A five-point star in pixels, for "company of the year".
-const STAR = ['...X...', '...X...', '..XXX..', 'XXXXXXX', '.XXXXX.', '..XXX..', '.XX.XX.', 'XX...XX'];
-
-export function FirstGpu({ stage }: SceneProps) {
+export function FirstGpu({ stage: points }: SceneProps) {
+  const stage = points >= 1 ? 3 : 0; // one point now: "they could have stopped there" runs the track to the stop
   const rand = rng(1999);
   const die = Array.from({ length: DIE * DIE }, (_, i) => ({ r: Math.floor(i / DIE), c: i % DIE, d: 0.7 + Math.floor(i / DIE) * 0.07 + rand() * 0.25 }));
   const pin = CHIP.s / 12;
   const pins = Array.from({ length: 10 }, (_, i) => CHIP.cx - CHIP.s / 2 + pin * (i + 1.5));
-  const reached = stage >= 3 ? END_X : STOPS[Math.min(stage, 2)].x;
+  const reached = stage >= 3 ? END_X : STOPS[0].x;
   const half = CHIP.s / 2;
 
   return (
@@ -73,28 +66,6 @@ export function FirstGpu({ stage }: SceneProps) {
           <text x={s.x} y={TRACK_Y + 52}>{s.year}</text>
         </g>
       ))}
-
-      {/* 2000: a games console (generic). */}
-      {stage >= 1 && (
-        <g className="fg-icon" transform={`translate(${STOPS[1].x} ${TRACK_Y - 90})`}>
-          <rect x="-58" y="-34" width="116" height="62" rx="10" className="fg-box" />
-          <rect x="-40" y="-14" width="52" height="6" rx="3" className="fg-slot" />
-          <circle cx="34" cy="-2" r="9" className="fg-btn" />
-          <rect x="-50" y="28" width="16" height="8" className="fg-foot" />
-          <rect x="34" y="28" width="16" height="8" className="fg-foot" />
-        </g>
-      )}
-
-      {/* 2007: a pixel star. */}
-      {stage >= 2 && (
-        <g className="fg-icon star" transform={`translate(${STOPS[2].x - 49} ${TRACK_Y - 150})`}>
-          {STAR.flatMap((row, r) =>
-            [...row].map((ch, c) =>
-              ch === 'X' ? <rect key={`${r}-${c}`} x={c * 14} y={r * 14} width="12" height="12" style={{ '--d': `${(r + c) * 0.04}s` } as CSSProperties} /> : null,
-            ),
-          )}
-        </g>
-      )}
 
       {/* "They could have stopped there": a stop at the end of the line... */}
       {stage >= 3 && (

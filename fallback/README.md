@@ -1,7 +1,7 @@
 # Offline backup deck
 
-- `spine.pdf`: the static **37-page** backup of the scripted pitch, one page per spine slide, in spine order. The same pages are bundled as JPEGs in `app/public/fallback/` so the stage can show them without speech recognition, APIs or animation. On the operator screen press **B** or **Backup deck**; **Next** and **Back** then advance whole pages. Press **B** again to resume the live view. The **Open backup PDF** link is a separate printable copy.
-- `qa-bank.pdf`: every prepared answer in `docs/qa-bank/answers.yaml` (35 pages), with its chart, table or diagram. Also copied to `app/public/fallback/qa-bank.pdf` (served at `/fallback/qa-bank.pdf`). Open it in a PDF viewer if the app fails during questions.
+- `spine.pdf`: the static **32-page** backup of the scripted pitch, one page per spine slide, in spine order. The same pages are bundled as JPEGs in `app/public/fallback/` so the stage can show them without speech recognition, APIs or animation. On the operator screen press **B** or **Backup deck**; **Next** and **Back** then advance whole pages. Press **B** again to resume the live view. The **Open backup PDF** link is a separate printable copy.
+- `qa-bank.pdf`: every prepared answer in `docs/qa-bank/answers.yaml` (42 pages), with its chart, table or diagram. Also copied to `app/public/fallback/qa-bank.pdf` (served at `/fallback/qa-bank.pdf`). Open it in a PDF viewer if the app fails during questions.
 - `app/public/fallback/pages.json`: the spine and bank ids each page was built from. `npm test` fails if the backup's page count or order no longer matches the spine, because backup page *N* is shown for spine slide *N*.
 
 After editing `docs/script/spine.yaml`, `docs/qa-bank/answers.yaml` or data in `data/clean/`, regenerate:

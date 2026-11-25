@@ -1,0 +1,44 @@
+{
+  "picks": [
+    {
+      "key": "single:revenue-long",
+      "choice": "a",
+      "at": "2026-11-25T11:39:13.938Z"
+    },
+    {
+      "key": "duel:fcf|dcf-worksheet",
+      "choice": "b",
+      "at": "2026-11-25T11:39:35.686Z"
+    }
+  ],
+  "keepGoing": false,
+  "result": {
+    "seconds": 925,
+    "words": 2312,
+    "bySpeaker": {
+      "Rob": {
+        "words": 842,
+        "seconds": 337
+      },
+      "Panshul": {
+        "words": 903,
+        "seconds": 361
+      },
+      "Mi'kael": {
+        "words": 567,
+        "seconds": 227
+      }
+    },
+    "cuts": [
+      {
+        "candidate": "fcf",
+        "slides": [
+          "fcf"
+        ],
+        "qa": "New Q&A answer: \"What free cash flow do you forecast?\" (same chart). FCF for each year stays on the DCF-on-one-page slide"
+      }
+    ],
+    "trims": []
+  },
+  "savedAt": "2026-11-25T11:39:35.697Z"
+}
